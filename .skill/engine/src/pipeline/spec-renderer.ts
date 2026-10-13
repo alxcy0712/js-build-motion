@@ -1,5 +1,11 @@
 import { EngineError, ERROR_CODES } from '../utils/errors.ts';
-import { Canvas, type CanvasRenderingContext2D } from 'skia-canvas';
+import { Canvas, FontLibrary, type CanvasRenderingContext2D } from 'skia-canvas';
+import { join } from 'node:path';
+import { getTheme } from '../themes/registry.ts';
+import { registerThemeFonts } from '../themes/fonts.ts';
+import { drawThemeTransition, isThemeTransition, themeTransitionDuration } from './theme-transitions.ts';
+import { applyMicroMotion, drawTreatments } from './theme-treatments.ts';
+import { PROJECT_ROOT } from '../utils/env.ts';
 /**
  * 将VideoSpec或本片drawScene求值为像素，统一处理相机、转场和字幕。
  * 场景、局部时间与进度由frameIndex计算，支持任意顺序的独立帧渲染。
@@ -14,7 +20,9 @@ import type {
   ResolvedVideoSpec,
 } from '../spec/types.ts';
 import { normalizedProgress } from '../timeline/frame.ts';
-import { cameraFor, applyCamera } from '../drawing/primitives/camera.ts';
+import { cameraFor, applyCamera, applyCameraPose } from '../drawing/primitives/camera.ts';
+import { evaluateCameraPath } from '../motion/camera-path.ts';
+import { openFootage, type FrameSource } from '../footage/clip.ts';
 import {
   IMPLEMENTED_ENVIRONMENTS,
   getSceneRenderer,
@@ -52,6 +60,10 @@ export interface SpecRendererOptions {
   readonly drawScene?: (context: SceneRenderContext, frame: FrameContext) => void;
   /** Opt-in glyph bounds for source-frame diagnostics. */
   readonly trackText?: boolean;
+  /** 素材片段（environment = footage）的根目录；src 只能指向其内部。默认 process.cwd() */
+  readonly assetRoot?: string;
+  /** 视频素材抽帧缓存目录；默认 output/.cache/footage */
+  readonly footageCacheDir?: string;
 }
 
 /**
@@ -94,12 +106,18 @@ export function createSpecRenderer(options: SpecRendererOptions): Renderer & { t
   const width = options.width ?? spec.video.width;
   const height = options.height ?? spec.video.height;
   const palette = getPalette(spec.style.palette);
+  // 风格层：spec.style.theme 已在 repair 阶段按品牌锁解析。storybook 走原水彩外观，不加逐帧质感。
+  const theme = getTheme(spec.style.theme);
+  // 旧环境（rain_window / motion_stage）保持原有绘制与回归基线；风格质感作用于 theme_stage 镜头。
+  const themedScene = (shot: ResolvedScene): boolean => theme.id !== 'storybook' && shot.environment === 'theme_stage';
+  const themed = theme.id !== 'storybook' && spec.scenes.some(themedScene);
+  const themeFonts = registerThemeFonts(theme, FontLibrary, join(PROJECT_ROOT, 'assets', 'fonts'));
 
   // 字幕：项目字体必须显式注册（§26）。字体缺失时 registerProjectFonts 返回未注册，
   // 此时 resolveFontFamily 会沿兜底链取系统字体，并已在环境自检里报过 FONT_NOT_FOUND。
   const fontState = registerProjectFonts();
   if (!fontState.registered) throw new EngineError(ERROR_CODES.FONT_NOT_FOUND, '渲染需要内嵌字体，请检查本片运行时的 assets/fonts/ 字体');
-  const captionFont = resolveFontFamily(fontState.registered);
+  const captionFontDefault = resolveFontFamily(fontState.registered);
   const captionsEnabled = options.captions ?? spec.captions.enabled;
   const cueTrack: readonly CaptionCue[] = options.captionCues ?? buildCaptionTrack(spec, {
     ...(options.measuredNarration ? { measured: options.measuredNarration } : {}),
@@ -111,6 +129,9 @@ export function createSpecRenderer(options: SpecRendererOptions): Renderer & { t
     warned.add(key);
     onWarning?.(message);
   };
+  for (const f of themeFonts) if (!f.registered) warnOnce(`font:${f.family}`, `风格 ${theme.id} 的字体 ${f.family} 未找到，将回退`);
+  const themeCjkFamily = themeFonts.find((f) => f.registered && /CJK|SC/.test(f.family))?.family;
+  const captionFamily = themed && themeCjkFamily ? themeCjkFamily : null;
 
   // 提前告警未实现的环境（在设计阶段就能看到，而不是渲完才发现是占位）
   for (const scene of spec.scenes) {
@@ -123,6 +144,18 @@ export function createSpecRenderer(options: SpecRendererOptions): Renderer & { t
     }
   }
 
+  // 素材片段：渲染器创建时一次性打开（视频先抽帧缓存），之后每帧同步取图，保持纯 seek(t)
+  const footageSources = new Map<ResolvedScene, FrameSource>();
+  for (const scene of spec.scenes) {
+    if (scene.environment !== 'footage' || !scene.footage) continue;
+    try {
+      footageSources.set(scene, openFootage(scene.footage, options.assetRoot ?? process.cwd(), spec.video.fps, scene.end - scene.start, options.footageCacheDir));
+    } catch (e) { warnOnce(`footage:${scene.id}`, `镜头 ${scene.id} 素材不可用：${(e as Error).message}`); }
+  }
+
+  const captionFont = captionFamily ?? captionFontDefault;
+  const outgoing = new Canvas(width, height);
+  const incomingBase = new Canvas(width, height);
   const incoming = new Canvas(width, height);
   const incomingContext = incoming.getContext('2d');
   const incomingText = options.trackText ? trackTextBounds(incomingContext) : undefined;
@@ -134,19 +167,27 @@ export function createSpecRenderer(options: SpecRendererOptions): Renderer & { t
       if (options.trackText) { mainText ??= trackTextBounds(ctx); mainText.reset(); }
       const t = rc.time;
       const { scene, localTime } = resolveScene(spec.scenes, t);
-      const drawScene = (context: CanvasRenderingContext2D, shot: ResolvedScene): void => {
+      const drawScene = (context: CanvasRenderingContext2D, shot: ResolvedScene, noText = false): void => {
         const shotTime = Math.max(0, Math.min(shot.end - shot.start, t - shot.start));
         const progress = shot.composition
           ? shotTime / Math.max(0.001, shot.end - shot.start)
           : normalizedProgress(rc.frameIndex, rc.totalFrames);
         const camera = cameraFor(shot.cameraMove, progress);
+        const footage = footageSources.get(shot);
         const sceneCtx: SceneRenderContext = {
           ctx: context, width, height, palette, scene: shot,
           character: resolveCharacter(spec, shot), time: t, sceneTime: shotTime,
-          progress, seed: spec.video.seed, stylePreset: spec.style.preset,
+          progress, seed: spec.video.seed, stylePreset: spec.style.preset, theme,
+          textHold: isThemeTransition(spec.scenes[spec.scenes.indexOf(shot) + 1]?.transition ?? 'cut'),
+          textCarriedIn: spec.scenes.indexOf(shot) > 0 && isThemeTransition(shot.transition),
+          firstShot: spec.scenes.indexOf(shot) === 0,
+          noText,
+          ...(footage ? { footage } : {}),
         };
         context.save();
-        applyCamera(context, shot.composition ? { ...camera, offsetX: camera.offsetX * width / 1080, offsetY: camera.offsetY * height / 1920 } : camera, width, height);
+        if (shot.cameraPath) applyCameraPose(context, evaluateCameraPath(shot.cameraPath, shotTime, width, height, theme.easings.camera), width, height);
+        else applyCamera(context, shot.composition ? { ...camera, offsetX: camera.offsetX * width / 1080, offsetY: camera.offsetY * height / 1920 } : camera, width, height);
+        if (themedScene(shot)) applyMicroMotion(context, theme, shotTime, width, height);
         if (options.drawScene) {
           const result = options.drawScene(sceneCtx, rc) as unknown;
           if (result && typeof (result as Promise<unknown>).then === 'function') {
@@ -160,7 +201,21 @@ export function createSpecRenderer(options: SpecRendererOptions): Renderer & { t
       const transitionDuration = Math.min(0.5, (scene.end - scene.start) / 3);
       const mix = Math.min(1, localTime / transitionDuration);
       const blending = (BLENDED_TRANSITIONS as readonly string[]).includes(scene.transition);
-      if (previous && mix < 1 && blending) {
+      const themeTransition = isThemeTransition(scene.transition)
+        ? (theme.transitions.includes(scene.transition) ? scene.transition : (warnOnce(`tr:${scene.id}`, `转场 ${scene.transition} 不在风格 ${theme.id} 的允许列表，改用 ${theme.transitions[0]}`), theme.transitions[0]!))
+        : null;
+      const themeMixDur = themeTransition ? Math.min(themeTransitionDuration(themeTransition, theme), (scene.end - scene.start) / 3) : 0;
+      if (previous && themeTransition && localTime < themeMixDur) {
+        incomingText?.reset();
+        incomingContext.clearRect(0, 0, width, height);
+        drawScene(incomingContext, scene);
+        drawThemeTransition(themeTransition, {
+          ctx, width, height, mix: localTime / themeMixDur, theme, incoming, outgoing,
+          drawPrevious: (c) => drawScene(c, previous), seed: spec.video.seed ^ index,
+          ...(previous.focus ? { focus: previous.focus } : {}),
+          drawIncomingBase: (c) => { c.clearRect(0, 0, width, height); drawScene(c, scene, true); }, incomingBase,
+        });
+      } else if (previous && mix < 1 && blending) {
         /** 新镜头先画进离屏画布，再由各转场决定怎么合上去。 */
         const incomingReady = (): void => {
           incomingText?.reset();
@@ -300,8 +355,12 @@ export function createSpecRenderer(options: SpecRendererOptions): Renderer & { t
           palette,
           fontFamily: captionFont,
           seed: spec.video.seed,
+          ...(themed ? { themeColors: { text: theme.palette.text, active: theme.palette.accent, plate: theme.palette.surface, secondary: theme.palette.textSecondary } } : {}),
+          ...(themed ? { layout: { ...spec.captions, bottomInset: spec.captions.bottomInset ?? theme.safeArea[height >= width ? 'vertical' : 'horizontal'].bottom / (height >= width ? 1920 : 1080) } } : {}),
         });
       }
+      // 风格逐帧质感（扫光/暗角/颗粒）：每帧都画，防止死帧
+      if (themedScene(scene) || (previous && themedScene(previous) && themeTransition && localTime < themeMixDur)) drawTreatments(ctx, theme, t, localTime, width, height, spec.video.seed);
 
       // 场景边界提示：M0 阶段用于确认时间轴切分正确，后续会被真正的转场取代
       if (scene.transition === 'fade') {

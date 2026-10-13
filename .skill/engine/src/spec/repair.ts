@@ -1,3 +1,9 @@
+import { parseCameraPath, type CameraPath } from '../motion/camera-path.ts';
+import { parseFocus, type FocusRect } from '../motion/focus.ts';
+import { minShotSeconds } from '../motion/shot-timing.ts';
+import { parseFootageClip, type FootageClip } from '../footage/spec.ts';
+import { THEME_IDS } from '../themes/ids.ts';
+import { enforceBrand, loadBrand, type BrandConfig } from '../themes/brand.ts';
 import { Ajv } from 'ajv';
 import { COMPOSITION_SCHEMA, type Composition } from './motion.ts';
 import { graphicIssues } from './graphic.ts';
@@ -52,6 +58,7 @@ import {
   type ResolvedVideoSpec,
   type SfxCue,
   type VideoSpec,
+  IP_DEFAULT_SIZE, IP_POSITIONS, IP_SOURCE_SIZE, type IPPlacement,
 } from './types.ts';
 import { CAPTION_LAYOUT_SCHEMA, DIMENSION_MIN, DIMENSION_MAX, NARRATION_MAX_CHARS, NARRATION_RATE_SCHEMA, TRANSLATION_MAX_CHARS, SUPPORTED_FPS } from './schema.ts';
 
@@ -188,7 +195,9 @@ class Repairer {
 }
 
 /** 修复入口。输入是任意 JSON 值（不信任其形状）。 */
-export function repairSpec(input: unknown): RepairResult {
+export interface RepairOptions { readonly brand?: BrandConfig }
+
+export function repairSpec(input: unknown, options: RepairOptions = {}): RepairResult {
   const r = new Repairer();
 
   if (!isPlainObject(input)) {
@@ -200,7 +209,18 @@ export function repairSpec(input: unknown): RepairResult {
 
   const version = typeof input['version'] === 'string' ? (input['version'] as string) : SPEC_DEFAULTS.version;
   const video = repairVideo(input['video'], r);
-  const style = repairStyle(input['style'], r);
+  const repairedStyle = repairStyle(input['style'], r);
+  const rawStyle = input['style'];
+  const requestedTheme = typeof rawStyle === 'string' ? rawStyle
+    : isPlainObject(rawStyle) && typeof rawStyle['theme'] === 'string' ? (rawStyle['theme'] as string) : undefined;
+  const brand = options.brand ?? loadBrand();
+  const decision = enforceBrand(requestedTheme, brand);
+  if (decision.violation?.action === 'reject') {
+    r.fatal('BRAND_THEME_LOCKED', 'style.theme', `品牌锁定风格为 ${decision.theme}，本片请求 ${decision.violation.requested}；换风格须修改 .skill/brand.json（品牌级变更）`);
+  } else if (decision.violation) {
+    r.add({ severity: 'WARNING', code: 'BRAND_THEME_LOCKED', path: 'style.theme', message: `品牌锁定风格为 ${decision.theme}，已覆盖本片请求的 ${decision.violation.requested}`, from: decision.violation.requested, to: decision.theme });
+  }
+  const style = { ...repairedStyle, theme: decision.theme };
   const characters = repairCharacters(input['characters'], r);
   const scenes = repairScenes(input['scenes'], characters, video, r);
   const captions = repairCaptions(input['captions'], r);
@@ -293,18 +313,89 @@ function repairFps(raw: unknown, r: Repairer): number {
   return d;
 }
 
+// ---------------------------------------------------------------- headline
+
+/** 相机路径 / 焦点 / 素材片段 / 文字停留时长。纯结构校验，素材文件存在性在渲染器创建时检查。 */
+function repairShotMotion(item: Record<string, unknown>, path: string, r: Repairer, duration: number): { cameraPath?: CameraPath; focus?: FocusRect; footage?: FootageClip } {
+  const out: { cameraPath?: CameraPath; focus?: FocusRect; footage?: FootageClip } = {};
+  const cam = parseCameraPath(item['cameraPath'], `${path}.cameraPath`, duration);
+  for (const i of cam.issues) i.fatal ? r.fatal(i.code, i.path, i.message) : r.warn({ code: i.code, path: i.path, message: i.message });
+  if (cam.value) out.cameraPath = cam.value;
+  const focus = parseFocus(item['focus']);
+  if (typeof focus === 'string') r.fatal('FOCUS_INVALID', `${path}.focus`, focus); else if (focus) out.focus = focus;
+  if (item['footage'] !== undefined) {
+    const clip = parseFootageClip(item['footage'], `${path}.footage`);
+    for (const i of clip.issues) r.fatal(i.code, i.path, i.message);
+    if (clip.value) out.footage = clip.value;
+  }
+  if (item['environment'] === 'footage' && item['footage'] === undefined) r.fatal('FOOTAGE_REQUIRED', `${path}.footage`, 'environment=footage 需要 footage: { src }');
+  const headline = Array.isArray(item['headline']) ? item['headline'].filter((x): x is string => typeof x === 'string') : typeof item['headline'] === 'string' ? [item['headline']] : [];
+  if (headline.length) {
+    const need = minShotSeconds(typeof item['kicker'] === 'string' ? [item['kicker'], ...headline] : headline);
+    if (duration + 1e-6 < need) r.warn({ code: 'SHOT_TOO_SHORT_FOR_TEXT', path: `${path}.end`, message: `本屏文字约需 ${need.toFixed(1)}s 才能读完，镜头只有 ${duration.toFixed(1)}s`, hint: '延长镜头、删字，或拆成两屏（motion/shot-timing.ts planShotTimings）' });
+  }
+  return out;
+}
+
+function repairHeadline(item: Record<string, unknown>, path: string, r: Repairer, outputWidth = 1080, outputHeight = 1920): { headline?: string[]; kicker?: string; ip?: IPPlacement; ipExpression?: string } {
+  const out: { headline?: string[]; kicker?: string; ip?: IPPlacement; ipExpression?: string } = {};
+  const raw = item['headline'];
+  if (raw !== undefined) {
+    const list = (typeof raw === 'string' ? [raw] : Array.isArray(raw) ? raw : []).filter((x): x is string => typeof x === 'string' && x.trim().length > 0).map((x) => x.trim().slice(0, 40));
+    if (list.length > 3) r.add({ severity: 'WARNING', code: 'HEADLINE_TOO_LONG', path: `${path}.headline`, message: '每屏最多 3 行，已截断', from: raw });
+    if (list.length) out.headline = list.slice(0, 3);
+  }
+  if (typeof item['kicker'] === 'string' && item['kicker'].trim()) out.kicker = item['kicker'].trim().slice(0, 40);
+  const ip = item['ip'];
+  if (ip === true) {
+    // 旧写法 ip: true：不再默认放大出镜，改为小尺寸身份署名，并提示补充 role
+    out.ip = { role: 'identity', size: IP_DEFAULT_SIZE.identity, position: 'bottom-center' };
+    r.add({ severity: 'WARNING', code: 'IP_ROLE_REQUIRED', path: `${path}.ip`, message: 'ip 需写成 { role: "identity"|"actor", size?, position? }；已按身份署名（288px）处理', from: true });
+  } else if (isPlainObject(ip)) {
+    const role = ip['role'];
+    if (role !== 'identity' && role !== 'actor') r.fatal('IP_ROLE_INVALID', `${path}.ip.role`, 'ip.role 须为 identity 或 actor');
+    else {
+      const ref = outputHeight >= outputWidth ? 1080 : 1920;
+      const size = typeof ip['size'] === 'number' ? ip['size'] : IP_DEFAULT_SIZE[role];
+      const effective = size * outputWidth / ref;
+      if (!(size >= 64)) r.fatal('IP_SIZE_INVALID', `${path}.ip.size`, 'ip.size 须 ≥ 64');
+      else if (effective > IP_SOURCE_SIZE + 1e-6) {
+        r.fatal('IP_UPSCALE', `${path}.ip.size`, `IP 实际显示 ${Math.round(effective)}px 超过源素材 ${IP_SOURCE_SIZE}px：IP 是小幅美术，不允许放大（建议 256–384）`);
+      } else {
+        const position = (IP_POSITIONS as readonly unknown[]).includes(ip['position']) ? ip['position'] as IPPlacement['position'] : 'bottom-center';
+        const placement: IPPlacement = { role, size, position };
+        if (position === 'custom') {
+          const x = Number(ip['x']), y = Number(ip['y']);
+          if (!(x >= 0 && x <= 1 && y >= 0 && y <= 1)) r.fatal('IP_POSITION_INVALID', `${path}.ip`, 'position=custom 需要 0–1 的 x、y');
+          placement.x = x; placement.y = y;
+        }
+        const ex = ip['expression'];
+        if (typeof ex === 'string' && /^[a-z0-9_-]{1,24}$/.test(ex)) placement.expression = ex;
+        out.ip = placement;
+      }
+    }
+  } else if (ip !== undefined && ip !== false) {
+    r.add({ severity: 'SAFE_REPAIR', code: 'IP_IGNORED', path: `${path}.ip`, message: '无法识别的 ip，已忽略（默认不出现 IP）', from: ip });
+  }
+  if (typeof item['ipExpression'] === 'string' && /^[a-z0-9_-]{1,24}$/.test(item['ipExpression'])) out.ipExpression = item['ipExpression'];
+  return out;
+}
+
 // ---------------------------------------------------------------- style
 
 function repairStyle(raw: unknown, r: Repairer): VideoSpec['style'] {
   const d = SPEC_DEFAULTS.style;
+  // 简写：style: "minimal" 等价于 { theme: "minimal" }
+  if (typeof raw === 'string' && (THEME_IDS as readonly string[]).includes(raw)) raw = { theme: raw };
   if (raw !== undefined && !isPlainObject(raw)) {
     r.add({ severity: 'SAFE_REPAIR', code: 'NOT_AN_OBJECT', path: 'style', message: '应为对象，已使用默认值', from: raw });
   }
   const o = isPlainObject(raw) ? raw : {};
-  r.stripUnknown(o, ['preset', 'palette', 'paper', 'line'], 'style');
+  r.stripUnknown(o, ['theme', 'preset', 'palette', 'paper', 'line'], 'style');
 
   // 缺整个 style 不记为问题——它本来就有默认值（§11：残缺也要能出片）
   return {
+    theme: r.enumValue(o['theme'], THEME_IDS, d.theme, 'style.theme'),
     preset: r.enumValue(o['preset'], STYLE_PRESETS, d.preset, 'style.preset'),
     palette: r.enumValue(o['palette'], PALETTES, d.palette, 'style.palette'),
     paper: r.enumValue(o['paper'], PAPER_KINDS, d.paper, 'style.paper'),
@@ -396,7 +487,7 @@ function repairScenes(
     }
     r.stripUnknown(
       item,
-      ['id', 'start', 'end', 'environment', 'camera', 'cameraMove', 'transition', 'character', 'action', 'emotion', 'composition'],
+      ['id', 'start', 'end', 'environment', 'camera', 'cameraMove', 'transition', 'character', 'action', 'emotion', 'composition', 'headline', 'kicker', 'ip', 'ipExpression', 'cameraPath', 'focus', 'footage'],
       path,
     );
 
@@ -504,6 +595,8 @@ function repairScenes(
       action: r.enumValue(item['action'], ACTIONS, SPEC_DEFAULTS.scene.action, `${path}.action`),
       emotion: r.enumValue(item['emotion'], EMOTIONS, SPEC_DEFAULTS.scene.emotion, `${path}.emotion`),
       character,
+      ...repairHeadline(item, path, r, video.width, video.height),
+      ...repairShotMotion(item, path, r, end - start),
     });
   });
 

@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "owner": "ONEINO.澄记",
+  "lockedTheme": "minimal",
+  "enforcement": "override",
+  "note": "个人 IP 一致性锁。所有影片的 style.theme 必须等于 lockedTheme；要换风格，只能在这里修改 lockedTheme 并在 changes 追加一条记录（品牌级变更），不能在单片 spec 里改。enforcement: override=强制改回并警告，reject=直接报错。",
+  "changes": [
+    { "at": "2026-10-13", "theme": "minimal", "reason": "初始默认，待用户选定" }
+  ]
+}

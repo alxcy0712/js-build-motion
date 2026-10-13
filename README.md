@@ -48,6 +48,10 @@ node .skill/scripts/video.mjs my-film render
 
 [素材选择](.skill/references/assets.md)按镜头组合生图、官方矢量和精确代码图形，先核验当前会话的实际生图接口。复杂场景优先评估生成素材，技术结构依据可靠参考验证。图片及所有候选版本、模型、纹理、参考下载、预览、截图、日志与临时文件归入本片目录。
 
+[风格选择](.skill/references/styles.md)：spec 中 `style.theme` 选 minimal / kinetic / terminal / crayon / storybook，默认 minimal。关键帧运镜、元素钻入、素材片段层和文字→时长见[运动拆解与分镜默认](.skill/references/motion-breakdown.md)。
+
+生成物（成片、抽帧、预览、素材缓存）统一写入仓库根目录 `output/`（已 gitignore，不提交；可用 `JBM_OUTPUT_DIR` 改位置）。字体先找 `.skill/engine/assets/fonts/`，再找 `JBM_FONT_DIRS` 和本机系统字体目录（macOS / Linux / Windows），不依赖任何固定机器路径。
+
 [电影化运镜](.skill/references/cinematography.md)把推拉、跟拍、环绕、焦点转移和遮挡接力转成逐镜设计，并用代表性短样片与编码主片复核。three.js 已登记为备选，当前共享运行时为 Skia Canvas 2D；需要三维的本片按[绘制规范](.skill/references/drawing.md)先验证 WebGL、依赖及固定时间导帧，再记录实际采用的路径。
 
 本工作区的质量目标是适合社交媒体发布并达到商业项目的制作水平。[成片质量规范](.skill/references/quality.md) 将其落实为叙事推进、视觉一致性、镜头承接、讲解同步、移动端可读性与完整视听验收。公开来源提供方法线索，具体采用与实测证据保存在项目中。
