@@ -1,0 +1,664 @@
+{
+  "version": "1.2",
+  "tool": "built-in imagegen",
+  "useCase": "identity-preserve",
+  "transparentBackground": true,
+  "references": [
+    {
+      "path": "views/front.png",
+      "role": "front-view edit target",
+      "sha256": "64621edcb047c639c286e56a113a70bbee8c4cc3e33ae34343386f34c1156e44"
+    },
+    {
+      "path": "portrait.png",
+      "role": "close-up identity reference",
+      "sha256": "533e2ecc2450da73cb44f5268f12fe0a3ded0ed0cb7f19d1207fd5eb8f883918"
+    }
+  ],
+  "sharedPrompt": "Use case: identity-preserve.\nAsset type: reconstructed full-body front wardrobe sprite for a personal character, transparent 512 x 1024 portrait canvas (aspect 1:2).\nImage 1 is the authoritative full-body pose and identity edit target: the approved black hoodie character, centered on the canvas. Image 2 is the supporting approved close-up identity, neck proportions and relaxed shoulders. Image 3 shows the already rebuilt outfit in three bust views, and is the exact clothing/neck design to carry into the FRONT full-body sprite.\nPrimary request: replace the black hoodie outfit with the specified reconstructed outfit, matching image 3's FRONT collar, visible neck, relaxed low shoulders, fabric colors, signature and accessories. Preserve the SAME identity, face, hair, eye shape, eye level, warm skin, gentle smile, head size, hands-down stance and youthful anime/chibi proportions of image 1.\nPosture: upright straight relaxed neutral front view, vertical body centerline on the CENTER of the canvas at x=256; level eyes, chin centered above sternum, shoulders relaxed downward and symmetrical, both hands naturally by the sides, feet naturally spaced and level. Preserve image 1's head-large narrow-shoulder body proportion and exact frame coverage. The neck is clearly visible, the same comfortable exposed neck length as the approved hoodie target (about 35-45 pixels on the final 512x1024 canvas). The neckline sits at the base of that neck and clothing accessories hang on the chest below it. Clothes drape over a natural shoulder slope and upright body.\nGeometry: complete fluffy hairstyle through both shoes fully inside canvas, a little breathing space at top and bottom. Keep the face, upper neck, collar, sternum, pelvis and midpoint between both feet vertically aligned on x=256. The left and right shoulder seams have equal height. All clothing details follow this straight anatomical centerline. Match image 1's camera, standing stance and body scale. All FRONT collar/tie/scarf coordinates from the outfit design are normalized for the 512-square bust and must be interpreted proportionally in this full-body view.\nStyle: match polished anime illustration, soft volumetric textile shading and restrained warm rim light within silhouettes. Keep the character's dark fluffy layered hair, rounded warm face, big deep brown eyes and small nose/mouth.\nText (verbatim): small WHITE handwritten \"Alxcy\" (A-l-x-c-y) on the character's own RIGHT chest, VIEWER LEFT. Keep the signature legible and free of accessory overlap.\nBackground: genuine transparent alpha. Clean anti-aliased complete silhouette, alpha-transparent gaps between arms, torso and legs. Exclude labels, decorative symbols, frames, ground shadows and isolated extraction fragments.",
+  "outfits": [
+    {
+      "id": "business",
+      "label": "商务正装",
+      "outfitDesign": "Midnight navy tailored single-breasted blazer, crisp white shirt and muted burgundy slim tie. The shirt collar sits at the BASE of the exposed neck, the tie knot centered below y=425. Neatly fitted blazer lapels open comfortably around the neck, shoulder seams aligned low with the relaxed guide, symmetrical collar and centerline. Navy trousers, warm brown Oxford shoes and a modest silver watch on the left wrist. White Alxcy on own right chest.",
+      "output": "wardrobe/business/front.webp",
+      "sourceSha256": "c1719f28802f9fe3eb188f8f8a57f36ff15b277e84f474f8d2eb710c2b454768"
+    },
+    {
+      "id": "academy",
+      "label": "学院针织",
+      "outfitDesign": "Forest-green V-neck argyle knitted vest with restrained cream diamonds, ivory button-down shirt, slim burgundy/navy striped tie. A comfortable shirt collar at the BASE of the exposed neck, knot centered below y=425. Vest V opening and shirt shoulder seams relax downward, preserving a continuous visible neck under the chin. Warm khaki straight trousers, brown loafers, small brown leather book satchel at own left hip, strap routed away from signature. White Alxcy on own right chest.",
+      "output": "wardrobe/academy/front.webp",
+      "sourceSha256": "787d09960258715eccb58785fd632a4b29ab15b7767cc1f45cb2fe55e9debeb0"
+    },
+    {
+      "id": "street",
+      "label": "街头棒球",
+      "outfitDesign": "Oxblood burgundy varsity jacket with cream leather sleeves, striped ribbed trim and silver snap buttons. Front open at the neckline, ivory LOW crew-neck T-shirt; fine silver necklace hangs below the bare neck, near y=444. Soft relaxed shoulder slope, low flat varsity collar and gentle fabric drape. Washed charcoal straight jeans and chunky cream high-top sneakers. White Alxcy on own right chest.",
+      "output": "wardrobe/street/front.webp",
+      "sourceSha256": "8944d37cd413f23521fb3611cb0f7972fd875810009b89f6f8cdb6b38305f2bd"
+    },
+    {
+      "id": "outdoor",
+      "label": "山系户外",
+      "outfitDesign": "Reconstructed mountain outdoors outfit: olive-green LIGHTWEIGHT open-collar field jacket with tasteful seam panels and chest zip pockets, over a pale sand low crew-neck T-shirt. A compact slate-green backpack with loose comfortable shoulder straps. A small burnt-orange neckerchief tied LOOSELY at the upper chest, below the exposed neck, knot centered at about y=446 in the front cell. The neckerchief, backpack straps and jacket shoulder seams all sit comfortably lower on the torso. The jacket collar is open and folded down, its front edges below the visible neck. White Alxcy fully visible between the jacket center and the right shoulder strap. Design a fresh relaxed fitted silhouette, visually harmonious with the approved hoodie proportions. Full-body continuation: SAND-BEIGE cargo trousers with useful side pockets, warm BROWN hiking boots with small teal lace accents, hands relaxed by the sides.",
+      "output": "wardrobe/outdoor/front.webp",
+      "sourceSha256": "d87ff9d9d5edab43dabfc7c8f0f95083033d983418363f012a9bc6b354e4ddc4"
+    },
+    {
+      "id": "sport",
+      "label": "活力运动",
+      "outfitDesign": "Cobalt-blue lightweight track jacket, slim white sleeve stripes and a light-gray LOW crew-neck athletic T-shirt. Jacket zipper partly open; collar folded open DOWNWARD on each side at the base of a visible neck. Comfortable low shoulder seams, gently relaxed fabric drape and symmetric front posture. Charcoal tapered joggers, blue-white running shoes with small orange accents, compact orange watch on own left wrist. White Alxcy on own right chest.",
+      "output": "wardrobe/sport/front.webp",
+      "sourceSha256": "e9cf89dfa4000ca5402f1a9902cbd337c4a5d4ae1bcc2af36473a5329978142e"
+    },
+    {
+      "id": "summer",
+      "label": "夏日亚麻",
+      "outfitDesign": "Deep-teal open linen short-sleeve overshirt with soft folded-down collar over ivory LOW crew-neck T-shirt. Plenty of visible warm neck, open shirt neckline begins below y=425. Relaxed downward shoulder lines with tidy soft drape, symmetric front collar. Sand cuffed knee-length shorts, brown leather strap sandals, natural-cream canvas tote on own left shoulder hanging at the left hip. White Alxcy on own right chest.",
+      "output": "wardrobe/summer/front.webp",
+      "sourceSha256": "129be3866e599eccc6a57e9b073f2ffb9ab5dc230e75d3ae6c4ee22b4a8e9dab"
+    },
+    {
+      "id": "winter",
+      "label": "冬日围巾",
+      "outfitDesign": "Dark slate-blue soft wool coat with folded-down open lapels, pale-gray low crew-neck cable-knit sweater. Burgundy wool scarf hangs in a LOOSE low loop at the upper chest, its upper edge below y=430 and ends below it; maintain the long visible bare neck as in the guide. Low natural shoulder seams, relaxed coat silhouette. Dark trousers, chestnut ankle boots and brown leather gloves. White Alxcy on own right chest, clearly beside scarf.",
+      "output": "wardrobe/winter/front.webp",
+      "sourceSha256": "70ca4c01fe93c8ec72bb747eb4e707e0d8c8a51c4c224e30290428464318b52a"
+    },
+    {
+      "id": "neo-chinese",
+      "label": "新中式",
+      "outfitDesign": "Deep ink-teal modern Chinese jacket with a SHORT soft Mandarin collar OPEN at the throat, ivory inner low neckline and refined ivory fabric frog fasteners. The low stand collar is about 12 pixels tall and lies at the BASE of the exposed neck, below y=420. Upper frog fastener at y=450, centerline vertical. Comfortable relaxed shoulders, restrained tonal cloud embroidery at cuffs and hem, black tapered trousers and black cloth slip-on shoes, small jade waist pendant. White Alxcy on own right chest.",
+      "output": "wardrobe/neo-chinese/front.webp",
+      "sourceSha256": "56fcb1abdd2e20b9cfe35952e45162d4a7d50666fe51636d2e87896f5d1f158f"
+    },
+    {
+      "id": "workwear",
+      "label": "复古工装",
+      "outfitDesign": "Indigo denim chore jacket with golden topstitching and tidy patch pockets, folded-down low open collar over ivory/navy fine-striped LOW crew-neck T-shirt. Black-and-copper compact headphones hang LOOSELY on the upper chest, padded headband and earcups entirely below y=442, leaving the neck visibly open. Relaxed low shoulders and comfortable denim drape. Tobacco chinos, brown leather belt, warm brown work boots. White Alxcy on own right chest pocket clearly visible.",
+      "output": "wardrobe/workwear/front.webp",
+      "sourceSha256": "2b41ab1181e8a39590d34598bd35385dc22f1f2efac3fc9968dcb9f1c166aede"
+    },
+    {
+      "id": "techwear",
+      "label": "未来科技",
+      "outfitDesign": "Graphite-gray comfortable technical jacket with a LOW open collar at the base of a clearly visible warm neck; dark low crew-neck inner tee. Refined asymmetric front panel with slender cyan piping and small silver fasteners, symmetrical relaxed shoulder HEIGHT despite the fabric panels. Tiny cyan communications clip on own LEFT shoulder, narrow silver wrist cuff; black tapered cargo trousers and black-silver high-top boots with subtle cyan sole stripe. White Alxcy on own right chest.",
+      "output": "wardrobe/techwear/front.webp",
+      "sourceSha256": "d000fa27bea846f82f63ec372566c457f51b4caf1a2a0e62b9e1cc5a65fb709d"
+    }
+  ],
+  "storage": {
+    "fullBody": {
+      "format": "webp",
+      "width": 512,
+      "height": 1024,
+      "quality": 88,
+      "alphaQuality": 90
+    },
+    "upperBody": {
+      "format": "webp",
+      "width": 1536,
+      "height": 512,
+      "quality": 90,
+      "alphaQuality": 90
+    },
+    "exportFormat": "png"
+  },
+  "upperBody": {
+    "sharedPrompt": "Use case: identity-preserve.\nAsset type: exact three-view neck and upper-torso clothing sprite atlas, a replacement clothing layer for an existing animated personal character.\nImage 1 is the AUTHORITATIVE pose and proportion guide: three 512-square busts wearing the approved black hoodie, ordered FRONT, facing viewer LEFT 45 degrees, facing viewer RIGHT 45 degrees. Image 2 is the approved front NECK/BODY layer, showing how much exposed neck and how gently the shoulders slope.\nPrimary request: reconstruct the neck and clothing of the specified outfit, following the approved guide's natural upright posture. Output ONLY the warm skin neck and the clothing/shoulders, with the heads removed for reuse beneath the existing shared head sprites.\nGeometry is crucial: preserve the guide's canvas scale and body positions EXACTLY. The output has 3 equal SQUARE cells in one horizontal row, total 1536 x 512 (aspect 3:1). Do not zoom in or fit each torso to its bounding box. Keep each torso in the bottom third of its 512-square cell, continuing through the bottom edge.\nFRONT: straight vertical centerline at x=256, symmetrical shoulder height and relaxed gently downward shoulder slopes. Skin neck is centered, about x=214..298, starting behind the chin at y=350 and remaining visibly exposed through y=425. The chin of the separate shared head ends at y=375; show a continuous warm neck below it, 35-50 pixels in visible vertical length. The front T-shirt collar, open shirt neckline, tie knot or neck accessory begins at about y=420-435. Front shoulder seams lie around y=430, gently descending toward the outer arms. Keep the neck as long as the approved hoodie reference. Preserve head-large, narrow-shoulder proportions.\nLEFT45 and RIGHT45: torso turns naturally WITH the corresponding head in Image 1, preserving that view's exact neck axis, shoulder perspective and guide silhouette. A clearly visible warm neck runs from under the existing angled jaw to the low open neckline. Preserve upright neutral posture; lower relaxed shoulders support the neck. Front collars sit below y=420 and angled collars sit at the equivalent perspective position. The rear collar may rise behind the neck as it does in the approved hoodie, while the anterior neck remains visibly open.\nEvery cell is clean transparent above y=338. Include complete neck skin continuing behind the shared chin. Exclude the head, hair, ears, face, chin, labels, panel dividers, floating fragments and cast shadows. Maintain genuine alpha transparency and clean anti-aliased silhouettes.\nStyle: match the approved character's polished detailed anime illustration, delicate outlines, soft volumetric textile shading, warm peach skin and restrained warm edge light. Clothing has comfortable soft fabric drape. Keep shoulders relaxed and level in the front view; torso centerline upright in every view.\nText: small WHITE handwritten \"Alxcy\" (A-l-x-c-y) on the character's own RIGHT chest, front view on viewer LEFT, attached to the same anatomical right chest panel in both angled perspectives, visibly below the neckline.",
+    "layoutGuide": {
+      "width": 1536,
+      "height": 512,
+      "method": "drawWardrobePortrait，基础连帽衫、平静表情、关闭眨眼与呼吸，按 front/left45/right45 合成",
+      "inputs": [
+        {
+          "path": "rig/head.png",
+          "sha256": "99e46884590647194e00462d41148cec8c8cbd7f8eeaba1034249f6dc376f9b4"
+        },
+        {
+          "path": "rig/body.png",
+          "sha256": "5105eb400d55f91e76b18e4c22c1ac587ce8409fc2332008cf56a32d225bc18c"
+        },
+        {
+          "path": "rig/left45-expressions.png",
+          "sha256": "7dd3b2f4d3b063bdb76d5f47583a6998e0e34b8e67c541334e64bf75e8562351"
+        },
+        {
+          "path": "rig/right45-expressions.png",
+          "sha256": "106c5838140dffc7dc1bff3e3334bf0d6eb63d2e5dce2cfebee338029375b8b1"
+        },
+        {
+          "path": "puppet.mjs",
+          "sha256": "6835abfc5cdaf9fef39edc38db6389abf50c33f0f2f83c9dee5e5eb72d8d3605"
+        },
+        {
+          "path": "rig.json",
+          "sha256": "2662379bc3f87df1d24720bdaf43d7759776a51f2693f8e90f75065701b274d6"
+        }
+      ],
+      "sha256": "24444629760b4e436866fb9892729c9e3df17066d1e10a2d828a97b7ebc5308e"
+    },
+    "outfits": [
+      {
+        "id": "business",
+        "outfitDesign": "Midnight navy tailored single-breasted blazer, crisp white shirt and muted burgundy slim tie. The shirt collar sits at the BASE of the exposed neck, the tie knot centered below y=425. Neatly fitted blazer lapels open comfortably around the neck, shoulder seams aligned low with the relaxed guide, symmetrical collar and centerline. Navy trousers, warm brown Oxford shoes and a modest silver watch on the left wrist. White Alxcy on own right chest.",
+        "output": "wardrobe/business/upper-body.webp",
+        "sourceSha256": "dffa3c00468c58bb71a2f3dbcf5915521abd379d682f5b25456403859f24e95d",
+        "normalization": {
+          "id": "business",
+          "sourceSize": [
+            2172,
+            724
+          ],
+          "transforms": [
+            {
+              "scale": 0.6629834254143646,
+              "dx": 16,
+              "dy": 87.42541436464091,
+              "sourceTop": 387
+            },
+            {
+              "scale": 0.6629834254143646,
+              "dx": 16,
+              "dy": 92.03314917127074,
+              "sourceTop": 371
+            },
+            {
+              "scale": 0.6629834254143646,
+              "dx": 16,
+              "dy": 90.707182320442,
+              "sourceTop": 373
+            }
+          ]
+        }
+      },
+      {
+        "id": "academy",
+        "outfitDesign": "Forest-green V-neck argyle knitted vest with restrained cream diamonds, ivory button-down shirt, slim burgundy/navy striped tie. A comfortable shirt collar at the BASE of the exposed neck, knot centered below y=425. Vest V opening and shirt shoulder seams relax downward, preserving a continuous visible neck under the chin. Warm khaki straight trousers, brown loafers, small brown leather book satchel at own left hip, strap routed away from signature. White Alxcy on own right chest.",
+        "output": "wardrobe/academy/upper-body.webp",
+        "sourceSha256": "acbeaefad58422665b13d5cfd04d609c56bc88ff82da3ac0024e781fb54738cc",
+        "normalization": {
+          "id": "academy",
+          "sourceSize": [
+            2172,
+            724
+          ],
+          "transforms": [
+            {
+              "scale": 0.6629834254143646,
+              "dx": 16,
+              "dy": 93.39226519337018,
+              "sourceTop": 378
+            },
+            {
+              "scale": 0.6629834254143646,
+              "dx": 16,
+              "dy": 101.31491712707182,
+              "sourceTop": 357
+            },
+            {
+              "scale": 0.6629834254143646,
+              "dx": 16,
+              "dy": 101.31491712707182,
+              "sourceTop": 357
+            }
+          ]
+        }
+      },
+      {
+        "id": "street",
+        "outfitDesign": "Oxblood burgundy varsity jacket with cream leather sleeves, striped ribbed trim and silver snap buttons. Front open at the neckline, ivory LOW crew-neck T-shirt; fine silver necklace hangs below the bare neck, near y=444. Soft relaxed shoulder slope, low flat varsity collar and gentle fabric drape. Washed charcoal straight jeans and chunky cream high-top sneakers. White Alxcy on own right chest.",
+        "output": "wardrobe/street/upper-body.webp",
+        "sourceSha256": "56e0991abddef66a1eb65a2ae3583033a0a2d967b228a420b148b4d0d378dd05",
+        "normalization": {
+          "id": "street",
+          "sourceSize": [
+            2172,
+            724
+          ],
+          "transforms": [
+            {
+              "scale": 0.6629834254143646,
+              "dx": 16,
+              "dy": 92.06629834254144,
+              "sourceTop": 380
+            },
+            {
+              "scale": 0.6629834254143646,
+              "dx": 16,
+              "dy": 111.92265193370167,
+              "sourceTop": 341
+            },
+            {
+              "scale": 0.6629834254143646,
+              "dx": 16,
+              "dy": 111.25966850828729,
+              "sourceTop": 342
+            }
+          ]
+        }
+      },
+      {
+        "id": "outdoor",
+        "outfitDesign": "Reconstructed mountain outdoors outfit: olive-green LIGHTWEIGHT open-collar field jacket with tasteful seam panels and chest zip pockets, over a pale sand low crew-neck T-shirt. A compact slate-green backpack with loose comfortable shoulder straps. A small burnt-orange neckerchief tied LOOSELY at the upper chest, below the exposed neck, knot centered at about y=446 in the front cell. The neckerchief, backpack straps and jacket shoulder seams all sit comfortably lower on the torso. The jacket collar is open and folded down, its front edges below the visible neck. White Alxcy fully visible between the jacket center and the right shoulder strap. Design a fresh relaxed fitted silhouette, visually harmonious with the approved hoodie proportions.",
+        "output": "wardrobe/outdoor/upper-body.webp",
+        "sourceSha256": "8c10736d2773fa31803b2595ca5789c49e42055cc22127f1eb1a30d1e02ab59b",
+        "normalization": {
+          "id": "outdoor",
+          "sourceSize": [
+            2172,
+            724
+          ],
+          "transforms": [
+            {
+              "scale": 0.6629834254143646,
+              "dx": 16,
+              "dy": 73.50276243093924,
+              "sourceTop": 408
+            },
+            {
+              "scale": 0.6629834254143646,
+              "dx": 16,
+              "dy": 76.12154696132598,
+              "sourceTop": 395
+            },
+            {
+              "scale": 0.6629834254143646,
+              "dx": 16,
+              "dy": 76.12154696132598,
+              "sourceTop": 395
+            }
+          ]
+        }
+      },
+      {
+        "id": "sport",
+        "outfitDesign": "Cobalt-blue lightweight track jacket, slim white sleeve stripes and a light-gray LOW crew-neck athletic T-shirt. Jacket zipper partly open; collar folded open DOWNWARD on each side at the base of a visible neck. Comfortable low shoulder seams, gently relaxed fabric drape and symmetric front posture. Charcoal tapered joggers, blue-white running shoes with small orange accents, compact orange watch on own left wrist. White Alxcy on own right chest.",
+        "output": "wardrobe/sport/upper-body.webp",
+        "sourceSha256": "fc9995ebd48a92bf3bcb6716e251df89e3afd951821bbe2b5e9360f7c228a871",
+        "normalization": {
+          "id": "sport",
+          "sourceSize": [
+            2172,
+            724
+          ],
+          "transforms": [
+            {
+              "scale": 0.6629834254143646,
+              "dx": 16,
+              "dy": 52.950276243093924,
+              "sourceTop": 439
+            },
+            {
+              "scale": 0.6629834254143646,
+              "dx": 16,
+              "dy": 59.54696132596689,
+              "sourceTop": 420
+            },
+            {
+              "scale": 0.6629834254143646,
+              "dx": 16,
+              "dy": 58.88397790055251,
+              "sourceTop": 421
+            }
+          ]
+        }
+      },
+      {
+        "id": "summer",
+        "outfitDesign": "Deep-teal open linen short-sleeve overshirt with soft folded-down collar over ivory LOW crew-neck T-shirt. Plenty of visible warm neck, open shirt neckline begins below y=425. Relaxed downward shoulder lines with tidy soft drape, symmetric front collar. Sand cuffed knee-length shorts, brown leather strap sandals, natural-cream canvas tote on own left shoulder hanging at the left hip. White Alxcy on own right chest.",
+        "output": "wardrobe/summer/upper-body.webp",
+        "sourceSha256": "326592f166e00468f289ba7567342b4444054b172c237de81778bd0b7c248be7",
+        "normalization": {
+          "id": "summer",
+          "sourceSize": [
+            2172,
+            724
+          ],
+          "transforms": [
+            {
+              "scale": 0.6629834254143646,
+              "dx": 16,
+              "dy": 103.33701657458565,
+              "sourceTop": 363
+            },
+            {
+              "scale": 0.6629834254143646,
+              "dx": 16,
+              "dy": 115.2375690607735,
+              "sourceTop": 336
+            },
+            {
+              "scale": 0.6629834254143646,
+              "dx": 16,
+              "dy": 117.22651933701658,
+              "sourceTop": 333
+            }
+          ]
+        }
+      },
+      {
+        "id": "winter",
+        "outfitDesign": "Dark slate-blue soft wool coat with folded-down open lapels, pale-gray low crew-neck cable-knit sweater. Burgundy wool scarf hangs in a LOOSE low loop at the upper chest, its upper edge below y=430 and ends below it; maintain the long visible bare neck as in the guide. Low natural shoulder seams, relaxed coat silhouette. Dark trousers, chestnut ankle boots and brown leather gloves. White Alxcy on own right chest, clearly beside scarf.",
+        "output": "wardrobe/winter/upper-body.webp",
+        "sourceSha256": "c3d4cb5a105c52f7638abc86448348ce4b2242a806a1c709146464986e489518",
+        "normalization": {
+          "id": "winter",
+          "sourceSize": [
+            2172,
+            724
+          ],
+          "transforms": [
+            {
+              "scale": 0.6629834254143646,
+              "dx": 16,
+              "dy": 102.01104972375691,
+              "sourceTop": 365
+            },
+            {
+              "scale": 0.6629834254143646,
+              "dx": 16,
+              "dy": 111.25966850828729,
+              "sourceTop": 342
+            },
+            {
+              "scale": 0.6629834254143646,
+              "dx": 16,
+              "dy": 112.58563535911603,
+              "sourceTop": 340
+            }
+          ]
+        }
+      },
+      {
+        "id": "neo-chinese",
+        "outfitDesign": "Deep ink-teal modern Chinese jacket with a SHORT soft Mandarin collar OPEN at the throat, ivory inner low neckline and refined ivory fabric frog fasteners. The low stand collar is about 12 pixels tall and lies at the BASE of the exposed neck, below y=420. Upper frog fastener at y=450, centerline vertical. Comfortable relaxed shoulders, restrained tonal cloud embroidery at cuffs and hem, black tapered trousers and black cloth slip-on shoes, small jade waist pendant. White Alxcy on own right chest.",
+        "output": "wardrobe/neo-chinese/upper-body.webp",
+        "sourceSha256": "c43a4f650f05f4b15ec5b11ad10c89c5a2a01c4b41c15690c09944b7f5b564f7",
+        "normalization": {
+          "id": "neo-chinese",
+          "sourceSize": [
+            2172,
+            724
+          ],
+          "transforms": [
+            {
+              "scale": 0.6629834254143646,
+              "dx": 16,
+              "dy": 69.52486187845307,
+              "sourceTop": 414
+            },
+            {
+              "scale": 0.6629834254143646,
+              "dx": 16,
+              "dy": 72.80662983425418,
+              "sourceTop": 400
+            },
+            {
+              "scale": 0.6629834254143646,
+              "dx": 16,
+              "dy": 71.48066298342542,
+              "sourceTop": 402
+            }
+          ]
+        }
+      },
+      {
+        "id": "workwear",
+        "outfitDesign": "Indigo denim chore jacket with golden topstitching and tidy patch pockets, folded-down low open collar over ivory/navy fine-striped LOW crew-neck T-shirt. Black-and-copper compact headphones hang LOOSELY on the upper chest, padded headband and earcups entirely below y=442, leaving the neck visibly open. Relaxed low shoulders and comfortable denim drape. Tobacco chinos, brown leather belt, warm brown work boots. White Alxcy on own right chest pocket clearly visible.",
+        "output": "wardrobe/workwear/upper-body.webp",
+        "sourceSha256": "408726c06f3d459dc19f3a7c36b612c152eaabfad48841084e3761b2643f6f5e",
+        "normalization": {
+          "id": "workwear",
+          "sourceSize": [
+            2172,
+            724
+          ],
+          "transforms": [
+            {
+              "scale": 0.6629834254143646,
+              "dx": 16,
+              "dy": 102.6740331491713,
+              "sourceTop": 364
+            },
+            {
+              "scale": 0.6629834254143646,
+              "dx": 16,
+              "dy": 112.58563535911603,
+              "sourceTop": 340
+            },
+            {
+              "scale": 0.6629834254143646,
+              "dx": 16,
+              "dy": 116.56353591160223,
+              "sourceTop": 334
+            }
+          ]
+        }
+      },
+      {
+        "id": "techwear",
+        "outfitDesign": "Graphite-gray comfortable technical jacket with a LOW open collar at the base of a clearly visible warm neck; dark low crew-neck inner tee. Refined asymmetric front panel with slender cyan piping and small silver fasteners, symmetrical relaxed shoulder HEIGHT despite the fabric panels. Tiny cyan communications clip on own LEFT shoulder, narrow silver wrist cuff; black tapered cargo trousers and black-silver high-top boots with subtle cyan sole stripe. White Alxcy on own right chest.",
+        "output": "wardrobe/techwear/upper-body.webp",
+        "sourceSha256": "a0ed87043e54bb321f26214c585b72e9ece7feeafc0ee4e93524269b10085736",
+        "normalization": {
+          "id": "techwear",
+          "sourceSize": [
+            2172,
+            724
+          ],
+          "transforms": [
+            {
+              "scale": 0.6629834254143646,
+              "dx": 16,
+              "dy": 76.81767955801104,
+              "sourceTop": 403
+            },
+            {
+              "scale": 0.6629834254143646,
+              "dx": 16,
+              "dy": 88.71823204419891,
+              "sourceTop": 376
+            },
+            {
+              "scale": 0.6629834254143646,
+              "dx": 16,
+              "dy": 89.38121546961327,
+              "sourceTop": 375
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "reconstruction": {
+    "date": "2026-10-12",
+    "request": "怎么显得像是耸肩似的，也像是头往前倾，而且都有一点点歪。我觉得是没有脖子，只有基础黑色连帽视觉上很协调。除了基础黑色连帽，重构下所有的衣服。",
+    "baseline": "基础黑色连帽衫",
+    "changes": [
+      "颈部连续露出，领口与配饰下移",
+      "肩线自然放松，正面保持竖直中轴",
+      "服装使用等比缩放与平移对齐"
+    ],
+    "fullPoseGuide": {
+      "input": "views/front.png",
+      "width": 512,
+      "height": 1024,
+      "drawRect": {
+        "x": -72,
+        "y": 0,
+        "width": 512,
+        "height": 1024
+      },
+      "sha256": "017059be1b506def6d935c08e3043cb58594333746ee34bc763b650dd0baba86"
+    }
+  },
+  "revisions": [
+    {
+      "id": "academy",
+      "useCase": "precise-object-edit",
+      "inputSha256": "db9db87d521b1add8e646369db87f69528a1e9f420cfceae0c7b33be27c018f7",
+      "prompt": "Use case: precise-object-edit.\nImage 1 is the edit target: completed academy clothing-and-neck three-view atlas, one row of three square panels. Image 2 is the supporting full-body outfit reference.\nPrimary request: ADD the small brown leather book-satchel shoulder strap from image 2 to all THREE torso panels in image 1. It hangs from the character's OWN LEFT shoulder, on VIEWER RIGHT in the FRONT panel, proceeding vertically down that side of the upper chest and continuing through the bottom edge. Each angled panel shows this same own-left strap with correct perspective. The strap is slim, dark warm brown leather with small brass buckle details, precisely like image 2. The white Alxcy signature is on the opposite own-right chest and remains fully visible.\nPreserve EXACTLY every existing neck skin pixel, long exposed neck, low ivory shirt collar, centered striped tie, argyle vest, shoulder height, relaxed slope, front vertical centerline, perspective, shading, original frame scale and panel placement. All three panels retain ONLY neck and clothing, all space above the current silhouettes stays transparent. Keep dimensions and all body coordinates identical to image 1. Make clean genuine alpha transparency and exclude heads, dividers, labels and floating fragments.",
+      "output": "wardrobe/academy/upper-body.webp"
+    },
+    {
+      "id": "summer",
+      "useCase": "background-extraction",
+      "inputSha256": "57453c7ecea351229ae248e244d407340782e8bbc33e6c718ec7d4a8d326c356",
+      "prompt": "Use case: background-extraction.\nImage 1 is the edit target: completed summer linen wardrobe full-body sprite.\nPrimary request: clean the alpha cutout. Remove the isolated YELLOW, RED and WHITE background pixels between the bare calves, along the outside of the arms, near the bag and between the shoes. Make ALL empty spaces genuinely alpha transparent. Clean any yellow/red/white extraction fringe just outside the silhouette. Preserve subtle warm lighting INSIDE the hair and cloth.\nPreserve EXACTLY the completed character's face, fluffy dark hair, level eyes and smile, natural upright centered posture, visible long neck, low teal folded shirt collar, ivory T-shirt, cream canvas tote, sand cuffed shorts, bare knees and calves, fingers and toes, brown sandals and white handwritten Alxcy on own right chest. Preserve canvas dimensions, framing, every clothing shape and material detail. Keep the entire figure in the same positions, with complete clean anti-aliased hair tips and fingers. Transparent background, no added objects, text or shadows.",
+      "output": "wardrobe/summer/front.webp"
+    }
+  ],
+  "history": [
+    {
+      "version": "1.1",
+      "sharedPrompt": "Use case: identity-preserve.\nAsset type: reusable personal-character wardrobe sprite, transparent full-body PNG.\nInput image 1 is the edit target and authoritative front-view character. Input image 2 is a supporting close-up identity reference.\nPrimary request: dress EXACTLY this character in the specified new outfit. Preserve the same face, large deep brown eyes, fluffy layered dark hair with warm rim highlights, rounded warm skin, youthful chibi/anime proportions, narrow shoulders, hairstyle silhouette and gentle closed-mouth smile. Preserve the relaxed straight front-facing standing pose, arms naturally beside the body, open relaxed hands, horizontal eyes and level head.\nStyle/medium: match the existing polished anime illustration, delicate linework, softly shaded fabric and warm amber edge light. The clothing is drawn naturally onto this character, with convincing seams, collars, folds and accessories.\nComposition/framing: one complete character only, centered full body from the highest hair tip to the shoe soles, clear transparent padding on all sides. Tall portrait canvas, preferred 1024 x 2048. Keep the relative head-to-body size from input 1. Every part of the outfit and accessories belongs to this one character.\nText (verbatim): \"Alxcy\", A-l-x-c-y, small white rounded handwritten signature on the CHARACTER'S OWN RIGHT chest, which is on the VIEWER'S LEFT. Keep it clearly legible and unobstructed. This is the sole lettering.\nBackdrop: genuinely transparent alpha background with clean edges.\nConstraints: keep all identity features and the front-facing neutral pose. Change garments, shoes and the explicitly named accessories only. No hat, no sunglasses, no scenery, no floor, no drop shadow, no labels, no panel layout, no other logos.",
+      "upperBodySharedPrompt": "Use case: identity-preserve.\nAsset type: three-view clothing-and-neck sprite atlas for a reusable animated personal character. This is an exact compositing layer, designed to be placed UNDER the character's existing head and facial expression sprites.\nImage 1 is the coordinate/layout guide: three equal square panels, 512 x 512 each. The LEFT panel is the existing front neck/clothing-only layer. The CENTER panel shows the reference character facing toward VIEWER LEFT at 45 degrees. The RIGHT panel shows the reference character facing toward VIEWER RIGHT at 45 degrees. The heads in the center and right guide panels indicate the neck and shoulder alignment and must be completely removed from the output. Image 2 is the full-body wardrobe outfit reference: transfer its garments, collar, accessories and texture precisely.\nPrimary request: produce the NEW OUTFIT's clothing-and-neck-only layer in all three orientations, in the exact guide positions and shoulder scale. Every panel contains only the neck and upper torso/shoulders wearing the specified outfit. Preserve the warm neck skin from the guide and fill in the complete rear neckline so the existing head can rotate over it.\nLayout: exact 1536 x 512 canvas, a single horizontal row of three equal 512 x 512 cells. Order: FRONT, LEFT45, RIGHT45. In each cell the neck begins at approximately y=342, shoulders and clothing occupy the bottom third, and the hem continues to the bottom edge. Front shoulders span x=22 to 486 near the bottom. Left45 and right45 follow their own original guide silhouettes and perspective. ALL space above y=330 remains genuinely transparent. The entire head, face, chin, ears, hair and any expression symbol are excluded: these are supplied by existing separate head sprites. Fully transparent background in every cell. There are no panel dividers, captions, letters or items outside the clothing silhouette.\nStyle: precise matching polished anime fabric illustration with delicate linework, soft rich material shading and subtle warm rim light inside the edges.\nText (verbatim): small WHITE handwritten \"Alxcy\" (A-l-x-c-y) on the CHARACTER'S OWN RIGHT chest in every view. The front view has it on VIEWER LEFT. The side views keep it attached to that same anatomical chest panel with appropriate perspective, matching the chest placement in the guide.\nConstraints: change only the outfit, preserve neck/shoulder coordinates and skin, the camera and panel layout. Keep collars/scarf/headphones entirely below the chin clearance. Clean alpha with no isolated colored pixels. The three drawings are independent perspective renderings of the same outfit.",
+      "outfitDesigns": [
+        {
+          "id": "business",
+          "outfitDesign": "A tailored midnight navy two-piece suit with a single-breasted blazer, crisp white Oxford shirt, muted burgundy slim necktie, matching navy trousers and warm brown leather Oxford shoes. A modest silver wristwatch on the character's left wrist. White Alxcy signature on the outer blazer at the character's own right chest. Professional but approachable, neat softly shaded wool."
+        },
+        {
+          "id": "academy",
+          "outfitDesign": "Classic collegiate style: a forest-green V-neck knitted argyle sweater vest with restrained cream diamond motifs over an ivory button-down shirt, a narrow burgundy-and-navy striped tie, warm khaki straight trousers and brown leather loafers. A compact brown leather book satchel hanging at the character's left hip (viewer right), its narrow strap routed away from the white Alxcy signature on the character's right chest. Show the vest knit weave, shirt cuffs and tasteful academic warmth."
+        },
+        {
+          "id": "street",
+          "outfitDesign": "Contemporary streetwear: an oxblood burgundy varsity jacket with cream leather sleeves, ribbed striped collar and cuffs and silver snap buttons, an ivory crew-neck T-shirt, relaxed washed charcoal jeans and chunky ivory high-top sneakers. A subtle fine silver necklace visible at the neckline. White handwritten Alxcy on the character's own right chest of the varsity jacket; clean designer streetwear with soft volume and layered fabric."
+        },
+        {
+          "id": "outdoor",
+          "outfitDesign": "Practical mountain outdoors style: olive-green lightweight field jacket with tasteful seam panels and zippered pockets, a small burnt-orange neckerchief, sand beige cargo trousers and brown hiking boots with small teal lace accents. A compact slate-green backpack worn on both shoulders, visible straps and small bag edges behind the torso. Keep the white Alxcy signature fully visible on the character's own right chest between the jacket center and the shoulder strap. Realistic fabric folds within the source anime style."
+        },
+        {
+          "id": "sport",
+          "outfitDesign": "Energetic athletic outfit: a cobalt-blue zip-front track jacket with narrow white sleeve stripes, light-gray crew-neck athletic T-shirt, charcoal tapered joggers and blue-and-white running sneakers with small orange sole accents. A compact orange sports watch on the character's left wrist. The character keeps the exact relaxed standing pose. White Alxcy signature on own right chest of the jacket, visible above the zipper seam. Technical knitted fabric, cheerful sporting color."
+        },
+        {
+          "id": "summer",
+          "outfitDesign": "Airy summer casual style: an open deep-teal linen short-sleeve shirt over an ivory T-shirt, sand-beige cuffed knee-length shorts and brown leather strap sandals. A modest natural-cream canvas tote suspended from the character's left shoulder at the left hip (viewer right). Keep relaxed hands naturally by the sides and keep the white Alxcy signature on the own right chest of the deep teal shirt unobstructed. Soft linen texture and light summer layering."
+        },
+        {
+          "id": "winter",
+          "outfitDesign": "Cozy winter city style: a dark slate-blue wool overcoat reaching mid-thigh, pale-gray cable-knit sweater, neatly wrapped burgundy scarf with its two short ends hanging near the center, dark tapered trousers and chestnut-brown ankle boots. Soft brown leather gloves worn on both hands. Preserve fluffy hair uncovered. White Alxcy signature on the coat at the character's own right chest, kept clear of the scarf. Rich wool, knitted texture and gentle warm rim lighting."
+        },
+        {
+          "id": "neo-chinese",
+          "outfitDesign": "Modern Chinese-inspired everyday outfit: a deep ink-teal stand-collar jacket with ivory fabric frog closures, discreet tonal cloud embroidery around the lower hem and cuffs, an ivory inner layer, clean black tapered trousers and black cloth slip-on shoes with ivory soles. A small tasteful jade pendant attached beside the waist, away from the chest. Preserve the character's everyday youthful identity. Small white Alxcy signature on the outer jacket's own right chest. Refined contemporary tailoring, elegant restrained cultural details."
+        },
+        {
+          "id": "workwear",
+          "outfitDesign": "Creative vintage workwear: a slightly worn indigo denim chore jacket with neat patch pockets and golden topstitching, an ivory-and-dark-navy fine-striped T-shirt, tobacco-brown straight chinos, a brown leather belt and sturdy warm brown work boots. Compact black-and-copper over-ear headphones resting around the neck without covering the chin or white Alxcy signature. The signature is embroidered on the jacket's own right chest pocket (viewer left). Polished illustrative denim grain and warm utilitarian details."
+        },
+        {
+          "id": "techwear",
+          "outfitDesign": "Restrained futuristic techwear: a graphite-gray asymmetric technical jacket with a high collar below the chin, a few thin cyan piping lines and small silver fasteners, matte-black tapered cargo trousers and black-and-silver high-top boots with a faint cyan sole stripe. One small cyan smart earpiece at the character's left ear and a narrow brushed-silver wrist cuff. Keep the face fully open, eyes unobstructed and hairstyle uncovered. White Alxcy signature clearly on the character's own right chest. Refined fabric-based futuristic style, source illustration shading."
+        }
+      ],
+      "assets": [
+        {
+          "path": "wardrobe/academy/front.webp",
+          "bytes": 78514,
+          "sha256": "95b93798d59ed14627c4f3ad986c02e0df43c0127408e7443a3c66e734ced9f5"
+        },
+        {
+          "path": "wardrobe/academy/upper-body.webp",
+          "bytes": 65610,
+          "sha256": "8253ba9f0719002e305ae5ae74967bdfe469b54bacaca3251f718617ee9eba01"
+        },
+        {
+          "path": "wardrobe/business/front.webp",
+          "bytes": 59308,
+          "sha256": "afbb7ba0e1c4e1812525bd9f465e35f53fcbb0887f0f712a1380b7ea30b384fa"
+        },
+        {
+          "path": "wardrobe/business/upper-body.webp",
+          "bytes": 43560,
+          "sha256": "37d01dbd2ddf3d2bea3fe7f0fecf29132fdd85d58e9b14ab003cd4a00c24ec26"
+        },
+        {
+          "path": "wardrobe/neo-chinese/front.webp",
+          "bytes": 68300,
+          "sha256": "2f086d06ac92c35b5403f06c917f06090e460d35a291d32301744c0b1fa6d593"
+        },
+        {
+          "path": "wardrobe/neo-chinese/upper-body.webp",
+          "bytes": 52230,
+          "sha256": "c47f7ac62117f4ca4dc46c6d76af68f8ba238f78b23323c64704ff94d5287a5c"
+        },
+        {
+          "path": "wardrobe/outdoor/front.webp",
+          "bytes": 77376,
+          "sha256": "dcc9bbbf159e26b96a19aa82265efa72b777055a9c7ed50c441ae00104e03fc4"
+        },
+        {
+          "path": "wardrobe/outdoor/upper-body.webp",
+          "bytes": 60386,
+          "sha256": "d9e2af7050b0c56c866612211e6a32a8ac2ae2d5c0cc5ae02a0c5c5be56f5744"
+        },
+        {
+          "path": "wardrobe/sport/front.webp",
+          "bytes": 75162,
+          "sha256": "e50a2f58dc89f44615e1655d275a8240d4ec0eed78f36d851dfa2df92cb206dd"
+        },
+        {
+          "path": "wardrobe/sport/upper-body.webp",
+          "bytes": 60504,
+          "sha256": "3e8779fb61b367876faeb5a4815bfc57e716a8751284f1e4d18dcc45474d8f94"
+        },
+        {
+          "path": "wardrobe/street/front.webp",
+          "bytes": 78146,
+          "sha256": "bf2256c0cde9c4d7bb5318cebc932b7ac1f961c5907e0fb1e7f35a6e973dc52a"
+        },
+        {
+          "path": "wardrobe/street/upper-body.webp",
+          "bytes": 52252,
+          "sha256": "6ce1684dca1e571ce3969d2213fe247dbb487297d179901e48eb5d876b5db88c"
+        },
+        {
+          "path": "wardrobe/summer/front.webp",
+          "bytes": 74876,
+          "sha256": "042e121fd06284b5d4b3eab9b3f7d50b8c66d65f048265515d2a25908c17cbac"
+        },
+        {
+          "path": "wardrobe/summer/upper-body.webp",
+          "bytes": 52520,
+          "sha256": "f9cf5b737ee019f98894a3ef40e271507d40775bd6651dd03febbf1b2b51150c"
+        },
+        {
+          "path": "wardrobe/techwear/front.webp",
+          "bytes": 69504,
+          "sha256": "3a97c5ba42acaa86e68a64b5db17ccb3620f0d1ee562f744f2a4b8522906fe7c"
+        },
+        {
+          "path": "wardrobe/techwear/upper-body.webp",
+          "bytes": 59508,
+          "sha256": "261d66c6249496c6076ab61f547befec1a05f6767acca156333903a99f2e7025"
+        },
+        {
+          "path": "wardrobe/winter/front.webp",
+          "bytes": 67060,
+          "sha256": "64bf59a6d019b884bc9f19ce0b7103053e6daf230476597d5dea1ad7cd683879"
+        },
+        {
+          "path": "wardrobe/winter/upper-body.webp",
+          "bytes": 55504,
+          "sha256": "3581174951e5044eb637ec61b541c8c124eb83f4062255b8916396514c33b8b9"
+        },
+        {
+          "path": "wardrobe/workwear/front.webp",
+          "bytes": 82952,
+          "sha256": "6a6bb3ee88bb0d7a7715b7e0e8b6269e38d6014ef43035962ad538791d768393"
+        },
+        {
+          "path": "wardrobe/workwear/upper-body.webp",
+          "bytes": 73314,
+          "sha256": "e8cdd085faad449f8169b7434b83d14db275dc4436f4e54fd478da11e2566d7d"
+        }
+      ]
+    }
+  ]
+}

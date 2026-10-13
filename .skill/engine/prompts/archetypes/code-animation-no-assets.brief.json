@@ -1,0 +1,19 @@
+{
+  "version": "0.1",
+  "archetype": "code-animation-no-assets",
+  "intent": "用代码独立绘制有吸引力、表达清楚的动画，视觉风格按内容与受众选择。",
+  "audience": "希望快速理解内容的观众",
+  "deliverable": { "duration": 45, "aspect": "9:16", "fps": 24, "captions": "inside_frame" },
+  "assets": [],
+  "tools": {
+    "allowed": ["skia-canvas", "edge-tts", "procedural-bgm", "procedural-sfx", "ffmpeg", "ffprobe"],
+    "forbidden": ["seedance", "kling", "minimax-h3", "midjourney", "comfyui", "nano-banana", "whisper"]
+  },
+  "claims": { "humanRounds": 1, "pureCode": true, "zeroExternalAssets": true, "humanRevision": false },
+  "acceptance": [
+    "内容与观看重点清楚，主体及动作连续",
+    "字幕可读，画面与音轨同步",
+    "MP4通过编码与完整播放检查"
+  ],
+  "notes": "镜头数量、风格与预览长度按本片需要设计。内容素材、TTS、音乐服务及人工参与按实际登记；声明以最终制作事实为准。"
+}

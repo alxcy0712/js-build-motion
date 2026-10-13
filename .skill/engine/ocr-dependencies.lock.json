@@ -1,0 +1,2014 @@
+{
+  "version": "0.1",
+  "kind": "ocr-dependencies",
+  "platform": "darwin",
+  "arch": "arm64",
+  "tools": {
+    "ffmpeg": {
+      "executable": "/opt/homebrew/Cellar/ffmpeg/7.1_4/bin/ffmpeg",
+      "version": "ffmpeg version 7.1 Copyright (c) 2000-2024 the FFmpeg developers",
+      "files": [
+        {
+          "path": "/opt/homebrew/Cellar/aom/3.11.0/lib/libaom.3.11.0.dylib",
+          "bytes": 4065360,
+          "sha256": "97a926a61c6bb8f96887595870be991f78f406a94e2b39fc60b412c73de92f35"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/aribb24/1.0.4/lib/libaribb24.0.dylib",
+          "bytes": 122768,
+          "sha256": "37fe45db2fa963a7111b651fc207c0b9ebfa7c299b4c45753a91f206a0de45c0"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/brotli/1.2.0/lib/libbrotlicommon.1.2.0.dylib",
+          "bytes": 150128,
+          "sha256": "eb4c35c72adfea50045e0901767820b32a6b434685c0a4753ca9d3f9b389e44f"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/brotli/1.2.0/lib/libbrotlidec.1.2.0.dylib",
+          "bytes": 70128,
+          "sha256": "d3e0c23866ac9123a56ff28b71ad5e0b9ccc4207f5ef56751898f5294e7eaa8b"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/brotli/1.2.0/lib/libbrotlienc.1.2.0.dylib",
+          "bytes": 639056,
+          "sha256": "122dd455fc4419510078c302675aa31cc4eb6a16e029e0fc96bf3798388a07c9"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/cjson/1.7.18/lib/libcjson.1.7.18.dylib",
+          "bytes": 73792,
+          "sha256": "74481f55032722253bb1ab28e4a215e7794dbb0e9fe3109df43e674e8e805f2d"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/dav1d/1.5.1/lib/libdav1d.7.dylib",
+          "bytes": 798624,
+          "sha256": "f591d7ee6a1f58414a75d7628e4b233f9dafed101c1358cfd04716bcc49e851a"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/ffmpeg/7.1_4/bin/ffmpeg",
+          "bytes": 421968,
+          "sha256": "9777483c0e1998c0a10c8c03cd26345f8ca249ad0c89004379c7793e872cc4d8"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/ffmpeg/7.1_4/lib/libavcodec.61.19.100.dylib",
+          "bytes": 10232192,
+          "sha256": "d9de3a6357501ba850fb52cb22ed3ad56bc1b4dd4feb5d705d732a7ef4431658"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/ffmpeg/7.1_4/lib/libavdevice.61.3.100.dylib",
+          "bytes": 206528,
+          "sha256": "ac990ddcf75d22b44ce8724d61fcd84461cba14e026cd3c2caa9215a3552e6c2"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/ffmpeg/7.1_4/lib/libavfilter.10.4.100.dylib",
+          "bytes": 3144864,
+          "sha256": "d767539f6d7b8c345b30aa5b7b0345f8b5259736ff7734d8871a1b74ee47ca90"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/ffmpeg/7.1_4/lib/libavformat.61.7.100.dylib",
+          "bytes": 2347712,
+          "sha256": "06ef7aca2a5b700763952d91c48f682050060640c2ca917e89bdc18c24daa8ff"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/ffmpeg/7.1_4/lib/libavutil.59.39.100.dylib",
+          "bytes": 643248,
+          "sha256": "3642b58be4d18709793c91bef3f63357094313d1ca15efc9eab03315bb0f9b74"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/ffmpeg/7.1_4/lib/libpostproc.58.3.100.dylib",
+          "bytes": 85872,
+          "sha256": "d66c6298e521e2c216638e90e970cc0bc94c2730642b6ab782c1f32e455c9578"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/ffmpeg/7.1_4/lib/libswresample.5.3.100.dylib",
+          "bytes": 122096,
+          "sha256": "6e08ebd7b1781d42613a9b5d5ec3aeb2d9d9e3f3861a7c6239cefd26ceb9b3cc"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/ffmpeg/7.1_4/lib/libswscale.8.3.100.dylib",
+          "bytes": 453536,
+          "sha256": "416ce9b5b689c5f0f7391eabdcde4238c4e6a133e78ab8ae35c9b6ba4251582d"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/fontconfig/2.16.0/lib/libfontconfig.1.dylib",
+          "bytes": 306048,
+          "sha256": "fcbe5d7f057f527c067c43a87858acf2dc010446e8add04f8308b5dd2368ffcf"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/freetype/2.13.3/lib/libfreetype.6.dylib",
+          "bytes": 641744,
+          "sha256": "17c7387cd9291187d5f1324ea2f3a7ea51e418b9bab82dadc7b7ea04316fd1ac"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/fribidi/1.0.16/lib/libfribidi.0.dylib",
+          "bytes": 171920,
+          "sha256": "b50e41d12013bfbd7cedf9c316211bb56aabbe08eeff4f0387f27fc9f39dda73"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/gettext/0.23.1/lib/libintl.8.dylib",
+          "bytes": 145312,
+          "sha256": "1ddb98fa8e93d04fe7c03df9033040bb1a89027670ee25ec0bce1d99d7ae8af7"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/giflib/5.2.2/lib/libgif.7.2.0.dylib",
+          "bytes": 72816,
+          "sha256": "23839539b12bc6f2921ef25e627194d23a9486b3ec91ecc4184eba2b9750d7c6"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/glib/2.82.4/lib/libglib-2.0.0.dylib",
+          "bytes": 1201168,
+          "sha256": "1835270cab455f40c66d35cc357bbd5aae7c6a69e179ebec2fc07d888f8a453c"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/gmp/6.3.0/lib/libgmp.10.dylib",
+          "bytes": 452816,
+          "sha256": "1bb9184824b82f40bd50279634290d6cbdf9c1a371c045c7b10815e7955cd696"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/gnutls/3.8.4/lib/libgnutls.30.dylib",
+          "bytes": 1874368,
+          "sha256": "9bd2faa6912527759740da3bf082ac4d139ef5c92f63297414167f17a5e923f6"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/graphite2/1.3.14/lib/libgraphite2.3.2.1.dylib",
+          "bytes": 155200,
+          "sha256": "a60648d0d002830dd3240618cda53708d937e8596984ea408c8c727007ea4038"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/harfbuzz/10.2.0/lib/libharfbuzz.0.dylib",
+          "bytes": 1195536,
+          "sha256": "ea7c1a66702437ed8cd0f6ff3b709c13737987a3dd4673f418edc97bd12deeeb"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/highway/1.2.0/lib/libhwy.1.2.0.dylib",
+          "bytes": 97216,
+          "sha256": "acc53ab0cf978b76fa961d41b98e4d83bc87e3247369791e3c9d1d0a42c05d38"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/jpeg-turbo/3.1.0/lib/libjpeg.8.3.2.dylib",
+          "bytes": 473216,
+          "sha256": "673cbfb520fed542905f54bbd9433cfdb3b33c5284b4f51fc28bc6ec03655c52"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/jpeg-xl/0.11.1/lib/libjxl_cms.0.11.1.dylib",
+          "bytes": 111504,
+          "sha256": "fd21fc49fd045283e497757578bb8cc433604b23c00cd553d3d79eada1cc9e1e"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/jpeg-xl/0.11.1/lib/libjxl_threads.0.11.1.dylib",
+          "bytes": 56784,
+          "sha256": "18e485d5c313c16867ec166a0d7555bcdd130c90a71baae33f237d7959ee2fa5"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/jpeg-xl/0.11.1/lib/libjxl.0.11.1.dylib",
+          "bytes": 1958080,
+          "sha256": "12aaeced4e7ad7bfafc2c4387f9a035ed808a75f238b850031d95291e2bd09ff"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/lame/3.100/lib/libmp3lame.0.dylib",
+          "bytes": 322672,
+          "sha256": "13235ecea913de9e8eb527ca4468efce40f6dd796e066649c43553c69720dbdf"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/leptonica/1.85.0/lib/libleptonica.6.dylib",
+          "bytes": 2221296,
+          "sha256": "f0a46a723e29e02a595f36ed29377b6502b8cc348d27d106065f4efec2ba2ca2"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/libarchive/3.7.7/lib/libarchive.13.dylib",
+          "bytes": 704384,
+          "sha256": "118cd50942d0d2850100878a732a3521f41ac6ed4426d7a0597d2eda4d2d95d9"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/libass/0.17.3/lib/libass.9.dylib",
+          "bytes": 461568,
+          "sha256": "c110cc6e9c587e2fa68fad5d2bc7590f5071d4b6478a072c70c61fdf3658137d"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/libb2/0.98.1/lib/libb2.1.dylib",
+          "bytes": 85968,
+          "sha256": "7a2ad4cb206c8920f8d0f93a11def7bcf4db88a191563d097dedb99dba79eb17"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/libbluray/1.3.4/lib/libbluray.2.dylib",
+          "bytes": 346352,
+          "sha256": "8d7de282456e93f6b1795c2b19542c2913d0ad7d307ac12617ffad0e20f1ff20"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/libidn2/2.3.7/lib/libidn2.0.dylib",
+          "bytes": 259312,
+          "sha256": "989b58b1fa00a66bc4b0b89cddecb67edf547676c1c9271fc145bd0001cee04e"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/libogg/1.3.5/lib/libogg.0.dylib",
+          "bytes": 88656,
+          "sha256": "ff6c669b47ed4ae93a0b00d7d14b25323abc55e0fac30ae6dd979bd5420f229d"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/libpng/1.6.46/lib/libpng16.16.dylib",
+          "bytes": 226544,
+          "sha256": "fb56861c53f241d3aa95574ff7909b56ce680ad6c72906465298346d5428941a"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/librist/0.2.11/lib/librist.4.dylib",
+          "bytes": 188224,
+          "sha256": "190c1f459d0c9a9859836bf027b728556791fef4326c11db19c1a39f0a14d4fa"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/libsamplerate/0.2.2/lib/libsamplerate.0.2.2.dylib",
+          "bytes": 1556768,
+          "sha256": "2b0ac05ae94ae4c0ebd985d396d9b95cbe60cf98541c07e6d290fe03bfb7c1ad"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/libsodium/1.0.20/lib/libsodium.26.dylib",
+          "bytes": 290544,
+          "sha256": "b58e7d73d836b7f9392e426dbbdb04cbef39e673911c348e41a0668d1ba0dbeb"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/libsoxr/0.1.3/lib/libsoxr.0.1.2.dylib",
+          "bytes": 193904,
+          "sha256": "d4ec741b684db494d599fd4b135a8101a366914cc9353cebe82ae074d2dd4523"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/libssh/0.11.1/lib/libssh.4.10.1.dylib",
+          "bytes": 480384,
+          "sha256": "63abfec7794156394d79f04a116880438a3db3214032d3ac3ee12ecbe891a261"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/libtasn1/4.19.0/lib/libtasn1.6.dylib",
+          "bytes": 108208,
+          "sha256": "83de60b8461efa852bff681fd6d22d91c907eee21e73b8543c7420fc5e44d247"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/libtiff/4.7.0/lib/libtiff.6.dylib",
+          "bytes": 526512,
+          "sha256": "52f89b5e97e768ea4228962b0ee5fc0c9b269295947fdf5e3527fea5832c8163"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/libunibreak/6.1/lib/libunibreak.6.dylib",
+          "bytes": 170544,
+          "sha256": "7a891fee7288ce95edfcf70f77f53e7e6a554a37e0b04c2009eb1a36b68943c2"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/libunistring/1.3/lib/libunistring.5.dylib",
+          "bytes": 2001840,
+          "sha256": "f15a0cf10fc38eecac2ce365082654b106d180bd60c7076c88be5817c47aedaa"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/libvidstab/1.1.1/lib/libvidstab.1.2.dylib",
+          "bytes": 112336,
+          "sha256": "b285588776eb44d8843269f55eb38198f8ee972503de452f05a86f6827b1d2fb"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/libvmaf/3.0.0/lib/libvmaf.3.dylib",
+          "bytes": 747776,
+          "sha256": "d2ce187f2e7897240295baaab08ea5b5a59cdb0d5e09f36028ce4ad1f5e9bd3c"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/libvorbis/1.3.7/lib/libvorbis.0.dylib",
+          "bytes": 210576,
+          "sha256": "78ab02002af0b366805d058e6df7eae5133fa6249620f80c9e71544a61b374ab"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/libvorbis/1.3.7/lib/libvorbisenc.2.dylib",
+          "bytes": 731584,
+          "sha256": "b8795b8edb7682eea1fdfc8662a765f779937310b10578d7011a40591000ae1b"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/libvpx/1.15.0/lib/libvpx.9.dylib",
+          "bytes": 1741488,
+          "sha256": "eb0fea1deb2840d6ac08b1eeecccdd86aa9485faa8d0c7a1b475b433c20f3a5a"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/libx11/1.8.10/lib/libX11.6.dylib",
+          "bytes": 1025488,
+          "sha256": "9a2c2964276c468964d92a00c52f57fb1419973b607fbd6c4a71ab35cdf8f230"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/libxau/1.0.12/lib/libXau.6.dylib",
+          "bytes": 53312,
+          "sha256": "99fc719402348356a7cf651c207d4240ca1eb01e60fdbe9b8ad5d507e9283a38"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/libxcb/1.17.0/lib/libxcb-shape.0.0.0.dylib",
+          "bytes": 71328,
+          "sha256": "8901d4cb428a0ca99f1ef7a56a71c4c45bf3b7ca6747ae17c60565187529b4e2"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/libxcb/1.17.0/lib/libxcb-shm.0.0.0.dylib",
+          "bytes": 70432,
+          "sha256": "cbf1d379c613b4090c6f68cce1cb61be6c01d786ac8b3256eaa9ef8ec29f06a6"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/libxcb/1.17.0/lib/libxcb-xfixes.0.0.0.dylib",
+          "bytes": 81024,
+          "sha256": "55ef1fba3527d8ba2e2cb3f5405d6163e78a50f6409487a2d4a4ed7a6b5d14fb"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/libxcb/1.17.0/lib/libxcb.1.1.0.dylib",
+          "bytes": 194768,
+          "sha256": "011c6d97a17cf56399ad06fbee6a532d5b43abcb80a43b3e0794ced88dd75222"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/libxdmcp/1.1.5/lib/libXdmcp.6.dylib",
+          "bytes": 54224,
+          "sha256": "905e0ffe8894d96d078bbb97eb5a9a4327fcd37c530bf6a1af7f92b1fb424fdf"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/little-cms2/2.16/lib/liblcms2.2.dylib",
+          "bytes": 357184,
+          "sha256": "4340605ed529e0cb07626d9576b59977e6945a9a83237cb42df27ad629c8824e"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/lz4/1.10.0/lib/liblz4.1.10.0.dylib",
+          "bytes": 176960,
+          "sha256": "3ce8bec34557e6a5c76129cef6588dc59959caa51e1e54321f45ea7c6e528e07"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/mbedtls/3.6.2/lib/libmbedcrypto.3.6.2.dylib",
+          "bytes": 514992,
+          "sha256": "ca480a6521862671b27254d39ad72befc93c30d6026c3e97aeec10dbaa35d75e"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/nettle/3.10.1/lib/libhogweed.6.10.dylib",
+          "bytes": 316512,
+          "sha256": "cbc541734d3a6ee08904434de0fd175a073dce1c66387d5ddc829dd398e0948b"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/nettle/3.10.1/lib/libnettle.8.10.dylib",
+          "bytes": 334048,
+          "sha256": "a643e457206c246bae25925f00eb1ca14d7bf5c306929b8676c15c297c85350a"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/opencore-amr/0.1.6/lib/libopencore-amrnb.0.dylib",
+          "bytes": 178528,
+          "sha256": "58d59eee869d324efa0e337ba9754166f346d2069b280664bf5672496d2ac083"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/opencore-amr/0.1.6/lib/libopencore-amrwb.0.dylib",
+          "bytes": 106144,
+          "sha256": "894fa2a746eb53f7cd0f4ab6b1714e9edfdf3bb87b6e3c325e15fd25b9f0ee2b"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/openjpeg/2.5.3/lib/libopenjp2.2.5.3.dylib",
+          "bytes": 325968,
+          "sha256": "a6224dcb88fc9c358844166b252d1041f2fc1a647efc6b5cde947ada03577494"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/openssl@3/3.6.3/lib/libcrypto.3.dylib",
+          "bytes": 4856256,
+          "sha256": "a12805a18cd5e4f733fa8727b91afa08b587f9da5a760517cd79cb508a3a3f71"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/openssl@3/3.6.3/lib/libssl.3.dylib",
+          "bytes": 872080,
+          "sha256": "ffd8ac6981000def0928367924b6cb1e7a98712efbc06e2a2f3f750138bd89ca"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/opus/1.5.2/lib/libopus.0.dylib",
+          "bytes": 357584,
+          "sha256": "1fbc17c24ac6c1bfa17ac30c64617159bd118b56389b919688ab1df027ce844f"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/p11-kit/0.25.5/lib/libp11-kit.0.dylib",
+          "bytes": 1471344,
+          "sha256": "b49dc0c2ceaca23651e546c58c459451a83a30dc12e78630e4791d5090153b8a"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/pcre2/10.44/lib/libpcre2-8.0.dylib",
+          "bytes": 545424,
+          "sha256": "cc654db5766f5ea04cc4cb49a41791d7338cf38960ebabbc9009aeaaf42fab93"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/rav1e/0.7.1/lib/librav1e.0.7.1.dylib",
+          "bytes": 2795264,
+          "sha256": "cc1c44f804997fa671d0fac04e13547c4505d1ee2eb38608f6cbdc75a60ccc28"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/rubberband/4.0.0/lib/librubberband.3.dylib",
+          "bytes": 393840,
+          "sha256": "04069acff8ca0db7529cd1b6d73e2bc8a6d2729ea77351a70c3e3f4181c8296c"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/sdl2/2.30.11/lib/libSDL2-2.0.0.dylib",
+          "bytes": 1546624,
+          "sha256": "93786accdf2f1d356b643de3dd7c9ead1e6ee6f963a026cb88917d61d4d53f68"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/snappy/1.2.1/lib/libsnappy.1.2.1.dylib",
+          "bytes": 79184,
+          "sha256": "815a850ebeb480c8a2b3ef343f461b9a99f67ab7699eea568e35f1d39a5265ee"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/speex/1.2.1/lib/libspeex.1.dylib",
+          "bytes": 126176,
+          "sha256": "adbeac1b88ab9a01972b7569190c609e8cdfb29c2b40672fd1a549650b873b5f"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/srt/1.5.4/lib/libsrt.1.5.4.dylib",
+          "bytes": 713872,
+          "sha256": "ee5060d4695f41e3956995d49ff7949fd6ea89aab1fd6d3996722ff6260ccca6"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/svt-av1/2.3.0_1/lib/libSvtAv1Enc.2.3.0.dylib",
+          "bytes": 2894512,
+          "sha256": "0a2aa8d1d34ba4fa280a090917b12efbac5ecdc2b6661738b3f87aeede992c06"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/tesseract/5.5.0/lib/libtesseract.5.dylib",
+          "bytes": 2794112,
+          "sha256": "afdc3313319123a0d2bc27facb65d5d88f60dcfb6261cb4d8ba7814bce25f183"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/theora/1.1.1/lib/libtheoradec.1.dylib",
+          "bytes": 108688,
+          "sha256": "a07af28844ec90ac872d2607f33b8da24f0d89b635df54071e943e783f610e1b"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/theora/1.1.1/lib/libtheoraenc.1.dylib",
+          "bytes": 211104,
+          "sha256": "f49da6e469b706d630cfb813aef0c881dd178c49b98abbbdffc9feb5c0ea9fbc"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/webp/1.5.0/lib/libsharpyuv.0.1.1.dylib",
+          "bytes": 69872,
+          "sha256": "427e5f1e0ea3beaea7c148c779293ac5d16a1224e9e96629299258026eb594b6"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/webp/1.5.0/lib/libwebp.7.1.10.dylib",
+          "bytes": 353856,
+          "sha256": "da14e3228c47ca4628be514ed2465e0f2f692d9af9f1e91d37ebab093dee0cf9"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/webp/1.5.0/lib/libwebpmux.3.1.1.dylib",
+          "bytes": 73552,
+          "sha256": "c331ca9b1a391afa0eb6805a191f5f13bbda142611ca5394931ef7024a622c7d"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/x264/r3108/lib/libx264.164.dylib",
+          "bytes": 1294944,
+          "sha256": "68fb255c5b963786d37a8e6d1fbb98631d64cdc8bc19e2e5baad49822bda1b6f"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/x265/4.1/lib/libx265.215.dylib",
+          "bytes": 4923872,
+          "sha256": "cb2b935b7780bcb7c3fdfbb3951124905b523727c0110397a8dea8a303eaa25e"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/xz/5.8.3/lib/liblzma.5.dylib",
+          "bytes": 167472,
+          "sha256": "606a5184911c876c7446f932685183d8b348f5c9a95f764b01607be0e40b64ea"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/zeromq/4.3.5_1/lib/libzmq.5.dylib",
+          "bytes": 636464,
+          "sha256": "a7051ba68ec0a27b0ec9ce26ec953d1abea1bf321ae52f0bb6af5085eb9dea6d"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/zimg/3.0.5/lib/libzimg.2.dylib",
+          "bytes": 407696,
+          "sha256": "ee8678ed6c1287e46cfff2b1c944feab00814dca397216e61094583f9946176d"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/zstd/1.5.7_1/lib/libzstd.1.5.7.dylib",
+          "bytes": 635328,
+          "sha256": "602d50cbe6fad0f0da6d1b73284ae3f75316015aea482ebd55614b6df2406b43"
+        }
+      ],
+      "aliases": [
+        {
+          "path": "/opt/homebrew/bin/ffmpeg",
+          "realpath": "/opt/homebrew/Cellar/ffmpeg/7.1_4/bin/ffmpeg"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/brotli/1.2.0/lib/libbrotlicommon.1.dylib",
+          "realpath": "/opt/homebrew/Cellar/brotli/1.2.0/lib/libbrotlicommon.1.2.0.dylib"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/ffmpeg/7.1_4/lib/libavcodec.61.dylib",
+          "realpath": "/opt/homebrew/Cellar/ffmpeg/7.1_4/lib/libavcodec.61.19.100.dylib"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/ffmpeg/7.1_4/lib/libavdevice.61.dylib",
+          "realpath": "/opt/homebrew/Cellar/ffmpeg/7.1_4/lib/libavdevice.61.3.100.dylib"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/ffmpeg/7.1_4/lib/libavfilter.10.dylib",
+          "realpath": "/opt/homebrew/Cellar/ffmpeg/7.1_4/lib/libavfilter.10.4.100.dylib"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/ffmpeg/7.1_4/lib/libavformat.61.dylib",
+          "realpath": "/opt/homebrew/Cellar/ffmpeg/7.1_4/lib/libavformat.61.7.100.dylib"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/ffmpeg/7.1_4/lib/libavutil.59.dylib",
+          "realpath": "/opt/homebrew/Cellar/ffmpeg/7.1_4/lib/libavutil.59.39.100.dylib"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/ffmpeg/7.1_4/lib/libpostproc.58.dylib",
+          "realpath": "/opt/homebrew/Cellar/ffmpeg/7.1_4/lib/libpostproc.58.3.100.dylib"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/ffmpeg/7.1_4/lib/libswresample.5.dylib",
+          "realpath": "/opt/homebrew/Cellar/ffmpeg/7.1_4/lib/libswresample.5.3.100.dylib"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/ffmpeg/7.1_4/lib/libswscale.8.dylib",
+          "realpath": "/opt/homebrew/Cellar/ffmpeg/7.1_4/lib/libswscale.8.3.100.dylib"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/jpeg-xl/0.11.1/lib/libjxl_cms.0.11.dylib",
+          "realpath": "/opt/homebrew/Cellar/jpeg-xl/0.11.1/lib/libjxl_cms.0.11.1.dylib"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/libvorbis/1.3.7/lib/libvorbis.0.dylib",
+          "realpath": "/opt/homebrew/Cellar/libvorbis/1.3.7/lib/libvorbis.0.dylib"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/libxcb/1.17.0/lib/libxcb.1.dylib",
+          "realpath": "/opt/homebrew/Cellar/libxcb/1.17.0/lib/libxcb.1.1.0.dylib"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/nettle/3.10.1/lib/libnettle.8.dylib",
+          "realpath": "/opt/homebrew/Cellar/nettle/3.10.1/lib/libnettle.8.10.dylib"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/openssl@3/3.6.3/lib/libcrypto.3.dylib",
+          "realpath": "/opt/homebrew/Cellar/openssl@3/3.6.3/lib/libcrypto.3.dylib"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/webp/1.5.0/lib/libsharpyuv.0.dylib",
+          "realpath": "/opt/homebrew/Cellar/webp/1.5.0/lib/libsharpyuv.0.1.1.dylib"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/webp/1.5.0/lib/libwebp.7.dylib",
+          "realpath": "/opt/homebrew/Cellar/webp/1.5.0/lib/libwebp.7.1.10.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/aom/lib/libaom.3.dylib",
+          "realpath": "/opt/homebrew/Cellar/aom/3.11.0/lib/libaom.3.11.0.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/aribb24/lib/libaribb24.0.dylib",
+          "realpath": "/opt/homebrew/Cellar/aribb24/1.0.4/lib/libaribb24.0.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/brotli/lib/libbrotlicommon.1.dylib",
+          "realpath": "/opt/homebrew/Cellar/brotli/1.2.0/lib/libbrotlicommon.1.2.0.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/brotli/lib/libbrotlidec.1.dylib",
+          "realpath": "/opt/homebrew/Cellar/brotli/1.2.0/lib/libbrotlidec.1.2.0.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/brotli/lib/libbrotlienc.1.dylib",
+          "realpath": "/opt/homebrew/Cellar/brotli/1.2.0/lib/libbrotlienc.1.2.0.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/cjson/lib/libcjson.1.dylib",
+          "realpath": "/opt/homebrew/Cellar/cjson/1.7.18/lib/libcjson.1.7.18.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/dav1d/lib/libdav1d.7.dylib",
+          "realpath": "/opt/homebrew/Cellar/dav1d/1.5.1/lib/libdav1d.7.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/ffmpeg/lib/libavcodec.61.dylib",
+          "realpath": "/opt/homebrew/Cellar/ffmpeg/7.1_4/lib/libavcodec.61.19.100.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/ffmpeg/lib/libavdevice.61.dylib",
+          "realpath": "/opt/homebrew/Cellar/ffmpeg/7.1_4/lib/libavdevice.61.3.100.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/ffmpeg/lib/libavfilter.10.dylib",
+          "realpath": "/opt/homebrew/Cellar/ffmpeg/7.1_4/lib/libavfilter.10.4.100.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/ffmpeg/lib/libavformat.61.dylib",
+          "realpath": "/opt/homebrew/Cellar/ffmpeg/7.1_4/lib/libavformat.61.7.100.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/ffmpeg/lib/libavutil.59.dylib",
+          "realpath": "/opt/homebrew/Cellar/ffmpeg/7.1_4/lib/libavutil.59.39.100.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/ffmpeg/lib/libpostproc.58.dylib",
+          "realpath": "/opt/homebrew/Cellar/ffmpeg/7.1_4/lib/libpostproc.58.3.100.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/ffmpeg/lib/libswresample.5.dylib",
+          "realpath": "/opt/homebrew/Cellar/ffmpeg/7.1_4/lib/libswresample.5.3.100.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/ffmpeg/lib/libswscale.8.dylib",
+          "realpath": "/opt/homebrew/Cellar/ffmpeg/7.1_4/lib/libswscale.8.3.100.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/fontconfig/lib/libfontconfig.1.dylib",
+          "realpath": "/opt/homebrew/Cellar/fontconfig/2.16.0/lib/libfontconfig.1.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/freetype/lib/libfreetype.6.dylib",
+          "realpath": "/opt/homebrew/Cellar/freetype/2.13.3/lib/libfreetype.6.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/fribidi/lib/libfribidi.0.dylib",
+          "realpath": "/opt/homebrew/Cellar/fribidi/1.0.16/lib/libfribidi.0.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/gettext/lib/libintl.8.dylib",
+          "realpath": "/opt/homebrew/Cellar/gettext/0.23.1/lib/libintl.8.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/giflib/lib/libgif.dylib",
+          "realpath": "/opt/homebrew/Cellar/giflib/5.2.2/lib/libgif.7.2.0.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/glib/lib/libglib-2.0.0.dylib",
+          "realpath": "/opt/homebrew/Cellar/glib/2.82.4/lib/libglib-2.0.0.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/gmp/lib/libgmp.10.dylib",
+          "realpath": "/opt/homebrew/Cellar/gmp/6.3.0/lib/libgmp.10.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/gnutls/lib/libgnutls.30.dylib",
+          "realpath": "/opt/homebrew/Cellar/gnutls/3.8.4/lib/libgnutls.30.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/graphite2/lib/libgraphite2.3.dylib",
+          "realpath": "/opt/homebrew/Cellar/graphite2/1.3.14/lib/libgraphite2.3.2.1.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/harfbuzz/lib/libharfbuzz.0.dylib",
+          "realpath": "/opt/homebrew/Cellar/harfbuzz/10.2.0/lib/libharfbuzz.0.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/highway/lib/libhwy.1.dylib",
+          "realpath": "/opt/homebrew/Cellar/highway/1.2.0/lib/libhwy.1.2.0.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/jpeg-turbo/lib/libjpeg.8.dylib",
+          "realpath": "/opt/homebrew/Cellar/jpeg-turbo/3.1.0/lib/libjpeg.8.3.2.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/jpeg-xl/lib/libjxl_cms.0.11.dylib",
+          "realpath": "/opt/homebrew/Cellar/jpeg-xl/0.11.1/lib/libjxl_cms.0.11.1.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/jpeg-xl/lib/libjxl_threads.0.11.dylib",
+          "realpath": "/opt/homebrew/Cellar/jpeg-xl/0.11.1/lib/libjxl_threads.0.11.1.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/jpeg-xl/lib/libjxl.0.11.dylib",
+          "realpath": "/opt/homebrew/Cellar/jpeg-xl/0.11.1/lib/libjxl.0.11.1.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/lame/lib/libmp3lame.0.dylib",
+          "realpath": "/opt/homebrew/Cellar/lame/3.100/lib/libmp3lame.0.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/leptonica/lib/libleptonica.6.dylib",
+          "realpath": "/opt/homebrew/Cellar/leptonica/1.85.0/lib/libleptonica.6.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/libarchive/lib/libarchive.13.dylib",
+          "realpath": "/opt/homebrew/Cellar/libarchive/3.7.7/lib/libarchive.13.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/libass/lib/libass.9.dylib",
+          "realpath": "/opt/homebrew/Cellar/libass/0.17.3/lib/libass.9.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/libb2/lib/libb2.1.dylib",
+          "realpath": "/opt/homebrew/Cellar/libb2/0.98.1/lib/libb2.1.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/libbluray/lib/libbluray.2.dylib",
+          "realpath": "/opt/homebrew/Cellar/libbluray/1.3.4/lib/libbluray.2.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/libidn2/lib/libidn2.0.dylib",
+          "realpath": "/opt/homebrew/Cellar/libidn2/2.3.7/lib/libidn2.0.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/libogg/lib/libogg.0.dylib",
+          "realpath": "/opt/homebrew/Cellar/libogg/1.3.5/lib/libogg.0.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/libpng/lib/libpng16.16.dylib",
+          "realpath": "/opt/homebrew/Cellar/libpng/1.6.46/lib/libpng16.16.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/librist/lib/librist.4.dylib",
+          "realpath": "/opt/homebrew/Cellar/librist/0.2.11/lib/librist.4.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/libsamplerate/lib/libsamplerate.0.dylib",
+          "realpath": "/opt/homebrew/Cellar/libsamplerate/0.2.2/lib/libsamplerate.0.2.2.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/libsodium/lib/libsodium.26.dylib",
+          "realpath": "/opt/homebrew/Cellar/libsodium/1.0.20/lib/libsodium.26.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/libsoxr/lib/libsoxr.0.dylib",
+          "realpath": "/opt/homebrew/Cellar/libsoxr/0.1.3/lib/libsoxr.0.1.2.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/libssh/lib/libssh.4.dylib",
+          "realpath": "/opt/homebrew/Cellar/libssh/0.11.1/lib/libssh.4.10.1.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/libtasn1/lib/libtasn1.6.dylib",
+          "realpath": "/opt/homebrew/Cellar/libtasn1/4.19.0/lib/libtasn1.6.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/libtiff/lib/libtiff.6.dylib",
+          "realpath": "/opt/homebrew/Cellar/libtiff/4.7.0/lib/libtiff.6.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/libunibreak/lib/libunibreak.6.dylib",
+          "realpath": "/opt/homebrew/Cellar/libunibreak/6.1/lib/libunibreak.6.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/libunistring/lib/libunistring.5.dylib",
+          "realpath": "/opt/homebrew/Cellar/libunistring/1.3/lib/libunistring.5.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/libvidstab/lib/libvidstab.1.2.dylib",
+          "realpath": "/opt/homebrew/Cellar/libvidstab/1.1.1/lib/libvidstab.1.2.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/libvmaf/lib/libvmaf.3.dylib",
+          "realpath": "/opt/homebrew/Cellar/libvmaf/3.0.0/lib/libvmaf.3.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/libvorbis/lib/libvorbis.0.dylib",
+          "realpath": "/opt/homebrew/Cellar/libvorbis/1.3.7/lib/libvorbis.0.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/libvorbis/lib/libvorbisenc.2.dylib",
+          "realpath": "/opt/homebrew/Cellar/libvorbis/1.3.7/lib/libvorbisenc.2.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/libvpx/lib/libvpx.9.dylib",
+          "realpath": "/opt/homebrew/Cellar/libvpx/1.15.0/lib/libvpx.9.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/libx11/lib/libX11.6.dylib",
+          "realpath": "/opt/homebrew/Cellar/libx11/1.8.10/lib/libX11.6.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/libxau/lib/libXau.6.dylib",
+          "realpath": "/opt/homebrew/Cellar/libxau/1.0.12/lib/libXau.6.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/libxcb/lib/libxcb-shape.0.dylib",
+          "realpath": "/opt/homebrew/Cellar/libxcb/1.17.0/lib/libxcb-shape.0.0.0.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/libxcb/lib/libxcb-shm.0.dylib",
+          "realpath": "/opt/homebrew/Cellar/libxcb/1.17.0/lib/libxcb-shm.0.0.0.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/libxcb/lib/libxcb-xfixes.0.dylib",
+          "realpath": "/opt/homebrew/Cellar/libxcb/1.17.0/lib/libxcb-xfixes.0.0.0.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/libxcb/lib/libxcb.1.dylib",
+          "realpath": "/opt/homebrew/Cellar/libxcb/1.17.0/lib/libxcb.1.1.0.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/libxdmcp/lib/libXdmcp.6.dylib",
+          "realpath": "/opt/homebrew/Cellar/libxdmcp/1.1.5/lib/libXdmcp.6.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/little-cms2/lib/liblcms2.2.dylib",
+          "realpath": "/opt/homebrew/Cellar/little-cms2/2.16/lib/liblcms2.2.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/lz4/lib/liblz4.1.dylib",
+          "realpath": "/opt/homebrew/Cellar/lz4/1.10.0/lib/liblz4.1.10.0.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/mbedtls/lib/libmbedcrypto.16.dylib",
+          "realpath": "/opt/homebrew/Cellar/mbedtls/3.6.2/lib/libmbedcrypto.3.6.2.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/nettle/lib/libhogweed.6.dylib",
+          "realpath": "/opt/homebrew/Cellar/nettle/3.10.1/lib/libhogweed.6.10.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/nettle/lib/libnettle.8.dylib",
+          "realpath": "/opt/homebrew/Cellar/nettle/3.10.1/lib/libnettle.8.10.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/opencore-amr/lib/libopencore-amrnb.0.dylib",
+          "realpath": "/opt/homebrew/Cellar/opencore-amr/0.1.6/lib/libopencore-amrnb.0.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/opencore-amr/lib/libopencore-amrwb.0.dylib",
+          "realpath": "/opt/homebrew/Cellar/opencore-amr/0.1.6/lib/libopencore-amrwb.0.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/openjpeg/lib/libopenjp2.7.dylib",
+          "realpath": "/opt/homebrew/Cellar/openjpeg/2.5.3/lib/libopenjp2.2.5.3.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/openssl@3/lib/libcrypto.3.dylib",
+          "realpath": "/opt/homebrew/Cellar/openssl@3/3.6.3/lib/libcrypto.3.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/openssl@3/lib/libssl.3.dylib",
+          "realpath": "/opt/homebrew/Cellar/openssl@3/3.6.3/lib/libssl.3.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/opus/lib/libopus.0.dylib",
+          "realpath": "/opt/homebrew/Cellar/opus/1.5.2/lib/libopus.0.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/p11-kit/lib/libp11-kit.0.dylib",
+          "realpath": "/opt/homebrew/Cellar/p11-kit/0.25.5/lib/libp11-kit.0.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/pcre2/lib/libpcre2-8.0.dylib",
+          "realpath": "/opt/homebrew/Cellar/pcre2/10.44/lib/libpcre2-8.0.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/rav1e/lib/librav1e.0.7.dylib",
+          "realpath": "/opt/homebrew/Cellar/rav1e/0.7.1/lib/librav1e.0.7.1.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/rubberband/lib/librubberband.3.dylib",
+          "realpath": "/opt/homebrew/Cellar/rubberband/4.0.0/lib/librubberband.3.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/sdl2/lib/libSDL2-2.0.0.dylib",
+          "realpath": "/opt/homebrew/Cellar/sdl2/2.30.11/lib/libSDL2-2.0.0.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/snappy/lib/libsnappy.1.dylib",
+          "realpath": "/opt/homebrew/Cellar/snappy/1.2.1/lib/libsnappy.1.2.1.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/speex/lib/libspeex.1.dylib",
+          "realpath": "/opt/homebrew/Cellar/speex/1.2.1/lib/libspeex.1.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/srt/lib/libsrt.1.5.dylib",
+          "realpath": "/opt/homebrew/Cellar/srt/1.5.4/lib/libsrt.1.5.4.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/svt-av1/lib/libSvtAv1Enc.2.dylib",
+          "realpath": "/opt/homebrew/Cellar/svt-av1/2.3.0_1/lib/libSvtAv1Enc.2.3.0.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/tesseract/lib/libtesseract.5.dylib",
+          "realpath": "/opt/homebrew/Cellar/tesseract/5.5.0/lib/libtesseract.5.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/theora/lib/libtheoradec.1.dylib",
+          "realpath": "/opt/homebrew/Cellar/theora/1.1.1/lib/libtheoradec.1.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/theora/lib/libtheoraenc.1.dylib",
+          "realpath": "/opt/homebrew/Cellar/theora/1.1.1/lib/libtheoraenc.1.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/webp/lib/libsharpyuv.0.dylib",
+          "realpath": "/opt/homebrew/Cellar/webp/1.5.0/lib/libsharpyuv.0.1.1.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/webp/lib/libwebp.7.dylib",
+          "realpath": "/opt/homebrew/Cellar/webp/1.5.0/lib/libwebp.7.1.10.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/webp/lib/libwebpmux.3.dylib",
+          "realpath": "/opt/homebrew/Cellar/webp/1.5.0/lib/libwebpmux.3.1.1.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/x264/lib/libx264.164.dylib",
+          "realpath": "/opt/homebrew/Cellar/x264/r3108/lib/libx264.164.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/x265/lib/libx265.215.dylib",
+          "realpath": "/opt/homebrew/Cellar/x265/4.1/lib/libx265.215.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/xz/lib/liblzma.5.dylib",
+          "realpath": "/opt/homebrew/Cellar/xz/5.8.3/lib/liblzma.5.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/zeromq/lib/libzmq.5.dylib",
+          "realpath": "/opt/homebrew/Cellar/zeromq/4.3.5_1/lib/libzmq.5.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/zimg/lib/libzimg.2.dylib",
+          "realpath": "/opt/homebrew/Cellar/zimg/3.0.5/lib/libzimg.2.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/zstd/lib/libzstd.1.dylib",
+          "realpath": "/opt/homebrew/Cellar/zstd/1.5.7_1/lib/libzstd.1.5.7.dylib"
+        }
+      ]
+    },
+    "ffprobe": {
+      "executable": "/opt/homebrew/Cellar/ffmpeg/7.1_4/bin/ffprobe",
+      "version": "ffprobe version 7.1 Copyright (c) 2007-2024 the FFmpeg developers",
+      "files": [
+        {
+          "path": "/opt/homebrew/Cellar/aom/3.11.0/lib/libaom.3.11.0.dylib",
+          "bytes": 4065360,
+          "sha256": "97a926a61c6bb8f96887595870be991f78f406a94e2b39fc60b412c73de92f35"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/aribb24/1.0.4/lib/libaribb24.0.dylib",
+          "bytes": 122768,
+          "sha256": "37fe45db2fa963a7111b651fc207c0b9ebfa7c299b4c45753a91f206a0de45c0"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/brotli/1.2.0/lib/libbrotlicommon.1.2.0.dylib",
+          "bytes": 150128,
+          "sha256": "eb4c35c72adfea50045e0901767820b32a6b434685c0a4753ca9d3f9b389e44f"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/brotli/1.2.0/lib/libbrotlidec.1.2.0.dylib",
+          "bytes": 70128,
+          "sha256": "d3e0c23866ac9123a56ff28b71ad5e0b9ccc4207f5ef56751898f5294e7eaa8b"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/brotli/1.2.0/lib/libbrotlienc.1.2.0.dylib",
+          "bytes": 639056,
+          "sha256": "122dd455fc4419510078c302675aa31cc4eb6a16e029e0fc96bf3798388a07c9"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/cjson/1.7.18/lib/libcjson.1.7.18.dylib",
+          "bytes": 73792,
+          "sha256": "74481f55032722253bb1ab28e4a215e7794dbb0e9fe3109df43e674e8e805f2d"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/dav1d/1.5.1/lib/libdav1d.7.dylib",
+          "bytes": 798624,
+          "sha256": "f591d7ee6a1f58414a75d7628e4b233f9dafed101c1358cfd04716bcc49e851a"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/ffmpeg/7.1_4/bin/ffprobe",
+          "bytes": 351920,
+          "sha256": "15b5a7611490c0bd7ebbd379b862bd4a00302ed1a067d516d26030e5b27107b5"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/ffmpeg/7.1_4/lib/libavcodec.61.19.100.dylib",
+          "bytes": 10232192,
+          "sha256": "d9de3a6357501ba850fb52cb22ed3ad56bc1b4dd4feb5d705d732a7ef4431658"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/ffmpeg/7.1_4/lib/libavdevice.61.3.100.dylib",
+          "bytes": 206528,
+          "sha256": "ac990ddcf75d22b44ce8724d61fcd84461cba14e026cd3c2caa9215a3552e6c2"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/ffmpeg/7.1_4/lib/libavfilter.10.4.100.dylib",
+          "bytes": 3144864,
+          "sha256": "d767539f6d7b8c345b30aa5b7b0345f8b5259736ff7734d8871a1b74ee47ca90"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/ffmpeg/7.1_4/lib/libavformat.61.7.100.dylib",
+          "bytes": 2347712,
+          "sha256": "06ef7aca2a5b700763952d91c48f682050060640c2ca917e89bdc18c24daa8ff"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/ffmpeg/7.1_4/lib/libavutil.59.39.100.dylib",
+          "bytes": 643248,
+          "sha256": "3642b58be4d18709793c91bef3f63357094313d1ca15efc9eab03315bb0f9b74"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/ffmpeg/7.1_4/lib/libpostproc.58.3.100.dylib",
+          "bytes": 85872,
+          "sha256": "d66c6298e521e2c216638e90e970cc0bc94c2730642b6ab782c1f32e455c9578"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/ffmpeg/7.1_4/lib/libswresample.5.3.100.dylib",
+          "bytes": 122096,
+          "sha256": "6e08ebd7b1781d42613a9b5d5ec3aeb2d9d9e3f3861a7c6239cefd26ceb9b3cc"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/ffmpeg/7.1_4/lib/libswscale.8.3.100.dylib",
+          "bytes": 453536,
+          "sha256": "416ce9b5b689c5f0f7391eabdcde4238c4e6a133e78ab8ae35c9b6ba4251582d"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/fontconfig/2.16.0/lib/libfontconfig.1.dylib",
+          "bytes": 306048,
+          "sha256": "fcbe5d7f057f527c067c43a87858acf2dc010446e8add04f8308b5dd2368ffcf"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/freetype/2.13.3/lib/libfreetype.6.dylib",
+          "bytes": 641744,
+          "sha256": "17c7387cd9291187d5f1324ea2f3a7ea51e418b9bab82dadc7b7ea04316fd1ac"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/fribidi/1.0.16/lib/libfribidi.0.dylib",
+          "bytes": 171920,
+          "sha256": "b50e41d12013bfbd7cedf9c316211bb56aabbe08eeff4f0387f27fc9f39dda73"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/gettext/0.23.1/lib/libintl.8.dylib",
+          "bytes": 145312,
+          "sha256": "1ddb98fa8e93d04fe7c03df9033040bb1a89027670ee25ec0bce1d99d7ae8af7"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/giflib/5.2.2/lib/libgif.7.2.0.dylib",
+          "bytes": 72816,
+          "sha256": "23839539b12bc6f2921ef25e627194d23a9486b3ec91ecc4184eba2b9750d7c6"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/glib/2.82.4/lib/libglib-2.0.0.dylib",
+          "bytes": 1201168,
+          "sha256": "1835270cab455f40c66d35cc357bbd5aae7c6a69e179ebec2fc07d888f8a453c"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/gmp/6.3.0/lib/libgmp.10.dylib",
+          "bytes": 452816,
+          "sha256": "1bb9184824b82f40bd50279634290d6cbdf9c1a371c045c7b10815e7955cd696"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/gnutls/3.8.4/lib/libgnutls.30.dylib",
+          "bytes": 1874368,
+          "sha256": "9bd2faa6912527759740da3bf082ac4d139ef5c92f63297414167f17a5e923f6"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/graphite2/1.3.14/lib/libgraphite2.3.2.1.dylib",
+          "bytes": 155200,
+          "sha256": "a60648d0d002830dd3240618cda53708d937e8596984ea408c8c727007ea4038"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/harfbuzz/10.2.0/lib/libharfbuzz.0.dylib",
+          "bytes": 1195536,
+          "sha256": "ea7c1a66702437ed8cd0f6ff3b709c13737987a3dd4673f418edc97bd12deeeb"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/highway/1.2.0/lib/libhwy.1.2.0.dylib",
+          "bytes": 97216,
+          "sha256": "acc53ab0cf978b76fa961d41b98e4d83bc87e3247369791e3c9d1d0a42c05d38"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/jpeg-turbo/3.1.0/lib/libjpeg.8.3.2.dylib",
+          "bytes": 473216,
+          "sha256": "673cbfb520fed542905f54bbd9433cfdb3b33c5284b4f51fc28bc6ec03655c52"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/jpeg-xl/0.11.1/lib/libjxl_cms.0.11.1.dylib",
+          "bytes": 111504,
+          "sha256": "fd21fc49fd045283e497757578bb8cc433604b23c00cd553d3d79eada1cc9e1e"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/jpeg-xl/0.11.1/lib/libjxl_threads.0.11.1.dylib",
+          "bytes": 56784,
+          "sha256": "18e485d5c313c16867ec166a0d7555bcdd130c90a71baae33f237d7959ee2fa5"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/jpeg-xl/0.11.1/lib/libjxl.0.11.1.dylib",
+          "bytes": 1958080,
+          "sha256": "12aaeced4e7ad7bfafc2c4387f9a035ed808a75f238b850031d95291e2bd09ff"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/lame/3.100/lib/libmp3lame.0.dylib",
+          "bytes": 322672,
+          "sha256": "13235ecea913de9e8eb527ca4468efce40f6dd796e066649c43553c69720dbdf"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/leptonica/1.85.0/lib/libleptonica.6.dylib",
+          "bytes": 2221296,
+          "sha256": "f0a46a723e29e02a595f36ed29377b6502b8cc348d27d106065f4efec2ba2ca2"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/libarchive/3.7.7/lib/libarchive.13.dylib",
+          "bytes": 704384,
+          "sha256": "118cd50942d0d2850100878a732a3521f41ac6ed4426d7a0597d2eda4d2d95d9"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/libass/0.17.3/lib/libass.9.dylib",
+          "bytes": 461568,
+          "sha256": "c110cc6e9c587e2fa68fad5d2bc7590f5071d4b6478a072c70c61fdf3658137d"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/libb2/0.98.1/lib/libb2.1.dylib",
+          "bytes": 85968,
+          "sha256": "7a2ad4cb206c8920f8d0f93a11def7bcf4db88a191563d097dedb99dba79eb17"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/libbluray/1.3.4/lib/libbluray.2.dylib",
+          "bytes": 346352,
+          "sha256": "8d7de282456e93f6b1795c2b19542c2913d0ad7d307ac12617ffad0e20f1ff20"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/libidn2/2.3.7/lib/libidn2.0.dylib",
+          "bytes": 259312,
+          "sha256": "989b58b1fa00a66bc4b0b89cddecb67edf547676c1c9271fc145bd0001cee04e"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/libogg/1.3.5/lib/libogg.0.dylib",
+          "bytes": 88656,
+          "sha256": "ff6c669b47ed4ae93a0b00d7d14b25323abc55e0fac30ae6dd979bd5420f229d"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/libpng/1.6.46/lib/libpng16.16.dylib",
+          "bytes": 226544,
+          "sha256": "fb56861c53f241d3aa95574ff7909b56ce680ad6c72906465298346d5428941a"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/librist/0.2.11/lib/librist.4.dylib",
+          "bytes": 188224,
+          "sha256": "190c1f459d0c9a9859836bf027b728556791fef4326c11db19c1a39f0a14d4fa"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/libsamplerate/0.2.2/lib/libsamplerate.0.2.2.dylib",
+          "bytes": 1556768,
+          "sha256": "2b0ac05ae94ae4c0ebd985d396d9b95cbe60cf98541c07e6d290fe03bfb7c1ad"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/libsodium/1.0.20/lib/libsodium.26.dylib",
+          "bytes": 290544,
+          "sha256": "b58e7d73d836b7f9392e426dbbdb04cbef39e673911c348e41a0668d1ba0dbeb"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/libsoxr/0.1.3/lib/libsoxr.0.1.2.dylib",
+          "bytes": 193904,
+          "sha256": "d4ec741b684db494d599fd4b135a8101a366914cc9353cebe82ae074d2dd4523"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/libssh/0.11.1/lib/libssh.4.10.1.dylib",
+          "bytes": 480384,
+          "sha256": "63abfec7794156394d79f04a116880438a3db3214032d3ac3ee12ecbe891a261"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/libtasn1/4.19.0/lib/libtasn1.6.dylib",
+          "bytes": 108208,
+          "sha256": "83de60b8461efa852bff681fd6d22d91c907eee21e73b8543c7420fc5e44d247"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/libtiff/4.7.0/lib/libtiff.6.dylib",
+          "bytes": 526512,
+          "sha256": "52f89b5e97e768ea4228962b0ee5fc0c9b269295947fdf5e3527fea5832c8163"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/libunibreak/6.1/lib/libunibreak.6.dylib",
+          "bytes": 170544,
+          "sha256": "7a891fee7288ce95edfcf70f77f53e7e6a554a37e0b04c2009eb1a36b68943c2"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/libunistring/1.3/lib/libunistring.5.dylib",
+          "bytes": 2001840,
+          "sha256": "f15a0cf10fc38eecac2ce365082654b106d180bd60c7076c88be5817c47aedaa"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/libvidstab/1.1.1/lib/libvidstab.1.2.dylib",
+          "bytes": 112336,
+          "sha256": "b285588776eb44d8843269f55eb38198f8ee972503de452f05a86f6827b1d2fb"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/libvmaf/3.0.0/lib/libvmaf.3.dylib",
+          "bytes": 747776,
+          "sha256": "d2ce187f2e7897240295baaab08ea5b5a59cdb0d5e09f36028ce4ad1f5e9bd3c"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/libvorbis/1.3.7/lib/libvorbis.0.dylib",
+          "bytes": 210576,
+          "sha256": "78ab02002af0b366805d058e6df7eae5133fa6249620f80c9e71544a61b374ab"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/libvorbis/1.3.7/lib/libvorbisenc.2.dylib",
+          "bytes": 731584,
+          "sha256": "b8795b8edb7682eea1fdfc8662a765f779937310b10578d7011a40591000ae1b"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/libvpx/1.15.0/lib/libvpx.9.dylib",
+          "bytes": 1741488,
+          "sha256": "eb0fea1deb2840d6ac08b1eeecccdd86aa9485faa8d0c7a1b475b433c20f3a5a"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/libx11/1.8.10/lib/libX11.6.dylib",
+          "bytes": 1025488,
+          "sha256": "9a2c2964276c468964d92a00c52f57fb1419973b607fbd6c4a71ab35cdf8f230"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/libxau/1.0.12/lib/libXau.6.dylib",
+          "bytes": 53312,
+          "sha256": "99fc719402348356a7cf651c207d4240ca1eb01e60fdbe9b8ad5d507e9283a38"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/libxcb/1.17.0/lib/libxcb-shape.0.0.0.dylib",
+          "bytes": 71328,
+          "sha256": "8901d4cb428a0ca99f1ef7a56a71c4c45bf3b7ca6747ae17c60565187529b4e2"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/libxcb/1.17.0/lib/libxcb-shm.0.0.0.dylib",
+          "bytes": 70432,
+          "sha256": "cbf1d379c613b4090c6f68cce1cb61be6c01d786ac8b3256eaa9ef8ec29f06a6"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/libxcb/1.17.0/lib/libxcb-xfixes.0.0.0.dylib",
+          "bytes": 81024,
+          "sha256": "55ef1fba3527d8ba2e2cb3f5405d6163e78a50f6409487a2d4a4ed7a6b5d14fb"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/libxcb/1.17.0/lib/libxcb.1.1.0.dylib",
+          "bytes": 194768,
+          "sha256": "011c6d97a17cf56399ad06fbee6a532d5b43abcb80a43b3e0794ced88dd75222"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/libxdmcp/1.1.5/lib/libXdmcp.6.dylib",
+          "bytes": 54224,
+          "sha256": "905e0ffe8894d96d078bbb97eb5a9a4327fcd37c530bf6a1af7f92b1fb424fdf"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/little-cms2/2.16/lib/liblcms2.2.dylib",
+          "bytes": 357184,
+          "sha256": "4340605ed529e0cb07626d9576b59977e6945a9a83237cb42df27ad629c8824e"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/lz4/1.10.0/lib/liblz4.1.10.0.dylib",
+          "bytes": 176960,
+          "sha256": "3ce8bec34557e6a5c76129cef6588dc59959caa51e1e54321f45ea7c6e528e07"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/mbedtls/3.6.2/lib/libmbedcrypto.3.6.2.dylib",
+          "bytes": 514992,
+          "sha256": "ca480a6521862671b27254d39ad72befc93c30d6026c3e97aeec10dbaa35d75e"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/nettle/3.10.1/lib/libhogweed.6.10.dylib",
+          "bytes": 316512,
+          "sha256": "cbc541734d3a6ee08904434de0fd175a073dce1c66387d5ddc829dd398e0948b"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/nettle/3.10.1/lib/libnettle.8.10.dylib",
+          "bytes": 334048,
+          "sha256": "a643e457206c246bae25925f00eb1ca14d7bf5c306929b8676c15c297c85350a"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/opencore-amr/0.1.6/lib/libopencore-amrnb.0.dylib",
+          "bytes": 178528,
+          "sha256": "58d59eee869d324efa0e337ba9754166f346d2069b280664bf5672496d2ac083"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/opencore-amr/0.1.6/lib/libopencore-amrwb.0.dylib",
+          "bytes": 106144,
+          "sha256": "894fa2a746eb53f7cd0f4ab6b1714e9edfdf3bb87b6e3c325e15fd25b9f0ee2b"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/openjpeg/2.5.3/lib/libopenjp2.2.5.3.dylib",
+          "bytes": 325968,
+          "sha256": "a6224dcb88fc9c358844166b252d1041f2fc1a647efc6b5cde947ada03577494"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/openssl@3/3.6.3/lib/libcrypto.3.dylib",
+          "bytes": 4856256,
+          "sha256": "a12805a18cd5e4f733fa8727b91afa08b587f9da5a760517cd79cb508a3a3f71"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/openssl@3/3.6.3/lib/libssl.3.dylib",
+          "bytes": 872080,
+          "sha256": "ffd8ac6981000def0928367924b6cb1e7a98712efbc06e2a2f3f750138bd89ca"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/opus/1.5.2/lib/libopus.0.dylib",
+          "bytes": 357584,
+          "sha256": "1fbc17c24ac6c1bfa17ac30c64617159bd118b56389b919688ab1df027ce844f"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/p11-kit/0.25.5/lib/libp11-kit.0.dylib",
+          "bytes": 1471344,
+          "sha256": "b49dc0c2ceaca23651e546c58c459451a83a30dc12e78630e4791d5090153b8a"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/pcre2/10.44/lib/libpcre2-8.0.dylib",
+          "bytes": 545424,
+          "sha256": "cc654db5766f5ea04cc4cb49a41791d7338cf38960ebabbc9009aeaaf42fab93"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/rav1e/0.7.1/lib/librav1e.0.7.1.dylib",
+          "bytes": 2795264,
+          "sha256": "cc1c44f804997fa671d0fac04e13547c4505d1ee2eb38608f6cbdc75a60ccc28"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/rubberband/4.0.0/lib/librubberband.3.dylib",
+          "bytes": 393840,
+          "sha256": "04069acff8ca0db7529cd1b6d73e2bc8a6d2729ea77351a70c3e3f4181c8296c"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/sdl2/2.30.11/lib/libSDL2-2.0.0.dylib",
+          "bytes": 1546624,
+          "sha256": "93786accdf2f1d356b643de3dd7c9ead1e6ee6f963a026cb88917d61d4d53f68"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/snappy/1.2.1/lib/libsnappy.1.2.1.dylib",
+          "bytes": 79184,
+          "sha256": "815a850ebeb480c8a2b3ef343f461b9a99f67ab7699eea568e35f1d39a5265ee"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/speex/1.2.1/lib/libspeex.1.dylib",
+          "bytes": 126176,
+          "sha256": "adbeac1b88ab9a01972b7569190c609e8cdfb29c2b40672fd1a549650b873b5f"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/srt/1.5.4/lib/libsrt.1.5.4.dylib",
+          "bytes": 713872,
+          "sha256": "ee5060d4695f41e3956995d49ff7949fd6ea89aab1fd6d3996722ff6260ccca6"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/svt-av1/2.3.0_1/lib/libSvtAv1Enc.2.3.0.dylib",
+          "bytes": 2894512,
+          "sha256": "0a2aa8d1d34ba4fa280a090917b12efbac5ecdc2b6661738b3f87aeede992c06"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/tesseract/5.5.0/lib/libtesseract.5.dylib",
+          "bytes": 2794112,
+          "sha256": "afdc3313319123a0d2bc27facb65d5d88f60dcfb6261cb4d8ba7814bce25f183"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/theora/1.1.1/lib/libtheoradec.1.dylib",
+          "bytes": 108688,
+          "sha256": "a07af28844ec90ac872d2607f33b8da24f0d89b635df54071e943e783f610e1b"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/theora/1.1.1/lib/libtheoraenc.1.dylib",
+          "bytes": 211104,
+          "sha256": "f49da6e469b706d630cfb813aef0c881dd178c49b98abbbdffc9feb5c0ea9fbc"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/webp/1.5.0/lib/libsharpyuv.0.1.1.dylib",
+          "bytes": 69872,
+          "sha256": "427e5f1e0ea3beaea7c148c779293ac5d16a1224e9e96629299258026eb594b6"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/webp/1.5.0/lib/libwebp.7.1.10.dylib",
+          "bytes": 353856,
+          "sha256": "da14e3228c47ca4628be514ed2465e0f2f692d9af9f1e91d37ebab093dee0cf9"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/webp/1.5.0/lib/libwebpmux.3.1.1.dylib",
+          "bytes": 73552,
+          "sha256": "c331ca9b1a391afa0eb6805a191f5f13bbda142611ca5394931ef7024a622c7d"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/x264/r3108/lib/libx264.164.dylib",
+          "bytes": 1294944,
+          "sha256": "68fb255c5b963786d37a8e6d1fbb98631d64cdc8bc19e2e5baad49822bda1b6f"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/x265/4.1/lib/libx265.215.dylib",
+          "bytes": 4923872,
+          "sha256": "cb2b935b7780bcb7c3fdfbb3951124905b523727c0110397a8dea8a303eaa25e"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/xz/5.8.3/lib/liblzma.5.dylib",
+          "bytes": 167472,
+          "sha256": "606a5184911c876c7446f932685183d8b348f5c9a95f764b01607be0e40b64ea"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/zeromq/4.3.5_1/lib/libzmq.5.dylib",
+          "bytes": 636464,
+          "sha256": "a7051ba68ec0a27b0ec9ce26ec953d1abea1bf321ae52f0bb6af5085eb9dea6d"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/zimg/3.0.5/lib/libzimg.2.dylib",
+          "bytes": 407696,
+          "sha256": "ee8678ed6c1287e46cfff2b1c944feab00814dca397216e61094583f9946176d"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/zstd/1.5.7_1/lib/libzstd.1.5.7.dylib",
+          "bytes": 635328,
+          "sha256": "602d50cbe6fad0f0da6d1b73284ae3f75316015aea482ebd55614b6df2406b43"
+        }
+      ],
+      "aliases": [
+        {
+          "path": "/opt/homebrew/bin/ffprobe",
+          "realpath": "/opt/homebrew/Cellar/ffmpeg/7.1_4/bin/ffprobe"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/brotli/1.2.0/lib/libbrotlicommon.1.dylib",
+          "realpath": "/opt/homebrew/Cellar/brotli/1.2.0/lib/libbrotlicommon.1.2.0.dylib"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/ffmpeg/7.1_4/lib/libavcodec.61.dylib",
+          "realpath": "/opt/homebrew/Cellar/ffmpeg/7.1_4/lib/libavcodec.61.19.100.dylib"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/ffmpeg/7.1_4/lib/libavdevice.61.dylib",
+          "realpath": "/opt/homebrew/Cellar/ffmpeg/7.1_4/lib/libavdevice.61.3.100.dylib"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/ffmpeg/7.1_4/lib/libavfilter.10.dylib",
+          "realpath": "/opt/homebrew/Cellar/ffmpeg/7.1_4/lib/libavfilter.10.4.100.dylib"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/ffmpeg/7.1_4/lib/libavformat.61.dylib",
+          "realpath": "/opt/homebrew/Cellar/ffmpeg/7.1_4/lib/libavformat.61.7.100.dylib"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/ffmpeg/7.1_4/lib/libavutil.59.dylib",
+          "realpath": "/opt/homebrew/Cellar/ffmpeg/7.1_4/lib/libavutil.59.39.100.dylib"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/ffmpeg/7.1_4/lib/libpostproc.58.dylib",
+          "realpath": "/opt/homebrew/Cellar/ffmpeg/7.1_4/lib/libpostproc.58.3.100.dylib"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/ffmpeg/7.1_4/lib/libswresample.5.dylib",
+          "realpath": "/opt/homebrew/Cellar/ffmpeg/7.1_4/lib/libswresample.5.3.100.dylib"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/ffmpeg/7.1_4/lib/libswscale.8.dylib",
+          "realpath": "/opt/homebrew/Cellar/ffmpeg/7.1_4/lib/libswscale.8.3.100.dylib"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/jpeg-xl/0.11.1/lib/libjxl_cms.0.11.dylib",
+          "realpath": "/opt/homebrew/Cellar/jpeg-xl/0.11.1/lib/libjxl_cms.0.11.1.dylib"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/libvorbis/1.3.7/lib/libvorbis.0.dylib",
+          "realpath": "/opt/homebrew/Cellar/libvorbis/1.3.7/lib/libvorbis.0.dylib"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/libxcb/1.17.0/lib/libxcb.1.dylib",
+          "realpath": "/opt/homebrew/Cellar/libxcb/1.17.0/lib/libxcb.1.1.0.dylib"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/nettle/3.10.1/lib/libnettle.8.dylib",
+          "realpath": "/opt/homebrew/Cellar/nettle/3.10.1/lib/libnettle.8.10.dylib"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/openssl@3/3.6.3/lib/libcrypto.3.dylib",
+          "realpath": "/opt/homebrew/Cellar/openssl@3/3.6.3/lib/libcrypto.3.dylib"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/webp/1.5.0/lib/libsharpyuv.0.dylib",
+          "realpath": "/opt/homebrew/Cellar/webp/1.5.0/lib/libsharpyuv.0.1.1.dylib"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/webp/1.5.0/lib/libwebp.7.dylib",
+          "realpath": "/opt/homebrew/Cellar/webp/1.5.0/lib/libwebp.7.1.10.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/aom/lib/libaom.3.dylib",
+          "realpath": "/opt/homebrew/Cellar/aom/3.11.0/lib/libaom.3.11.0.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/aribb24/lib/libaribb24.0.dylib",
+          "realpath": "/opt/homebrew/Cellar/aribb24/1.0.4/lib/libaribb24.0.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/brotli/lib/libbrotlicommon.1.dylib",
+          "realpath": "/opt/homebrew/Cellar/brotli/1.2.0/lib/libbrotlicommon.1.2.0.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/brotli/lib/libbrotlidec.1.dylib",
+          "realpath": "/opt/homebrew/Cellar/brotli/1.2.0/lib/libbrotlidec.1.2.0.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/brotli/lib/libbrotlienc.1.dylib",
+          "realpath": "/opt/homebrew/Cellar/brotli/1.2.0/lib/libbrotlienc.1.2.0.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/cjson/lib/libcjson.1.dylib",
+          "realpath": "/opt/homebrew/Cellar/cjson/1.7.18/lib/libcjson.1.7.18.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/dav1d/lib/libdav1d.7.dylib",
+          "realpath": "/opt/homebrew/Cellar/dav1d/1.5.1/lib/libdav1d.7.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/ffmpeg/lib/libavcodec.61.dylib",
+          "realpath": "/opt/homebrew/Cellar/ffmpeg/7.1_4/lib/libavcodec.61.19.100.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/ffmpeg/lib/libavdevice.61.dylib",
+          "realpath": "/opt/homebrew/Cellar/ffmpeg/7.1_4/lib/libavdevice.61.3.100.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/ffmpeg/lib/libavfilter.10.dylib",
+          "realpath": "/opt/homebrew/Cellar/ffmpeg/7.1_4/lib/libavfilter.10.4.100.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/ffmpeg/lib/libavformat.61.dylib",
+          "realpath": "/opt/homebrew/Cellar/ffmpeg/7.1_4/lib/libavformat.61.7.100.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/ffmpeg/lib/libavutil.59.dylib",
+          "realpath": "/opt/homebrew/Cellar/ffmpeg/7.1_4/lib/libavutil.59.39.100.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/ffmpeg/lib/libpostproc.58.dylib",
+          "realpath": "/opt/homebrew/Cellar/ffmpeg/7.1_4/lib/libpostproc.58.3.100.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/ffmpeg/lib/libswresample.5.dylib",
+          "realpath": "/opt/homebrew/Cellar/ffmpeg/7.1_4/lib/libswresample.5.3.100.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/ffmpeg/lib/libswscale.8.dylib",
+          "realpath": "/opt/homebrew/Cellar/ffmpeg/7.1_4/lib/libswscale.8.3.100.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/fontconfig/lib/libfontconfig.1.dylib",
+          "realpath": "/opt/homebrew/Cellar/fontconfig/2.16.0/lib/libfontconfig.1.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/freetype/lib/libfreetype.6.dylib",
+          "realpath": "/opt/homebrew/Cellar/freetype/2.13.3/lib/libfreetype.6.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/fribidi/lib/libfribidi.0.dylib",
+          "realpath": "/opt/homebrew/Cellar/fribidi/1.0.16/lib/libfribidi.0.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/gettext/lib/libintl.8.dylib",
+          "realpath": "/opt/homebrew/Cellar/gettext/0.23.1/lib/libintl.8.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/giflib/lib/libgif.dylib",
+          "realpath": "/opt/homebrew/Cellar/giflib/5.2.2/lib/libgif.7.2.0.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/glib/lib/libglib-2.0.0.dylib",
+          "realpath": "/opt/homebrew/Cellar/glib/2.82.4/lib/libglib-2.0.0.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/gmp/lib/libgmp.10.dylib",
+          "realpath": "/opt/homebrew/Cellar/gmp/6.3.0/lib/libgmp.10.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/gnutls/lib/libgnutls.30.dylib",
+          "realpath": "/opt/homebrew/Cellar/gnutls/3.8.4/lib/libgnutls.30.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/graphite2/lib/libgraphite2.3.dylib",
+          "realpath": "/opt/homebrew/Cellar/graphite2/1.3.14/lib/libgraphite2.3.2.1.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/harfbuzz/lib/libharfbuzz.0.dylib",
+          "realpath": "/opt/homebrew/Cellar/harfbuzz/10.2.0/lib/libharfbuzz.0.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/highway/lib/libhwy.1.dylib",
+          "realpath": "/opt/homebrew/Cellar/highway/1.2.0/lib/libhwy.1.2.0.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/jpeg-turbo/lib/libjpeg.8.dylib",
+          "realpath": "/opt/homebrew/Cellar/jpeg-turbo/3.1.0/lib/libjpeg.8.3.2.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/jpeg-xl/lib/libjxl_cms.0.11.dylib",
+          "realpath": "/opt/homebrew/Cellar/jpeg-xl/0.11.1/lib/libjxl_cms.0.11.1.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/jpeg-xl/lib/libjxl_threads.0.11.dylib",
+          "realpath": "/opt/homebrew/Cellar/jpeg-xl/0.11.1/lib/libjxl_threads.0.11.1.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/jpeg-xl/lib/libjxl.0.11.dylib",
+          "realpath": "/opt/homebrew/Cellar/jpeg-xl/0.11.1/lib/libjxl.0.11.1.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/lame/lib/libmp3lame.0.dylib",
+          "realpath": "/opt/homebrew/Cellar/lame/3.100/lib/libmp3lame.0.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/leptonica/lib/libleptonica.6.dylib",
+          "realpath": "/opt/homebrew/Cellar/leptonica/1.85.0/lib/libleptonica.6.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/libarchive/lib/libarchive.13.dylib",
+          "realpath": "/opt/homebrew/Cellar/libarchive/3.7.7/lib/libarchive.13.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/libass/lib/libass.9.dylib",
+          "realpath": "/opt/homebrew/Cellar/libass/0.17.3/lib/libass.9.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/libb2/lib/libb2.1.dylib",
+          "realpath": "/opt/homebrew/Cellar/libb2/0.98.1/lib/libb2.1.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/libbluray/lib/libbluray.2.dylib",
+          "realpath": "/opt/homebrew/Cellar/libbluray/1.3.4/lib/libbluray.2.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/libidn2/lib/libidn2.0.dylib",
+          "realpath": "/opt/homebrew/Cellar/libidn2/2.3.7/lib/libidn2.0.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/libogg/lib/libogg.0.dylib",
+          "realpath": "/opt/homebrew/Cellar/libogg/1.3.5/lib/libogg.0.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/libpng/lib/libpng16.16.dylib",
+          "realpath": "/opt/homebrew/Cellar/libpng/1.6.46/lib/libpng16.16.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/librist/lib/librist.4.dylib",
+          "realpath": "/opt/homebrew/Cellar/librist/0.2.11/lib/librist.4.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/libsamplerate/lib/libsamplerate.0.dylib",
+          "realpath": "/opt/homebrew/Cellar/libsamplerate/0.2.2/lib/libsamplerate.0.2.2.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/libsodium/lib/libsodium.26.dylib",
+          "realpath": "/opt/homebrew/Cellar/libsodium/1.0.20/lib/libsodium.26.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/libsoxr/lib/libsoxr.0.dylib",
+          "realpath": "/opt/homebrew/Cellar/libsoxr/0.1.3/lib/libsoxr.0.1.2.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/libssh/lib/libssh.4.dylib",
+          "realpath": "/opt/homebrew/Cellar/libssh/0.11.1/lib/libssh.4.10.1.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/libtasn1/lib/libtasn1.6.dylib",
+          "realpath": "/opt/homebrew/Cellar/libtasn1/4.19.0/lib/libtasn1.6.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/libtiff/lib/libtiff.6.dylib",
+          "realpath": "/opt/homebrew/Cellar/libtiff/4.7.0/lib/libtiff.6.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/libunibreak/lib/libunibreak.6.dylib",
+          "realpath": "/opt/homebrew/Cellar/libunibreak/6.1/lib/libunibreak.6.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/libunistring/lib/libunistring.5.dylib",
+          "realpath": "/opt/homebrew/Cellar/libunistring/1.3/lib/libunistring.5.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/libvidstab/lib/libvidstab.1.2.dylib",
+          "realpath": "/opt/homebrew/Cellar/libvidstab/1.1.1/lib/libvidstab.1.2.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/libvmaf/lib/libvmaf.3.dylib",
+          "realpath": "/opt/homebrew/Cellar/libvmaf/3.0.0/lib/libvmaf.3.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/libvorbis/lib/libvorbis.0.dylib",
+          "realpath": "/opt/homebrew/Cellar/libvorbis/1.3.7/lib/libvorbis.0.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/libvorbis/lib/libvorbisenc.2.dylib",
+          "realpath": "/opt/homebrew/Cellar/libvorbis/1.3.7/lib/libvorbisenc.2.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/libvpx/lib/libvpx.9.dylib",
+          "realpath": "/opt/homebrew/Cellar/libvpx/1.15.0/lib/libvpx.9.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/libx11/lib/libX11.6.dylib",
+          "realpath": "/opt/homebrew/Cellar/libx11/1.8.10/lib/libX11.6.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/libxau/lib/libXau.6.dylib",
+          "realpath": "/opt/homebrew/Cellar/libxau/1.0.12/lib/libXau.6.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/libxcb/lib/libxcb-shape.0.dylib",
+          "realpath": "/opt/homebrew/Cellar/libxcb/1.17.0/lib/libxcb-shape.0.0.0.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/libxcb/lib/libxcb-shm.0.dylib",
+          "realpath": "/opt/homebrew/Cellar/libxcb/1.17.0/lib/libxcb-shm.0.0.0.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/libxcb/lib/libxcb-xfixes.0.dylib",
+          "realpath": "/opt/homebrew/Cellar/libxcb/1.17.0/lib/libxcb-xfixes.0.0.0.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/libxcb/lib/libxcb.1.dylib",
+          "realpath": "/opt/homebrew/Cellar/libxcb/1.17.0/lib/libxcb.1.1.0.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/libxdmcp/lib/libXdmcp.6.dylib",
+          "realpath": "/opt/homebrew/Cellar/libxdmcp/1.1.5/lib/libXdmcp.6.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/little-cms2/lib/liblcms2.2.dylib",
+          "realpath": "/opt/homebrew/Cellar/little-cms2/2.16/lib/liblcms2.2.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/lz4/lib/liblz4.1.dylib",
+          "realpath": "/opt/homebrew/Cellar/lz4/1.10.0/lib/liblz4.1.10.0.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/mbedtls/lib/libmbedcrypto.16.dylib",
+          "realpath": "/opt/homebrew/Cellar/mbedtls/3.6.2/lib/libmbedcrypto.3.6.2.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/nettle/lib/libhogweed.6.dylib",
+          "realpath": "/opt/homebrew/Cellar/nettle/3.10.1/lib/libhogweed.6.10.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/nettle/lib/libnettle.8.dylib",
+          "realpath": "/opt/homebrew/Cellar/nettle/3.10.1/lib/libnettle.8.10.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/opencore-amr/lib/libopencore-amrnb.0.dylib",
+          "realpath": "/opt/homebrew/Cellar/opencore-amr/0.1.6/lib/libopencore-amrnb.0.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/opencore-amr/lib/libopencore-amrwb.0.dylib",
+          "realpath": "/opt/homebrew/Cellar/opencore-amr/0.1.6/lib/libopencore-amrwb.0.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/openjpeg/lib/libopenjp2.7.dylib",
+          "realpath": "/opt/homebrew/Cellar/openjpeg/2.5.3/lib/libopenjp2.2.5.3.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/openssl@3/lib/libcrypto.3.dylib",
+          "realpath": "/opt/homebrew/Cellar/openssl@3/3.6.3/lib/libcrypto.3.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/openssl@3/lib/libssl.3.dylib",
+          "realpath": "/opt/homebrew/Cellar/openssl@3/3.6.3/lib/libssl.3.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/opus/lib/libopus.0.dylib",
+          "realpath": "/opt/homebrew/Cellar/opus/1.5.2/lib/libopus.0.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/p11-kit/lib/libp11-kit.0.dylib",
+          "realpath": "/opt/homebrew/Cellar/p11-kit/0.25.5/lib/libp11-kit.0.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/pcre2/lib/libpcre2-8.0.dylib",
+          "realpath": "/opt/homebrew/Cellar/pcre2/10.44/lib/libpcre2-8.0.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/rav1e/lib/librav1e.0.7.dylib",
+          "realpath": "/opt/homebrew/Cellar/rav1e/0.7.1/lib/librav1e.0.7.1.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/rubberband/lib/librubberband.3.dylib",
+          "realpath": "/opt/homebrew/Cellar/rubberband/4.0.0/lib/librubberband.3.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/sdl2/lib/libSDL2-2.0.0.dylib",
+          "realpath": "/opt/homebrew/Cellar/sdl2/2.30.11/lib/libSDL2-2.0.0.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/snappy/lib/libsnappy.1.dylib",
+          "realpath": "/opt/homebrew/Cellar/snappy/1.2.1/lib/libsnappy.1.2.1.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/speex/lib/libspeex.1.dylib",
+          "realpath": "/opt/homebrew/Cellar/speex/1.2.1/lib/libspeex.1.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/srt/lib/libsrt.1.5.dylib",
+          "realpath": "/opt/homebrew/Cellar/srt/1.5.4/lib/libsrt.1.5.4.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/svt-av1/lib/libSvtAv1Enc.2.dylib",
+          "realpath": "/opt/homebrew/Cellar/svt-av1/2.3.0_1/lib/libSvtAv1Enc.2.3.0.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/tesseract/lib/libtesseract.5.dylib",
+          "realpath": "/opt/homebrew/Cellar/tesseract/5.5.0/lib/libtesseract.5.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/theora/lib/libtheoradec.1.dylib",
+          "realpath": "/opt/homebrew/Cellar/theora/1.1.1/lib/libtheoradec.1.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/theora/lib/libtheoraenc.1.dylib",
+          "realpath": "/opt/homebrew/Cellar/theora/1.1.1/lib/libtheoraenc.1.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/webp/lib/libsharpyuv.0.dylib",
+          "realpath": "/opt/homebrew/Cellar/webp/1.5.0/lib/libsharpyuv.0.1.1.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/webp/lib/libwebp.7.dylib",
+          "realpath": "/opt/homebrew/Cellar/webp/1.5.0/lib/libwebp.7.1.10.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/webp/lib/libwebpmux.3.dylib",
+          "realpath": "/opt/homebrew/Cellar/webp/1.5.0/lib/libwebpmux.3.1.1.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/x264/lib/libx264.164.dylib",
+          "realpath": "/opt/homebrew/Cellar/x264/r3108/lib/libx264.164.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/x265/lib/libx265.215.dylib",
+          "realpath": "/opt/homebrew/Cellar/x265/4.1/lib/libx265.215.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/xz/lib/liblzma.5.dylib",
+          "realpath": "/opt/homebrew/Cellar/xz/5.8.3/lib/liblzma.5.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/zeromq/lib/libzmq.5.dylib",
+          "realpath": "/opt/homebrew/Cellar/zeromq/4.3.5_1/lib/libzmq.5.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/zimg/lib/libzimg.2.dylib",
+          "realpath": "/opt/homebrew/Cellar/zimg/3.0.5/lib/libzimg.2.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/zstd/lib/libzstd.1.dylib",
+          "realpath": "/opt/homebrew/Cellar/zstd/1.5.7_1/lib/libzstd.1.5.7.dylib"
+        }
+      ]
+    },
+    "tesseract": {
+      "executable": "/opt/homebrew/Cellar/tesseract/5.5.0/bin/tesseract",
+      "version": "tesseract 5.5.0",
+      "files": [
+        {
+          "path": "/opt/homebrew/Cellar/giflib/5.2.2/lib/libgif.7.2.0.dylib",
+          "bytes": 72816,
+          "sha256": "23839539b12bc6f2921ef25e627194d23a9486b3ec91ecc4184eba2b9750d7c6"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/jpeg-turbo/3.1.0/lib/libjpeg.8.3.2.dylib",
+          "bytes": 473216,
+          "sha256": "673cbfb520fed542905f54bbd9433cfdb3b33c5284b4f51fc28bc6ec03655c52"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/leptonica/1.85.0/lib/libleptonica.6.dylib",
+          "bytes": 2221296,
+          "sha256": "f0a46a723e29e02a595f36ed29377b6502b8cc348d27d106065f4efec2ba2ca2"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/libarchive/3.7.7/lib/libarchive.13.dylib",
+          "bytes": 704384,
+          "sha256": "118cd50942d0d2850100878a732a3521f41ac6ed4426d7a0597d2eda4d2d95d9"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/libb2/0.98.1/lib/libb2.1.dylib",
+          "bytes": 85968,
+          "sha256": "7a2ad4cb206c8920f8d0f93a11def7bcf4db88a191563d097dedb99dba79eb17"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/libpng/1.6.46/lib/libpng16.16.dylib",
+          "bytes": 226544,
+          "sha256": "fb56861c53f241d3aa95574ff7909b56ce680ad6c72906465298346d5428941a"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/libtiff/4.7.0/lib/libtiff.6.dylib",
+          "bytes": 526512,
+          "sha256": "52f89b5e97e768ea4228962b0ee5fc0c9b269295947fdf5e3527fea5832c8163"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/lz4/1.10.0/lib/liblz4.1.10.0.dylib",
+          "bytes": 176960,
+          "sha256": "3ce8bec34557e6a5c76129cef6588dc59959caa51e1e54321f45ea7c6e528e07"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/openjpeg/2.5.3/lib/libopenjp2.2.5.3.dylib",
+          "bytes": 325968,
+          "sha256": "a6224dcb88fc9c358844166b252d1041f2fc1a647efc6b5cde947ada03577494"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/tesseract/5.5.0/bin/tesseract",
+          "bytes": 85168,
+          "sha256": "dae1430f48bd0f0aabeec710d0d5c9cd480d4bb62125dc9226e045be82aa4752"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/tesseract/5.5.0/lib/libtesseract.5.dylib",
+          "bytes": 2794112,
+          "sha256": "afdc3313319123a0d2bc27facb65d5d88f60dcfb6261cb4d8ba7814bce25f183"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/webp/1.5.0/lib/libsharpyuv.0.1.1.dylib",
+          "bytes": 69872,
+          "sha256": "427e5f1e0ea3beaea7c148c779293ac5d16a1224e9e96629299258026eb594b6"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/webp/1.5.0/lib/libwebp.7.1.10.dylib",
+          "bytes": 353856,
+          "sha256": "da14e3228c47ca4628be514ed2465e0f2f692d9af9f1e91d37ebab093dee0cf9"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/webp/1.5.0/lib/libwebpmux.3.1.1.dylib",
+          "bytes": 73552,
+          "sha256": "c331ca9b1a391afa0eb6805a191f5f13bbda142611ca5394931ef7024a622c7d"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/xz/5.8.3/lib/liblzma.5.dylib",
+          "bytes": 167472,
+          "sha256": "606a5184911c876c7446f932685183d8b348f5c9a95f764b01607be0e40b64ea"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/zstd/1.5.7_1/lib/libzstd.1.5.7.dylib",
+          "bytes": 635328,
+          "sha256": "602d50cbe6fad0f0da6d1b73284ae3f75316015aea482ebd55614b6df2406b43"
+        }
+      ],
+      "aliases": [
+        {
+          "path": "/opt/homebrew/bin/tesseract",
+          "realpath": "/opt/homebrew/Cellar/tesseract/5.5.0/bin/tesseract"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/tesseract/5.5.0/lib/libtesseract.5.dylib",
+          "realpath": "/opt/homebrew/Cellar/tesseract/5.5.0/lib/libtesseract.5.dylib"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/webp/1.5.0/lib/libsharpyuv.0.dylib",
+          "realpath": "/opt/homebrew/Cellar/webp/1.5.0/lib/libsharpyuv.0.1.1.dylib"
+        },
+        {
+          "path": "/opt/homebrew/Cellar/webp/1.5.0/lib/libwebp.7.dylib",
+          "realpath": "/opt/homebrew/Cellar/webp/1.5.0/lib/libwebp.7.1.10.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/giflib/lib/libgif.dylib",
+          "realpath": "/opt/homebrew/Cellar/giflib/5.2.2/lib/libgif.7.2.0.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/jpeg-turbo/lib/libjpeg.8.dylib",
+          "realpath": "/opt/homebrew/Cellar/jpeg-turbo/3.1.0/lib/libjpeg.8.3.2.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/leptonica/lib/libleptonica.6.dylib",
+          "realpath": "/opt/homebrew/Cellar/leptonica/1.85.0/lib/libleptonica.6.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/libarchive/lib/libarchive.13.dylib",
+          "realpath": "/opt/homebrew/Cellar/libarchive/3.7.7/lib/libarchive.13.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/libb2/lib/libb2.1.dylib",
+          "realpath": "/opt/homebrew/Cellar/libb2/0.98.1/lib/libb2.1.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/libpng/lib/libpng16.16.dylib",
+          "realpath": "/opt/homebrew/Cellar/libpng/1.6.46/lib/libpng16.16.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/libtiff/lib/libtiff.6.dylib",
+          "realpath": "/opt/homebrew/Cellar/libtiff/4.7.0/lib/libtiff.6.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/lz4/lib/liblz4.1.dylib",
+          "realpath": "/opt/homebrew/Cellar/lz4/1.10.0/lib/liblz4.1.10.0.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/openjpeg/lib/libopenjp2.7.dylib",
+          "realpath": "/opt/homebrew/Cellar/openjpeg/2.5.3/lib/libopenjp2.2.5.3.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/tesseract/lib/libtesseract.5.dylib",
+          "realpath": "/opt/homebrew/Cellar/tesseract/5.5.0/lib/libtesseract.5.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/webp/lib/libsharpyuv.0.dylib",
+          "realpath": "/opt/homebrew/Cellar/webp/1.5.0/lib/libsharpyuv.0.1.1.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/webp/lib/libwebp.7.dylib",
+          "realpath": "/opt/homebrew/Cellar/webp/1.5.0/lib/libwebp.7.1.10.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/webp/lib/libwebpmux.3.dylib",
+          "realpath": "/opt/homebrew/Cellar/webp/1.5.0/lib/libwebpmux.3.1.1.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/xz/lib/liblzma.5.dylib",
+          "realpath": "/opt/homebrew/Cellar/xz/5.8.3/lib/liblzma.5.dylib"
+        },
+        {
+          "path": "/opt/homebrew/opt/zstd/lib/libzstd.1.dylib",
+          "realpath": "/opt/homebrew/Cellar/zstd/1.5.7_1/lib/libzstd.1.5.7.dylib"
+        }
+      ]
+    }
+  },
+  "models": [
+    {
+      "code": "eng",
+      "bytes": 4113088,
+      "gitBlobSha1": "bbef4675053b5b468cdb477053e28b1c698ba08e",
+      "sha256": "7d4322bd2a7749724879683fc3912cb542f19906c83bcc1a52132556427170b2",
+      "sourceCommit": "65727574dfcd264acbb0c3e07860e4e9e9b22185",
+      "path": "assets/ocr/tessdata/eng.traineddata",
+      "secondary": []
+    },
+    {
+      "code": "chi_sim",
+      "bytes": 2469156,
+      "gitBlobSha1": "388bac276d033d06e5ed5ba7a7ad14ae58f97dab",
+      "sha256": "a5fcb6f0db1e1d6d8522f39db4e848f05984669172e584e8d76b6b3141e1f730",
+      "sourceCommit": "65727574dfcd264acbb0c3e07860e4e9e9b22185",
+      "path": "assets/ocr/tessdata/chi_sim.traineddata",
+      "secondary": []
+    }
+  ],
+  "languageSpec": "chi_sim+eng+~chi_sim_vert",
+  "oem": 1,
+  "psm": 3,
+  "dpi": 300
+}

@@ -1,0 +1,8 @@
+--- a/examples/cli/cli.cpp
++++ b/examples/cli/cli.cpp
+@@ -9,1 +9,2 @@
+ #include <fstream>
++#include <iostream>
+@@ -1158,1 +1159,1 @@
+-                    fout = std::ofstream{"/dev/stdout"};
++                    fout.basic_ios<char>::rdbuf(std::cout.rdbuf());

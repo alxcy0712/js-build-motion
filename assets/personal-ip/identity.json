@@ -1,0 +1,59 @@
+{
+  "version": "4.5",
+  "type": "personal-character-ip",
+  "style": "精细动漫插画，柔和立体明暗与暖色细节",
+  "mark": {
+    "text": "Alxcy",
+    "color": "white",
+    "placement": "人物自身右胸，正面图中位于画面左侧",
+    "lettering": "轻微右倾的圆润手写签字体，首字母大写"
+  },
+  "identityAnchors": [
+    "蓬松分层黑发、向上与向外的发梢、较短侧发",
+    "圆润暖肤色脸型、大号深棕眼睛、浓眉、小鼻与小嘴",
+    "基础造型为黑色连帽衫、米白抽绳、金属绳孔与颈后帽子；衣柜造型沿用右胸白色 Alxcy 标识",
+    "头部偏大、肩部窄的卡通比例",
+    "基础造型为深灰长裤与黑色运动鞋；换装保持原有身材比例"
+  ],
+  "views": {
+    "front": "views/front.png",
+    "side": "views/side.png",
+    "back": "views/back.png"
+  },
+  "portrait": "portrait.png",
+  "expressions": "expressions.json",
+  "facialRig": "rig.json",
+  "runtime": "puppet.mjs",
+  "wardrobe": "wardrobe.json",
+  "animations": {
+    "idle": {
+      "png": "animations/idle.png",
+      "webp": "animations/idle.webp"
+    },
+    "speaking": {
+      "png": "animations/speaking.png",
+      "webp": "animations/speaking.webp"
+    }
+  },
+  "usage": "影片内容需要创作者本人出镜、个人经历或个人角色参与讲解时使用此 IP；出镜时机服务于内容。",
+  "reuse": "所需文件独立复制到当前影片 assets/，登记来源与内容哈希。新姿态和场景以本人物、脸型、发型和身材比例为身份基准；服装可选用 wardrobe.json 中登记的完整造型，右胸沿用白色 Alxcy 签名。",
+  "animation": "18 种正面表情共用扶正的头部、完整肩颈和身体基准，12 套眉毛、眼睛、脸颊与静止嘴型图层经 expressionLayers 组合出新增表情。expression 选择表情，mouthOpen 接收 0–1 的张嘴程度，speaking 开启讲话和闭口停顿；六个独立口型使用固定位置和尺寸。headTilt 以角度驱动头部及全部五官共同转动，默认 0，已验证 ±5 度；注视方向固定，时间控制逐级眨眼和肩部呼吸。疑惑右上方紫色漫画问号、惊讶金色漫画感叹号、生气符号与兴奋星芒位于肖像坐标；落泪采用闭眼哭泣与从眼睑连续流向下颌的泪痕，细小高光随时间向下流动，泪水跟随头部。左右 45° 从对应透视基准整体重绘眉眼、嘴型和流泪，完整肖像单元保存在 rig 的 angledExpressions 图集中；静态表情路径见 expressions.json 的 views。精确音素同步由影片提供时序。 衣柜通过 drawWardrobePortrait 共用原有表情与头部，10 套服装支持正面动画及左右 45° 静态表情；三向服装图层保存在每套的 upper-body.webp 中。",
+  "provenance": "用户提供既有生成头像并授权衍生制作、将个人 IP 源素材纳入 Git。",
+  "expressionViews": {
+    "front": {
+      "facing": "正面",
+      "yaw": 0,
+      "animated": true
+    },
+    "left45": {
+      "facing": "朝画面左侧",
+      "yaw": -45,
+      "animated": false
+    },
+    "right45": {
+      "facing": "朝画面右侧",
+      "yaw": 45,
+      "animated": false
+    }
+  }
+}

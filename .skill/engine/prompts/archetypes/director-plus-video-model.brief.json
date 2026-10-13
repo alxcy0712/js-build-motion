@@ -1,0 +1,19 @@
+{
+  "version": "0.1",
+  "archetype": "director-plus-video-model",
+  "intent": "策划并编排外部视频模型生成的镜头，制作具有连续视觉与声音的视频。",
+  "audience": "看写实或电影感的观众",
+  "deliverable": { "duration": 30, "aspect": "16:9", "fps": 24, "captions": "sidecar" },
+  "assets": [],
+  "tools": {
+    "allowed": ["ffmpeg", "ffprobe"],
+    "forbidden": ["seedance", "kling", "minimax-h3", "midjourney", "nano-banana", "comfyui", "whisper"]
+  },
+  "claims": { "humanRounds": 1, "pureCode": false, "zeroExternalAssets": false, "humanRevision": true },
+  "acceptance": [
+    "生成镜头符合本片设计，角色与物件连续",
+    "字幕、声音和剪辑同步，成片完整",
+    "素材来源、生成模型与日志、费用及人工贡献清楚"
+  ],
+  "notes": "画面生成使用本片授权且登记的外部工具，pureCode按像素来源填写。当前能力通过capabilities查询，新增接入使用核心维护流程；生成与选片记录按实际保存。"
+}

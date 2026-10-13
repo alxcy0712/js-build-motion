@@ -1,0 +1,182 @@
+[
+  {
+    "id": "neutral",
+    "label": "平静微笑",
+    "path": "expressions/neutral.png",
+    "views": {
+      "front": "expressions/neutral.png",
+      "left45": "expressions/left45/neutral.png",
+      "right45": "expressions/right45/neutral.png"
+    }
+  },
+  {
+    "id": "happy",
+    "label": "开心",
+    "path": "expressions/happy.png",
+    "views": {
+      "front": "expressions/happy.png",
+      "left45": "expressions/left45/happy.png",
+      "right45": "expressions/right45/happy.png"
+    }
+  },
+  {
+    "id": "laugh",
+    "label": "大笑",
+    "path": "expressions/laugh.png",
+    "views": {
+      "front": "expressions/laugh.png",
+      "left45": "expressions/left45/laugh.png",
+      "right45": "expressions/right45/laugh.png"
+    }
+  },
+  {
+    "id": "thinking",
+    "label": "思考",
+    "path": "expressions/thinking.png",
+    "views": {
+      "front": "expressions/thinking.png",
+      "left45": "expressions/left45/thinking.png",
+      "right45": "expressions/right45/thinking.png"
+    }
+  },
+  {
+    "id": "focused",
+    "label": "专注",
+    "path": "expressions/focused.png",
+    "views": {
+      "front": "expressions/focused.png",
+      "left45": "expressions/left45/focused.png",
+      "right45": "expressions/right45/focused.png"
+    }
+  },
+  {
+    "id": "surprised",
+    "label": "惊讶",
+    "path": "expressions/surprised.png",
+    "views": {
+      "front": "expressions/surprised.png",
+      "left45": "expressions/left45/surprised.png",
+      "right45": "expressions/right45/surprised.png"
+    }
+  },
+  {
+    "id": "puzzled",
+    "label": "疑惑",
+    "path": "expressions/puzzled.png",
+    "views": {
+      "front": "expressions/puzzled.png",
+      "left45": "expressions/left45/puzzled.png",
+      "right45": "expressions/right45/puzzled.png"
+    }
+  },
+  {
+    "id": "worried",
+    "label": "担心",
+    "path": "expressions/worried.png",
+    "views": {
+      "front": "expressions/worried.png",
+      "left45": "expressions/left45/worried.png",
+      "right45": "expressions/right45/worried.png"
+    }
+  },
+  {
+    "id": "shy",
+    "label": "害羞",
+    "path": "expressions/shy.png",
+    "views": {
+      "front": "expressions/shy.png",
+      "left45": "expressions/left45/shy.png",
+      "right45": "expressions/right45/shy.png"
+    }
+  },
+  {
+    "id": "determined",
+    "label": "坚定",
+    "path": "expressions/determined.png",
+    "views": {
+      "front": "expressions/determined.png",
+      "left45": "expressions/left45/determined.png",
+      "right45": "expressions/right45/determined.png"
+    }
+  },
+  {
+    "id": "wink",
+    "label": "眨单眼",
+    "path": "expressions/wink.png",
+    "views": {
+      "front": "expressions/wink.png",
+      "left45": "expressions/left45/wink.png",
+      "right45": "expressions/right45/wink.png"
+    }
+  },
+  {
+    "id": "calm",
+    "label": "闭眼放松",
+    "path": "expressions/calm.png",
+    "views": {
+      "front": "expressions/calm.png",
+      "left45": "expressions/left45/calm.png",
+      "right45": "expressions/right45/calm.png"
+    }
+  },
+  {
+    "id": "angry",
+    "label": "生气",
+    "path": "expressions/angry.png",
+    "views": {
+      "front": "expressions/angry.png",
+      "left45": "expressions/left45/angry.png",
+      "right45": "expressions/right45/angry.png"
+    }
+  },
+  {
+    "id": "sad",
+    "label": "难过",
+    "path": "expressions/sad.png",
+    "views": {
+      "front": "expressions/sad.png",
+      "left45": "expressions/left45/sad.png",
+      "right45": "expressions/right45/sad.png"
+    }
+  },
+  {
+    "id": "crying",
+    "label": "落泪",
+    "path": "expressions/crying.png",
+    "views": {
+      "front": "expressions/crying.png",
+      "left45": "expressions/left45/crying.png",
+      "right45": "expressions/right45/crying.png"
+    }
+  },
+  {
+    "id": "skeptical",
+    "label": "怀疑",
+    "path": "expressions/skeptical.png",
+    "views": {
+      "front": "expressions/skeptical.png",
+      "left45": "expressions/left45/skeptical.png",
+      "right45": "expressions/right45/skeptical.png"
+    }
+  },
+  {
+    "id": "relieved",
+    "label": "释然",
+    "path": "expressions/relieved.png",
+    "views": {
+      "front": "expressions/relieved.png",
+      "left45": "expressions/left45/relieved.png",
+      "right45": "expressions/right45/relieved.png"
+    }
+  },
+  {
+    "id": "excited",
+    "label": "兴奋",
+    "path": "expressions/excited.png",
+    "views": {
+      "front": "expressions/excited.png",
+      "left45": "expressions/left45/excited.png",
+      "right45": "expressions/right45/excited.png"
+    }
+  }
+]

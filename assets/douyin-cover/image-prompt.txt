@@ -1,0 +1,8 @@
+Use case: ads-marketing
+Asset type: isolated hero illustration for a minimalist Chinese short-video cover.
+Primary request: generate one recognizable subject that directly represents [本期内容 / single subject].
+Style/medium: refined soft 3D illustration, smooth matte ceramic and clay, rounded edges, simple readable silhouette.
+Composition/framing: square canvas, one subject centered, occupying about 72 percent of the canvas. Keep generous transparent space around all edges. All parts remain inside the canvas.
+Lighting/mood: soft studio light from the upper left, restrained shading and delicate contact shadow.
+Color palette: predominantly warm ivory #F7F5EF. Use exact accent #FFC712 on a limited part of the subject, with gentle natural highlights and shadows. Supporting surfaces are very pale cream.
+Constraints: genuinely transparent background and clean antialiased edges. Keep only the subject essential to the topic. Typography, people, logos, badges and extra decoration are composed separately in JavaScript. No text or watermark.

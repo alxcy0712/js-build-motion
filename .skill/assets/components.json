@@ -1,0 +1,63 @@
+{
+  "easing": {
+    "source": "src/animation/easing.ts",
+    "dependencies": []
+  },
+  "random": {
+    "source": "src/animation/random.ts",
+    "dependencies": []
+  },
+  "noise": {
+    "source": "src/animation/noise.ts",
+    "dependencies": ["random"]
+  },
+  "rough": {
+    "source": "src/drawing/art/rough.ts",
+    "dependencies": ["random", "noise"]
+  },
+  "paper": {
+    "source": "src/drawing/art/paper.ts",
+    "dependencies": ["random", "noise"]
+  },
+  "watercolor": {
+    "source": "src/drawing/art/watercolor.ts",
+    "dependencies": ["random", "noise", "rough"]
+  },
+  "region-paint": {
+    "source": "src/drawing/art/region-paint.ts",
+    "dependencies": ["random", "noise", "watercolor"]
+  },
+  "spring": {
+    "source": "src/animation/spring.ts",
+    "dependencies": []
+  },
+  "contour": {
+    "source": "src/drawing/primitives/contour.ts",
+    "dependencies": []
+  },
+  "particle-assembly": {
+    "source": "src/drawing/primitives/particle-assembly.ts",
+    "dependencies": [
+      "easing",
+      "random"
+    ]
+  },
+  "visual-check": {
+    "source": "src/drawing/primitives/visual-check.ts",
+    "dependencies": []
+  },
+  "text-bounds": {
+    "source": "src/drawing/primitives/text-bounds.ts",
+    "dependencies": ["visual-check"]
+  },
+  "image-fit": {
+    "source": "src/drawing/primitives/image-fit.ts",
+    "dependencies": []
+  },
+  "camera": {
+    "source": "src/drawing/primitives/camera.ts",
+    "dependencies": [
+      "easing"
+    ]
+  }
+}

@@ -1,0 +1,509 @@
+{
+  "version": "1.2",
+  "identity": "identity.json",
+  "format": "transparent-webp",
+  "overview": "wardrobe/overview.webp",
+  "defaultOutfit": {
+    "id": "hoodie",
+    "label": "基础黑色连帽衫",
+    "path": "views/front.png"
+  },
+  "generation": {
+    "tool": "built-in imagegen",
+    "prompts": "wardrobe/prompts.json",
+    "references": [
+      {
+        "path": "views/front.png",
+        "role": "front-view edit target",
+        "sha256": "64621edcb047c639c286e56a113a70bbee8c4cc3e33ae34343386f34c1156e44"
+      },
+      {
+        "path": "portrait.png",
+        "role": "close-up identity reference",
+        "sha256": "533e2ecc2450da73cb44f5268f12fe0a3ded0ed0cb7f19d1207fd5eb8f883918"
+      }
+    ]
+  },
+  "outfits": [
+    {
+      "id": "business",
+      "label": "商务正装",
+      "path": "wardrobe/business/front.webp",
+      "width": 512,
+      "height": 1024,
+      "garments": [
+        "藏蓝西装",
+        "白衬衫",
+        "酒红领带",
+        "藏蓝西裤",
+        "棕色牛津鞋"
+      ],
+      "accessories": [
+        "银色腕表"
+      ],
+      "upperBody": {
+        "path": "wardrobe/business/upper-body.webp",
+        "cellSize": 512,
+        "columns": 3,
+        "views": [
+          "front",
+          "left45",
+          "right45"
+        ],
+        "rects": [
+          {
+            "x": 14,
+            "y": 342,
+            "width": 484,
+            "height": 170
+          },
+          {
+            "x": 54,
+            "y": 336,
+            "width": 432,
+            "height": 176
+          },
+          {
+            "x": 31,
+            "y": 335,
+            "width": 440,
+            "height": 177
+          }
+        ]
+      }
+    },
+    {
+      "id": "academy",
+      "label": "学院针织",
+      "path": "wardrobe/academy/front.webp",
+      "width": 512,
+      "height": 1024,
+      "garments": [
+        "墨绿菱格针织背心",
+        "米白衬衫",
+        "条纹领带",
+        "卡其长裤",
+        "棕色乐福鞋"
+      ],
+      "accessories": [
+        "棕色肩背书包"
+      ],
+      "upperBody": {
+        "path": "wardrobe/academy/upper-body.webp",
+        "cellSize": 512,
+        "columns": 3,
+        "views": [
+          "front",
+          "left45",
+          "right45"
+        ],
+        "rects": [
+          {
+            "x": 21,
+            "y": 341,
+            "width": 472,
+            "height": 171
+          },
+          {
+            "x": 50,
+            "y": 334,
+            "width": 432,
+            "height": 178
+          },
+          {
+            "x": 32,
+            "y": 336,
+            "width": 442,
+            "height": 176
+          }
+        ]
+      }
+    },
+    {
+      "id": "street",
+      "label": "街头棒球",
+      "path": "wardrobe/street/front.webp",
+      "width": 512,
+      "height": 1024,
+      "garments": [
+        "酒红棒球夹克",
+        "米白 T 恤",
+        "水洗黑牛仔裤",
+        "奶白高帮鞋"
+      ],
+      "accessories": [
+        "细银项链"
+      ],
+      "upperBody": {
+        "path": "wardrobe/street/upper-body.webp",
+        "cellSize": 512,
+        "columns": 3,
+        "views": [
+          "front",
+          "left45",
+          "right45"
+        ],
+        "rects": [
+          {
+            "x": 22,
+            "y": 341,
+            "width": 474,
+            "height": 171
+          },
+          {
+            "x": 64,
+            "y": 334,
+            "width": 410,
+            "height": 178
+          },
+          {
+            "x": 39,
+            "y": 333,
+            "width": 427,
+            "height": 179
+          }
+        ]
+      }
+    },
+    {
+      "id": "outdoor",
+      "label": "山系户外",
+      "path": "wardrobe/outdoor/front.webp",
+      "width": 512,
+      "height": 1024,
+      "garments": [
+        "橄榄绿户外夹克",
+        "沙色工装裤",
+        "棕色登山靴"
+      ],
+      "accessories": [
+        "小型登山背包",
+        "橙色领巾"
+      ],
+      "upperBody": {
+        "path": "wardrobe/outdoor/upper-body.webp",
+        "cellSize": 512,
+        "columns": 3,
+        "views": [
+          "front",
+          "left45",
+          "right45"
+        ],
+        "rects": [
+          {
+            "x": 14,
+            "y": 341,
+            "width": 484,
+            "height": 171
+          },
+          {
+            "x": 50,
+            "y": 335,
+            "width": 436,
+            "height": 177
+          },
+          {
+            "x": 27,
+            "y": 335,
+            "width": 452,
+            "height": 177
+          }
+        ]
+      }
+    },
+    {
+      "id": "sport",
+      "label": "活力运动",
+      "path": "wardrobe/sport/front.webp",
+      "width": 512,
+      "height": 1024,
+      "garments": [
+        "钴蓝运动外套",
+        "浅灰 T 恤",
+        "深灰束脚裤",
+        "蓝白跑鞋"
+      ],
+      "accessories": [
+        "橙色运动手表"
+      ],
+      "upperBody": {
+        "path": "wardrobe/sport/upper-body.webp",
+        "cellSize": 512,
+        "columns": 3,
+        "views": [
+          "front",
+          "left45",
+          "right45"
+        ],
+        "rects": [
+          {
+            "x": 21,
+            "y": 341,
+            "width": 477,
+            "height": 171
+          },
+          {
+            "x": 51,
+            "y": 335,
+            "width": 433,
+            "height": 177
+          },
+          {
+            "x": 24,
+            "y": 335,
+            "width": 437,
+            "height": 177
+          }
+        ]
+      }
+    },
+    {
+      "id": "summer",
+      "label": "夏日亚麻",
+      "path": "wardrobe/summer/front.webp",
+      "width": 512,
+      "height": 1024,
+      "garments": [
+        "深青亚麻短袖衬衫",
+        "米白内搭",
+        "沙色短裤",
+        "棕色凉鞋"
+      ],
+      "accessories": [
+        "米白帆布托特包"
+      ],
+      "upperBody": {
+        "path": "wardrobe/summer/upper-body.webp",
+        "cellSize": 512,
+        "columns": 3,
+        "views": [
+          "front",
+          "left45",
+          "right45"
+        ],
+        "rects": [
+          {
+            "x": 33,
+            "y": 341,
+            "width": 453,
+            "height": 171
+          },
+          {
+            "x": 63,
+            "y": 335,
+            "width": 403,
+            "height": 177
+          },
+          {
+            "x": 58,
+            "y": 335,
+            "width": 402,
+            "height": 177
+          }
+        ]
+      }
+    },
+    {
+      "id": "winter",
+      "label": "冬日围巾",
+      "path": "wardrobe/winter/front.webp",
+      "width": 512,
+      "height": 1024,
+      "garments": [
+        "深蓝灰羊毛大衣",
+        "浅灰针织衫",
+        "深色长裤",
+        "棕色短靴"
+      ],
+      "accessories": [
+        "酒红围巾",
+        "棕色手套"
+      ],
+      "upperBody": {
+        "path": "wardrobe/winter/upper-body.webp",
+        "cellSize": 512,
+        "columns": 3,
+        "views": [
+          "front",
+          "left45",
+          "right45"
+        ],
+        "rects": [
+          {
+            "x": 15,
+            "y": 340,
+            "width": 483,
+            "height": 172
+          },
+          {
+            "x": 49,
+            "y": 334,
+            "width": 445,
+            "height": 178
+          },
+          {
+            "x": 35,
+            "y": 335,
+            "width": 439,
+            "height": 177
+          }
+        ]
+      }
+    },
+    {
+      "id": "neo-chinese",
+      "label": "新中式",
+      "path": "wardrobe/neo-chinese/front.webp",
+      "width": 512,
+      "height": 1024,
+      "garments": [
+        "墨青立领盘扣外套",
+        "米白内搭",
+        "黑色长裤",
+        "黑色布鞋"
+      ],
+      "accessories": [
+        "小玉佩"
+      ],
+      "upperBody": {
+        "path": "wardrobe/neo-chinese/upper-body.webp",
+        "cellSize": 512,
+        "columns": 3,
+        "views": [
+          "front",
+          "left45",
+          "right45"
+        ],
+        "rects": [
+          {
+            "x": 21,
+            "y": 341,
+            "width": 474,
+            "height": 171
+          },
+          {
+            "x": 57,
+            "y": 335,
+            "width": 433,
+            "height": 177
+          },
+          {
+            "x": 50,
+            "y": 335,
+            "width": 418,
+            "height": 177
+          }
+        ]
+      }
+    },
+    {
+      "id": "workwear",
+      "label": "复古工装",
+      "path": "wardrobe/workwear/front.webp",
+      "width": 512,
+      "height": 1024,
+      "garments": [
+        "靛蓝牛仔工装夹克",
+        "米白条纹 T 恤",
+        "烟草棕长裤",
+        "棕色工装靴"
+      ],
+      "accessories": [
+        "颈挂式耳机",
+        "棕色皮带"
+      ],
+      "upperBody": {
+        "path": "wardrobe/workwear/upper-body.webp",
+        "cellSize": 512,
+        "columns": 3,
+        "views": [
+          "front",
+          "left45",
+          "right45"
+        ],
+        "rects": [
+          {
+            "x": 24,
+            "y": 341,
+            "width": 466,
+            "height": 171
+          },
+          {
+            "x": 63,
+            "y": 335,
+            "width": 413,
+            "height": 177
+          },
+          {
+            "x": 29,
+            "y": 336,
+            "width": 423,
+            "height": 176
+          }
+        ]
+      }
+    },
+    {
+      "id": "techwear",
+      "label": "未来科技",
+      "path": "wardrobe/techwear/front.webp",
+      "width": 512,
+      "height": 1024,
+      "garments": [
+        "石墨灰机能外套",
+        "黑色工装裤",
+        "黑银高帮鞋"
+      ],
+      "accessories": [
+        "青色肩夹通讯器",
+        "银色腕环"
+      ],
+      "upperBody": {
+        "path": "wardrobe/techwear/upper-body.webp",
+        "cellSize": 512,
+        "columns": 3,
+        "views": [
+          "front",
+          "left45",
+          "right45"
+        ],
+        "rects": [
+          {
+            "x": 22,
+            "y": 342,
+            "width": 476,
+            "height": 170
+          },
+          {
+            "x": 47,
+            "y": 335,
+            "width": 442,
+            "height": 177
+          },
+          {
+            "x": 25,
+            "y": 335,
+            "width": 450,
+            "height": 177
+          }
+        ]
+      }
+    }
+  ],
+  "views": [
+    "front",
+    "left45",
+    "right45"
+  ],
+  "animatedViews": [
+    "front"
+  ],
+  "upperBodyOverview": "wardrobe/upper-body-overview.webp",
+  "posture": {
+    "reference": "基础黑色连帽衫",
+    "neck": "连续可见的颈部与低位领口",
+    "shoulders": "自然下垂的肩线",
+    "frontAxis": "竖直中轴与水平肩高",
+    "normalization": "服装源图等比缩放与平移，按 512 像素单元固定对齐"
+  }
+}

@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>个人 IP · 素材与动画</title>
+<style>
+  figure{margin:0}
+  .expression canvas{display:block;width:100%;max-width:none;aspect-ratio:1}.stage.wardrobe-stage{min-height:0}.wardrobe-stage canvas{display:block;width:100%;max-width:none;height:auto}.outfit-select{display:flex;align-items:center;gap:10px;margin-bottom:12px}.outfit-select select{font:inherit;color:inherit;max-width:260px;padding:7px;border:1px solid #e0e3e6;border-radius:8px;background:#faf9f7}select:focus-visible{outline:3px solid #b8864e;outline-offset:3px}
+  .wardrobe-panel>.note{margin:0 0 18px}
+  a{color:#394a5e}a:focus-visible{outline:3px solid #b8864e;outline-offset:3px}.wardrobe-panel{margin-top:24px;scroll-margin-top:20px}.wardrobe-layout{display:grid;grid-template-columns:320px 1fr;gap:24px}.wardrobe-stage{min-height:0;padding:12px}.outfits{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;align-content:start}.outfit{padding:8px;background:#faf9f7}.outfit img{display:block;width:100%;height:230px;object-fit:contain}.outfit span{display:block;font-size:13px;margin-top:6px}.outfit.active{color:#252b35;background:#ece5da;border-color:#b99b74}.wardrobe-detail{margin:12px 0 0}.wardrobe-detail h3{margin:0 0 6px;font-size:17px}.wardrobe-detail p{margin:0 0 6px;font-size:13px}.download{display:inline-block;margin-top:8px}@media(max-width:1000px){.outfits{grid-template-columns:repeat(3,minmax(0,1fr))}.outfit img{height:210px}}@media(max-width:800px){.wardrobe-layout{grid-template-columns:1fr}}@media(max-width:420px){.outfits{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  *{box-sizing:border-box}body{margin:0;padding:32px;color:#252b35;background:#f5f4f1;font:15px/1.5 system-ui,-apple-system,sans-serif}main{max-width:1240px;margin:auto}h1{font-size:28px;margin:0 0 6px}p{margin:0 0 24px;color:#69717b}.layout{display:grid;grid-template-columns:390px 1fr;gap:24px}.panel{background:#fff;border:1px solid #e4e5e6;border-radius:18px;padding:20px}h2{font-size:18px;margin:0 0 14px}.stage{display:flex;align-items:center;justify-content:center;border-radius:12px;min-height:360px;background:#eee9e1}.stage.dark{background:#243044}.stage.checker{background:repeating-conic-gradient(#eef0f1 0% 25%,#fff 0% 50%) 0 0/24px 24px}canvas{width:100%;max-width:340px;height:auto}.controls{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}button,.upload{font:inherit;color:inherit;background:#f2f3f4;border:1px solid #e0e3e6;border-radius:8px;padding:7px 13px;cursor:pointer}button.active{color:#fff;background:#394a5e;border-color:#394a5e}button:focus-visible,.upload:focus-within{outline:3px solid #b8864e;outline-offset:3px}.upload input{max-width:230px}audio{width:100%;height:36px;margin-top:12px}.expressions{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.expression{padding:4px;border-color:transparent;background:#faf9f7}.expression.active{color:#252b35;background:#ece5da;border-color:#b99b74}.expression span{font-size:13px}.views{display:grid;grid-template-columns:repeat(3,1fr);margin-top:20px;text-align:center;background:#faf9f7;border-radius:12px;padding:14px}.views img{width:100%;max-height:330px;object-fit:contain}.note{font-size:12px;margin:14px 0 0}.status{min-height:24px;font-size:13px;color:#69717b}@media(max-width:800px){body{padding:20px}.layout{grid-template-columns:1fr}.stage{min-height:300px}.expressions{grid-template-columns:repeat(3,1fr)}}
+</style>
+<main>
+  <h1>个人形象 IP</h1>
+  <p>Alxcy · 暖色插画 · 透明人物素材 · <a href="#wardrobe">浏览 10 套衣柜造型</a></p>
+  <div class="layout">
+    <section class="panel">
+      <h2>动画与素材预览</h2>
+      <label class="outfit-select">服装 <select id="outfit-select"><option value="">基础黑色连帽衫</option></select></label>
+      <div class="stage" id="stage"><canvas id="actor" width="768" height="768" aria-label="个人 IP 动画预览"></canvas></div>
+      <div class="controls" aria-label="人物朝向"><button data-view="front" class="active">正面</button><button data-view="left45">左 45°</button><button data-view="right45">右 45°</button></div>
+      <div class="controls" aria-label="动画状态"><button data-mode="idle" class="active">待机</button><button data-mode="speaking">说话</button><button data-mode="audio">音频口型</button></div>
+      <div class="controls" aria-label="头部姿态"><button data-tilt="0" class="active">扶正</button><button data-tilt="-5">左轻歪</button><button data-tilt="5">右轻歪</button></div>
+      <div class="controls" aria-label="预览背景"><button data-background="light" class="active">浅色</button><button data-background="dark">深色</button><button data-background="checker">透明格</button></div>
+      <button id="portrait-download" type="button">导出当前上半身 PNG</button>
+      <label class="upload">加载本地音频 <input id="file" type="file" accept="audio/*"></label>
+      <audio id="audio" controls></audio>
+      <div class="status" id="status" role="status">待机：自然眨眼与肩部呼吸</div>
+      <p class="note">正面支持动画与音频口型；左右 45° 展示静态表情。左右以画面方向为准。音频保留在本地浏览器。</p>
+    </section>
+    <section class="panel">
+      <h2 id="expression-count">表情</h2><div class="expressions" id="expressions"></div>
+      <div class="views"><figure><img src="views/front.png" alt="正面全身"><figcaption>正面</figcaption></figure><figure><img src="views/side.png" alt="侧面全身"><figcaption>侧面</figcaption></figure><figure><img src="views/back.png" alt="背面全身"><figcaption>背面</figcaption></figure></div>
+    </section>
+  </div>
+  <section class="panel wardrobe-panel" id="wardrobe" aria-labelledby="wardrobe-count">
+    <h2 id="wardrobe-count">个人衣柜</h2>
+    <p class="note">选装同步更新上半身、表情与全身。正面支持说话与眨眼，左右 45° 支持 18 种静态表情。透明 WebP 节省空间，下载时导出 PNG。</p>
+    <div class="wardrobe-layout">
+      <div>
+        <div class="stage checker wardrobe-stage" id="wardrobe-stage"><canvas id="wardrobe-actor" width="512" height="512" aria-label="衣柜造型预览"></canvas></div>
+        <div class="controls" aria-label="衣柜构图"><button data-framing="full" aria-pressed="false">全身</button><button data-framing="portrait" class="active" aria-pressed="true">上半身</button></div>
+        <div class="controls" aria-label="衣柜上半身朝向"><button data-wardrobe-view="front" class="active" aria-pressed="true">正面</button><button data-wardrobe-view="left45" aria-pressed="false">左 45°</button><button data-wardrobe-view="right45" aria-pressed="false">右 45°</button></div>
+        <div class="controls" aria-label="衣柜预览背景"><button data-wardrobe-background="light" aria-pressed="false">浅色</button><button data-wardrobe-background="dark" aria-pressed="false">深色</button><button data-wardrobe-background="checker" class="active" aria-pressed="true">透明格</button></div>
+        <div class="wardrobe-detail" aria-live="polite"><h3 id="wardrobe-name"></h3><p id="wardrobe-garments"></p><p id="wardrobe-accessories"></p><p id="wardrobe-size"></p><button class="download" id="wardrobe-download" type="button">下载全身 PNG</button></div>
+      </div>
+      <div class="outfits" id="outfits" aria-label="选择衣柜造型"></div>
+    </div>
+  </section>
+</main>
+<script type="module">
+  import { drawWardrobePortrait, speechLevel } from './puppet.mjs?v=4.6';
+  const rig = await fetch('./rig.json', {cache:'no-store'}).then(response => response.json());
+  const expressions = await fetch('./expressions.json', {cache:'no-store'}).then(response => response.json());
+  const wardrobe = await fetch('./wardrobe.json', {cache:'no-store'}).then(response => response.json());
+  const decode = path => new Promise((resolve, reject) => { const image = new Image(); image.onload = () => resolve(image); image.onerror = () => reject(new Error(`素材加载失败：${path}`)); image.src = `${path}?v=${rig.version}-${wardrobe.version}`; });
+  const images = Object.fromEntries(await Promise.all(['base','body','mouths','blink','eyes','brows','cheeks','restMouths'].map(async key => [key, await decode(rig[key])])));
+  for (const view of ['left45','right45']) images[view] = await decode(rig.angledExpressions[view].path);
+  const outfitImages = new Map(await Promise.all(wardrobe.outfits.map(async item => [item.id, await decode(item.upperBody.path)])));
+  const fullBodies = new Map(await Promise.all([wardrobe.defaultOutfit,...wardrobe.outfits].map(async item => [item.id, await decode(item.path)])));
+  document.querySelector('#expression-count').textContent = `${expressions.length} 种表情 · 3 个朝向`;
+  const canvas = document.querySelector('#actor'), context = canvas.getContext('2d');
+  const audio = document.querySelector('#audio'), status = document.querySelector('#status');
+  let mode = 'idle', view = 'front', selected = 'neutral', analyzer, samples, audioContext, source, level = 0, audioUrl, headTilt = 0, targetTilt = 0, currentOutfit, framing = 'portrait';
+  const faceCanvases = new Map();
+  function renderFaces() {
+    for (const [expression, canvas] of faceCanvases) { const ctx = canvas.getContext('2d'); ctx.clearRect(0,0,256,256); drawWardrobePortrait(ctx,images,rig,currentOutfit,{view,expression,blink:false,motion:false}); }
+  }
+  const selectFace = id => { selected = id; document.querySelectorAll('[data-expression]').forEach(button => button.classList.toggle('active', button.dataset.expression === id)); };
+  for (const item of expressions) {
+    const button = document.createElement('button'); button.className = 'expression'; button.dataset.expression = item.id;
+    const image = document.createElement('canvas'); image.width = image.height = 256; image.setAttribute('aria-hidden','true'); faceCanvases.set(item.id,image);
+    const label = document.createElement('span'); label.textContent = item.label; button.append(image, label);
+    button.addEventListener('click', () => { selectFace(item.id); renderGallery(); status.textContent = `表情：${item.label}${view === 'front' ? '' : ' · ' + (view === 'left45' ? '左' : '右') + ' 45° 静态素材'}`; });
+    document.querySelector('#expressions').append(button);
+  }
+  selectFace('neutral');
+  document.querySelectorAll('[data-view]').forEach(button => button.addEventListener('click', () => {
+    view = button.dataset.view;
+    document.querySelectorAll('[data-view]').forEach(item => item.classList.toggle('active', item === button));
+    document.querySelectorAll('[data-mode],[data-tilt],#file').forEach(item => item.disabled = view !== 'front');
+    document.querySelectorAll('[data-wardrobe-view]').forEach(item => { const active = item.dataset.wardrobeView === view; item.classList.toggle('active',active); item.setAttribute('aria-pressed',String(active)); });
+    renderFaces(); renderGallery();
+    status.textContent = view === 'front' ? '正面：保留当前表情与动画状态' : `${view === 'left45' ? '左' : '右'} 45°：静态表情素材`;
+  }));
+  document.querySelectorAll('[data-mode]').forEach(button => button.addEventListener('click', () => {
+    mode = button.dataset.mode;
+    document.querySelectorAll('[data-mode]').forEach(item => item.classList.toggle('active', item === button));
+    status.textContent = mode === 'audio' ? '加载本地音频并播放，口型会跟随声音' : mode === 'speaking' ? '说话：独立口型、发声停顿与自然眨眼' : '待机：自然眨眼与肩部呼吸';
+  }));
+  document.querySelectorAll('[data-background]').forEach(button => button.addEventListener('click', () => {
+    document.querySelector('#stage').className = `stage ${button.dataset.background}`;
+    document.querySelectorAll('[data-background]').forEach(item => item.classList.toggle('active', item === button));
+  }));
+  document.querySelectorAll('[data-tilt]').forEach(button => button.addEventListener('click', () => {
+    targetTilt = Number(button.dataset.tilt);
+    document.querySelectorAll('[data-tilt]').forEach(item => item.classList.toggle('active', item === button));
+  }));
+  document.querySelector('#file').addEventListener('change', event => {
+    const file = event.target.files[0]; if (!file) return;
+    if (audioUrl) URL.revokeObjectURL(audioUrl);
+    audioUrl = URL.createObjectURL(file); audio.src = audioUrl;
+    document.querySelector('[data-mode="audio"]').click(); status.textContent = `已加载：${file.name}`;
+  });
+  audio.addEventListener('play', async () => {
+    audioContext ??= new AudioContext();
+    if (!analyzer) {
+      analyzer = audioContext.createAnalyser(); analyzer.fftSize = 1024;
+      samples = new Float32Array(analyzer.fftSize);
+      source = audioContext.createMediaElementSource(audio); source.connect(analyzer); analyzer.connect(audioContext.destination);
+    }
+    await audioContext.resume();
+    document.querySelector('[data-mode="audio"]').click();
+  });
+  const start = performance.now(); let previous = start;
+  function frame(now) {
+    headTilt += (targetTilt - headTilt) * (1 - Math.exp(-(now - previous) / 130)); previous = now;
+    if (analyzer && !audio.paused) { analyzer.getFloatTimeDomainData(samples); level += (speechLevel(samples) - level) * 0.45; }
+    else level = 0;
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    const options = { time: (now - start) / 1000, x: 0, y: 0, size: canvas.width, headTilt, expression: selected, speaking: mode !== 'idle' };
+    if (mode === 'audio') { options.mouthOpen = level; options.roundness = 0; }
+    drawWardrobePortrait(context, images, rig, currentOutfit, {...options,view});
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+  document.querySelector('#wardrobe-count').textContent = `个人衣柜 · ${wardrobe.outfits.length} 套造型`;
+  const gallery = document.querySelector('#wardrobe-actor'), galleryContext = gallery.getContext('2d'), outfitSelect = document.querySelector('#outfit-select');
+  function renderGallery() {
+    const full = framing === 'full', height = full ? 1024 : 512;
+    if (gallery.height !== height) gallery.height = height;
+    galleryContext.clearRect(0,0,512,height);
+    if (full) galleryContext.drawImage(fullBodies.get(currentOutfit?.id ?? wardrobe.defaultOutfit.id),0,0,512,1024);
+    else drawWardrobePortrait(galleryContext,images,rig,currentOutfit,{view,expression:selected,size:512,blink:false,motion:false});
+  }
+  function setFraming(value) {
+    framing = value; const full = framing === 'full';
+    document.querySelectorAll('[data-framing]').forEach(button => { const active = button.dataset.framing === value; button.classList.toggle('active',active); button.setAttribute('aria-pressed',String(active)); });
+    document.querySelector('#wardrobe-size').textContent = `${full ? '512 × 1024 · 正面全身' : '512 × 512 · 三向上半身'} · 透明 WebP`;
+    document.querySelector('#wardrobe-download').textContent = full ? '下载全身 PNG' : '下载上半身 PNG';
+    renderGallery();
+  }
+  function selectOutfit(item) {
+    currentOutfit = item; images.outfit = item ? outfitImages.get(item.id) : undefined; outfitSelect.value = item?.id ?? '';
+    document.querySelector('#wardrobe-name').textContent = item?.label ?? wardrobe.defaultOutfit.label;
+    document.querySelector('#wardrobe-garments').textContent = item ? item.garments.join(' · ') : '黑色连帽衫 · 米白抽绳 · 深灰长裤 · 黑色运动鞋';
+    document.querySelector('#wardrobe-accessories').textContent = item ? `配饰：${item.accessories.join(' · ')}` : '基础身份造型';
+    document.querySelectorAll('[data-outfit]').forEach(button => { const active = button.dataset.outfit === item?.id; button.classList.toggle('active', active); button.setAttribute('aria-pressed', String(active)); });
+    setFraming(framing); renderFaces(); status.textContent = `服装：${item?.label ?? wardrobe.defaultOutfit.label}`;
+  }
+  for (const item of wardrobe.outfits) {
+    const button = document.createElement('button'); button.type = 'button'; button.className = 'outfit'; button.dataset.outfit = item.id; button.setAttribute('aria-pressed', 'false');
+    const image = document.createElement('img'); image.src = item.path; image.alt = ''; image.loading = 'lazy'; image.width = item.width; image.height = item.height;
+    const label = document.createElement('span'); label.textContent = item.label; button.append(image, label);
+    button.addEventListener('click', () => selectOutfit(item)); document.querySelector('#outfits').append(button);
+    const option = document.createElement('option'); option.value = item.id; option.textContent = item.label; outfitSelect.append(option);
+  }
+  selectOutfit(wardrobe.outfits[0]);
+  outfitSelect.addEventListener('change', () => selectOutfit(wardrobe.outfits.find(item => item.id === outfitSelect.value)));
+  document.querySelectorAll('[data-framing]').forEach(button => button.addEventListener('click', () => setFraming(button.dataset.framing)));
+  document.querySelectorAll('[data-wardrobe-view]').forEach(button => button.addEventListener('click', () => { document.querySelector(`[data-view="${button.dataset.wardrobeView}"]`).click(); setFraming('portrait'); }));
+  function downloadCanvas(canvas, name) {
+    canvas.toBlob(blob => { const url = URL.createObjectURL(blob), link = document.createElement('a'); link.href = url; link.download = name; link.click(); setTimeout(() => URL.revokeObjectURL(url),1000); },'image/png');
+  }
+  document.querySelector('#wardrobe-download').addEventListener('click', () => downloadCanvas(gallery,`alxcy-${currentOutfit?.id ?? 'hoodie'}-${framing === 'full' ? 'full' : view + '-' + selected}.png`));
+  document.querySelector('#portrait-download').addEventListener('click', () => {
+    const output = document.createElement('canvas'); output.width = output.height = 512;
+    output.getContext('2d').drawImage(canvas,0,0,512,512); downloadCanvas(output,`alxcy-${currentOutfit?.id ?? 'hoodie'}-${view}-${selected}.png`);
+  });
+  document.querySelectorAll('[data-wardrobe-background]').forEach(button => button.addEventListener('click', () => {
+    document.querySelector('#wardrobe-stage').className = `stage wardrobe-stage ${button.dataset.wardrobeBackground}`;
+    document.querySelectorAll('[data-wardrobe-background]').forEach(item => { const active = item === button; item.classList.toggle('active', active); item.setAttribute('aria-pressed', String(active)); });
+  }));
+</script>
+</html>
