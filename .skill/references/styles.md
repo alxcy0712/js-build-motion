@@ -24,3 +24,10 @@
   - `role: "actor"`：讲解动画中的演员，例如骑车、操作电脑（默认 384px）。
 - 写法：`"ip": { "role": "identity", "size": 288, "position": "bottom-center", "expression": "happy" }`；`position` 可选 `bottom-center | bottom-left | bottom-right | center | custom`（custom 需 `x`、`y`，0–1，y 为角色底边）。旧写法 `ip: true` 自动降级为 288px 身份署名并告警。
 - 纯文字镜头不放 IP，标题居中；身份署名在底部时标题略上移。
+
+## 渲染前自检
+出片前逐项过一遍，并在抽帧（每镜头一张 + 片尾）上实测：
+- **主体居中**：主体按画布中心（竖屏 x=540、横屏 x=960）排版，推/拉镜绕画布中心或 `focus` 目标缩放，不绕 (0,0)；不要把安全区的中线（竖屏 x≈492）当作构图中线。实测：`node .skill/engine/scripts/centering-qa.ts <still.png>... [--exclude x,y,w,h]`，内容包围盒中心水平偏移 ≤ 2%（角落署名用 `--exclude` 排除）；代码里用 `measureContentCenter` / `isCentered` / `withinSafeArea`（`src/qa/centering.ts`）。
+- **安全区**：推镜到最大倍数时，文字和主体仍完整落在安全区内（竖屏 上220 / 下520 / 左72 / 右168）。
+- **防死帧**：`dead-frame-qa.ts` 无死帧区间。
+- **文字**：字形正确、无错字，文字镜头从首帧就可见，新旧文字不重叠。
