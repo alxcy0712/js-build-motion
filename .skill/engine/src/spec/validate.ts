@@ -18,7 +18,7 @@ import { Ajv, type ValidateFunction } from 'ajv';
 
 import { EngineError, ERROR_CODES } from '../utils/errors.ts';
 import { collectSchemaErrors } from '../utils/json-schema.ts';
-import { repairSpec, type Issue } from './repair.ts';
+import { repairSpec, type Issue, type RepairOptions } from './repair.ts';
 import { VIDEO_SPEC_SCHEMA } from './schema.ts';
 import type { ResolvedVideoSpec } from './types.ts';
 
@@ -71,11 +71,11 @@ function countIssues(issues: readonly Issue[]): ValidationOutcome['counts'] {
  * 注意：FATAL 会抛 EngineError；调用方若想拿到 issues 列表做展示，
  * 应捕获它并读取 `err.details.issues`。
  */
-export function validateSpec(raw: unknown): ValidationOutcome {
+export function validateSpec(raw: unknown, options: RepairOptions = {}): ValidationOutcome {
   const validate = validator();
   const schemaErrors = collectSchemaErrors(validate, raw);
 
-  const { spec, issues } = repairSpec(raw);
+  const { spec, issues } = repairSpec(raw, options);
 
   // --- 复核：修复结果必须能通过 schema ---
   const residual = collectSchemaErrors(validate, spec);

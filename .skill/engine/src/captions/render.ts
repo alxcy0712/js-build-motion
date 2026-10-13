@@ -361,6 +361,8 @@ export interface DrawCaptionsOptions {
   readonly fontFamily: string;
   readonly seed: number;
   readonly layout?: CaptionLayoutSettings;
+  /** 风格配色（themes/）；缺省沿用原水彩字幕配色 */
+  readonly themeColors?: { readonly text: string; readonly active: string; readonly plate: string; readonly secondary: string };
 }
 
 /**
@@ -420,7 +422,7 @@ export function drawCaptions(o: DrawCaptionsOptions): void {
   if (o.style === 'boxed' || o.style === 'handwritten') {
     const plateAlpha = o.style === 'boxed' ? 0.82 : 0.62;
     ctx.globalAlpha = plateAlpha;
-    ctx.fillStyle = mix(o.palette.shadow, '#000000', 0.45);
+    ctx.fillStyle = o.themeColors?.plate ?? mix(o.palette.shadow, '#000000', 0.45);
     ctx.beginPath();
     ctx.roundRect(plateX, plateY, plateW, plateH, Math.round(layout.fontSize * 0.34));
     ctx.fill();
@@ -476,7 +478,7 @@ export function drawCaptions(o: DrawCaptionsOptions): void {
       }
 
       ctx.globalAlpha = 1;
-      ctx.fillStyle = active ? '#ffd666' : '#f6f2e8';
+      ctx.fillStyle = active ? (o.themeColors?.active ?? '#ffd666') : (o.themeColors?.text ?? '#f6f2e8');
 
       if (rot !== 0 || dy !== 0) {
         ctx.save();
@@ -501,7 +503,7 @@ export function drawCaptions(o: DrawCaptionsOptions): void {
       ctx.font = `600 ${secondaryLayout.fontSize}px "${o.fontFamily}"`;
       const lineWidth = ctx.measureText(line).width;
       ctx.globalAlpha = 0.86;
-      ctx.fillStyle = '#d9d4c8';
+      ctx.fillStyle = o.themeColors?.secondary ?? '#d9d4c8';
       ctx.fillText(line, o.width / 2 - lineWidth / 2, y + secondaryLayout.lineHeight * 0.5);
       y += secondaryLayout.lineHeight;
     }

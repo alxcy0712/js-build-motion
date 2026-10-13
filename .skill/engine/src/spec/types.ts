@@ -1,3 +1,8 @@
+import type { CameraPath } from '../motion/camera-path.ts';
+import type { FocusRect } from '../motion/focus.ts';
+import type { FootageClip } from '../footage/spec.ts';
+import { DEFAULT_THEME, type ThemeId } from '../themes/ids.ts';
+export { THEME_IDS, type ThemeId } from '../themes/ids.ts';
 import type { Composition } from './motion.ts';
 import { DOUBAO_VOICES, type DoubaoVoiceId } from '../audio/tts/doubao-voices.ts';
 /**
@@ -21,6 +26,8 @@ export type Camera = (typeof CAMERAS)[number];
 export const ENVIRONMENTS = [
   'rain_window',
   'motion_stage',
+  'theme_stage',
+  'footage',
   'office_night',
   'bedroom',
   'city_street',
@@ -34,7 +41,11 @@ export type Environment = (typeof ENVIRONMENTS)[number];
 export const CAMERA_MOVES = ['static', 'slow_push', 'slow_pull', 'pan_left', 'pan_right', 'tilt_up', 'tilt_down'] as const;
 export type CameraMove = (typeof CAMERA_MOVES)[number];
 
-export const TRANSITIONS = ['cut', 'fade', 'dissolve', 'wipe', 'iris', 'zoom', 'grid', 'glitch', 'tokenize'] as const;
+export const TRANSITIONS = [
+  'cut', 'fade', 'dissolve', 'wipe', 'iris', 'zoom', 'grid', 'glitch', 'tokenize',
+  // 风格转场（themes/）：只能使用当前风格 transitions 列表中的项，否则回退到该风格第一项
+  'blurDissolve', 'riseFade', 'maskWipeUp', 'scaleThrough', 'cutOnBeat', 'whipPan', 'glitchCut', 'zoomIntoElement', 'lineScan', 'paperFlip', 'inkBleed',
+] as const;
 export type Transition = (typeof TRANSITIONS)[number];
 
 export const STYLE_PRESETS = ['watercolor_storybook', 'ink', 'pencil', 'paper_cut', 'flat'] as const;
@@ -132,6 +143,8 @@ export interface VideoSettings {
 }
 
 export interface StyleSettings {
+  /** 风格层（themes/）：决定字体、色板、字号、时长、弹簧、缓动、转场与质感。场景色仍由 palette 决定。 */
+  theme: ThemeId;
   preset: StylePreset;
   palette: Palette;
   paper: PaperKind;
@@ -150,6 +163,23 @@ export interface CharacterDefinition {
   y?: number;
 }
 
+export const IP_ROLES = ['identity', 'actor'] as const;
+export const IP_POSITIONS = ['bottom-center', 'bottom-left', 'bottom-right', 'center', 'custom'] as const;
+/** IP 源素材边长（rig 头/身部件 512px）。显示尺寸不得超过它：IP 是小幅美术，不放大当主视觉。 */
+export const IP_SOURCE_SIZE = 512;
+export const IP_DEFAULT_SIZE = { identity: 288, actor: 384 } as const;
+export interface IPPlacement {
+  /** identity=身份/署名（如片尾小签名）；actor=讲解动画里的演员 */
+  role: (typeof IP_ROLES)[number];
+  /** 显示边长（输出像素，竖屏 1080 宽 / 横屏 1920 宽参考），≤ 512 */
+  size?: number;
+  position?: (typeof IP_POSITIONS)[number];
+  /** position=custom 时的中心点（0–1 画面比例），y 为角色底边 */
+  x?: number;
+  y?: number;
+  expression?: string;
+}
+
 export interface Scene {
   composition?: Composition;
   id: string;
@@ -165,6 +195,20 @@ export interface Scene {
   character?: string;
   action?: Action;
   emotion?: Emotion;
+  /** theme_stage 的屏上文字，每行一项（≤3 行，每屏字数受风格预算约束） */
+  headline?: string[];
+  /** theme_stage 的小标题（强调色） */
+  kicker?: string;
+  /** 个人 IP（assets/personal-ip）。默认不出现；只用于身份声明或讲解中的演员 */
+  ip?: IPPlacement;
+  /** IP 表情 id，见 assets/personal-ip/expressions.json；默认 neutral */
+  ipExpression?: string;
+  /** 关键帧相机（镜头内秒数；x/y 为归一化注视点）。设置后取代 cameraMove 预设 */
+  cameraPath?: CameraPath;
+  /** 本镜头的视觉焦点元素（归一化矩形）；下一镜头用 zoomIntoElement 时从这里钻入 */
+  focus?: FocusRect;
+  /** environment = footage 时的素材片段（图片/视频，相对素材根目录） */
+  footage?: FootageClip;
 }
 
 export interface NarrationLine {
@@ -255,6 +299,7 @@ export const SPEC_DEFAULTS = {
     seed: 12345,
   },
   style: {
+    theme: DEFAULT_THEME,
     preset: 'watercolor_storybook',
     palette: 'warm_night',
     paper: 'rough',
@@ -299,9 +344,16 @@ export const DEFAULT_CHARACTER: CharacterDefinition = {
  * 渲染器只接受 `ResolvedVideoSpec`，从而不可能遇到 undefined 分支。
  */
 export interface ResolvedStyleSettings extends StyleSettings {}
-export interface ResolvedScene extends Required<Omit<Scene, 'character' | 'composition'>> {
+export interface ResolvedScene extends Required<Omit<Scene, 'character' | 'composition' | 'headline' | 'kicker' | 'ip' | 'ipExpression' | 'cameraPath' | 'focus' | 'footage'>> {
   character: string | undefined;
   composition?: Composition;
+  headline?: string[];
+  kicker?: string;
+  ip?: IPPlacement;
+  ipExpression?: string;
+  cameraPath?: CameraPath;
+  focus?: FocusRect;
+  footage?: FootageClip;
 }
 export interface ResolvedAudioSettings {
   narration: NarrationLine[];

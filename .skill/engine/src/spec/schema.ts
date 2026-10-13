@@ -1,3 +1,4 @@
+import { THEME_IDS } from '../themes/ids.ts';
 import { COMPOSITION_SCHEMA } from './motion.ts';
 /**
  * VideoSpec 的 JSON Schema（需求 §13）。
@@ -112,6 +113,7 @@ export const VIDEO_SPEC_SCHEMA: Record<string, unknown> = {
       type: 'object',
       additionalProperties: false,
       properties: {
+        theme: enumSchema(THEME_IDS),
         preset: enumSchema(STYLE_PRESETS),
         palette: enumSchema(PALETTES),
         paper: enumSchema(PAPER_KINDS),
@@ -154,6 +156,46 @@ export const VIDEO_SPEC_SCHEMA: Record<string, unknown> = {
           camera: enumSchema(CAMERAS),
           cameraMove: enumSchema(CAMERA_MOVES),
           transition: enumSchema(TRANSITIONS),
+          headline: { type: 'array', maxItems: 3, items: { type: 'string', minLength: 1, maxLength: 40 } },
+          kicker: { type: 'string', minLength: 1, maxLength: 40 },
+          ip: {
+            type: 'object', additionalProperties: false, required: ['role'],
+            properties: {
+              role: { type: 'string', enum: ['identity', 'actor'] },
+              size: { type: 'number', minimum: 64, maximum: 512 },
+              position: { type: 'string', enum: ['bottom-center', 'bottom-left', 'bottom-right', 'center', 'custom'] },
+              x: { type: 'number', minimum: 0, maximum: 1 }, y: { type: 'number', minimum: 0, maximum: 1 },
+              expression: { type: 'string', pattern: '^[a-z0-9_-]{1,24}$' },
+            },
+          },
+          ipExpression: { type: 'string', pattern: '^[a-z0-9_-]{1,24}$' },
+          cameraPath: {
+            type: 'object', additionalProperties: false, required: ['keys'],
+            properties: {
+              keys: {
+                type: 'array', minItems: 2, maxItems: 24,
+                items: {
+                  type: 'object', additionalProperties: false, required: ['t'],
+                  properties: {
+                    t: { type: 'number', minimum: 0 }, x: { type: 'number', minimum: -0.5, maximum: 1.5 }, y: { type: 'number', minimum: -0.5, maximum: 1.5 },
+                    zoom: { type: 'number', minimum: 0.5, maximum: 8 }, rotate: { type: 'number', minimum: -45, maximum: 45 },
+                    ease: { anyOf: [{ const: 'hold' }, { type: 'array', minItems: 4, maxItems: 4, items: { type: 'number' } }] },
+                  },
+                },
+              },
+            },
+          },
+          focus: { type: 'object', additionalProperties: false, required: ['x', 'y', 'w', 'h'], properties: { x: { type: 'number', minimum: 0, maximum: 1 }, y: { type: 'number', minimum: 0, maximum: 1 }, w: { type: 'number', minimum: 0.01, maximum: 1 }, h: { type: 'number', minimum: 0.01, maximum: 1 } } },
+          footage: {
+            type: 'object', additionalProperties: false, required: ['src'],
+            properties: {
+              src: { type: 'string', minLength: 1, maxLength: 260 }, in: { type: 'number', minimum: 0 }, speed: { type: 'number', minimum: 0.25, maximum: 4 },
+              fit: { type: 'string', enum: ['cover', 'contain'] },
+              crop: { type: 'object', additionalProperties: false, required: ['x', 'y', 'w', 'h'], properties: { x: { type: 'number' }, y: { type: 'number' }, w: { type: 'number' }, h: { type: 'number' } } },
+              kenBurns: { type: 'object', additionalProperties: false, required: ['from', 'to'], properties: { from: { type: 'object' }, to: { type: 'object' }, ease: { type: 'array', minItems: 4, maxItems: 4, items: { type: 'number' } } } },
+              color: { type: 'object', additionalProperties: false, properties: { exposure: { type: 'number' }, contrast: { type: 'number' }, saturation: { type: 'number' }, temperature: { type: 'number' }, vignette: { type: 'number' } } },
+            },
+          },
           character: { type: 'string', maxLength: 40 },
           action: enumSchema(ACTIONS),
           emotion: enumSchema(EMOTIONS),

@@ -1,3 +1,5 @@
+import { drawFootage, type FrameSource } from '../../footage/clip.ts';
+import { drawThemeStage } from './theme-stage.ts';
 import { drawMotionStage } from './motion-stage.ts';
 /**
  * L3 场景 —— rain_window（需求 §33、§34）。
@@ -99,6 +101,18 @@ export interface SceneRenderContext {
   readonly seed: number;
   /** 风格预设名，决定收尾强度 */
   readonly stylePreset: string;
+  /** 当前（品牌锁定后的）风格 token */
+  readonly theme?: import('../../themes/types.ts').ThemeTokens;
+  /** 下一镜头带风格转场：本镜头文字不退场，由转场带走 */
+  readonly textHold?: boolean;
+  /** 本镜头由风格转场带入：文字从第一帧即在位，随转场一起进入 */
+  readonly textCarriedIn?: boolean;
+  /** 是否为整片第一个镜头 */
+  readonly firstShot?: boolean;
+  /** 只画背景与 IP、不画文字（溶解转场的公共底层用） */
+  readonly noText?: boolean;
+  /** environment = footage 时由渲染器预先打开的帧序列 */
+  readonly footage?: FrameSource;
 }
 
 export type SceneRenderer = (rc: SceneRenderContext) => void;
@@ -226,11 +240,20 @@ export function drawPlaceholderEnvironment(rc: SceneRenderContext): void {
   applyVignette(ctx, { width: w, height: h, palette, strength: 0.5 });
 }
 
+/** 素材片段镜头：素材缺失时画中性灰底并标注，而不是抛错中断整片。 */
+function drawFootageScene(c: SceneRenderContext): void {
+  const clip = c.scene.footage;
+  if (!clip || !c.footage) { c.ctx.fillStyle = '#202020'; c.ctx.fillRect(0, 0, c.width, c.height); return; }
+  drawFootage(c.ctx, clip, c.footage, c.sceneTime, Math.max(0.001, c.scene.end - c.scene.start), c.width, c.height);
+}
+
 // ---------------------------------------------------------------- 注册表
 
 export const SCENE_RENDERERS: Readonly<Record<Environment, SceneRenderer>> = {
   rain_window: drawRainWindow,
   motion_stage: drawMotionStage,
+  theme_stage: drawThemeStage,
+  footage: drawFootageScene,
   // 以下环境在 M0 阶段尚未实现；词汇表先稳定下来，实现逐步补齐（§40：不做大而全）
   office_night: drawPlaceholderEnvironment,
   bedroom: drawPlaceholderEnvironment,
@@ -242,7 +265,7 @@ export const SCENE_RENDERERS: Readonly<Record<Environment, SceneRenderer>> = {
 };
 
 /** 已完整实现的环境清单，供 validate/render 提示 */
-export const IMPLEMENTED_ENVIRONMENTS: readonly Environment[] = ['rain_window', 'motion_stage'];
+export const IMPLEMENTED_ENVIRONMENTS: readonly Environment[] = ['rain_window', 'motion_stage', 'theme_stage', 'footage'];
 
 export function getSceneRenderer(environment: Environment): SceneRenderer {
   return SCENE_RENDERERS[environment] ?? drawPlaceholderEnvironment;
