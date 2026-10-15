@@ -57,3 +57,21 @@ export function planShotTimings(screens: readonly (readonly string[])[], o: Shot
   }
   return out;
 }
+
+export interface TimedSpan { readonly start: number; readonly end: number }
+/**
+ * 按 TTS 实测时间切镜：句间切点取上一句末字结束与下一句首字开始之间空隙的中点；
+ * 无空隙（重叠或相接）时取下一句开始。输入为按时间排序的句或短语。
+ */
+export function gapMidpointCuts(spans: readonly TimedSpan[]): number[] {
+  const cuts: number[] = [];
+  for (let i = 1; i < spans.length; i++) {
+    const a = spans[i - 1]!.end, b = spans[i]!.start;
+    cuts.push(Math.round((b > a ? (a + b) / 2 : b) * 1000) / 1000);
+  }
+  return cuts;
+}
+/** 句内切点：下一短语首字开始前 lead 秒（默认 0.05），不早于上一短语末字结束。 */
+export function phraseCut(prevEnd: number, nextStart: number, lead = 0.05): number {
+  return Math.round(Math.max(prevEnd, nextStart - lead) * 1000) / 1000;
+}

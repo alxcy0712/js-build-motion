@@ -1,5 +1,13 @@
 # 统一视频封面模板
 
+## 使用范围
+
+`douyin-cover` 仅用于生成独立的横版、竖版封面图片。封面在发布时通过封面设置选用，单独保存和交付。
+
+视频正片禁止使用本模板、封面导出图片或套用本模板的封面版式，包括片头、片尾、转场、信息卡和字幕背景。正片依据内容独立设计。交付前同时检查素材引用和实际时间线，确认封面资产仅出现在独立封面输出中。
+
+## 封面样式
+
 暖白底 `#F7F5EF`、黑色标题 `#24231F`、固定强调色 `#FFC712`。AI 生成单主体插画，JS Canvas 精确合成标题、强调色与右下角头像。
 
 | 画幅 | 导出尺寸 | 布局 |
@@ -43,3 +51,28 @@ node assets/douyin-cover/preview.mjs
 `template.js` 暴露 `DouyinCover.draw(canvas, { format, kicker, lines, hero, avatar, avatarScale })`，`format` 为 `portrait` 或 `landscape`；两版使用同一个渲染函数。`hero` 与 `avatar` 为已加载的图片对象；`avatarScale` 默认为 1，编辑页范围为 0.5–1.5；省略 `hero` 使用居中的纯文字布局。
 
 AI 主体使用内置 imagegen 生成并修订；固定图片可以重复排版，新的生图结果具有生成变化。可复用提示词见 `image-prompt.txt`，示例的完整生成及修订提示词见 `example-prompts.json`，来源与文件哈希见 `manifest.json`。默认正面头像直接读取 `assets/personal-ip/portrait.png`；18 种表情及其三个朝向按 `assets/personal-ip/expressions.json` 中的路径读取，共享路由为 `/personal-ip/`。该目录是头像的唯一维护位置；更新源素材后刷新编辑页即可使用。
+
+## 出图补充规则
+
+适用于每支抖音视频的封面；版式参数以 `template.js` 为准，本节不重复上文的布局与编辑页说明。口播稿与合规规则见[抖音口播稿、合规与发布](../../.skill/references/douyin-publishing.md)。
+
+**做几张、何时锁定**：每支视频固定出竖版与横版两张，用同一个标题、同一张主体图。封面与视频首帧不必一致：视频画面沿用品牌锁风格，封面沿用本模板，两套不混用。标题和两张图交付后锁定，成片的小改动不触发重做；作者明确要换标题或主体时才重出。
+
+**标题**：只取作者原文的连续片段或作者亲自定的标题，不缩写、不改写；没有合适片段时给几个原文片段让作者选。不出现「最」等绝对词，不放网址、二维码、App 名或 Logo。模板按可用宽度自动缩小字号，超过约 8 个字放一行时字号会降到约 80px、缩略图里看不清，此时按语义断成两行（每行建议 3–6 字，最多 7 字），只断行不改字。不需要栏目标签时 `kicker` 设为空字符串。
+
+**主体插画**：用 `image-prompt.txt` 生成，只替换「single subject」那一句，写清主体和「no text, no logos」。主体与选题直接相关，不出现真人、他人作品截图、App 界面或品牌 Logo。生图工具常忽略透明背景与画幅，返回白底横图，此时抠图：
+
+```bash
+node .skill/engine/scripts/key-footage.ts <白底主体.png> <输出.png> --preset white --square 1254 --fill 0.8
+```
+
+做法为从边框泛洪近白、低饱和像素（中性灰阴影一并去掉），蒙版收缩 1px 并轻微羽化以免白边，再按主体包围盒裁切、居中放进透明方图（与示例同为 1254×1254），主体最长边占约 72–86%（`--fill` 0.72–0.86）。抠完先在暖白底上目检边缘，再放进模板。
+
+**导出**：有人操作时用 `preview.mjs` 的编辑页导出。Agent 无法点按钮时，写一个只加载 `template.js` 的页面，调用 `DouyinCover.draw(canvas, { format, kicker, lines, hero, avatar, avatarScale: 1 })`，用无头 Chrome 打开并取 `canvas.toDataURL('image/png')` 保存；`portrait`、`landscape` 各调用一次，不改任何版式参数。模板首选苹方，Linux 没有苹方时回退到其他黑体，字形略有差异，正式发布建议在 macOS 上导出。
+
+**交付前自查**：
+- 标题与原文逐字一致；两张尺寸为 1080×1440 与 1440×1080。
+- 头像不压标题、不压主体，距右侧和底部各 96px。
+- 画面里没有乱码字、Logo、二维码、网址、真人或他人作品画面。
+- 缩到缩略图大小（约 180×240 / 320×240）标题仍清楚可读。
+- 每期的封面 PNG 与主体图保存在本片 `projects/<slug>/` 或仓库根 `output/`，不提交；本目录 `images/` 与 `examples/` 只保存模板示例。

@@ -29,9 +29,10 @@ node .skill/scripts/video.mjs <slug> capabilities --schema
 - 新片开工：[创作问答](references/intake.md)，依据当次提示词生成问题、推荐答案与制作组合。
 - 四种输入与权威计划：[Production 创作权威与恢复](references/production.md)，固定 requested、作用域与版本，模型编写剧本/镜头提案，通过 next/apply/resume/invalidate 计算状态和恢复，以固定帧／样本时间线 compile，rough/final 采用同一音源并分别消费代理与正式像素。
 - 规划：[导演计划](references/direction.md)，用连续状态、镜头编排与动态粗剪落实关键事件。
-- 字幕与分镜节奏：[短字幕与语义分镜](references/captions-and-shots.md)，将长旁白拆成可读字幕，按信息推进设计焦点、动作与景别。
+- 字幕与分镜节奏：[短字幕与语义分镜](references/captions-and-shots.md)，将长旁白拆成可读字幕，按信息推进设计焦点、动作与景别；按 TTS 时间戳切镜并填写分镜表。
+- 抖音发布：[口播稿、合规与发布](references/douyin-publishing.md)，口播稿写法、合规清单、标题简介与锁定规则；封面见[统一视频封面模板](../assets/douyin-cover/README.md)。
 - 比较叙事、解释任务或学习原作：[表达机制与方法卡](references/story-mechanisms.md)，按题材选机制，用推导、尺度揭示、证据串联、步骤累计、关键词强调与数据比较卡落实事件。
-- 素材准备：[素材选择](references/assets.md)，核验生图工具，按镜头需求绑定固定素材版本，通过受控消费入口组合图片、视频与精确代码图形。
+- 素材准备：[素材选择](references/assets.md)，核验生图工具，按镜头需求绑定固定素材版本，通过受控消费入口组合图片、视频与精确代码图形；生成视频只做角色动作，文字与屏幕内容由代码合成。
 - 实现：[绘制](references/drawing.md)，查询当前契约并编写本片画面。
 - 镜头与空间：[电影化运镜](references/cinematography.md)，设计叙事运镜、分层视差及三维渲染的项目内验证路径。
 - 产品广告与发布节奏：[产品与体验叙事](references/product-film-language.md)，用视觉证明、尺度揭示、语义接力与快慢节奏组织镜头。

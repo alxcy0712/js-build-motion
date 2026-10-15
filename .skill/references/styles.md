@@ -8,19 +8,34 @@
 | `crayon` | 手绘蜡笔 | 米白纸 #F6F1E7、墨 #2B2622、橙 #E8603C/蓝/黄/绿；思源黑 900；逐字进场、k180 c18（过冲 ≤6%）；颗粒 8%/8fps 抖动；纸翻转场 | 个人 IP 出镜、生活类比故事、与蜡笔画 Skill 插画同框 |
 | `storybook` | 水彩绘本 | 原 watercolor_storybook；思源宋；慢节奏 k90 c22；墨晕/模糊溶解 | 温情叙事、雨夜氛围、沿用旧项目 |
 
-所有风格共用安全区：竖屏 上220 / 下520 / 左72 / 右168；横屏 上72 / 下96 / 左右120。
+所有风格共用安全区：竖屏 上220 / 下520 / 左72 / 右168；横屏 上72 / 下96 / 左右120。安全区约束字幕以外的文字和主体。
+
+## 竖屏 9:16 口播版面默认
+适用于 1080×1920 竖屏口播/解说短视频（其他尺寸按高度换算），常量在 `src/themes/shared.ts` 的 `VERTICAL_SHORT_LAYOUT`。
+- 字幕贴底：字形下沿约 y=1580（距底 340，避开平台标题与账号名），渲染时 `captions.bottomInset` 取 `VERTICAL_SHORT_CAPTION_INSET`（≈0.177）。字幕可低于非字幕安全区的下边界 520。
+- 屏幕大字基线约 1330；大字下沿与字幕上沿至少相隔 128。用 `bigTextBaselineFor(字幕上沿, 大字下伸, 推镜造成的最大下移)` 按实测字形计算，较近时整体上移，不压缩间距。
+- 主视觉中心约 y=1000，主体与大字组成的视觉组围绕它排版；水平仍按画布中心 x=540。
+- 验证：每镜头抽一帧，核对字幕下沿、大字与字幕间距和安全区；推镜最大倍数帧单独核对。
 
 ## 品牌锁
 `.skill/brand.json` 的 `lockedTheme` 决定全部影片风格（默认 `minimal`）。单片 spec 写了不同的 `style.theme`：`enforcement: "override"` 时强制改回并给出 `BRAND_THEME_LOCKED` 警告，`"reject"` 时直接失败。换风格只能改 brand.json，并在 `changes` 末尾追加一条同名记录。
 
 ## 防死帧
 - 每个风格的 `liveness` 规定持续微运动层（drift 指数推镜永不停、椭圆视差漂移、扫光、蜡笔沸腾；颗粒不算），校验器保证任意 ≤0.5s 窗口内有可见位移。镜头内调用 `microMotionAt(theme, t)` 取相机状态。
+- 生成片段贴槽变速不冻结（片段过短时正反往复），见[生成视频分层合成](assets.md#生成视频分层合成)。
 - 审片：`node .skill/engine/scripts/dead-frame-qa.ts <video.mp4> [--json]`，比较相隔 0.5s 的帧（灰度、块平均、扣除颗粒噪声底），报告无可见变化的区间；有死帧退出码 2。
 
 ## 个人 IP 使用规则
-- IP 是小幅美术，**不当主视觉放大**。显示边长 ≤ 源尺寸 512px（rig 头/身部件），推荐 256–384；超过即 `IP_UPSCALE` 校验失败（按实际输出像素换算，4K 输出同样受限）。
+- IP 是小幅美术，**不当主视觉放大**。生成视频里的角色同样不放大超过源像素，见[生成视频分层合成](assets.md#生成视频分层合成)。显示边长 ≤ 源尺寸 512px（rig 头/身部件），推荐 256–384；超过即 `IP_UPSCALE` 校验失败（按实际输出像素换算，4K 输出同样受限）。
 - `scenes[].ip` 默认不出现。只在两种情况使用：
   - `role: "identity"`：身份声明或需要时，例如片尾小签名（默认 288px，底部居中）。
   - `role: "actor"`：讲解动画中的演员，例如骑车、操作电脑（默认 384px）。
 - 写法：`"ip": { "role": "identity", "size": 288, "position": "bottom-center", "expression": "happy" }`；`position` 可选 `bottom-center | bottom-left | bottom-right | center | custom`（custom 需 `x`、`y`，0–1，y 为角色底边）。旧写法 `ip: true` 自动降级为 288px 身份署名并告警。
 - 纯文字镜头不放 IP，标题居中；身份署名在底部时标题略上移。
+
+## 渲染前自检
+出片前逐项过一遍，并在抽帧（每镜头一张 + 片尾）上实测：
+- **主体居中**：主体按画布中心（竖屏 x=540、横屏 x=960）排版，推/拉镜绕画布中心或 `focus` 目标缩放，不绕 (0,0)；不要把安全区的中线（竖屏 x≈492）当作构图中线。实测：`node .skill/engine/scripts/centering-qa.ts <still.png>... [--exclude x,y,w,h]`，内容包围盒中心水平偏移 ≤ 2%（角落署名用 `--exclude` 排除）；代码里用 `measureContentCenter` / `isCentered` / `withinSafeArea`（`src/qa/centering.ts`）。
+- **安全区**：推镜到最大倍数时，文字和主体仍完整落在安全区内（竖屏 上220 / 下520 / 左72 / 右168）。
+- **防死帧**：`dead-frame-qa.ts` 无死帧区间。
+- **文字**：字形正确、无错字，文字镜头从首帧就可见，新旧文字不重叠。

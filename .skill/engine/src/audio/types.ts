@@ -36,6 +36,13 @@ export interface WordTiming {
   readonly end: number;
 }
 
+/** 句级时间（服务按句返回时提供）：用于按句切镜、句间空档与字幕分条。 */
+export interface SentenceTiming {
+  readonly text: string;
+  readonly start: number;
+  readonly end: number;
+}
+
 // ------------------------------------------------------------ TTS
 
 export interface TTSRequest {
@@ -56,6 +63,8 @@ export interface TTSResult extends AudioAsset {
    * 而不是去做语音识别。
    */
   readonly words?: readonly WordTiming[];
+  /** 句级时间；provider 不提供时为 undefined */
+  readonly sentences?: readonly SentenceTiming[];
 }
 
 export interface TTSProvider {

@@ -45,15 +45,27 @@ def parse(data):
     return kind, event, payload
 
 
-def add_words(words, body):
-    for word in body.get("words", []):
+def add_words(words, body, sentences=None, seen=None):
+    """Collect word timings; the same sentence may arrive in both subtitle and sentence-end events."""
+    items = body.get("words", [])
+    if not items:
+        return
+    identity = json.dumps([[w.get("word"), w.get("startTime"), w.get("endTime")] for w in items])
+    if seen is not None:
+        if identity in seen:
+            return
+        seen.add(identity)
+    for word in items:
         words.append({"text": word["word"], "start": word["startTime"], "end": word["endTime"]})
+    if sentences is not None:
+        sentences.append({"text": body.get("text") or "".join(w["word"] for w in items),
+                          "start": items[0]["startTime"], "end": items[-1]["endTime"]})
 
 
 async def websocket_synthesis(headers, params):
     import websockets
 
-    audio, words = bytearray(), []
+    audio, words, sentences, seen = bytearray(), [], [], set()
     headers = {**headers, "X-Api-Connect-Id": str(uuid.uuid4())}
     async with websockets.connect("wss://openspeech.bytedance.com/api/v3/tts/bidirection",
                                   additional_headers=headers, open_timeout=15, close_timeout=5,
@@ -81,12 +93,12 @@ async def websocket_synthesis(headers, params):
             if kind == 11:
                 audio.extend(payload)
             elif event in (351, 364):
-                add_words(words, json.loads(payload))
+                add_words(words, json.loads(payload), sentences, seen)
             elif event == 152:
                 break
         await ws.send(packet(2, {}))
         await expect(52)
-    return audio, words
+    return audio, words, sentences
 
 
 def http_synthesis(headers, params):
@@ -94,7 +106,7 @@ def http_synthesis(headers, params):
                                      data=json.dumps({"req_params": params}).encode(),
                                      headers={**headers, "Content-Type": "application/json",
                                               "X-Api-Request-Id": str(uuid.uuid4())})
-    audio, words, finished = bytearray(), [], False
+    audio, words, sentences, seen, finished = bytearray(), [], [], set(), False
     with urllib.request.urlopen(request, timeout=45) as response:
         for line in response:
             if not line.strip():
@@ -105,12 +117,12 @@ def http_synthesis(headers, params):
             if body.get("data"):
                 audio.extend(base64.b64decode(body["data"], validate=True))
             if body.get("sentence"):
-                add_words(words, body["sentence"])
+                add_words(words, body["sentence"], sentences, seen)
             if body.get("code") == 20000000:
                 finished = True
     if not finished:
         raise RuntimeError("TTS response ended before the completion record")
-    return audio, words
+    return audio, words, sentences
 
 
 def main():
@@ -142,9 +154,9 @@ def main():
         params = {"speaker": args.speaker, "text": args.text, "audio_params": audio_params}
         headers = {"X-Api-Key": key, "X-Api-Resource-Id": args.resource}
         if args.transport == "http":
-            audio, words = http_synthesis(headers, params)
+            audio, words, sentences = http_synthesis(headers, params)
         else:
-            audio, words = asyncio.run(asyncio.wait_for(websocket_synthesis(headers, params), 50))
+            audio, words, sentences = asyncio.run(asyncio.wait_for(websocket_synthesis(headers, params), 50))
         if not audio or len(audio) % 2:
             raise RuntimeError("No complete PCM16 audio received")
         Path(args.out_audio).parent.mkdir(parents=True, exist_ok=True)
@@ -155,7 +167,8 @@ def main():
             output.writeframes(audio)
         Path(args.out_json).write_text(json.dumps({"speaker": args.speaker, "resourceId": args.resource,
                                                   "transport": args.transport, "rate": args.rate,
-                                                  "sampleRate": 24000, "words": words}, ensure_ascii=False) + "\n")
+                                                  "sampleRate": 24000, "words": words,
+                                                  "sentences": sentences}, ensure_ascii=False) + "\n")
         print(json.dumps({"ok": True}))
     except Exception as error:
         detail = str(error).replace(key, "[REDACTED]") if key else str(error)
