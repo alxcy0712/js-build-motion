@@ -40,7 +40,9 @@
 | Production 租约、版本提交与恢复 | .skill/engine/src/application/production.ts、cli/production.ts |
 | 导演契约与编译 | .skill/engine/src/project/director.ts |
 | 绘制编排与主体组件 | .skill/engine/src/pipeline/spec-renderer.ts、drawing/ |
-| 音频构建、混音与实测 | .skill/engine/src/audio/ |
+| 素材片段层、生成片段抠像/变速/合成 | .skill/engine/src/footage/ |
+| 竖屏版面与安全区 token | .skill/engine/src/themes/shared.ts |
+| 音频构建、混音、实测与节拍网格 | .skill/engine/src/audio/ |
 | 编码与探测 | .skill/engine/src/ffmpeg/ |
 | 工具状态与能力事实 | .skill/engine/src/project/tool-registry.ts |
 | 进程隔离与运行时校验 | .skill/engine/workspace.mjs |

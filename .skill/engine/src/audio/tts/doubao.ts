@@ -4,7 +4,7 @@ import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { AbstractTtsVoice } from '../../spec/types.ts';
 import { PYTHON_CANDIDATES } from '../../utils/tts-probe.ts';
-import type { TTSProvider, WordTiming } from '../types.ts';
+import type { SentenceTiming, TTSProvider, WordTiming } from '../types.ts';
 import { probeAudio } from '../probe.ts';
 import { findDoubaoVoice, type DoubaoVoiceId } from './doubao-voices.ts';
 
@@ -50,9 +50,10 @@ export function createDoubaoTtsProvider(): TTSProvider {
         throw new Error(`TTS_PROVIDER_UNAVAILABLE: ${detail.replaceAll(key, '[REDACTED]')}`);
       }
       const measured = await probeAudio(req.outPath);
-      const metadata = JSON.parse(readFileSync(jsonPath, 'utf8')) as { words?: WordTiming[] };
+      const metadata = JSON.parse(readFileSync(jsonPath, 'utf8')) as { words?: WordTiming[]; sentences?: SentenceTiming[] };
       return { path: req.outPath, durationSeconds: measured.durationSeconds, sampleRate: measured.sampleRate,
-        ...(metadata.words?.length ? { words: metadata.words } : {}) };
+        ...(metadata.words?.length ? { words: metadata.words } : {}),
+        ...(metadata.sentences?.length ? { sentences: metadata.sentences } : {}) };
     },
   };
 }

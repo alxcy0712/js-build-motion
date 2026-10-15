@@ -24,9 +24,11 @@ audio之后再次运行qa，读取匹配当前规格的实测时间，报告发�
 
 原生VideoSpec可逐句设置audio.narration[].voice与rate（整数百分比，省略为+8%），start决定绝对起点；audio.sfx按绝对秒排程。Edge的voice-*.words.json记录服务音色与实际语速参数。句间空档和句内语速分别核对，语速变化后重新测量关键词与句尾，并更新对应画面。
 
-配音默认选择edge-tts，voice使用female_calm、female_lively、male_calm或male_lively。用户明确声明使用豆包语音后，audio或render显式传入--tts-provider doubao；声明与后续变更保存在本片prompt-history.jsonl，并在其授权范围内沿用。voices提供豆包公版音色的名称、ID、语种、模型资源与接口；启用doubao provider后，导演计划的voice或audio.narration[].voice可使用目录ID，自动匹配资源与流式接口，四个抽象音色映射到对应的默认豆包音色。运行条件为Python/websockets>=14与环境变量DOUBAO_API_KEY。voice-*.words.json保存实际音色ID、模型资源、接口、语速和服务返回的词级时间；服务提供时间戳的范围以对应音色与语种为准。音色调用权限由账户开通的服务决定。
+配音默认选择edge-tts，voice使用female_calm、female_lively、male_calm或male_lively。用户明确声明使用豆包语音后，audio或render显式传入--tts-provider doubao；声明与后续变更保存在本片prompt-history.jsonl，并在其授权范围内沿用。voices提供豆包公版音色的名称、ID、语种、模型资源与接口；启用doubao provider后，导演计划的voice或audio.narration[].voice可使用目录ID，自动匹配资源与流式接口，四个抽象音色映射到对应的默认豆包音色。运行条件为Python/websockets>=14与环境变量DOUBAO_API_KEY。凭据只从环境变量 DOUBAO_API_KEY 读取，不读配置文件，不写入项目、日志或仓库。voice-*.words.json保存实际音色ID、模型资源、接口、语速、服务返回的词级时间和句级时间 sentences（同一句的重复事件去重）；句级时间可直接用于按句切镜。服务提供时间戳的范围以对应音色与语种为准。音色调用权限由账户开通的服务决定。
 
 音乐驱动的段落先建立拍点网格，讲解段落以实测语义词和阅读时间组织事件；两者共用本片时间轴。每拍秒数为60/BPM、帧数为fps×60/BPM：120 BPM在30fps为15帧，在60fps为30帧。非整数拍点从时间原点逐拍换算并取整，在events.md记录fps、BPM、原点及触发时间，避免逐次累计取整误差。
+
+引擎 `src/audio/beat-grid.ts`：`beatGrid({bpm, duration, origin, fps})` 按 origin + k·60/BPM 逐拍乘法换算并给出整数帧号；`snapCutsToBeats(cuts, grid, {maxShift, direction, minGap})` 只在 maxShift（默认 0.12 秒）内把切点吸到拍点，超出保留原切点并标 kept，讲解片切点仍由旁白语义决定，`direction: 'later'` 保证不短于阅读下限；`addCutAccents(synthBgm(...), {cuts, accents})` 在程序铺底上叠加切点软底鼓/气声与强调拨弦，并在切点后短暂压低铺底。吸附结果与偏移写入 events.md。
 
 已有音乐先测拍点与瞬态并试听核对强拍相位，记录音频哈希、beat times、重音和偏移；每四拍取一点仅在拍号及首拍相位成立时表示小节重拍。程序音乐使用生成时的同一节拍原点。SFX 对齐动作接触或结果；旁白重点、阅读与音乐重音发生冲突时，以该段内容优先级调整。
 

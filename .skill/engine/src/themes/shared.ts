@@ -19,3 +19,26 @@ export const SAFE_AREA = {
   vertical: { top: 220, bottom: 520, left: 72, right: 168 },
   horizontal: { top: 72, bottom: 96, left: 120, right: 120 },
 } as const;
+/**
+ * 竖屏 9:16 口播短视频的默认版面（1080×1920 像素，其他尺寸按高度等比换算）。
+ * 字幕允许低于非字幕安全区（底 520）：字幕字形下沿约 y=1580（距底 340，避开平台标题与账号名）；
+ * 屏幕大字基线约 1330，且大字下沿与字幕上沿至少相隔 128；主视觉中心约 y=1000。
+ */
+export const VERTICAL_SHORT_LAYOUT = {
+  canvas: [1080, 1920],
+  subtitleGlyphBottom: 1580,
+  bigTextBaseline: 1330,
+  bigTextSubtitleGap: 128,
+  visualCenterY: 1000,
+  safe: SAFE_AREA.vertical,
+} as const;
+/** 渲染时字幕 bottomInset（比例）：使字幕下沿落在 subtitleGlyphBottom。 */
+export const VERTICAL_SHORT_CAPTION_INSET = (1920 - VERTICAL_SHORT_LAYOUT.subtitleGlyphBottom) / 1920;
+/**
+ * 屏幕大字基线：取默认基线与「字幕上沿 − 间距 − 大字下伸」中较高（更小）者。
+ * subtitleTop、bigDescent 用实测字形（measureText 的 actualBoundingBox）；
+ * 有推镜或弹跳时把最大放大造成的下移也计入 extraDrop。
+ */
+export function bigTextBaselineFor(subtitleTop: number, bigDescent: number, extraDrop = 0, layout = VERTICAL_SHORT_LAYOUT): number {
+  return Math.min(layout.bigTextBaseline, Math.round(subtitleTop - layout.bigTextSubtitleGap - bigDescent - extraDrop));
+}
