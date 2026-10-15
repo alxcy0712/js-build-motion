@@ -2,7 +2,7 @@
 
 GitHub 共享范围为通用研究、制作核心、说明与完整 `assets/`，包含用户授权的[个人 IP 源素材](assets/personal-ip/README.md)和[视频封面模板](assets/douyin-cover/README.md)。`projects/` 的影片、候选素材、用户沟通原文和本机记录，以及 `.pi/` 的 agent 运行记录保存在本地；依赖副本、核心备份与敏感配置按 `.gitignore` 排除。供 ChatGPT Pro 使用的阅读路径、审查目标与运行边界见 [REVIEW.md](REVIEW.md)。提交和推送检查通过 `git config core.hooksPath .githooks` 启用；准备共享前执行 `node .githooks/check-publish.mjs --worktree`，提交后执行 `node .githooks/check-publish.mjs --history HEAD`。首次共享使用已检查的独立副本，历史从本次共享内容开始。
 
-在当前文件夹直接与 agent 描述主题、时长、画幅和配音需求。入口规则在 [AGENTS.md](AGENTS.md)，通用制作标准在 [.skill/SKILL.md](.skill/SKILL.md)。支持 AGENTS.md 的宿主自动加载入口；其他模型加载这两个文件后使用相同契约。
+在当前文件夹直接与 agent 描述主题、时长、画幅和配音需求。先按 [AGENTS.md](AGENTS.md) 确定执行角色：Grok Bot 团队根据选题与文字制作视频或图文，本地 Agent 处理用户电脑上的原片、素材库与相关补充。两端按各自职责和授权使用 [.skill/SKILL.md](.skill/SKILL.md) 的通用制作契约。支持 AGENTS.md 的宿主自动加载入口；其他模型加载这两个文件后按对应角色执行。
 
 ```text
 .research/       通用理念、研究方法与验证条件
