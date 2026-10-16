@@ -68,11 +68,21 @@ node .skill/engine/scripts/key-footage.ts <白底主体.png> <输出.png> --pres
 
 做法为从边框泛洪近白、低饱和像素（中性灰阴影一并去掉），蒙版收缩 1px 并轻微羽化以免白边，再按主体包围盒裁切、居中放进透明方图（与示例同为 1254×1254），主体最长边占约 72–86%（`--fill` 0.72–0.86）。抠完先在暖白底上目检边缘，再放进模板。
 
-**导出**：有人操作时用 `preview.mjs` 的编辑页导出。Agent 无法点按钮时，写一个只加载 `template.js` 的页面，调用 `DouyinCover.draw(canvas, { format, kicker, lines, hero, avatar, avatarScale: 1 })`，用无头 Chrome 打开并取 `canvas.toDataURL('image/png')` 保存；`portrait`、`landscape` 各调用一次，不改任何版式参数。模板首选苹方，Linux 没有苹方时回退到其他黑体，字形略有差异，正式发布建议在 macOS 上导出。
+**主体与个人 IP**（2026-10-16 特斯拉封面复盘）：
+- 优先把个人 IP 画进题目场景做封面主体，不要默认「物件居中 + 角落头像」。
+- IP 已在画面中央当主角时，去掉右下角头像，避免双 IP；主体是非 IP 物件时才保留角标头像。
+- `template.js` 目前总会画头像：无头像时用本地渲染页只画标题与主体，不要传 `avatar`。
+- 作者反馈「主体太小 / 留白太多」时：再抠紧透明包围盒，标题下可用区用 cover 铺满，必要时 zoom > 1 裁掉外圈空位，主体要够大，别缩成小贴纸。
+
+**文字水印**：作者点名时，在右下角加淡色文字「ONEINO.澄记」（约 28–30px、透明度约 0.38），不压主体、不抢视线。无头像渲染页必须声明 UTF-8（`<meta charset="utf-8">`），否则无头 Chrome 会把中文渲成乱码。
+
+**导出**：有人操作时用 `preview.mjs` 的编辑页导出。Agent 无法点按钮时，写一个只加载 `template.js` 的页面，调用 `DouyinCover.draw(canvas, { format, kicker, lines, hero, avatar, avatarScale: 1 })`，用无头 Chrome 打开并取 `canvas.toDataURL('image/png')` 保存；`portrait`、`landscape` 各调用一次，不改任何版式参数。无头像或要加水印时走上一节的本地渲染页。模板首选苹方，Linux 没有苹方时回退到其他黑体，字形略有差异，正式发布建议在 macOS 上导出。
 
 **交付前自查**：
 - 标题与原文逐字一致；两张尺寸为 1080×1440 与 1440×1080。
-- 头像不压标题、不压主体，距右侧和底部各 96px。
+- IP 居中时无角标头像；非 IP 主体时头像不压标题、不压主体，距右侧和底部各 96px。
+- 有文字水印时右下角为「ONEINO.澄记」且无乱码。
+- 缩略图里主体足够醒目，四周不要大片空底。
 - 画面里没有乱码字、Logo、二维码、网址、真人或他人作品画面。
 - 缩到缩略图大小（约 180×240 / 320×240）标题仍清楚可读。
 - 每期的封面 PNG 与主体图保存在本片 `projects/<slug>/` 或仓库根 `output/`，不提交；本目录 `images/` 与 `examples/` 只保存模板示例。
