@@ -96,7 +96,7 @@ test('所有风格：进场 0.2s 后无残留模糊', () => {
   for (const id of Object.keys(THEMES) as ThemeId[]) for (const t of [0.2, 0.5, 1.2]) assert.equal(revealState(THEMES[id], t, { enterAt: 0 }).blur, 0, `${id}@${t}`);
 });
 test('第 2 轮：所有风格首镜头首帧即显示完整标题（默认 firstScreen=instant）', () => {
-  for (const th of ['minimal', 'kinetic', 'terminal', 'crayon'] as const) {
+  for (const th of ['minimal', 'kinetic'] as const) {
     const [a] = frames(spec3(th), [0]); const [b] = frames(spec3(th, { headline: false }), [0]);
     assert.ok(diff(a!, b!) > 0.5, th);
   }

@@ -34,19 +34,9 @@ function drawBackdrop(ctx: CanvasRenderingContext2D, th: ThemeTokens, w: number,
   }
   ctx.save();
   ctx.translate(-m.offsetX * far, -m.offsetY * far);
-  if (th.id === 'terminal') {
-    ctx.strokeStyle = P['hairline'] ?? P.surface; ctx.lineWidth = 1; ctx.globalAlpha = 0.6;
-    const step = Math.round(w / 12);
-    for (let x = 0; x <= w; x += step) { ctx.beginPath(); ctx.moveTo(x + 0.5, 0); ctx.lineTo(x + 0.5, h); ctx.stroke(); }
-    for (let y = 0; y <= h; y += step) { ctx.beginPath(); ctx.moveTo(0, y + 0.5); ctx.lineTo(w, y + 0.5); ctx.stroke(); }
-  } else if (th.id === 'kinetic') {
+  if (th.id === 'kinetic') {
     ctx.strokeStyle = P['accent2'] ?? P.accent; ctx.globalAlpha = 0.18; ctx.lineWidth = 2;
     for (let i = 0; i < 6; i++) { const y = h * (0.15 + i * 0.14) + Math.sin(sceneTime * 1.3 + i) * 6; ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y - w * 0.18); ctx.stroke(); }
-  } else if (th.id === 'crayon') {
-    // 纸纹 + 沸腾笔触（每 boil 帧换一次抖动种子）
-    ctx.strokeStyle = P['blue'] ?? P.accent; ctx.globalAlpha = 0.25; ctx.lineWidth = 10; ctx.lineCap = 'round';
-    const j = m.boilFrame * 1.7;
-    ctx.beginPath(); ctx.moveTo(w * 0.12, h * 0.2 + j); ctx.bezierCurveTo(w * 0.35, h * 0.18 - j, w * 0.6, h * 0.23 + j, w * 0.86, h * 0.2 - j); ctx.stroke();
   } else {
     ctx.fillStyle = P.textSecondary; ctx.globalAlpha = 0.08;
     const step = Math.round(w / 18);

@@ -93,16 +93,13 @@ export function drawThemedIP(ctx: CanvasRenderingContext2D, theme: ThemeTokens, 
   const float = Math.sin(o.time * 2 * Math.PI / 5.2) * o.size * 0.006;
   const drawPersonalIP = puppetDraw(ip.root); if (!drawPersonalIP) return false;
   drawPersonalIP(fc, ip.images, ip.rig, { time: o.time, x: pad, y: pad + float, size: o.size, expression: o.expression ?? 'neutral', blink: true, motion: true });
-  const dark = theme.id !== 'crayon';
-  // 底部渐隐（深色风格）：肩颈在画面中自然消失，不出现硬切边
-  if (dark) {
-    fc.save(); fc.globalCompositeOperation = 'destination-in';
-    // 只在卫衣下沿 36px（1080 宽参考）内渐隐，保留完整肩部
-    const fadePx = 36 * o.size / 560;
-    const g = fc.createLinearGradient(0, pad + o.size - fadePx - 4, 0, pad + o.size - 4);
-    g.addColorStop(0, 'rgba(0,0,0,1)'); g.addColorStop(1, 'rgba(0,0,0,0)');
-    fc.fillStyle = g; fc.fillRect(0, 0, s, s); fc.restore();
-  }
+  // 底部渐隐：肩颈在画面中自然消失，不出现硬切边
+  fc.save(); fc.globalCompositeOperation = 'destination-in';
+  // 只在卫衣下沿 36px（1080 宽参考）内渐隐，保留完整肩部
+  const fadePx = 36 * o.size / 560;
+  const fade = fc.createLinearGradient(0, pad + o.size - fadePx - 4, 0, pad + o.size - 4);
+  fade.addColorStop(0, 'rgba(0,0,0,1)'); fade.addColorStop(1, 'rgba(0,0,0,0)');
+  fc.fillStyle = fade; fc.fillRect(0, 0, s, s); fc.restore();
   const x = o.cx - s / 2, y = o.bottom - pad - o.size;
   const xc = fx.getContext('2d');
   const silhouette = (color: string, blur: number) => {
@@ -111,30 +108,21 @@ export function drawThemedIP(ctx: CanvasRenderingContext2D, theme: ThemeTokens, 
     return blur;
   };
   ctx.save(); ctx.globalAlpha = o.opacity ?? 1;
-  if (dark) {
-    // 背后柔光
-    const glowA = Math.max(0.12, theme.treatments.glow.opacity * 0.6);
-    const g = ctx.createRadialGradient(o.cx, y + pad + o.size * 0.45, 0, o.cx, y + pad + o.size * 0.45, o.size * 0.75);
-    g.addColorStop(0, hexToRgba(theme.palette.accent, glowA * 0.5)); g.addColorStop(1, hexToRgba(theme.palette.accent, 0));
-    ctx.fillStyle = g; ctx.fillRect(o.cx - o.size, y, o.size * 2, s);
-    // 轮廓光：着色剪影模糊后垫在人物下方，边缘露出一圈光
-    const rim = theme.id === 'kinetic' ? theme.palette.accent : theme.id === 'terminal' ? theme.palette.accent : '#FFE2B0';
-    // 轮廓光：清晰的着色剪影按 3px 外扩垫在人物下方（不叠加模糊），只露出一圈细边
-    silhouette(rim, 0);
-    ctx.save(); ctx.globalAlpha = (o.opacity ?? 1) * (theme.id === 'kinetic' ? 0.8 : 0.45);
-    for (const [dx, dy] of [[0, -3], [-2.5, -1.5], [2.5, -1.5]] as const) ctx.drawImage(fx, x + dx, y + dy);
-    ctx.restore();
-    if (theme.id === 'kinetic') { // 洋红色差描边（清晰、右下偏移）
-      silhouette(theme.palette['accent2'] ?? theme.palette.accent, 0);
-      ctx.save(); ctx.globalAlpha = (o.opacity ?? 1) * 0.45; ctx.drawImage(fx, x + 3, y + 1.5); ctx.restore();
-    }
-  } else {
-    // 蜡笔：贴纸式墨色描边 + 纸面投影
-    silhouette(theme.palette.line ?? theme.palette.text, 0);
-    ctx.save(); ctx.globalAlpha = 0.18; ctx.filter = 'blur(6px)'; ctx.drawImage(fx, x + 8, y + 12); ctx.restore();
-    ctx.save(); ctx.filter = `blur(${(o.size * 0.006).toFixed(2)}px)`;
-    for (const [dx, dy] of [[-3, 0], [3, 0], [0, -3], [0, 3]] as const) ctx.drawImage(fx, x + dx, y + dy);
-    ctx.restore();
+  // 背后柔光
+  const glowA = Math.max(0.12, theme.treatments.glow.opacity * 0.6);
+  const g = ctx.createRadialGradient(o.cx, y + pad + o.size * 0.45, 0, o.cx, y + pad + o.size * 0.45, o.size * 0.75);
+  g.addColorStop(0, hexToRgba(theme.palette.accent, glowA * 0.5)); g.addColorStop(1, hexToRgba(theme.palette.accent, 0));
+  ctx.fillStyle = g; ctx.fillRect(o.cx - o.size, y, o.size * 2, s);
+  // 轮廓光：着色剪影模糊后垫在人物下方，边缘露出一圈光
+  const rim = theme.id === 'kinetic' ? theme.palette.accent : '#FFE2B0';
+  // 轮廓光：清晰的着色剪影按 3px 外扩垫在人物下方（不叠加模糊），只露出一圈细边
+  silhouette(rim, 0);
+  ctx.save(); ctx.globalAlpha = (o.opacity ?? 1) * (theme.id === 'kinetic' ? 0.8 : 0.45);
+  for (const [dx, dy] of [[0, -3], [-2.5, -1.5], [2.5, -1.5]] as const) ctx.drawImage(fx, x + dx, y + dy);
+  ctx.restore();
+  if (theme.id === 'kinetic') { // 洋红色差描边（清晰、右下偏移）
+    silhouette(theme.palette['accent2'] ?? theme.palette.accent, 0);
+    ctx.save(); ctx.globalAlpha = (o.opacity ?? 1) * 0.45; ctx.drawImage(fx, x + 3, y + 1.5); ctx.restore();
   }
   ctx.drawImage(fig, Math.round(x), Math.round(y)); // 人物主体整像素落位：1:1 区域不再二次重采样
   ctx.restore();

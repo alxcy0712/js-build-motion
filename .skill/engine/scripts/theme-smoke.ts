@@ -22,8 +22,6 @@ const COPY: Record<ThemeId, Shot[]> = {
   // IP 规则：文字镜头不放 IP；只在身份声明（片尾署名）或讲解动画演员时出现，尺寸 ≤ 源 512
   minimal: [{ lines: ['电脑', '不会焦虑。'] }, { lines: ['它只做一件事：', '拆解。'] }, { kicker: 'ONEINO.澄记', lines: ['用计算机思维', '想现实。'], ip: { role: 'identity', size: 288, expression: 'happy' } }],
   kinetic: [{ kicker: 'AI WORKFLOW', lines: ['3 秒', '搞定。'] }, { lines: ['快', '十倍。'] }, { lines: ['你也', '可以。'], ip: { role: 'identity', size: 288, expression: 'excited' } }],
-  terminal: [{ kicker: '$ think --life', lines: ['拆解问题'] }, { lines: ['输入 → 处理', '→ 输出'] }, { lines: ['一行一行', '跑通。'], ip: { role: 'identity', size: 256, position: 'bottom-right' } }],
-  crayon: [{ lines: ['把烦恼', '拆成三步'] }, { lines: ['一步', '一步来。'], ip: { role: 'actor', size: 384, expression: 'happy' } }, { lines: ['画给你看。'] }],
   storybook: [{ lines: ['雨夜里，', '电脑也在想'] }, { lines: ['关于人生的', '小事'] }, { lines: ['晚安。'] }],
 };
 const FPS = 30, SHOT = 2, N = 3, DUR = SHOT * N;
