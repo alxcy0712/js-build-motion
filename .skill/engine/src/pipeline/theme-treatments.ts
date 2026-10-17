@@ -1,6 +1,6 @@
 /**
  * 风格逐帧质感：镜头微运动（推镜/视差）、扫光、暗角、颗粒。每帧都执行，保证不出现死帧。
- * storybook 风格不经过这里，保持原水彩外观。
+ * 只作用于 theme_stage 镜头；旧环境（rain_window / motion_stage）不经过这里，保持原水彩外观。
  */
 import { Canvas, type CanvasRenderingContext2D } from 'skia-canvas';
 import { microMotionAt } from '../themes/liveness.ts';

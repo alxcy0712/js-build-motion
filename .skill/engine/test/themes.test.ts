@@ -14,13 +14,14 @@ test('每个登记的风格都能加载且 token 合法', () => {
     assert.equal(getTheme(id).id, id);
   }
   assert.equal(listThemes().length, THEME_IDS.length);
-  assert.deepEqual([...THEME_IDS], ['minimal', 'kinetic', 'storybook']);
-  for (const removed of ['crayon', 'terminal']) { assert.equal(isThemeId(removed), false, removed); assert.throws(() => getTheme(removed), /THEME_UNKNOWN/); }
+  assert.deepEqual([...THEME_IDS], ['minimal', 'kinetic']);
+  for (const removed of ['crayon', 'terminal', 'storybook', 'watercolor_storybook']) { assert.equal(isThemeId(removed), false, removed); assert.throws(() => getTheme(removed), /THEME_UNKNOWN/); }
 });
 
-test('默认风格为 minimal，水彩只是可选风格', () => {
+test('默认风格为 minimal，水彩风格已移除', () => {
   assert.equal(SPEC_DEFAULTS.style.theme, 'minimal');
-  assert.ok(isThemeId('storybook'));
+  assert.equal(isThemeId('storybook'), false);
+  assert.equal(isThemeId('watercolor_storybook'), false);
   assert.throws(() => getTheme('neon_vapor'), /THEME_UNKNOWN/);
 });
 

@@ -106,11 +106,11 @@ export function createSpecRenderer(options: SpecRendererOptions): Renderer & { t
   const width = options.width ?? spec.video.width;
   const height = options.height ?? spec.video.height;
   const palette = getPalette(spec.style.palette);
-  // 风格层：spec.style.theme 已在 repair 阶段按品牌锁解析。storybook 走原水彩外观，不加逐帧质感。
+  // 风格层：spec.style.theme 已在 repair 阶段按品牌锁解析。
   const theme = getTheme(spec.style.theme);
   // 旧环境（rain_window / motion_stage）保持原有绘制与回归基线；风格质感作用于 theme_stage 镜头。
-  const themedScene = (shot: ResolvedScene): boolean => theme.id !== 'storybook' && shot.environment === 'theme_stage';
-  const themed = theme.id !== 'storybook' && spec.scenes.some(themedScene);
+  const themedScene = (shot: ResolvedScene): boolean => shot.environment === 'theme_stage';
+  const themed = spec.scenes.some(themedScene);
   const themeFonts = registerThemeFonts(theme, FontLibrary, join(PROJECT_ROOT, 'assets', 'fonts'));
 
   // 字幕：项目字体必须显式注册（§26）。字体缺失时 registerProjectFonts 返回未注册，

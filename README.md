@@ -48,7 +48,7 @@ node .skill/scripts/video.mjs my-film render
 
 [素材选择](.skill/references/assets.md)按镜头组合生图、官方矢量和精确代码图形，先核验当前会话的实际生图接口。复杂场景优先评估生成素材，技术结构依据可靠参考验证。图片及所有候选版本、模型、纹理、参考下载、预览、截图、日志与临时文件归入本片目录。
 
-[风格选择](.skill/references/styles.md)：spec 中 `style.theme` 选 minimal / kinetic / storybook，默认 minimal。关键帧运镜、元素钻入、素材片段层和文字→时长见[运动拆解与分镜默认](.skill/references/motion-breakdown.md)。
+[风格选择](.skill/references/styles.md)：spec 中 `style.theme` 选 minimal / kinetic，默认 minimal。关键帧运镜、元素钻入、素材片段层和文字→时长见[运动拆解与分镜默认](.skill/references/motion-breakdown.md)。
 
 生成物（成片、抽帧、预览、素材缓存）统一写入仓库根目录 `output/`（已 gitignore，不提交；可用 `JBM_OUTPUT_DIR` 改位置）。字体先找 `.skill/engine/assets/fonts/`，再找 `JBM_FONT_DIRS` 和本机系统字体目录（macOS / Linux / Windows），不依赖任何固定机器路径。
 

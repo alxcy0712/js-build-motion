@@ -11,7 +11,6 @@ export const SYSTEM_FONTS = {
   geist: { family: 'Geist', files: ['Geist-Variable.ttf', 'Geist-VariableFont_wght.ttf', 'Geist-Regular.ttf', 'SFNS.ttf', 'Helvetica.ttc', 'DejaVuSans.ttf'] },
   geistMono: { family: 'Geist Mono', files: ['GeistMono-Variable.ttf', 'GeistMono-VariableFont_wght.ttf', 'GeistMono-Regular.ttf', 'SFNSMono.ttf', 'Menlo.ttc', 'DejaVuSansMono.ttf', 'consola.ttf'] },
   notoSansSC: { family: 'Noto Sans CJK SC', files: ['NotoSansSC-Variable.ttf', 'NotoSansSC-VariableFont_wght.ttf', 'NotoSansCJK-Bold.ttc', 'NotoSansCJK-Regular.ttc', 'NotoSansCJKsc-Regular.otf', 'NotoSansSC-Regular.otf', 'PingFang.ttc', 'Hiragino Sans GB.ttc', 'STHeiti Medium.ttc', 'LXGWWenKai-Regular.ttf', 'wqy-microhei.ttc', 'msyh.ttc'] },
-  notoSerifSC: { family: 'Noto Serif CJK SC', files: ['NotoSerifSC-Variable.ttf', 'NotoSerifSC-VariableFont_wght.ttf', 'NotoSerifCJK-Bold.ttc', 'NotoSerifCJK-Regular.ttc', 'NotoSerifSC-Regular.otf', 'Songti.ttc', 'STSong.ttf', 'LXGWWenKai-Regular.ttf', 'simsun.ttc'] },
 } as const;
 export const CJK_PROBE = '电脑拆解人生计算机思维澄记ONEINO0123';
 /** 竖屏：顶部状态栏/搜索、底部标题/音乐/评论、右侧互动栏。横屏：通用 title-safe。 */

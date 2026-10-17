@@ -10,7 +10,6 @@ const W = 1080, H = 1920;
 const COPY: Record<string, [string, string, string]> = {
   minimal: ['电脑', '不会焦虑。', '用计算机思维想现实'],
   kinetic: ['3 秒', '搞定。', 'AI WORKFLOW · 01'],
-  storybook: ['雨夜里，', '电脑也在想', '关于人生的小事'],
 };
 for (const id of THEME_IDS) {
   const th = getTheme(id); const c = new Canvas(W, H), ctx = c.getContext('2d');

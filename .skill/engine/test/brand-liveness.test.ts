@@ -37,13 +37,13 @@ test('reject 模式：单片换风格直接失败', () => {
 test('品牌级变更：改 brand.json 后同一片子通过', () => {
   const dir = mkdtempSync(join(tmpdir(), 'brand-'));
   const p = join(dir, 'brand.json');
-  writeFileSync(p, JSON.stringify({ version: 1, lockedTheme: 'storybook', enforcement: 'reject', changes: [{ at: '2026-10-13', theme: 'minimal', reason: 'init' }, { at: '2026-10-14', theme: 'storybook', reason: '用户选定' }] }));
-  const out = validateSpec(spec({ theme: 'storybook' }), { brand: loadBrand(p) });
-  assert.equal(out.spec!.style.theme, 'storybook');
+  writeFileSync(p, JSON.stringify({ version: 1, lockedTheme: 'kinetic', enforcement: 'reject', changes: [{ at: '2026-10-13', theme: 'minimal', reason: 'init' }, { at: '2026-10-14', theme: 'kinetic', reason: '用户选定' }] }));
+  const out = validateSpec(spec({ theme: 'kinetic' }), { brand: loadBrand(p) });
+  assert.equal(out.spec!.style.theme, 'kinetic');
 });
 test('brand.json 校验：未登记风格 / 无变更记录的切换被拒', () => {
   assert.throws(() => parseBrand({ version: 1, lockedTheme: 'vapor', enforcement: 'override', changes: [] }), /未登记/);
-  for (const removed of ['crayon', 'terminal']) assert.throws(() => parseBrand({ version: 1, lockedTheme: removed, enforcement: 'override', changes: [{ at: '2026-10-17', theme: removed, reason: 't' }] }), /未登记/, removed);
+  for (const removed of ['crayon', 'terminal', 'storybook', 'watercolor_storybook']) assert.throws(() => parseBrand({ version: 1, lockedTheme: removed, enforcement: 'override', changes: [{ at: '2026-10-17', theme: removed, reason: 't' }] }), /未登记/, removed);
   assert.throws(() => parseBrand({ version: 1, lockedTheme: 'kinetic', enforcement: 'override', changes: [{ at: 'x', theme: 'minimal', reason: '' }] }), /不一致/);
   assert.equal(enforceBrand(undefined, DEFAULT_BRAND).violation, null);
 });

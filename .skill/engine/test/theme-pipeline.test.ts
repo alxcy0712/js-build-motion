@@ -34,8 +34,8 @@ test('theme_stage 的停留段没有死帧（微运动每帧生效）', () => {
 });
 test('风格转场：中段与两端都不同，且每个已登记转场都能绘制', () => {
   for (const tr of THEME_TRANSITION_IDS) {
-    const theme = (Object.keys(THEMES) as ThemeId[]).find((id) => THEMES[id].transitions.includes(tr) && id !== 'storybook') ?? 'storybook';
-    const s = specFor(theme, tr, theme === 'storybook' ? 'theme_stage' : 'theme_stage');
+    const theme = (Object.keys(THEMES) as ThemeId[]).find((id) => THEMES[id].transitions.includes(tr)) ?? 'minimal';
+    const s = specFor(theme, tr);
     const [before, mid, after] = frames(s, [47, 48 + 3, 72]);
     if (tr !== 'cutOnBeat') assert.ok(!mid!.equals(before!) && !mid!.equals(after!), `${tr}@${theme}`);
   }
@@ -48,7 +48,7 @@ test('转场不在风格允许列表时回退并告警', () => {
 });
 test('旧环境（rain_window）不受风格层影响，保持原外观', () => {
   const [a] = frames(specFor('minimal', 'cut', 'rain_window'), [10]);
-  const [b] = frames(specFor('storybook', 'cut', 'rain_window'), [10]);
+  const [b] = frames(specFor('kinetic', 'cut', 'rain_window'), [10]);
   assert.ok(a!.equals(b!));
 });
 test('品牌锁在管线中生效：spec 请求 kinetic 但锁 minimal', () => {

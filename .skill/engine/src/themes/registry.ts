@@ -4,9 +4,8 @@ import type { ThemeTokens, Orientation } from './types.ts';
 import { validateTheme } from './validate.ts';
 import { minimal } from './styles/minimal.ts';
 import { kinetic } from './styles/kinetic.ts';
-import { storybook } from './styles/storybook.ts';
 
-export const THEMES: Readonly<Record<ThemeId, ThemeTokens>> = { minimal, kinetic, storybook };
+export const THEMES: Readonly<Record<ThemeId, ThemeTokens>> = { minimal, kinetic };
 
 export function isThemeId(v: unknown): v is ThemeId {
   return typeof v === 'string' && (THEME_IDS as readonly string[]).includes(v);
