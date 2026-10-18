@@ -147,7 +147,7 @@ start 要求显式传入 `--theme`；缺失时报 `THEME_REQUIRED`，在创建�
   - `role: "actor"`：讲解动画中的演员，例如骑车、操作电脑（默认 384px）。
 - 写法：`"ip": { "role": "identity", "size": 288, "position": "bottom-center", "expression": "happy" }`；`position` 可选 `bottom-center | bottom-left | bottom-right | center | custom`（custom 需 `x`、`y`，0–1，y 为角色底边）。旧写法 `ip: true` 自动降级为 288px 身份署名并告警。
 - 纯文字镜头不放 IP，标题居中；身份署名在底部时标题略上移。
-- 片尾头像与个人 IP 落款是经用户确认后采用的专用身份版式：头像居中、显示边长约 400px（仍不超过 512），规格见[片尾头像与个人 IP 落款](visual-identity.md#片尾头像与个人-ip-落款)。
+- 片尾头像与个人 IP 落款是经用户确认后采用的专用身份版式，与收尾口播「我是澄记，用计算机思维想现实。」同时采用或同时省略：头像居中、显示边长约 400px（仍不超过 512），规格见[片尾头像与个人 IP 落款](visual-identity.md#片尾头像与个人-ip-落款)。
 
 ## 渲染前自检
 出片前逐项过一遍，并在抽帧（每镜头一张 + 片尾）上实测：
