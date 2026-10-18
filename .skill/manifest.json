@@ -1,5 +1,5 @@
 {
-  "packageId": "c00cc9de02460a56e477a11ab05ef75e3b2a86ba1c4425f4aafde04b1e3291f7",
+  "packageId": "23a48f813ae8c9f860f05febeabf0f1b9bbd936600819a6539c11fa268d57e23",
   "version": "0.2",
   "engineVersion": "0.1.0",
   "platform": "darwin",
@@ -89,7 +89,7 @@
     },
     {
       "path": "references/douyin-publishing.md",
-      "sha256": "2b1d096c266cd9a12e4f3180dcf0daaf044af6fb467470e0376e6c5ca615c993"
+      "sha256": "fa1ff29fcb3002046125fd0d0855c66adc7fd02af121da7449913f148290688f"
     },
     {
       "path": "references/drawing.md",
@@ -105,7 +105,7 @@
     },
     {
       "path": "references/intake.md",
-      "sha256": "509967a3a0c2db02fd34fb4916cd25a3841fe82f3e4c4a4e785ea5fbf98c41e9"
+      "sha256": "ac420d41842f9adf01568905a8643d7e0e0389632da0b6604c97d60c87b91e28"
     },
     {
       "path": "references/maintenance.md",
@@ -133,7 +133,7 @@
     },
     {
       "path": "references/quality.md",
-      "sha256": "bda604929d5d80efd2eb392531254655221d3fd6b609a20563c17131f07aa5e4"
+      "sha256": "7561f1874bebfdca9ef53625d8b370ad98f3f7ac5fbec4039e2d15b269c0aabd"
     },
     {
       "path": "references/reference-geometry.md",
@@ -145,11 +145,11 @@
     },
     {
       "path": "references/styles.md",
-      "sha256": "047590785cc348026b885b30f3b863e3cae73d4355bc22ec53e8d7cabcc3a2ee"
+      "sha256": "23c9c28b51a7b4f3cbfbfcfb339c1ea7ee10a07de1b587256bfc7c1a85adede8"
     },
     {
       "path": "references/visual-identity.md",
-      "sha256": "6b62d7ea8ffe371e764ff9acd77e204508e1868e42cde303b0a7f0179f27231d"
+      "sha256": "b2596c66fe6e819236f4114a17005317684f9f0f13da505262685795e23901e5"
     },
     {
       "path": "references/workspace.md",
