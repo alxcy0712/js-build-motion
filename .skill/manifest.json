@@ -1,5 +1,5 @@
 {
-  "packageId": "f311b9d8f89be8a61b9988aa4f06bd09dd9d1595159feafcfe27c2c2d466a570",
+  "packageId": "c00cc9de02460a56e477a11ab05ef75e3b2a86ba1c4425f4aafde04b1e3291f7",
   "version": "0.2",
   "engineVersion": "0.1.0",
   "platform": "darwin",
@@ -5831,7 +5831,7 @@
     },
     {
       "path": "src/utils/tts-probe.ts",
-      "sha256": "6ea738e50a585ef7628a51e77d679443de1664dce99405235af33777c0576ed2"
+      "sha256": "70eb21d053499aec30af8be4dd1c65fa6ea9606dc8151d9cbd34c766f0348f87"
     },
     {
       "path": "workspace.mjs",
@@ -6209,7 +6209,7 @@
     },
     {
       "path": "tts-helper.test.ts",
-      "sha256": "8d3c78d0d549c6f15dc5633c5a31340191045096bc8668a372e6fe634d95f038"
+      "sha256": "e4b638b2bb8424cf0e678c62f2e690445475cde1b184c509d7ec1e4a36fdb2bd"
     },
     {
       "path": "unpack.test.ts",

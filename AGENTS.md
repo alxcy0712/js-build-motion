@@ -57,16 +57,17 @@
 
 当前封存入口适用于 macOS ARM64。Linux 团队使用本节的独立手建流程，适用范围为文字稿、代码画面和本片已保存素材的制作；Node 24、FFmpeg/ffprobe、Linux 版 Skia Canvas 与实际使用的字体须可用。当前代码的沙箱适配为 `sandbox-exec`，宿主已有的 `bwrap` 由团队宿主自行配置和验证。本流程的系统隔离状态记为 `host-managed-unverified`，本片文件校验按下述步骤执行。
 
-1. 按创作问答取得本片主题，准备保存用户原文的 UTF-8 文件。在仓库根运行下面的初始化示例：`JBM_FILM_SLUG` 使用新目录名，`JBM_FILM_THEME` 填已选的 `minimal` 或 `kinetic`，`JBM_IDEA_FILE` 指向实际原文。示例只写占位画面；剧本与镜头仍按已确认要求制作。
+1. 执行初始化前，先在当前终端通过宿主版本管理器或 PATH 切换到 Node 24，用 `node --version` 确认输出为 `v24.x.x`；后续 `node` 和 `npm` 沿用该终端环境。初始化代码在写入项目之前检查版本，版本不符时报 `NODE_VERSION`。按创作问答取得本片主题，准备保存用户原文的 UTF-8 文件。在仓库根运行下面的初始化示例：`JBM_FILM_SLUG` 使用新目录名，`JBM_FILM_THEME` 填已选的 `minimal` 或 `kinetic`，`JBM_IDEA_FILE` 指向实际原文。示例只写占位画面；剧本与镜头仍按已确认要求制作。
 
 ```bash
 export JBM_FILM_SLUG=example-film
 export JBM_FILM_THEME=kinetic
 export JBM_IDEA_FILE=/path/to/original-prompt.txt
-node --input-type=module <<'JS'
+node --input-type=module <<'JS' &&
 import { cpSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join, relative, resolve } from 'node:path';
 import { createHash } from 'node:crypto';
+if (Number(process.versions.node.split('.')[0]) !== 24) throw Error(`NODE_VERSION: 需要 Node 24，当前 ${process.version}；请切换后重新初始化`);
 const slug = process.env.JBM_FILM_SLUG, theme = process.env.JBM_FILM_THEME;
 if (!/^[a-z0-9][a-z0-9-]{1,47}$/.test(slug ?? '')) throw Error('PROJECT_SLUG');
 if (!['minimal', 'kinetic'].includes(theme)) throw Error('THEME_REQUIRED');
@@ -83,6 +84,8 @@ for (const dir of ['spec', 'src/components', 'assets', 'evidence', 'out/.tmp']) 
 const excluded = ['node_modules', 'test', '.research', 'projects', 'assets/asr/bin', 'assets/asr/models', 'assets/ocr/tessdata'];
 cpSync(engine, join(project, '.engine'), { recursive: true, dereference: true,
   filter: path => !excluded.includes(relative(engine, path)) });
+const components = ['easing', 'random'], catalog = read('.skill/assets/components.json');
+for (const name of components) cpSync(join(engine, catalog[name].source), join(project, 'src/components', `${name}.ts`));
 cpSync('.skill/references', join(project, 'guide'), { recursive: true });
 cpSync('.skill/assets/project/evidence', join(project, 'evidence'), { recursive: true });
 const write = (path, value) => writeFileSync(join(project, path), JSON.stringify(value, null, 2) + '\n');
@@ -90,7 +93,7 @@ const brand = { ...account, theme, defaultTheme: account.theme, changes: [...acc
   { at, theme, reason: `Linux 手建显式指定主题 ${theme}（账号默认 ${account.theme}）` }] };
 write('brand.json', brand);
 write('workspace.json', { version: 'manual-0.1', mode: 'manual-linux', sourcePackageId: source.packageId,
-  host: { platform: process.platform, arch: process.arch, node: process.version }, engineSha256: null,
+  host: { platform: process.platform, arch: process.arch, node: process.version }, engineSha256: null, components,
   sandbox: 'host-managed-unverified', brand: { theme, defaultTheme: account.theme, sha256: hash(readFileSync(join(project, 'brand.json'))) } });
 write('project.json', { version: '0.1', slug, title: slug, status: 'draft', entry: 'spec/main.json', brief: 'brief.json', outDir: 'out' });
 write('spec/main.json', { version: '0.1', video: { width: 1080, height: 1920, fps: 24, duration: 3, seed: 1 },
@@ -111,12 +114,12 @@ pkg.dependencies = Object.fromEntries(Object.keys(pkg.dependencies).map(name => 
 }));
 write('.engine/package.json', pkg);
 JS
-npm install --prefix "projects/$JBM_FILM_SLUG/.engine" --omit=dev --bin-links=false
-cd "projects/$JBM_FILM_SLUG"
+npm install --prefix "projects/$JBM_FILM_SLUG/.engine" --omit=dev --bin-links=false &&
+cd "projects/$JBM_FILM_SLUG" &&
 export TMPDIR="$PWD/out/.tmp/"
 ```
 
-2. 在本片 `.engine/assets/fonts/` 恢复所需字体及许可，尤其是 `LXGWWenKai-Regular.ttf`；下载来源见根 README 的字体归因。依赖使用 Linux 原生包，`package-lock.json` 随本片保留。完成依赖准备后登记运行时摘要：
+2. 初始化已将 `easing.ts` 和 `random.ts` 独立复制到本片 `src/components/`，本片源码可按 guide 中的例子导入。在本片 `.engine/assets/fonts/` 恢复所需字体及许可，尤其是 `LXGWWenKai-Regular.ttf`；下载来源见根 README 的字体归因。依赖使用 Linux 原生包，`package-lock.json` 随本片保留。完成依赖准备后登记运行时摘要：
 
 ```bash
 node --input-type=module <<'JS'
@@ -145,6 +148,24 @@ assert.equal(digest(readFileSync('brand.json')), workspace.brand.sha256);
 JS
 ```
 
+修改本片前，等待本片正在执行的命令结束，在本片根目录运行以下备份命令。它归档整个项目，包含运行时、素材、记录和已有输出，保存到 `projects/.backups/<slug>/` 下的独立目录；归档内容检查通过后打印备份路径。恢复时解压到新的空目录，再运行上面的独立文件与摘要检查。
+
+```bash
+(
+set -eu
+test -f workspace.json
+test -f project.json
+JBM_PROJECT_DIR="$(pwd -P)"
+JBM_PROJECT_NAME="$(basename "$JBM_PROJECT_DIR")"
+JBM_BACKUP_ROOT="$(dirname "$JBM_PROJECT_DIR")/.backups/$JBM_PROJECT_NAME"
+mkdir -p "$JBM_BACKUP_ROOT"
+JBM_SNAPSHOT_DIR="$(mktemp -d "$JBM_BACKUP_ROOT/$(date -u +%Y%m%dT%H%M%SZ)-XXXXXX")"
+tar -czf "$JBM_SNAPSHOT_DIR/project.tar.gz" -C "$(dirname "$JBM_PROJECT_DIR")" "$JBM_PROJECT_NAME"
+tar -tzf "$JBM_SNAPSHOT_DIR/project.tar.gz" > /dev/null
+printf '%s\n' "$JBM_SNAPSHOT_DIR/project.tar.gz"
+)
+```
+
 3. `prompt-history.jsonl` 每行是 `{ "timestamp": "ISO 8601 时间", "kind": "prompt|question|answer", "text": "原文" }`，首条保存用户原始 prompt；后续修改要求用 `prompt`，模型问题用 `question`，用户答复用 `answer`，按沟通顺序追加。`timestamp` 记录入库时间，补录时保留实际原文。可使用本片 CLI 追加，所有参数文件、素材和输出继续放在本片：
 
 ```bash
@@ -156,7 +177,10 @@ node .engine/src/cli/index.ts validate "$PWD"
 node .engine/src/cli/index.ts brief validate "$PWD"
 node .engine/src/cli/index.ts project audit "$PWD"
 node .engine/src/cli/index.ts frame "$PWD" --at 1
+node .engine/src/cli/index.ts render "$PWD" --no-audio --no-network
 ```
+
+初始化的 3 秒占位 spec 采用空旁白、BGM 音量 0，首次试片使用上面的 `--no-audio --no-network`。普通 `render` 会构建音频，需先在本片规格中配置旁白、BGM 或音效；有意无声的视频继续显式传入 `--no-audio`。
 
 4. 更新占位 spec、brief 和本片源码后执行 `qa "$PWD"`、`render "$PWD"`、`artifact "$PWD" --out evidence/artifact.json`、`disclosure "$PWD"`，命令前缀均为 `node .engine/src/cli/index.ts`。辅助脚本使用 `node .engine/scripts/<脚本>`，默认输出为本片 `out/`；通用命令由宿主在本片工作目录执行，`TMPDIR` 设为本片 `out/.tmp/`。原片、图片、配音按授权复制为本片独立文件，并记录来源、许可和哈希。引擎 `.engine` 自动读取同级 `brand.json`；从共享核心调用 `validateSpec` 的自定义脚本显式传入 `{ brand: loadBrand(本片brand路径) }`。
 

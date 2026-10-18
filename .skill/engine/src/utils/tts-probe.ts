@@ -56,12 +56,12 @@ export function probeEdgeTts(options: { readonly timeoutMs?: number } = {}): Tts
     };
   }
 
-  let lastReason = '未找到可用的 python 解释器';
+  let lastReason: string | null = null;
   for (const candidate of PYTHON_CANDIDATES) {
     const r = spawnSync(candidate, [EDGE_HELPER_PATH, '--probe'], { encoding: 'utf8', timeout });
     if (r.error) {
-      // ENOENT = 这个解释器根本不存在，属于正常情况（比如只有 python3）
-      lastReason = `未找到可用的 python 解释器（已尝试 ${PYTHON_CANDIDATES.join(', ')}）`;
+      // 缺少后备解释器时保留已运行解释器的模块或版本诊断。
+      if ((r.error as NodeJS.ErrnoException).code !== 'ENOENT') lastReason ??= `${candidate} 探测失败：${r.error.message}`;
       continue;
     }
     const out = `${r.stdout ?? ''}${r.stderr ?? ''}`;
@@ -70,10 +70,11 @@ export function probeEdgeTts(options: { readonly timeoutMs?: number } = {}): Tts
     }
     // helper 会用 JSON 说明失败原因（通常是 edge_tts 模块缺失）
     const parsed = parseProbeJson(out);
-    lastReason = parsed ?? out.trim().split('\n').slice(-1)[0] ?? `${candidate} 退出码 ${r.status}`;
+    lastReason = parsed || out.trim().split('\n').slice(-1)[0] || `${candidate} 退出码 ${r.status}`;
   }
 
-  return { available: false, python: null, reason: lastReason, helperExists };
+  return { available: false, python: null,
+    reason: lastReason ?? `未找到可用的 python 解释器（已尝试 ${PYTHON_CANDIDATES.join(', ')}）`, helperExists };
 }
 
 /** helper 失败时输出 {"ok": false, "code": "...", "error": "..."} */
@@ -97,7 +98,7 @@ function parseProbeJson(out: string): string | null {
 export function ttsFixHint(probe: TtsProbeResult): string {
   if (probe.available) return '语音链路可用';
   const parts = [`安装或升级 edge-tts：\`python3 -m pip install --upgrade 'edge-tts>=7.3.1'\``];
-  if (probe.reason && /python/i.test(probe.reason)) {
+  if (probe.reason?.startsWith('未找到可用的 python 解释器')) {
     parts.unshift('先安装 Python 3（macOS: `brew install python`）');
   }
   parts.push('或跳过该依赖：把授权的配音放到 `assets/audio/voice.wav`（file provider），或接受 mock 占位音');

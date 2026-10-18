@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { spawnSync } from 'node:child_process';
-import { existsSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { chmodSync, existsSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { EDGE_HELPER_PATH, ttsFixHint } from '../src/utils/tts-probe.ts';
 import { PROJECT_ROOT } from '../src/utils/env.ts';
@@ -55,5 +55,51 @@ test('缺少 edge_tts 时环境检查继续通过，默认配音保留降级原�
       assert.equal(selected.status, 0, selected.stderr);
       assert.equal(JSON.parse(selected.stdout).id, 'mock');
       assert.match(JSON.parse(selected.stdout).reason, /edge/);
+    } finally { rmSync(scratch, { recursive: true, force: true }); }
+  });
+
+test('解释器候选保留模块、版本和执行错误；仅全部缺失时提示安装 Python',
+  { skip: process.platform === 'win32' || spawnSync('python3', ['--version']).status !== 0 }, () => {
+    const output = resolve(PROJECT_ROOT, '../../.research/out'); mkdirSync(output, { recursive: true });
+    const scratch = mkdtempSync(join(output, 'edge-candidates-'));
+    const python = spawnSync('python3', ['-c', 'import sys; print(sys.executable)'], { encoding: 'utf8' }).stdout.trim();
+    const launcher = join(scratch, 'python3'), module = join(scratch, 'edge_tts.py');
+    writeFileSync(launcher, `#!/bin/sh\nexec '${python.replace(/'/g, "'\\''")}' "$@"\n`, { mode: 0o755 });
+    const env = { ...process.env, PATH: scratch, PYTHONPATH: scratch, PYTHONDONTWRITEBYTECODE: '1' };
+    const run = () => {
+      const result = spawnSync(process.execPath, ['--input-type=module', '-e', `
+        import { probeEdgeTts, ttsFixHint } from './src/utils/tts-probe.ts';
+        const probe = probeEdgeTts();
+        console.log(JSON.stringify({ ...probe, hint: ttsFixHint(probe) }));
+      `], { cwd: PROJECT_ROOT, env, encoding: 'utf8' });
+      assert.equal(result.status, 0, result.stderr);
+      return JSON.parse(result.stdout);
+    };
+    try {
+      writeFileSync(module, "raise ImportError('fixture: edge_tts missing')\n");
+      const missingModule = run();
+      assert.equal(missingModule.available, false);
+      assert.match(missingModule.reason, /edge_tts 模块不可用/);
+      assert.doesNotMatch(missingModule.hint, /先安装 Python/);
+
+      writeFileSync(module, "__version__ = '7.2.8'\n");
+      const outdated = run();
+      assert.match(outdated.reason, /7\.2\.8.*需要升级/);
+      assert.doesNotMatch(outdated.hint, /先安装 Python/);
+
+      writeFileSync(module, "__version__ = '7.3.1'\n");
+      const available = run();
+      assert.equal(available.available, true); assert.equal(available.python, 'python3');
+
+      chmodSync(launcher, 0o600);
+      const refused = run();
+      assert.match(refused.reason, /python3.*EACCES/);
+      assert.doesNotMatch(refused.hint, /先安装 Python/);
+
+      rmSync(launcher);
+      const noPython = run();
+      assert.equal(noPython.available, false);
+      assert.match(noPython.reason, /未找到可用的 python 解释器/);
+      assert.match(noPython.hint, /先安装 Python/);
     } finally { rmSync(scratch, { recursive: true, force: true }); }
   });
