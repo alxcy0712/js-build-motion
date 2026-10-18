@@ -1,9 +1,9 @@
 # Production 创作权威与恢复
 
-新片按创作问答保存原文、核对输入并沿用用户已有委托。模型负责从内容推导目标、受众、风格、剧本和镜头；程序验证来源、结构、授权、版本及提交。固定契约由 `production --schema init|proposal|bundle` 输出，模型依据当次内容填写请求和提案。
+新片按[创作问答](intake.md)取得主题选择、初始化并保存原文、核对输入，沿用用户已有委托。模型负责从内容推导目标、受众、风格、剧本和镜头；程序验证来源、结构、授权、版本及提交。固定契约由 `production --schema init|proposal|bundle` 输出，模型依据当次内容填写请求和提案。
 
 ```bash
-node .skill/scripts/video.mjs start <slug> --idea "用户原文"
+node .skill/scripts/video.mjs start <slug> --idea "用户原文" --theme <minimal|kinetic>
 node .skill/scripts/video.mjs <slug> production --schema init
 node .skill/scripts/video.mjs <slug> production init --request inputs/production-init.json
 node .skill/scripts/video.mjs <slug> production next

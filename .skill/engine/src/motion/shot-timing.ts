@@ -5,7 +5,7 @@
  * 数字串按 1 个词计。
  *
  * 分镜默认（竖屏讲解）：普通讲解屏 2.5–5s；强调大字屏（≤ 6 个字/词，如巨型数字、一句结论）2–3s。
- * 超过上限说明这一屏字太多，应拆镜头，而不是让画面停住。
+ * 预设按上下限裁定试排时长；完整读时超过上限时，按内容拆镜、精简文字或调整时长。
  */
 export interface ReadingRates { readonly cjkPerSecond: number; readonly wordsPerSecond: number }
 export const DEFAULT_RATES: ReadingRates = { cjkPerSecond: 6, wordsPerSecond: 3.3 };
@@ -44,7 +44,7 @@ export function minShotSeconds(lines: readonly string[], o: ShotTimingOptions = 
 }
 export interface PlannedShot { readonly start: number; readonly end: number; readonly lines: readonly string[] }
 /**
- * 把若干屏文字排成连续时间轴。可选 beat（秒）把每个切点吸附到最近的节拍，但只向后吸附，保证不短于阅读下限。
+ * 把若干屏文字排成连续时间轴。可选 beat（秒）向后吸附切点，保持预设时长下限；实际阅读另行验收。
  */
 export function planShotTimings(screens: readonly (readonly string[])[], o: ShotTimingOptions & { readonly start?: number; readonly beat?: number } = {}): PlannedShot[] {
   const out: PlannedShot[] = [];

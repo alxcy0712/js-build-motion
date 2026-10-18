@@ -1,8 +1,8 @@
 /**
  * 风格冒烟：经真实管线（validateSpec → createSpecRenderer → renderVideo）为每个风格出 6 秒竖屏短片（3 镜头、2 次风格转场）。
  * 另导出首帧、1.6s 静帧以及每个转场点 ±6 帧的逐帧 PNG 和拼图。
- * 用法：node scripts/theme-smoke.ts <outDir> [theme...]
- * 冒烟用内存中的临时品牌配置逐一锁定各风格（等价于品牌级变更），不改动 .skill/brand.json。
+ * 用法：node .skill/scripts/video.mjs <slug> exec node .engine/scripts/theme-smoke.ts <outDir> [theme...]
+ * 冒烟以独立的内存配置验证各主题，样片使用虚构内容；本片固定主题保持原值。
  */
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';

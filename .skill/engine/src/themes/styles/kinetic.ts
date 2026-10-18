@@ -1,11 +1,11 @@
 import type { ThemeTokens } from '../types.ts';
 import { CJK_PROBE, CJK_STACK, SAFE_AREA, SYSTEM_FONTS } from '../shared.ts';
-/** 炫酷：霓虹、辉光、甩切与运动模糊，节奏快、切点落拍。 */
+/** 动感：品牌黄与蓝紫反差，形状接力、语义切点与稳定落定。 */
 export const kinetic: ThemeTokens = {
-  id: 'kinetic', name: '炫酷', summary: '深蓝黑底 + 电光青/洋红双强调，粗重压缩字、甩切+运动模糊、重拍硬切。',
-  useWhen: 'AI 新工具/新功能发布、效率对比、“3 秒抓人”的高能开场、榜单盘点；BGM 节奏强时。',
+  id: 'kinetic', name: '炫酷', summary: '深蓝黑底、品牌黄与蓝紫关系色；形状接力展示过程，短词强调结果，强弱节奏交替。',
+  useWhen: '工具与机制讲解、操作结果、效率对比、产品发布；需要清楚的状态变化与关键揭示时。',
   fonts: { stack: ['Inter Tight', ...CJK_STACK], mono: ['Geist Mono'], faces: [SYSTEM_FONTS.interTight, SYSTEM_FONTS.notoSansSC, SYSTEM_FONTS.geistMono], probe: CJK_PROBE },
-  palette: { bg: '#05060A', surface: '#0E1220', hairline: '#1E2440', text: '#FFFFFF', textSecondary: '#8B93B8', accent: '#00E5FF', accent2: '#FF2BD6', warn: '#FFE14D' },
+  palette: { bg: '#05060A', surface: '#0E1220', hairline: '#1E2440', text: '#FFFFFF', textSecondary: '#8B93B8', accent: '#FFC712', accent2: '#5B3DF5', warn: '#FF8A4C' },
   type: { vertical: { hero: 168, display: 120, title: 80, body: 44, caption: 32, micro: 26 }, horizontal: { hero: 196, display: 136, title: 88, body: 40, caption: 28, micro: 22 } },
   weight: { hero: 900, display: 800, title: 700, body: 500, caption: 600, micro: 600 },
   tracking: { hero: -0.04, display: -0.035, title: -0.02 },

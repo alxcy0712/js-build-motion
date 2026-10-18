@@ -7,6 +7,8 @@ import { backupCore, engine, root, skill, verifyCore } from './core.mjs';
 import { digest, importSourceArguments, json, spawnWithSignalRelay, writeJson } from '../engine/workspace.mjs';
 import { startDirectorProject } from '../engine/src/cli/director.ts';
 import { compileDirector } from '../engine/src/project/director.ts';
+import { parseBrand } from '../engine/src/themes/brand.ts';
+import { THEME_IDS } from '../engine/src/themes/ids.ts';
 
 function projectPath(slug) {
   const projects = join(root, 'projects');
@@ -15,8 +17,23 @@ function projectPath(slug) {
   return project;
 }
 
-export function initializeWorkspace({ slug, idea, title = slug, components = ['easing', 'random'] }) {
+export function initializeWorkspace({ slug, idea, title = slug, theme, components = ['easing', 'random'] }) {
   const manifest = verifyCore();
+  // 账号默认（.skill/brand.json）＋ 用户对本片风格的答复 → 本片快照
+  const account = parseBrand(json(join(skill, 'brand.json')));
+  const filmTheme = theme ?? account.theme;
+  if (!THEME_IDS.includes(filmTheme)) throw new Error(`THEME_UNKNOWN: ${filmTheme} 未登记（可用：${THEME_IDS.join(' / ')}）`);
+  const selectedAt = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Shanghai' });
+  const brandSnapshot = {
+    version: 2,
+    ...(account.owner !== undefined ? { owner: account.owner } : {}),
+    theme: filmTheme,
+    defaultTheme: account.theme,
+    enforcement: account.enforcement,
+    ...(account.note !== undefined ? { note: account.note } : {}),
+    changes: [...account.changes, { at: selectedAt, theme: filmTheme,
+      reason: theme === undefined ? `初始化继承账号默认 ${filmTheme}` : `初始化显式指定主题 ${filmTheme}（账号默认 ${account.theme}）` }],
+  };
   const catalog = json(join(skill, 'assets/components.json'));
   const selected = new Set();
   const include = name => {
@@ -32,8 +49,11 @@ export function initializeWorkspace({ slug, idea, title = slug, components = ['e
   const result = startDirectorProject({ slug, idea, title, projectsRoot: dirname(project) });
   const neutral = compileDirector({ version: '0.1', idea, title, aspect: '16:9', look: 'graphic', bpm: 96,
     shots: [{ purpose: '等待本片导演计划', beats: 2, title, backdrop: 'studio', motif: 'none', actors: [], cameraMove: 'static', transition: 'cut' }] });
+  // 占位 spec 跟着本片选择，避免后续每次校验都触发 BRAND_THEME_LOCKED
+  neutral.spec.style.theme = filmTheme;
   writeJson(join(project, 'spec/main.json'), neutral.spec);
   cpSync(engine, join(project, '.engine'), { recursive: true, dereference: true, filter: path => path !== join(engine, 'test') });
+  writeJson(join(project, 'brand.json'), brandSnapshot);
   writeJson(join(project, '.engine/engine-manifest.json'), manifest);
   cpSync(join(skill, 'references'), join(project, 'guide'), { recursive: true });
   cpSync(join(skill, 'assets/project'), project, { recursive: true });
@@ -51,8 +71,9 @@ export function initializeWorkspace({ slug, idea, title = slug, components = ['e
   }
   const isolation = { protectedRoots: [root] };
   writeJson(join(project, '.engine/isolation.json'), isolation);
-  writeJson(join(project, 'workspace.json'), { version: '0.2', packageId: manifest.packageId, isolationSha256: digest(JSON.stringify(isolation)), components: [...selected].sort() });
-  return { project: result.dir, status: 'needs-intake', next: '按 guide/intake.md 用模型解析一句话需求，推荐风格、叙事与记忆点，集中提出关键问题；重要选择有回答或明确委托后制定导演计划与素材方案', packageId: manifest.packageId, components: [...selected].sort(), backup };
+  writeJson(join(project, 'workspace.json'), { version: '0.2', packageId: manifest.packageId, isolationSha256: digest(JSON.stringify(isolation)), components: [...selected].sort(),
+    brand: { theme: filmTheme, defaultTheme: account.theme, sha256: digest(readFileSync(join(project, 'brand.json'))) } });
+  return { project: result.dir, status: 'needs-intake', next: '主题已写入 brand.json；按 guide/intake.md 补齐沟通原文与尚待决定的创作选择，按 guide/motion-language.md 落实创作主线；已有选择与委托持续沿用，完成问答后制定导演计划与素材方案', packageId: manifest.packageId, components: [...selected].sort(), backup };
 }
 
 export function invokeProject(slug, args) {
@@ -76,10 +97,10 @@ if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1]
     const [command, ...args] = process.argv.slice(2);
     if (command === 'backup') process.stdout.write(JSON.stringify({ backup: backupCore() }) + '\n');
     else if (command === 'start') {
-      const { values, positionals } = parseArgs({ args, options: { idea: { type: 'string' }, 'idea-file': { type: 'string' }, title: { type: 'string' }, components: { type: 'string' } }, allowPositionals: true });
-      if (positionals.length !== 1 || (values.idea === undefined) === (values['idea-file'] === undefined)) throw new Error('USAGE: video.mjs start <slug> --idea "idea" | --idea-file prompt.txt');
+      const { values, positionals } = parseArgs({ args, options: { idea: { type: 'string' }, 'idea-file': { type: 'string' }, title: { type: 'string' }, theme: { type: 'string' }, components: { type: 'string' } }, allowPositionals: true });
+      if (positionals.length !== 1 || (values.idea === undefined) === (values['idea-file'] === undefined)) throw new Error('USAGE: video.mjs start <slug> --idea "idea" | --idea-file prompt.txt [--theme minimal|kinetic]');
       const idea = values['idea-file'] !== undefined ? readFileSync(resolve(values['idea-file']), 'utf8') : values.idea;
-      process.stdout.write(JSON.stringify(initializeWorkspace({ slug: positionals[0], idea, ...(values.title ? { title: values.title } : {}), ...(values.components ? { components: values.components.split(',') } : {}) }), null, 2) + '\n');
+      process.stdout.write(JSON.stringify(initializeWorkspace({ slug: positionals[0], idea, ...(values.title ? { title: values.title } : {}), ...(values.theme ? { theme: values.theme } : {}), ...(values.components ? { components: values.components.split(',') } : {}) }), null, 2) + '\n');
     } else {
       if (!command || !args.length) throw new Error('USAGE: video.mjs <slug> <command> [args] | start | backup');
       process.exitCode = await invokeProject(command, args);

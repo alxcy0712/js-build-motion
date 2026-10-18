@@ -38,7 +38,8 @@ export async function checkDocumentOcrNative({ scratch, skill, check }) {
   let ordinal = 0; const log = value => appendFileSync(join(records, 'commands.jsonl'), JSON.stringify(value) + '\n');
   const collect = (cwd, argv, expected = 0) => {
     const id = `command-${String(++ordinal).padStart(4, '0')}`, start = Date.now();
-    const result = spawnSync(process.execPath, argv, { cwd, encoding: 'utf8', timeout: 210000, maxBuffer: 32 * 1024 * 1024, detached: true, killSignal: 'SIGKILL' });
+    // Catalog policies allow five minutes; the collector also covers startup and backup.
+    const result = spawnSync(process.execPath, argv, { cwd, encoding: 'utf8', timeout: 360000, maxBuffer: 32 * 1024 * 1024, detached: true, killSignal: 'SIGKILL' });
     if (result.pid) try { process.kill(-result.pid, 'SIGKILL'); } catch (e) { if (e.code !== 'ESRCH') throw e; }
     const stdout = result.stdout ?? '', stderr = result.stderr ?? ''; writeFileSync(join(records, id + '.stdout.log'), stdout); writeFileSync(join(records, id + '.stderr.log'), stderr);
     log({ id, packageId, host, cwd, executable: process.execPath, argv, exitCode: result.status, signal: result.signal, elapsedMs: Date.now() - start,

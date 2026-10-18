@@ -1,10 +1,11 @@
 {
-  "version": 1,
+  "version": 2,
   "owner": "ONEINO.澄记",
-  "lockedTheme": "minimal",
+  "theme": "minimal",
+  "defaultTheme": "minimal",
   "enforcement": "override",
-  "note": "个人 IP 一致性锁。所有影片的 style.theme 必须等于 lockedTheme；要换风格，只能在这里修改 lockedTheme 并在 changes 追加一条记录（品牌级变更），不能在单片 spec 里改。enforcement: override=强制改回并警告，reject=直接报错。",
+  "note": "账号默认供新片参考。主题选择与快照规则见风格选择规范；每片在初始化前确认主题，通过 start --theme 写入固定快照。账号默认按用户明确要求更新；已有影片沿用本片固定主题。",
   "changes": [
-    { "at": "2026-10-13", "theme": "minimal", "reason": "初始默认，待用户选定" }
+    { "at": "2026-10-13", "theme": "minimal", "reason": "账号默认，待用户选定" }
   ]
 }

@@ -28,7 +28,7 @@ export interface ResolvedKey { t: number; x: number; y: number; zoom: number; ro
 /** 默认相机缓动：缓起缓停（与风格未提供 camera 缓动时一致） */
 export const DEFAULT_CAMERA_EASE: CubicBezierTuple = [0.65, 0, 0.35, 1];
 /**
- * 运镜语法（分镜默认值，数字即规范）：
+ * 运镜预设（提供试排起点，幅度与时长按本片内容验证）：
  * - normal：讲解屏推镜 1.0→1.10–1.15，3–4s
  * - emphasis：强调屏 1.0→1.20–1.30
  * - openingPull：开场 logo/标题反向拉 1.2→1.0

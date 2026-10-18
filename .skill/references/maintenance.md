@@ -5,6 +5,7 @@
 | 需要修改的内容 | 唯一权威位置 |
 |---|---|
 | 制作标准与按需加载 | .skill/SKILL.md |
+| 创作主线与共用动效验收 | .skill/references/motion-language.md；入口和模板引用该文件 |
 | 布局与隔离标准 | .skill/references/workspace.md |
 | 导演、绘制、音视频流程 | .skill/references/ 对应主题文件 |
 | VideoSpec 词汇与结构 | .skill/engine/src/spec/types.ts、schema.ts |
@@ -48,6 +49,7 @@
 | 进程隔离与运行时校验 | .skill/engine/workspace.mjs |
 | 初始化、组件复制与统一调用 | .skill/scripts/video.mjs |
 | 核心校验、备份与版本清单 | .skill/scripts/core.mjs |
+| 规范链接、标题锚点与新片 guide 路径校验 | .skill/scripts/docs-check.mjs |
 | 实际成片与审片身份核验 | .skill/engine/src/project/artifact.ts |
 | 结构化审片、署名与本地交付契约 | .skill/engine/src/project/delivery.ts |
 | 审片覆盖、当前对象、权利与审批门禁 | .skill/engine/src/project/review-validation.ts |
@@ -63,6 +65,7 @@
 ```bash
 node .skill/scripts/video.mjs backup
 # 修改明确要求的通用能力，运行对应回归检查
+node .skill/scripts/check.mjs --docs
 node .skill/scripts/check.mjs --engine
 node .skill/scripts/seal.mjs
 node .skill/scripts/check.mjs --native
@@ -76,7 +79,11 @@ node .skill/scripts/check.mjs --native
 
 修改标准须评估不同模型、题材和输入类型的共同需求；示例和参考资料作为验证输入。机制测试验证备份上限、输入隔离、核心固定、组件独立和真实音视频；旧的文档文字匹配检查随重复文档移除。
 
+`--docs` 检查共享文档的本地内联链接与标题锚点，并把规范和模板投影为新片的 `guide/`、`AGENTS.md`、`evidence/` 后再检查一次。链接检查验证可到达性；语义一致性通过用户原始需求、运行时契约与任务走查确认。清理源码先核对命令入口、组件注册、动态 worker、公开调用和测试；执行链可达性与人工按需调用分别保留证据。
+
 外部研究与主提示词按差异吸收，记录“来源与观察范围 → 可复核问题或设计假设 → 权威文件中的改动 → 验证”。具体维护过程按下述内容边界存入本地记录；通用检查的临时夹具放.research/out/并在结束后清理。附件可读取范围、原片实际观看范围和成片归因各自标明；资料未覆盖的部分保留pending。用户指定仅更新核心时，影片文件与固定运行时保持原状。
+
+设计方法按[有条件的方法记录](design-learning.md#把经验变成有条件的方法)区分个人偏好、待验证假设和实际支持范围，出现反例时收窄或撤回对应规则。流程接入与文档校验支持维护完成；视觉收益、受众理解与传播表现分别保留实际验证状态。
 
 ## 从项目复盘进化
 

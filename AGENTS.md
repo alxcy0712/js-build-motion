@@ -108,7 +108,7 @@ Grok Bot 的配音使用本团队已获授权的音色、凭据与实际可用�
 
 ### 制作与维护
 
-每次制作或修改读取 [.skill/SKILL.md](.skill/SKILL.md)，随后只读取当前步骤需要的规范。新片按[创作问答](.skill/references/intake.md)拆解用户当次需求，通过 `node .skill/scripts/video.mjs start <slug> --idea "用户原文"` 保存原文并创建项目，提出本片问题与推荐答案；重要选择有回答或明确委托后进入剧本、素材制作和画面开发。已有影片先调用 backup，再继续指定项目。
+每次制作、修改或维护读取 [.skill/SKILL.md](.skill/SKILL.md) 与[创作主线](.skill/references/motion-language.md#创作主线)，随后只读取当前步骤需要的规范。新片按[创作问答](.skill/references/intake.md)解析需求、提出推荐并取得本片主题选择，再通过 `node .skill/scripts/video.mjs start <slug> --idea "用户原文" --theme <minimal|kinetic>` 保存首次原文并创建项目，立即补齐此前问答；剩余重要选择有回答或明确委托后进入剧本、素材制作和画面开发。已有影片先调用 backup，再按本片 AGENTS.md、guide/、固定主题、沟通记录与待验收项恢复指定项目。
 
 每片的 prompt-history.jsonl 保存创建时的原始 prompt、后续用户修改要求、模型问题与用户答案。新片原文由 start 自动保存；改片和问答按 [.skill/references/workspace.md](.skill/references/workspace.md) 通过 prompt 命令逐条追加，保持原文与时间。维护评估在用户指定的项目范围内结合记录、源码、证据与成片寻找改进依据。
 

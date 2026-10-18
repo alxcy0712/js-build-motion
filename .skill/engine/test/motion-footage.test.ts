@@ -151,6 +151,16 @@ test('spec：文字超出镜头可读时长时告警', () => {
   const r = validateSpec({ ...base, scenes: [{ id: 'a', start: 0, end: 1.2, environment: 'theme_stage', headline: ['这一屏的字数明显太多了', '观众根本读不完'] }] }, { brand });
   assert.ok(r.issues.some((i) => i.code === 'SHOT_TOO_SHORT_FOR_TEXT'));
 });
+test('spec：长文字告警使用完整读时，镜长预设上限保持为排程参数', () => {
+  const headline = ['阅读文字'.repeat(5), '完整结果'.repeat(5)];
+  assert.equal(readingSeconds(headline), 40 / 6);
+  assert.equal(minShotSeconds(headline), 5, '排程预设仍有上限');
+  for (const [duration, expected] of [[5, true], [8, false]] as const) {
+    const result = validateSpec({ ...base, video: { ...base.video, duration },
+      scenes: [{ id: 'reading', start: 0, end: duration, environment: 'theme_stage', headline }] }, { brand });
+    assert.equal(result.issues.some(issue => issue.code === 'SHOT_TOO_SHORT_FOR_TEXT'), expected);
+  }
+});
 test('管线：素材镜头 + 相机路径 + 焦点钻入可渲染且可复现', () => {
   const root = scratch(); twoTonePng(root);
   const spec = validateSpec({ ...base, scenes: [
@@ -182,8 +192,8 @@ test('字体目录：按平台给出，且可用 JBM_FONT_DIRS 追加', () => {
   assert.ok(!mac.some((d) => d.startsWith('/usr/share')));
   assert.ok(systemFontDirs('linux', {}).includes('/usr/share/fonts'));
 });
-test('输出目录：默认仓库根 output/，可由 JBM_OUTPUT_DIR 覆盖', () => {
-  assert.match(outputRoot({}), /[\\/]output$/);
+test('核心探针输出使用临时区，可由 JBM_OUTPUT_DIR 指定维护目录', () => {
+  assert.match(outputRoot({}), /[\\/]\.research[\\/]out$/);
   assert.equal(outputRoot({ JBM_OUTPUT_DIR: '/tmp/jbm-out' }), '/tmp/jbm-out');
 });
 

@@ -4,7 +4,7 @@
  * - 纯 seek(t)：任意帧由「镜头内时间」唯一决定；视频先经 ffmpeg 一次性抽成帧序列并缓存，
  *   渲染时按帧号同步读取，避免与编码管线并发解码。
  * - 安全：src 只能指向 assetRoot 之内、扩展名白名单内的文件（拒绝 .. 越界与符号链接逃逸）。
- * - 缓存目录在 output/.cache/footage（gitignored），键 = 源文件路径 + 修改时间 + 抽帧参数。
+ * - 缓存目录在本片输出区的 .cache/footage，键 = 源文件路径 + 修改时间 + 抽帧参数。
  */
 import { spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';

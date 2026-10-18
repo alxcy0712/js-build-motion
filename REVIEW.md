@@ -1,11 +1,11 @@
-# ChatGPT Pro 项目审查入口
+# 项目审查入口
 
-此共享包包含通用研究、视频制作核心、规范、模板、测试源码与完整 `assets/`，其中包括用户授权的个人 IP 源素材和视频封面模板。每支影片的工作区、用户原文、候选素材、成片、`.pi/` 运行记录、本机依赖、维护记录与原 Git 历史保存在本地。共享副本采用独立的首次提交历史。
+本文件提供源码与规范的审查路径。共享范围、运行依赖及公开归因以 [README.md](README.md) 为准，执行角色与授权以 [AGENTS.md](AGENTS.md) 为准。具体影片的素材、观察证据和维护记录按任务授权在本地读取；审查结论写入对应项目或本地维护归档。
 
 ## 阅读顺序
 
 1. [README.md](README.md) 和 [AGENTS.md](AGENTS.md)：使用入口、授权边界和项目约定。
-2. [.skill/SKILL.md](.skill/SKILL.md)、[创作问答](.skill/references/intake.md)、[方向设计](.skill/references/direction.md)：一句话输入如何成为风格、叙事与镜头选择。
+2. [.skill/SKILL.md](.skill/SKILL.md)、[创作主线](.skill/references/motion-language.md#创作主线)、[个人包装](.skill/references/visual-identity.md)、[创作问答](.skill/references/intake.md)、[导演计划](.skill/references/direction.md)：一句话输入如何成为风格、叙事与镜头选择。
 3. [入口脚本](.skill/scripts/video.mjs)、[核心封装](.skill/scripts/core.mjs)、[工作区与系统隔离](.skill/engine/workspace.mjs)：初始化、备份、版本固定与进程边界。
 4. [导演计划](.skill/engine/src/project/director.ts)、[逐帧绘制与转场](.skill/engine/src/pipeline/spec-renderer.ts)、[渲染管线](.skill/engine/src/pipeline/render-video.ts)：计划到编码的实际实现。
 5. [质量规范](.skill/references/quality.md)、[电影化运镜](.skill/references/cinematography.md)、[动效设计](.skill/references/motion-design.md)、[产品与体验叙事](.skill/references/product-film-language.md)，随后阅读 `.skill/engine/test/` 与 `.skill/scripts/native-check.mjs`。
@@ -23,7 +23,7 @@
 
 引擎测试验证制作行为；原生检查覆盖备份恢复、独立影片、文件隔离及子进程、确定性帧和真实音视频。审查者可从测试源码核对覆盖范围，并在具备运行条件的环境中执行检查。执行结果与环境信息保存在本地维护记录。
 
-本包用于源码审查。完整运行时要求 macOS ARM64、Node 24、FFmpeg/ffprobe、Python/edge-tts、JS 依赖与字体。`.skill/manifest.json` 包含本机已封装运行时的哈希，`node_modules/` 与字体二进制被排除；从 GitHub 克隆后，运行前需要恢复这些文件，或在明确的核心维护任务中安装依赖、获取字体、运行检查并重新 seal。在线 TTS 和图像生成仍依赖实际可用的服务与授权。
+完整运行时及依赖恢复方法见 [README.md](README.md)；`.skill/manifest.json` 固定当前核心的源码、测试与依赖身份。审查时分别记录实际执行的检查、条件跳过和影片观察范围；最终验证与封存文件保持一致。
 
 ## Git 上传检查
 

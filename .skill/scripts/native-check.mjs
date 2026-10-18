@@ -31,7 +31,8 @@ export async function checkNative() {
   const shared = ['engine/src/animation/easing.ts', 'engine/src/spec/graphic.ts', 'engine/src/cli/director.ts', 'engine/test/director.test.ts'];
   const before = shared.map(path => digest(readFileSync(join(skill, path))));
   const run = (cwd, args, expected = 0) => {
-    const result = spawnSync(process.execPath, args, { cwd, encoding: 'utf8', timeout: 60000, maxBuffer: 32 * 1024 * 1024 });
+    // Catalog recovery may consume its five-minute policy budget after startup and backup.
+    const result = spawnSync(process.execPath, args, { cwd, encoding: 'utf8', timeout: 360000, maxBuffer: 32 * 1024 * 1024 });
     if (result.error) throw result.error;
     assert.equal(result.status, expected, `${args.slice(0, 3).join(' ')}: ${result.stderr}\n${result.stdout}`);
     return result.stdout + (expected ? result.stderr : '');
@@ -54,7 +55,7 @@ export async function checkNative() {
         const name = dependency.slice(0, dependency.lastIndexOf('@'));
         assert.ok(require.resolve(name).startsWith(join(engine, 'node_modules') + '/'));
       }
-      assert.ok(original.files.filter(file => file.path.startsWith('src/')).every(file => file.path.endsWith('.ts')));
+      assert.ok(original.files.filter(file => file.path.startsWith('src/')).every(file => file.path.endsWith('.ts') || file.path.endsWith('/README.md')));
       assert.equal(existsSync(join(skill, 'assets/components/easing.js')), false);
     });
     await check('根入口创建不同题材的两个独立项目与组件依赖', () => {

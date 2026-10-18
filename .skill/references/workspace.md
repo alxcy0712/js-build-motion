@@ -1,6 +1,6 @@
 # 项目布局与隔离
 
-唯一制作入口为node .skill/scripts/video.mjs；每次调用验证并备份核心，.skill-backups/保留最近两份成功快照。start创建projects/<slug>/，后续命令指定已有影片。新片按[创作问答](intake.md)完成本片选择后进入制作。
+唯一制作入口为node .skill/scripts/video.mjs；每次调用验证并备份核心，.skill-backups/保留最近两份成功快照。新片按[创作问答](intake.md)取得本片主题选择，再用 `start --theme` 创建projects/<slug>/；剩余重要选择完成后进入制作，后续命令指定已有影片。
 
 ## 生成区的外部依赖约束
 
@@ -25,6 +25,7 @@ projects/<slug>/
     unpack.json        已提交展开版本索引与当前 unpackId
   director.json         导演计划
   brief.json            交付、输入、工具、声明与验收
+  brand.json            本片主题快照（theme/defaultTheme/changes，记录显式参数或默认继承）
   NOTES.md              设计、事实、参考用途与skill学习状态
   src/                  本片代码与组件副本
   assets/               制作素材与授权输入
@@ -44,6 +45,8 @@ projects/<slug>/
 
 manifest中的路径相对本片，slug与目录名一致；drawing使用src/内的同步模块。输入、源码与输出使用普通独立文件。所需组件从核心唯一源码复制到本片，easing/random默认复制，camera依赖easing。
 
+start 把账号默认风格（`.skill/brand.json`）与本片选择写入本片根目录的 `brand.json` 快照，同时在 `workspace.json.brand` 固定生效风格与快照哈希；校验与渲染读本片快照，运行时核对快照未被改动，项目进程的沙箱保护其写访问。账号默认只在用户要求时修改，供后续新项目继承；已有影片继续使用各自初始化时的运行时与配置。
+
 ## 影片制作文件边界
 
 影片制作生成的文件放在对应的projects/<slug>/：图片及所有候选版本、参考下载、三维模型与纹理放assets/；代码与依赖副本放src/；分镜、截图、审片与工具记录放evidence/；成片、音频、帧序列和临时文件放out/，影片制作工具的临时目录使用本片out/.tmp/。生成前指定对应影片项目内的路径，收到固定宿主位置的工具结果后按[素材选择](assets.md)立即迁入本片，再登记和引用。
@@ -52,10 +55,10 @@ manifest中的路径相对本片，slug与目录名一致；drawing使用src/内
 
 ## 沟通原文
 
-prompt-history.jsonl是沟通记录的唯一保存位置。每行含timestamp（UTC ISO）、kind（prompt/question/answer）和text原文。start保存首次制作prompt，后续修改、补充、模型问题和用户答复逐条追加，保留措辞、换行与链接。模型假设和设计决定写入NOTES.md。
+prompt-history.jsonl是沟通记录的唯一保存位置。每行含timestamp（UTC ISO记录时间）、kind（prompt/question/answer）和text原文。主题确定后，start保存首次制作prompt；随即按对话发生顺序追加初始化前的补充、问题和答案，后续沟通继续逐条追加，保留措辞、换行与链接。初始化前的原文从当前对话读取；记录时间由命令生成，若需要原始发言时间，在NOTES.md注明可核实的对话时间。模型假设和设计决定写入NOTES.md。
 
 ```bash
-node .skill/scripts/video.mjs start <slug> --idea "用户原文"
+node .skill/scripts/video.mjs start <slug> --idea "用户原文" --theme <minimal|kinetic>
 node .skill/scripts/video.mjs <slug> prompt --kind prompt --text "用户本轮原文"
 node .skill/scripts/video.mjs <slug> prompt --kind question --text "模型问题原文"
 node .skill/scripts/video.mjs <slug> prompt --kind answer --text "用户答复原文"

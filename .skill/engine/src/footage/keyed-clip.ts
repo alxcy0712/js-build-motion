@@ -2,7 +2,7 @@
  * 生成角色片段 → 透明帧序列（抠像一次、渲染时按帧读取），以及按槽位变速 + 帧混合取帧。
  *
  * 输出目录：f000000.png … + meta.json（尺寸、fps、帧数、键色、全片角色包围盒）。
- * 输出放仓库根 output/ 或本片 out/，不提交。ffmpeg / ffprobe 需在 PATH 中。
+ * 输出保存在本片 out/，ffmpeg / ffprobe 需在 PATH 中。
  */
 import { spawn, spawnSync } from 'node:child_process';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';

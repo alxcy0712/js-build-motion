@@ -1,6 +1,6 @@
 # GitHub 共享制作核心、说明与 assets；影片、用户原文和本机记录留在本地
 /projects/
-# 所有生成物（成片、抽帧、预览、素材缓存）统一落在仓库根 output/，永不提交
+# 兼容历史输出目录；当前制作产物归入 projects/<slug>/out/
 /output/
 .skill/engine/out/
 .pi/

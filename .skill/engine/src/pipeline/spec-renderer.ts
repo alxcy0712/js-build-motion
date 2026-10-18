@@ -62,7 +62,7 @@ export interface SpecRendererOptions {
   readonly trackText?: boolean;
   /** 素材片段（environment = footage）的根目录；src 只能指向其内部。默认 process.cwd() */
   readonly assetRoot?: string;
-  /** 视频素材抽帧缓存目录；默认 output/.cache/footage */
+  /** 视频素材抽帧缓存目录；默认本片输出区的 .cache/footage */
   readonly footageCacheDir?: string;
 }
 

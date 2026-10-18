@@ -216,9 +216,9 @@ export function repairSpec(input: unknown, options: RepairOptions = {}): RepairR
   const brand = options.brand ?? loadBrand();
   const decision = enforceBrand(requestedTheme, brand);
   if (decision.violation?.action === 'reject') {
-    r.fatal('BRAND_THEME_LOCKED', 'style.theme', `品牌锁定风格为 ${decision.theme}，本片请求 ${decision.violation.requested}；换风格须修改 .skill/brand.json（品牌级变更）`);
+    r.fatal('BRAND_THEME_LOCKED', 'style.theme', `本片固定主题为 ${decision.theme}，请求值为 ${decision.violation.requested}；请让 style.theme 与本片 brand.json 一致。更换本片主题须先明确迁移范围与验证方案，并保留原版本；账号默认仅影响之后的新片。`);
   } else if (decision.violation) {
-    r.add({ severity: 'WARNING', code: 'BRAND_THEME_LOCKED', path: 'style.theme', message: `品牌锁定风格为 ${decision.theme}，已覆盖本片请求的 ${decision.violation.requested}`, from: decision.violation.requested, to: decision.theme });
+    r.add({ severity: 'WARNING', code: 'BRAND_THEME_LOCKED', path: 'style.theme', message: `本片风格为 ${decision.theme}，已覆盖本片请求的 ${decision.violation.requested}`, from: decision.violation.requested, to: decision.theme });
   }
   const style = { ...repairedStyle, theme: decision.theme };
   const characters = repairCharacters(input['characters'], r);
@@ -331,7 +331,7 @@ function repairShotMotion(item: Record<string, unknown>, path: string, r: Repair
   if (item['environment'] === 'footage' && item['footage'] === undefined) r.fatal('FOOTAGE_REQUIRED', `${path}.footage`, 'environment=footage 需要 footage: { src }');
   const headline = Array.isArray(item['headline']) ? item['headline'].filter((x): x is string => typeof x === 'string') : typeof item['headline'] === 'string' ? [item['headline']] : [];
   if (headline.length) {
-    const need = minShotSeconds(typeof item['kicker'] === 'string' ? [item['kicker'], ...headline] : headline);
+    const need = minShotSeconds(typeof item['kicker'] === 'string' ? [item['kicker'], ...headline] : headline, { max: Infinity });
     if (duration + 1e-6 < need) r.warn({ code: 'SHOT_TOO_SHORT_FOR_TEXT', path: `${path}.end`, message: `本屏文字约需 ${need.toFixed(1)}s 才能读完，镜头只有 ${duration.toFixed(1)}s`, hint: '延长镜头、删字，或拆成两屏（motion/shot-timing.ts planShotTimings）' });
   }
   return out;

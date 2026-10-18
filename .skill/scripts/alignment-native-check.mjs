@@ -140,13 +140,15 @@ export async function checkAlignmentNative({ scratch, skill, check, denied }) {
       const a = catalogManifest.assets.find(a => a.source.path === 'long.wav'), before = readFileSync(join(project, 'assets/alignment.json')), runs = join(project, 'runs'), known = new Set(readdirSync(runs));
       const argv = [join(core, 'scripts/video.mjs'), 'alignment-film', 'align', ...selection(a, scripts.en)], began = Date.now(), child = spawn(process.execPath, argv, { cwd: root, detached: true, stdio: ['ignore', 'pipe', 'pipe'] });
       let stdout = '', stderr = ''; child.stdout.on('data', b => { stdout += b; }); child.stderr.on('data', b => { stderr += b; }); const closed = new Promise(r => child.once('close', (exitCode, exitSignal) => r({ exitCode, exitSignal })));
-      let active;
+      let active, lastReceipt;
       try {
-        const deadline = Date.now() + 30000; while (!active && Date.now() < deadline) {
-          for (const n of readdirSync(runs).filter(n => n.startsWith('alignment-attempt-') && !known.has(n))) try { const r = json(join(runs, n, 'receipt.json')); if (r.phase === 'aligning' && r.status === 'running') active = r; } catch (e) { if (e.code !== 'ENOENT') throw e; }
+        // Startup includes the backup and replay of prior evidence; use the alignment command budget.
+        const deadline = Date.now() + 210000; while (!active && Date.now() < deadline) {
+          for (const n of readdirSync(runs).filter(n => n.startsWith('alignment-attempt-') && !known.has(n))) try { const r = json(join(runs, n, 'receipt.json')); lastReceipt = r; if (r.phase === 'aligning' && r.status === 'running') active = r; } catch (e) { if (e.code !== 'ENOENT') throw e; }
+          if (child.exitCode !== null || child.signalCode !== null) break;
           if (!active) await wait(10);
         }
-        assert.ok(active, stdout + stderr); if (signal === 'SIGKILL') process.kill(-child.pid, signal); else child.kill(signal);
+        assert.ok(active, JSON.stringify({ elapsedMs: Date.now() - began, lastReceipt, exitCode: child.exitCode, signalCode: child.signalCode }) + stdout + stderr); if (signal === 'SIGKILL') process.kill(-child.pid, signal); else child.kill(signal);
         let timer; const result = await Promise.race([closed, new Promise((_, reject) => { timer = setTimeout(() => reject(Error('ALIGNMENT_INTERRUPT_COLLECTOR_TIMEOUT')), 15000); })]).finally(() => clearTimeout(timer));
         writeFileSync(join(records, `interrupt-${signal}.stdout.log`), stdout); writeFileSync(join(records, `interrupt-${signal}.stderr.log`), stderr);
         log({ kind: 'interrupt', packageId, executable: process.execPath, argv, cwd: root, signal, ...result, elapsedMs: Date.now() - began, stdoutSha256: sha(stdout), stderrSha256: sha(stderr), scope: 'unified entry relay and durable recovery' });

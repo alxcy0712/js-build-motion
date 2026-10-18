@@ -157,6 +157,15 @@ export function verifyRuntime(project) {
   if (digest(JSON.stringify(content)) !== packageId) throw new Error('RUNTIME_MANIFEST_CHANGED');
   const actual = fileHashes(engine, ['engine-manifest.json', 'isolation.json']);
   if (JSON.stringify(actual) !== JSON.stringify(content.files)) throw new Error('RUNTIME_CHANGED: use the pinned release');
+  // 本片风格选择：start 记录显式参数或默认继承，workspace.json 固定快照哈希与生效风格。
+  const brandPath = join(project, 'brand.json');
+  const brandRecord = lock.brand;
+  if (!existsSync(brandPath)) throw new Error('RUNTIME_BRAND_CHANGED: use the initialized brand snapshot');
+  if (!brandRecord || typeof brandRecord.theme !== 'string' || typeof brandRecord.sha256 !== 'string') throw new Error('RUNTIME_BRAND_RECORD: workspace.json 缺少本片风格记录，请重新初始化项目');
+  if (digest(readFileSync(brandPath)) !== brandRecord.sha256) throw new Error('RUNTIME_BRAND_CHANGED: use the initialized brand snapshot');
+  let brandSnapshot;
+  try { brandSnapshot = JSON.parse(readFileSync(brandPath, 'utf8')); } catch { throw new Error('RUNTIME_BRAND_CHANGED: brand.json 不是合法 JSON'); }
+  if ((brandSnapshot.theme ?? brandSnapshot.lockedTheme) !== brandRecord.theme) throw new Error('RUNTIME_BRAND_CHANGED: 本片 brand.json 与 workspace.json 记录不一致');
   if (content.platform !== process.platform || content.arch !== process.arch || content.nodeMajor !== Number(process.versions.node.split('.')[0])) {
     throw new Error(`RUNTIME_PLATFORM: requires ${content.platform}/${content.arch}, Node ${content.nodeMajor}`);
   }
@@ -180,6 +189,7 @@ export function sandboxProfile(project, protectedRoots, options = {}) {
   const lines = ['(version 1)', '(allow default)',
     `(deny file-write* (require-all (require-not (subpath ${quote(project)})) (require-not (literal "/dev/null")) (require-not (literal "/dev/tty")) (require-not (subpath "/dev/fd"))))`,
     `(deny file-write* (subpath ${quote(join(project, '.engine'))}))`,
+    `(deny file-write* (literal ${quote(join(project, 'brand.json'))}))`,
   ];
   for (const root of new Set([dirname(project), ...protectedRoots])) {
     // Node resolves the absolute entry by lstat'ing its ancestor directories.

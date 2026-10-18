@@ -82,17 +82,18 @@ export async function checkUnpackNative({ scratch, skill, run, check, denied }) 
     const child = spawn(process.execPath, [join(core, 'scripts/video.mjs'), 'selected-film', 'unpack', '--import', source.importId, '--path', 'selected archive.zip'], { cwd: root, detached: true, stdio: ['ignore', 'pipe', 'pipe'] });
     let stdout = '', stderr = ''; child.stdout.on('data', chunk => { stdout += chunk; }); child.stderr.on('data', chunk => { stderr += chunk; });
     const exited = new Promise(resolve => child.once('close', (status, exitSignal) => resolve({ status, exitSignal })));
-    let active;
+    let active, lastReceipt;
     try {
-      const deadline = Date.now() + 15000;
+      const started = Date.now(), deadline = started + 60000;
       while (Date.now() < deadline && !active) {
         for (const name of readdirSync(runs).filter(name => name.startsWith('unpack-attempt-') && !known.has(name))) {
-          try { const receipt = json(join(runs, name, 'receipt.json')); if (receipt.phase === 'extracting' && receipt.counts.expandedBytes > 0 && receipt.status === 'running') active = receipt; }
+          try { const receipt = json(join(runs, name, 'receipt.json')); lastReceipt = { phase: receipt.phase, status: receipt.status }; if (receipt.phase === 'extracting' && receipt.counts.expandedBytes > 0 && receipt.status === 'running') active = receipt; }
           catch (error) { if (error.code !== 'ENOENT') throw error; }
         }
+        if (!active && (child.exitCode !== null || child.signalCode !== null)) break;
         if (!active) await new Promise(resolve => setTimeout(resolve, 10));
       }
-      assert.ok(active, stdout + stderr);
+      assert.ok(active, `UNPACK_INTERRUPT_NOT_ACTIVE:${signal}:${JSON.stringify({ elapsedMs: Date.now() - started, lastReceipt: lastReceipt ?? null, exitCode: child.exitCode, signal: child.signalCode })}\n${stdout}${stderr}`);
       if (signal === 'SIGKILL') process.kill(-child.pid, signal); else child.kill(signal);
       const result = await exited;
       if (signal === 'SIGTERM') { assert.equal(result.status, 1, stderr + stdout); assert.equal(JSON.parse(stdout).status, 'interrupted'); }

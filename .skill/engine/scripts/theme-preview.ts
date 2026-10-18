@@ -1,4 +1,4 @@
-/** 每个风格出一张竖屏预览静帧（不出视频）。用法：node scripts/theme-preview.ts <outDir> */
+/** 每个风格出一张竖屏预览静帧（不出视频）。用法：node .skill/scripts/video.mjs <slug> exec node .engine/scripts/theme-preview.ts <outDir> */
 import { Canvas, FontLibrary } from 'skia-canvas';
 import { join } from 'node:path';
 import { mkdirSync } from 'node:fs';

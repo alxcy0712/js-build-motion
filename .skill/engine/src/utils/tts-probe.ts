@@ -96,7 +96,7 @@ function parseProbeJson(out: string): string | null {
 /** 给人/模型看的修复建议 */
 export function ttsFixHint(probe: TtsProbeResult): string {
   if (probe.available) return '语音链路可用';
-  const parts = [`安装 edge-tts：\`python3 -m pip install edge-tts\``];
+  const parts = [`安装或升级 edge-tts：\`python3 -m pip install --upgrade 'edge-tts>=7.3.1'\``];
   if (probe.reason && /python/i.test(probe.reason)) {
     parts.unshift('先安装 Python 3（macOS: `brew install python`）');
   }

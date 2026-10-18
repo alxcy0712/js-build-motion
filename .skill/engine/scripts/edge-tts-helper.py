@@ -21,6 +21,7 @@ edge-tts 辅助脚本：一次调用同时产出音频与**词级**时间戳。
 import argparse
 import asyncio
 import json
+import re
 import sys
 
 
@@ -30,20 +31,26 @@ def fail(message: str, code: str = "TTS_PROVIDER_UNAVAILABLE") -> None:
     sys.exit(3)
 
 
-async def probe() -> None:
+def load_edge_tts():
     try:
-        import edge_tts  # noqa: F401
+        import edge_tts
     except Exception as exc:  # pragma: no cover - 环境相关
         fail(f"edge_tts 模块不可用: {exc}")
-    json.dump({"ok": True, "module": "edge_tts"}, sys.stdout)
+    version = getattr(edge_tts, "__version__", "unknown")
+    release = re.fullmatch(r"(\d+)\.(\d+)\.(\d+)", version)
+    if not release or tuple(map(int, release.groups())) < (7, 3, 1):
+        fail(f"edge-tts {version} 需要升级：python3 -m pip install --upgrade 'edge-tts>=7.3.1'（新版握手与日期解析）")
+    return edge_tts
+
+
+async def probe() -> None:
+    edge_tts = load_edge_tts()
+    json.dump({"ok": True, "module": "edge_tts", "version": edge_tts.__version__}, sys.stdout)
     sys.stdout.write("\n")
 
 
 async def synthesize(text: str, voice: str, rate: str, out_audio: str, out_json: str) -> None:
-    try:
-        import edge_tts
-    except Exception as exc:  # pragma: no cover
-        fail(f"edge_tts 模块不可用: {exc}")
+    edge_tts = load_edge_tts()
 
     # 关键：boundary="WordBoundary"。默认是 SentenceBoundary，只能拿到句级时间戳。
     communicate = edge_tts.Communicate(text, voice, rate=rate, boundary="WordBoundary")

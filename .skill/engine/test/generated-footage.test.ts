@@ -6,7 +6,7 @@ import { test } from 'node:test';
 import { spawnSync } from 'node:child_process';
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { Canvas, ImageData } from 'skia-canvas';
 import { FLAT_BACKDROP, WHITE_BACKDROP, alphaBBox, borderMedian, keyBackground } from '../src/footage/key.ts';
@@ -16,6 +16,7 @@ import { addCutAccents, beatGrid, snapCutsToBeats } from '../src/audio/beat-grid
 import { synthBgm } from '../src/audio/bgm/procedural.ts';
 import { gapMidpointCuts, phraseCut } from '../src/motion/shot-timing.ts';
 import { SAFE_AREA, VERTICAL_SHORT_CAPTION_INSET, VERTICAL_SHORT_LAYOUT, bigTextBaselineFor } from '../src/themes/shared.ts';
+import { fileHashes } from '../workspace.mjs';
 
 const hasFfmpeg = spawnSync('ffmpeg', ['-version']).status === 0;
 const near = (a: number, b: number, eps = 1e-6) => assert.ok(Math.abs(a - b) <= eps, `${a} ≉ ${b}`);
@@ -190,6 +191,7 @@ test('竖屏 9:16 版面默认值互相一致', () => {
 
 test('豆包配音辅助脚本：只读环境变量，句级时间去重', { skip: spawnSync('python3', ['--version']).status !== 0 }, () => {
   const helper = fileURLToPath(new URL('../scripts/doubao-tts-helper.py', import.meta.url));
+  const scriptsBefore = fileHashes(dirname(helper));
   const home = mkdtempSync(join(tmpdir(), 'jbm-home-'));
   try {
     mkdirSync(join(home, '.config', 'jbm'), { recursive: true });
@@ -203,8 +205,9 @@ w,s,seen=[],[],set()
 body={'text':'甲乙','words':[{'word':'甲','startTime':0.1,'endTime':0.3},{'word':'乙','startTime':0.3,'endTime':0.6}]}
 m.add_words(w,body,s,seen);m.add_words(w,body,s,seen)
 print(json.dumps({'w':len(w),'s':s}))`;
-    const p = spawnSync('python3', ['-c', code, helper], { encoding: 'utf8', env });
+    const p = spawnSync('python3', ['-B', '-c', code, helper], { encoding: 'utf8', env });
     assert.equal(p.status, 0, p.stderr);
     assert.deepEqual(JSON.parse(p.stdout), { w: 2, s: [{ text: '甲乙', start: 0.1, end: 0.6 }] });
+    assert.deepEqual(fileHashes(dirname(helper)), scriptsBefore, '辅助脚本导入须保持封存运行时字节不变');
   } finally { rmSync(home, { recursive: true, force: true }); }
 });

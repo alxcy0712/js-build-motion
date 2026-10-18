@@ -61,11 +61,14 @@ function checkStandalone() {
     writeJson(join(project, 'workspace.json'), { ...workspace, isolationSha256: digest(JSON.stringify(isolation)) });
     const projectProbe = run(['.skill/scripts/video.mjs', cases[0][0], 'exec', process.execPath, '--input-type=module', '-e', probeCode], true, false);
     if (projectProbe.readable !== false) throw new Error('STANDALONE_PROJECT_PROCESS_READABLE');
+    const brandProbeCode = `import {openSync,closeSync} from 'node:fs';try {closeSync(openSync('brand.json','r+'));process.exit(1);} catch (e) {if(!['EPERM','EACCES'].includes(e.code))throw e;process.stdout.write(JSON.stringify({writable:false}));}`;
+    const brandProbe = run(['.skill/scripts/video.mjs', cases[0][0], 'exec', process.execPath, '--input-type=module', '-e', brandProbeCode], true, false);
+    if (brandProbe.writable !== false) throw new Error('STANDALONE_BRAND_SNAPSHOT_WRITABLE');
     const capabilities = run(['.skill/scripts/video.mjs', cases[0][0], 'capabilities'], true, false);
     const contract = run(['.skill/scripts/video.mjs', cases[0][0], 'production', '--schema', 'init'], true, false);
     if (capabilities.contract !== 'DirectorPlan@0.1' || contract.type !== 'object') throw new Error('STANDALONE_CONTRACT_INVALID');
     process.stdout.write(JSON.stringify({ ok: true, scope: 'standalone-core', packageId: original.packageId,
-      existingProjectsReadable: false, existingProjectsState: probe.state, projectProcessReadDenied: true,
+      existingProjectsReadable: false, existingProjectsState: probe.state, projectProcessReadDenied: true, brandSnapshotWriteDenied: true,
       engineChecksPassed: true, initializedInputs: cases.map(([slug]) => slug), contractsQueried: true }) + '\n');
     return 0;
   } finally { rmSync(scratch, { recursive: true, force: true }); }
@@ -74,7 +77,8 @@ function checkStandalone() {
 try {
   const mode = process.argv[2] ?? '--engine';
   if (mode === '--engine') process.exitCode = checkEngine();
+  else if (mode === '--docs') process.stdout.write(JSON.stringify((await import('./docs-check.mjs')).checkDocs()) + '\n');
   else if (mode === '--standalone') process.exitCode = checkStandalone();
   else if (mode === '--native') await (await import('./native-check.mjs')).checkNative();
-  else throw new Error('USAGE: check.mjs --engine | --standalone | --native');
+  else throw new Error('USAGE: check.mjs --docs | --engine | --standalone | --native');
 } catch (error) { process.stderr.write(String(error.stack ?? error) + '\n'); process.exitCode = 1; }

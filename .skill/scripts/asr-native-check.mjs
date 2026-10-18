@@ -155,13 +155,15 @@ export async function checkAsrNative({ scratch, skill, run, check, denied }) {
     policy(); const sources = join(scratch, `asr interrupt ${signal}`); mkdirSync(sources); for (let i = 0; i < 4; i++) writeFileSync(join(sources, `${i}.wav`), wave(16000 * 120));
     const imp = imported(sources), before = readFileSync(join(project, 'assets/catalog.json')), runs = join(project, 'runs'), known = new Set(readdirSync(runs)), argv = [join(core, 'scripts/video.mjs'), 'asr-film', 'catalog', '--import', imp.importId];
     const child = spawn(process.execPath, argv, { cwd: root, detached: true, stdio: ['ignore', 'pipe', 'pipe'] }); let stdout = '', stderr = ''; child.stdout.on('data', b => { stdout += b; }); child.stderr.on('data', b => { stderr += b; }); const closed = new Promise(resolve => child.once('close', (exitCode, exitSignal) => resolve({ exitCode, exitSignal })));
-    const start = Date.now(); let active;
+    const start = Date.now(); let active, lastReceipt;
     try {
-      const deadline = Date.now() + 30000; while (!active && Date.now() < deadline) {
-        for (const name of readdirSync(runs).filter(n => n.startsWith('catalog-attempt-') && !known.has(n))) try { const r = json(join(runs, name, 'receipt.json')); if (r.phase === 'inspecting' && r.status === 'running') active = r; } catch (error) { if (error.code !== 'ENOENT') throw error; }
+      // Startup includes the backup and replay of prior evidence; use the catalog command budget.
+      const deadline = Date.now() + 330000; while (!active && Date.now() < deadline) {
+        for (const name of readdirSync(runs).filter(n => n.startsWith('catalog-attempt-') && !known.has(n))) try { const r = json(join(runs, name, 'receipt.json')); lastReceipt = r; if (r.phase === 'inspecting' && r.status === 'running') active = r; } catch (error) { if (error.code !== 'ENOENT') throw error; }
+        if (child.exitCode !== null || child.signalCode !== null) break;
         if (!active) await wait(10);
       }
-      assert.ok(active, stdout + stderr); if (signal === 'SIGKILL') process.kill(-child.pid, signal); else child.kill(signal);
+      assert.ok(active, JSON.stringify({ elapsedMs: Date.now() - start, lastReceipt, exitCode: child.exitCode, signalCode: child.signalCode }) + stdout + stderr); if (signal === 'SIGKILL') process.kill(-child.pid, signal); else child.kill(signal);
       let cancellationTimer; const result = await Promise.race([closed, new Promise((_, reject) => { cancellationTimer = setTimeout(() => reject(Error(`ASR_INTERRUPT_COLLECTOR_TIMEOUT:${signal}`)), 15000); })]).finally(() => clearTimeout(cancellationTimer));
       writeFileSync(join(records, `interrupt-${signal}.stdout.log`), stdout); writeFileSync(join(records, `interrupt-${signal}.stderr.log`), stderr); log({ kind: 'interrupt', executable: process.execPath, argv, cwd: root, packageId, startedAt: new Date(start).toISOString(), finishedAt: new Date().toISOString(), signal, ...result, stdoutSha256: sha(stdout), stderrSha256: sha(stderr), elapsedMs: Date.now() - start, scope: 'unified CLI interruption/publication recovery; detached native survival after parent SIGKILL is separate', status: 'passed' });
       if (signal === 'SIGKILL') assert.equal(result.exitSignal, signal); else { assert.equal(result.exitCode, 1, stdout + stderr); assert.equal(JSON.parse(stdout).status, 'interrupted'); }

@@ -1,7 +1,7 @@
 /**
  * 运动能力冒烟：关键帧相机 + 焦点钻入（zoomIntoElement）+ 素材片段（推拉摇 / 变速 / 调色）+ 文字→时长。
- * 素材由 ffmpeg 程序化生成（无版权素材），所有产物写入 output/motion-smoke（gitignored）。
- * 用法：node scripts/motion-smoke.ts [outDir] [vertical|horizontal]
+ * 素材由 ffmpeg 程序化生成（无版权素材），产物默认写入本片输出区的 motion-smoke/。
+ * 用法：node .skill/scripts/video.mjs <slug> exec node .engine/scripts/motion-smoke.ts [outDir] [vertical|horizontal]
  */
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';

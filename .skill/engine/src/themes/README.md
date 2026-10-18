@@ -1,10 +1,11 @@
 # 风格层（themes）
 
-引擎只负责“按时间求值并绘制”，所有审美决定集中在风格 token 里。原创体系，外部项目仅作思路参考，不复制代码或配方。
+风格 token 提供色彩、字体、节奏与转场的预设。叙事、主体、构图和镜头编排由本片计划及绘制实现；共用判断以制作规范中的创作主线为准。
 
 ```
 themes/
   ids.ts          风格 ID 与默认值（minimal）
+  brand.ts        账号默认、本片主题快照与旧版配置读取
   types.ts        ThemeTokens 契约
   shared.ts       共用字体候选文件名（含 macOS 自带的同类字体）、中文字体栈、抖音/小红书安全区
   styles/*.ts     每个风格一份 token
@@ -16,7 +17,7 @@ themes/
 ```
 
 ## 选用
-spec 里写 `"style": { "theme": "minimal" }`，或简写 `"style": "minimal"`（repair 自动展开）。不写时默认 `minimal`。
+spec 里写 `"style": { "theme": "minimal" }`，或简写 `"style": "minimal"`（repair 自动展开）。省略 theme 时沿用本片 brand.json 的生效主题；新片账号默认为 `minimal`，初始化时可显式选择 `kinetic`。选择依据与变更流程见制作规范中的“账号默认与每片风格选择”。
 原有 `preset/palette/paper/line` 保持不变，继续驱动旧环境（rain_window / motion_stage）的水彩场景绘制；风格层只作用于 `theme_stage` 镜头。可选风格只有 `minimal` 与 `kinetic`。
 
 ## 规则

@@ -1,6 +1,6 @@
 # 独立视频制作工作区
 
-GitHub 共享范围为通用研究、制作核心、说明与完整 `assets/`，包含用户授权的[个人 IP 源素材](assets/personal-ip/README.md)和[视频封面模板](assets/douyin-cover/README.md)。`projects/` 的影片、候选素材、用户沟通原文和本机记录，以及 `.pi/` 的 agent 运行记录保存在本地；依赖副本、核心备份与敏感配置按 `.gitignore` 排除。供 ChatGPT Pro 使用的阅读路径、审查目标与运行边界见 [REVIEW.md](REVIEW.md)。提交和推送检查通过 `git config core.hooksPath .githooks` 启用；准备共享前执行 `node .githooks/check-publish.mjs --worktree`，提交后执行 `node .githooks/check-publish.mjs --history HEAD`。首次共享使用已检查的独立副本，历史从本次共享内容开始。
+GitHub 共享范围为通用研究、制作核心、说明与完整 `assets/`，包含用户授权的[个人 IP 源素材](assets/personal-ip/README.md)和[视频封面模板](assets/douyin-cover/README.md)。`projects/` 的影片、候选素材、用户沟通原文和本机记录，以及 `.pi/` 的 agent 运行记录保存在本地；依赖副本、核心备份与敏感配置按 `.gitignore` 排除。源码审查路径与验证边界见 [REVIEW.md](REVIEW.md)。提交和推送检查通过 `git config core.hooksPath .githooks` 启用；准备共享前执行 `node .githooks/check-publish.mjs --worktree`，提交后执行 `node .githooks/check-publish.mjs --history HEAD`。
 
 在当前文件夹直接与 agent 描述主题、时长、画幅和配音需求。先按 [AGENTS.md](AGENTS.md) 确定执行角色：Grok Bot 团队根据选题与文字制作视频或图文，本地 Agent 处理用户电脑上的原片、素材库与相关补充。两端按各自职责和授权使用 [.skill/SKILL.md](.skill/SKILL.md) 的通用制作契约。支持 AGENTS.md 的宿主自动加载入口；其他模型加载这两个文件后按对应角色执行。
 
@@ -17,10 +17,10 @@ README.md        用户入口
 
 每次渲染保存到 `projects/<slug>/out/renders/<attemptId>/final.mp4`，默认便捷副本为 `out/<slug>.mp4`，当前成片以本片 `run.json` 为准。初始化复制本片运行时、所选组件及规范快照；本片扩展在自己的 src/ 实现。题材与参考资料影响本片设计，通用核心保持固定。文件权威位置与维护步骤见 [核心维护](.skill/references/maintenance.md)。
 
-Agent 使用唯一命令入口：
+Agent 按[创作问答](.skill/references/intake.md)取得本片主题选择后使用唯一命令入口。下例假定用户已选择 `minimal`：
 
 ```bash
-node .skill/scripts/video.mjs start my-film --idea "制作一支 30 秒的讲解视频"
+node .skill/scripts/video.mjs start my-film --idea "制作一支 30 秒的讲解视频" --theme minimal
 node .skill/scripts/video.mjs my-film capabilities
 node .skill/scripts/video.mjs my-film voices
 node .skill/scripts/video.mjs my-film import --source "/path/to/selected input"
@@ -44,13 +44,15 @@ node .skill/scripts/video.mjs my-film render
 
 已登记的16 kHz单声道 PCM16 WAV 与批准稿可通过 `my-film align --catalog <catalogId> --asset <assetId> --version <assetVersion> --script inputs/alignment-script.json` 建立独立对齐版本。`align --schema script` 查询批准稿契约，`align --verify <alignmentId>` 重放定位图，`align --recover` 恢复已停止运行的回执。词或汉字时间保存 estimated/unknown 与 null confidence；原稿文字、原始音频和历史结果各自固定，配额与覆盖定义见[有界词与汉字对齐](.skill/references/workspace.md#有界词与汉字对齐)。
 
-用户可以只给一句话。新片自动保存原始提示词到 `projects/<slug>/prompt-history.jsonl`，初始化返回 `needs-intake`。Agent 按[创作问答](.skill/references/intake.md)用模型自主解析目的、受众与情绪，推导风格、叙事主轴和记忆点，先呈现推荐组合，再集中提出通常1–3个关键问题。时长、画幅、语气等可逆默认值合并说明；重要选择有回答或明确委托后进入剧本、素材制作和开发。已明确的要求及“按推荐执行”等已有委托直接沿用。后续修改和问答逐条追加原文与时间；渲染记录保存当时的记录哈希与条目数。多行原文可直接传入 `--idea`，用户已有输入文件可用 `--idea-file`；本片追加命令与格式见 [工作区规范](.skill/references/workspace.md)。未来评估项目时，可把制作输入、导演选择、审片问题与成片对应起来。
+用户可以只给一句话。Agent 按[创作问答](.skill/references/intake.md)解析需求、呈现推荐组合，集中提出通常1–3个关键问题。取得本片主题选择后，用 `start --theme` 保存首次原文与固定主题，随即按对话顺序补齐此前问答；`needs-intake` 提示继续处理剩余选择。时长、画幅、语气等可逆默认值合并说明；重要选择有回答或明确委托后进入制作，已有选择与委托持续沿用。后续沟通继续追加原文与记录时间，渲染记录保存当时的哈希与条目数。多行原文可直接传入 `--idea`，用户已有输入文件可用 `--idea-file`；追加命令与格式见[工作区规范](.skill/references/workspace.md#沟通原文)。
 
 [素材选择](.skill/references/assets.md)按镜头组合生图、官方矢量和精确代码图形，先核验当前会话的实际生图接口。复杂场景优先评估生成素材，技术结构依据可靠参考验证。图片及所有候选版本、模型、纹理、参考下载、预览、截图、日志与临时文件归入本片目录。
 
-[风格选择](.skill/references/styles.md)：spec 中 `style.theme` 选 minimal / kinetic，默认 minimal。关键帧运镜、元素钻入、素材片段层和文字→时长见[运动拆解与分镜默认](.skill/references/motion-breakdown.md)。
+[风格选择](.skill/references/styles.md#账号默认与每片风格选择)：账号默认 `minimal`，每片通过 `start --theme` 传入已确认的 `minimal` 或 `kinetic`，spec 与本片 `brand.json` 保持一致。主题差异见[任务与编排](.skill/references/styles.md#按任务选择表现方式)，镜头与时序按[导演计划](.skill/references/direction.md)和[字幕与分镜](.skill/references/captions-and-shots.md)执行。
 
-生成物（成片、抽帧、预览、素材缓存）统一写入仓库根目录 `output/`（已 gitignore，不提交；可用 `JBM_OUTPUT_DIR` 改位置）。字体先找 `.skill/engine/assets/fonts/`，再找 `JBM_FONT_DIRS` 和本机系统字体目录（macOS / Linux / Windows），不依赖任何固定机器路径。
+[个人视频包装规范](.skill/references/visual-identity.md)固定品牌黄、文字层级、标注、资料卡、人物条与收尾的跨片规则；[完整元素目录](.skill/references/editing-element-catalogue.md)提供 17 类、154 项元素与 23 组处理方式供按需选用。新片自动复制规范，选用和实现状态进入分镜记录，统一风格进入审片检查；具体组件画法与视听效果按实际实现和样片验收。
+
+制作文件统一归入 `projects/<slug>/`：成片、抽帧、预览与临时缓存写入本片 `out/`，素材保存在本片 `assets/`。统一入口按本片 manifest 解析输出路径；维护检查的临时产物放 `.research/out/` 并在检查后清理。字体先找 `.skill/engine/assets/fonts/`，再找 `JBM_FONT_DIRS` 和本机系统字体目录（macOS / Linux / Windows），不依赖任何固定机器路径。
 
 [电影化运镜](.skill/references/cinematography.md)把推拉、跟拍、环绕、焦点转移和遮挡接力转成逐镜设计，并用代表性短样片与编码主片复核。three.js 已登记为备选，当前共享运行时为 Skia Canvas 2D；需要三维的本片按[绘制规范](.skill/references/drawing.md)先验证 WebGL、依赖及固定时间导帧，再记录实际采用的路径。
 
@@ -58,11 +60,15 @@ node .skill/scripts/video.mjs my-film render
 
 [产品与体验叙事](.skill/references/product-film-language.md)组织视觉证明、尺度揭示、语义接力与快慢节奏；[动效设计](.skill/references/motion-design.md)约束形状接力、负空间与中间态；[参考与精确几何](.skill/references/reference-geometry.md)通过独立依据与像素检查验证结构。通用理念与研究方法见[研究索引](.research/README.md)。
 
+[创作主线](.skill/references/motion-language.md#创作主线)是跨会话共用的设计依据；新会话从根 AGENTS.md 与 .skill/SKILL.md 进入，已有影片再按本片 AGENTS.md 恢复用户选择、固定版本和待验收项。[品牌黄色彩系统](.skill/references/styles.md#品牌黄色彩系统)围绕 #FFC712 设计明暗、撞色与近似色关系，主体和证据承担讲解。
+
+[设计判断与参考学习](.skill/references/design-learning.md)把作品目的、形式选择和实际观察连接起来；提供研究参考、作出创作选择、复盘更新的三段提示词。需要学习新方法时，按下方[设计学习来源](#设计学习来源)选取资料，将小对照嵌入已有动态预演，方法保留适用条件与支持范围。
+
 每次入口执行前自动验证和备份 .skill/，最多保留两份成功快照；已有影片继续使用初始化时的固定运行时。进入不同影片时始终指定其 slug。
 
-当前运行条件为 macOS ARM64、Node 24、FFmpeg/ffprobe；Edge 在线配音需要 Python/edge-tts，豆包在线配音需要 Python/websockets>=14 与 `DOUBAO_API_KEY`，预制配音使用本片授权的真实 voice.wav。JS 生产依赖与字体已内置。系统沙箱覆盖制作入口启动的进程及后代，编辑器与其他文件工具的访问范围由宿主管理。
+当前运行条件为 macOS ARM64、Node 24、FFmpeg/ffprobe；Edge 在线配音需要 Python/edge-tts>=7.3.1，可用 `python3 -m pip install --upgrade 'edge-tts>=7.3.1'` 更新握手与日期解析支持。豆包在线配音需要 Python/websockets>=14 与 `DOUBAO_API_KEY`，预制配音使用本片授权的真实 voice.wav。JS 生产依赖与字体已内置。系统沙箱覆盖制作入口启动的进程及后代，编辑器与其他文件工具的访问范围由宿主管理。
 
-维护检查：`node .skill/scripts/check.mjs --engine` 验证引擎行为；`--standalone` 仅复制完整 `.skill/`，在隔离已有生成区的空工作区中运行引擎测试、四种输入初始化与契约查询；`--native` 验证备份、恢复、独立项目、系统隔离与真实音视频。通用升级按核心维护规范先备份、验证，再重新 seal。
+维护检查：`node .skill/scripts/check.mjs --docs` 检查本地文档链接、标题锚点及新片 guide 路径；`--engine` 验证引擎行为；`--standalone` 仅复制完整 `.skill/`，在隔离已有生成区的空工作区中运行引擎测试、四种输入初始化与契约查询；`--native` 验证备份、恢复、独立项目、系统隔离与真实音视频。通用升级按核心维护规范先备份、验证，再重新 seal。
 
 ## 致谢
 
@@ -74,6 +80,9 @@ node .skill/scripts/video.mjs my-film render
 |---|---|---|
 | **0xMovez** | [动效制作流程分享](https://x.com/0xMovez/status/2104216919033192746) | 状态编排、纯时间求值、解析弹簧、声音时间轴与渲染后审查；见[表达机制](.skill/references/story-mechanisms.md)与[动效设计](.skill/references/motion-design.md)。 |
 | **Pluvio9yte** | [分层动作与受力设计分享](https://x.com/Pluvio9yte/status/2105533742907605209?s=20) | 主次错时、动量接续、受力设计、光源一致性与节奏协同；见[表达机制](.skill/references/story-mechanisms.md)与[动效设计](.skill/references/motion-design.md)。 |
+| **OpenDesign 团队** | [Motion 发布片](https://x.com/OpenDesignHQ/status/2111023212129829086)、[工具界面中的演示录屏](https://x.com/OpenDesignHQ/status/2111029430080725196) | 两条视频的主体画面序列在全片抽样中一致；参考聚焦于主体保持、全貌揭示、颜色分段与形状接力。全片抽样与关键窗口连续帧支持构图及中间态研究，正常速度声画评价另行记录；见[共用动效标准](.skill/references/motion-language.md)。发布帖的模型效果声明保留为作者陈述。 |
+| **Josef Albers、Josef and Anni Albers Foundation** | [Interaction of Color](https://www.albersfoundation.org/alberses/teaching/interaction-of-color) | 从相邻色、面积和背景情境观察色彩关系；本项目据此设计品牌黄的场景对照检查，具体色组由本项目独立选择，见[色彩系统](.skill/references/styles.md#品牌黄色彩系统)。 |
+| **BUCK、Blue Studio 与各项目制作团队** | [Comfy Brand Refresh](https://www.buck.co/work/comfy-brand-refresh)、[IBM Sustainability](https://www.buck.co/work/ibm-sustainability) | 项目文字说明支持从产品逻辑生成形状语言、让同一视觉系统涵盖克制与强表现、以局部到整体关系组织信息；见[共用动效标准](.skill/references/motion-language.md)。完整作者名单保留于来源页面。 |
 | **Tyler Hobbs** | [How to Hack a Painting](https://www.tylerxhobbs.com/words/how-to-hack-a-painting)、[生成式水彩绘制方法](https://www.tylerxhobbs.com/words/a-guide-to-simulating-watercolor-paint-with-generative-art) | 生成式绘画、低透明度叠层、轮廓扰动与自然材质观察；[水彩绘制模块](.skill/engine/src/drawing/art/watercolor.ts)采用低透明度叠层与轮廓扰动。 |
 | **Grant Sanderson / 3Blue1Brown** | [Fourier Transforms](https://www.3blue1brown.com/lessons/fourier-transforms/) | 稳定的视觉编码、可追踪的变量、参数变化与结果联动；见[表达机制](.skill/references/story-mechanisms.md)。 |
 | **Ordinary Folk、School of Motion 与参与创作者**，包括创意指导 **Jorge R. Canedo E.** | [School of Motion Manifesto 与完整制作名单](https://www.ordinaryfolk.co/project/school-of-motion-manifesto) | 从简单形状逐步发展复杂度，让视觉变化承托内容进展；见[表达机制](.skill/references/story-mechanisms.md)与[产品与体验叙事](.skill/references/product-film-language.md)。 |
@@ -96,6 +105,32 @@ node .skill/scripts/video.mjs my-film render
 | **opusvideo、Awesome Claude Video 贡献者及所收录作品的原作者** | [awesome-claude-video](https://github.com/opusvideo/awesome-claude-video) | 带来源的公开视频案例、原始提示词与制作路径线索，为制作输入和案例研究提供参照；见[制作输入](.skill/engine/src/project/brief.ts)。作品作者与完整出处可继续通过原仓库追溯。 |
 | **athemeroy 与 Awesome Claude 5.5 Videos 贡献者** | [awesome-claude-5-5-videos](https://github.com/athemeroy/awesome-claude-5-5-videos)，原名 awesome-opus-5-5-videos；[研究方法](https://github.com/athemeroy/awesome-claude-5-5-videos/blob/main/docs/methodology.zh-CN.md)、[提示词矩阵](https://github.com/athemeroy/awesome-claude-5-5-videos/blob/main/docs/prompt-matrix.zh-CN.md) | 对照提示词与结果，区分公开披露、可见结果、工程证据和分析推断，分别记录输入、工具、人工修改与成果声明；见[制作输入](.skill/engine/src/project/brief.ts)、[披露记录](.skill/engine/src/project/disclosure.ts)与[运行记录](.skill/engine/src/project/run-log.ts)。 |
 
+### 动效案例与提示词研究
+
+| 作者或整理者 | 公开来源 | 借鉴点与项目对应位置 |
+|---|---|---|
+| **Prompt Motion / @p4nthera_** | [案例库](https://prompt-motion.com/)、[展演模板](https://prompt-motion.com/templates/showreel) | 提炼内容概念、状态顺序与检查步骤，区分展演节奏和解释读时；见[风格任务与编排](.skill/references/styles.md#按任务选择表现方式)。模板参数按内容选用。 |
+| **zero / @twoclipping** | [Shape morphing through UI states](https://prompt-motion.com/twoclipping-5cba86) | 同一容器保持身份、内容独立进退；见[状态联动与容器交接](.skill/references/motion-design.md#状态联动与容器交接)。 |
+| **ultima / @ultimaxbt** | [Orange dot motion system](https://prompt-motion.com/ultimaxbt-bbebf5) | 贯穿对象在文字、图形和章节间接力；见[动效语言](.skill/references/motion-language.md)。具体实现以视频观察核对。 |
+| **testarossa / @rossaxbt** | [White ball UI motion loop](https://prompt-motion.com/rossaxbt-94583b) | 提示词中的状态联动、操作反馈和闭环检查；见[产品与体验叙事](.skill/references/product-film-language.md)。 |
+| **Parker Rex / @ParkerRex** | [Token bucket rate limiter](https://prompt-motion.com/parkerrex-1a54fe) | 稳定空间内并列展示状态、事件与历史，作为 minimal 机制讲解的取样参照；见[风格任务与编排](.skill/references/styles.md#按任务选择表现方式)。 |
+| **Prompt Motion 编辑者** | [讲解提示词分析](https://prompt-motion.com/blog/ai-explainer-video-prompts)、[产品片提示词分析](https://prompt-motion.com/blog/ai-launch-video-prompts)、[效果约束分析](https://prompt-motion.com/blog/make-ai-motion-graphics-look-less-ai) | 将主题细化为过程、可见证明和具体视觉约束；见[创作问答](.skill/references/intake.md)。样本互动数据用于研究背景，因果与质量判断需要独立证据。 |
+
+上述条目的作品与提示词归各自作者所有；本项目独立编写通用方法和虚构示例。具体取样范围与采用证据按[核心维护](.skill/references/maintenance.md)归档，实际素材复用逐项核对许可。
+
+### 设计学习来源
+
+按当前问题选取资料，公开来源集中在此归因。以下入口提供作品档案、研究文章、过程方法和课程；本项目将其转译为[条件化设计方法](.skill/references/design-learning.md)，实际影片的节奏、声音与观众效果通过本片观察验证。课程内容与访问条件在实际使用时核对。
+
+| 研究问题 | 作者／机构与原始入口 | 学习用途与边界 |
+|---|---|---|
+| 色彩怎样随关系改变？ | **Josef Albers、Josef and Anni Albers Foundation**：[Interaction of Color](https://www.albersfoundation.org/alberses/teaching/interaction-of-color) | 色彩实验与直接观察的教学说明；练习固定主色、改变背景和邻色，沿用前文色彩系统归因。 |
+| 展开顺序怎样组织观看？ | **Dawn Delbanco、The Metropolitan Museum of Art**：[Chinese Handscrolls](https://www.metmuseum.org/essays/chinese-handscrolls) | 手卷逐段显现与观看者控制进度的研究；迁移到影片时重新设计时长与回看条件。 |
+| 尺度变化怎样连接知识？ | **Charles and Ray Eames、Eames Office**：[Powers of Ten](https://www.eamesoffice.com/the-work/powers-of-ten/) | 官方档案提供版本与尺度旅程背景；用于提出保留位置参照的候选方法，具体时序以实际观看为依据。 |
+| 怎样探索问题并比较方案？ | **Design Council**：[The Double Diamond](https://www.designcouncil.org.uk/resources/the-double-diamond/) | 理解与界定问题、发展不同解法、小规模检验；本项目把关键选择的对照纳入已有粗剪流程。 |
+| 怎样把分析变成制作练习？ | **Pixar、Khan Academy**：[Pixar in a Box](https://www.pixar.com/pixar-in-a-box) | 官方合作课程入口，将艺术、科学与数学联系到动画制作；按当前问题选择练习。 |
+| 怎样细读不同电影传统？ | **David Thorburn、MIT OpenCourseWare**：[The Film Experience](https://ocw.mit.edu/courses/21l-011-the-film-experience-fall-2013/) | 课程、讲义与作业支持跨时代、跨地区的影片比较；片段分析保留所用版本和实际观看范围。 |
+
 ### 官方文档与开源基础
 
 感谢以下文档作者和维护社区，让制作规则能够对应可查阅、可验证的技术依据：
@@ -104,13 +139,14 @@ node .skill/scripts/video.mjs my-film render
 - **Apple Motion 文档团队**：[相机行为](https://support.apple.com/guide/motion/add-camera-behaviors-motn17c69ccb/mac)与[相机控制](https://support.apple.com/guide/motion/camera-controls-motn17c68cdf/mac)，支持[电影化运镜](.skill/references/cinematography.md)中的相机行为与参数研究。
 - **three.js 贡献者与文档团队**：[相机](https://threejs.org/manual/pages/cameras.html)与[实用技巧](https://threejs.org/manual/pages/tips.html)，支持[绘制规范](.skill/references/drawing.md)中的三维候选路径、投影与固定时间导帧研究。
 - **YouTube 帮助文档团队**：[观众留存分析](https://support.google.com/youtube/answer/9314415?hl=en)，支持[研究方法](.research/README.md)中对重看、兴趣与理解困难的审慎判断。
+- **W3C WAI**：[文字对比](https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html)与[闪烁阈值](https://www.w3.org/WAI/WCAG22/Understanding/three-flashes-or-below-threshold.html)，为[色彩与阅读检查](.skill/references/styles.md#品牌黄色彩系统)提供参考；项目的编码画面、手机观看与实际闪烁范围另行核验。
 
 感谢本项目所用的工具与字体：
 
 - **Christian Swinehart / samizdatco 与 [skia-canvas](https://github.com/samizdatco/skia-canvas) 贡献者**：Canvas 2D 渲染基础。
 - **Evgeny Poberezkin 与 [Ajv](https://github.com/ajv-validator/ajv) 贡献者**：JSON Schema 校验基础。
 - **[Node.js](https://nodejs.org/) 与 [FFmpeg](https://ffmpeg.org/) 贡献者社区**：脚本运行、音视频编码、混音与探测。
-- **rany2 与 [edge-tts](https://github.com/rany2/edge-tts) 贡献者**：在线配音工具。
+- **rany2 与 [edge-tts](https://github.com/rany2/edge-tts) 贡献者**：在线配音工具；[7.3.0](https://github.com/rany2/edge-tts/releases/tag/7.3.0) 的新版握手和 [7.3.1](https://github.com/rany2/edge-tts/releases/tag/7.3.1) 的日期解析修复为依赖下限依据。
 - **火山引擎豆包语音文档团队**：[公版音色列表](https://docs.volcengine.com/docs/DoubaoVoice/Tonelist-1?lang=zh)、[双向流式 WebSocket](https://docs.volcengine.com/docs/DoubaoVoice/WebSocketBidirectionalStreaming-V3?lang=zh) 与 [单向流式 HTTP](https://docs.volcengine.com/docs/DoubaoVoice/unidirectional-streaming-text-to-speech-http?lang=zh)，提供[音色目录](.skill/engine/src/audio/tts/doubao-voices.ts)和[豆包配音适配](.skill/engine/src/audio/tts/doubao.ts)的接口依据。
 - **[websockets](https://websockets.readthedocs.io/) 贡献者**：豆包流式配音的 Python WebSocket 客户端。
 - **LXGW（霞鹜）、FONTWORKS 与字体贡献者**：[霞鹜文楷](https://github.com/lxgw/LxgwWenKai)及其上游 Klee One 为中文画面提供字体基础。

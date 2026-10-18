@@ -1,10 +1,10 @@
 /**
  * 平涂背景抠像命令。
- *   视频：node .skill/engine/scripts/key-footage.ts <clip.mp4> <outDir> [--preset flat|white] [--key #RRGGBB] [--tolerance 11]
+ *   视频：node .skill/scripts/video.mjs <slug> exec node .engine/scripts/key-footage.ts <clip.mp4> <outDir> [--preset flat|white] [--key #RRGGBB] [--tolerance 11]
  *         → outDir/f000000.png … + meta.json（渲染时用 openKeyedClip 读取）
- *   图片：node .skill/engine/scripts/key-footage.ts <subject.png> <out.png> [--preset white] [--square 1254 --fill 0.8]
+ *   图片：node .skill/scripts/video.mjs <slug> exec node .engine/scripts/key-footage.ts <subject.png> <out.png> [--preset white] [--square 1254 --fill 0.8]
  *         → 透明 PNG；--square 时按主体包围盒裁切并居中放进透明方图，主体最长边占 fill
- * 输出写到仓库根 output/ 或本片 out/，不提交。
+ * 输出写到本片 out/。
  */
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { dirname, extname } from 'node:path';
