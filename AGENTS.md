@@ -39,7 +39,7 @@
 7. 如本片沉淀出通用改进，Onei 按[推送流程](#onei-的推送流程)将代码推送到 `style-system`。
 8. 用户自行发布。
 
-团队成片以「我是澄记，用计算机思维想现实」结尾，前一句要自然承接本片内容，详见[口播与发布规范](.skill/references/douyin-publishing.md)。
+团队成片以「我是澄记，用计算机思维想现实」结尾，前一句要自然承接本片内容，详见[口播与发布规范](.skill/references/douyin-publishing.md)。每条新片开工时询问用户是否需要片尾头像与个人 IP 落款，答复记入本片并沿用；用户确认采用时按[片尾规格](.skill/references/visual-identity.md#片尾头像与个人-ip-落款)制作并与该句口播同步。
 
 其他内容按以下流程交付：
 
