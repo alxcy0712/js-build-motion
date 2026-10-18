@@ -1,5 +1,5 @@
 {
-  "packageId": "23a48f813ae8c9f860f05febeabf0f1b9bbd936600819a6539c11fa268d57e23",
+  "packageId": "c847a62c87ca8bec4f56dd76351657f41cc890fce7e6820eac338571097f7c28",
   "version": "0.2",
   "engineVersion": "0.1.0",
   "platform": "darwin",
@@ -29,7 +29,7 @@
   "skillFiles": [
     {
       "path": "SKILL.md",
-      "sha256": "9516a4ca339fc33b44183884698a941680925da3438cdcbdbe48acea6673ee5b"
+      "sha256": "7e0669e466b581b9d9cbe70563c08199059c4f4856fe0cf8fb647f935127f037"
     },
     {
       "path": "assets/components.json",
@@ -146,6 +146,10 @@
     {
       "path": "references/styles.md",
       "sha256": "23c9c28b51a7b4f3cbfbfcfb339c1ea7ee10a07de1b587256bfc7c1a85adede8"
+    },
+    {
+      "path": "references/vertical-framing.md",
+      "sha256": "2104d5f23bc624fd95c32c185b18fdd4cf4baa794a7624323a322b2583084956"
     },
     {
       "path": "references/visual-identity.md",

@@ -42,6 +42,7 @@ node .skill/scripts/video.mjs <slug> capabilities --schema
 - 比较叙事、解释任务或学习原作：[表达机制与方法卡](references/story-mechanisms.md)，按题材选机制，用推导、尺度揭示、证据串联、步骤累计、关键词强调与数据比较卡落实事件。
 - 素材准备：[素材选择](references/assets.md)，核验生图工具，按镜头需求绑定固定素材版本，通过受控消费入口组合图片、视频与精确代码图形；生成视频只做角色动作，文字与屏幕内容由代码合成。
 - 实现：[绘制](references/drawing.md)，查询当前契约并编写本片画面。
+- 竖屏规划、绘制与审片：[竖屏构图与画幅利用](references/vertical-framing.md)，两端共用全画幅场景、主体占幅与文字安全区的分层方法，核对重心、留白和景别变化。
 - 镜头与空间：[电影化运镜](references/cinematography.md)，设计叙事运镜、分层视差及三维渲染的项目内验证路径。
 - 产品广告与发布节奏：[产品与体验叙事](references/product-film-language.md)，用视觉证明、尺度揭示、语义接力与快慢节奏组织镜头。
 - 已知图形与技术结构：[参考与精确几何](references/reference-geometry.md)，先做主体对照与组件验证。

@@ -245,6 +245,8 @@ Grok Bot 的配音使用本团队已获授权的音色、凭据与实际可用�
 
 每次制作、修改或维护读取 [.skill/SKILL.md](.skill/SKILL.md) 与[创作主线](.skill/references/motion-language.md#创作主线)，随后只读取当前步骤需要的规范。新片按[创作问答](.skill/references/intake.md)解析需求、提出推荐并取得本片主题选择，再通过 `node .skill/scripts/video.mjs start <slug> --idea "用户原文" --theme <minimal|kinetic>` 保存首次原文并创建项目，立即补齐此前问答；剩余重要选择有回答或明确委托后进入剧本、素材制作和画面开发。已有影片先调用 backup，再按本片 AGENTS.md、guide/、固定主题、沟通记录与待验收项恢复指定项目。
 
+两端制作或审查竖屏视频时，按[竖屏构图与画幅利用](.skill/references/vertical-framing.md)分别设计全画幅场景、主体尺度与文字安全区。实景镜头优先让场景延伸至画幅边缘，图解按关系与阅读需要安排尺度；留白承担聚焦、动作空间或停顿用途。用户反馈偏移或画面过小时，对照当前编码检查位置、占幅和连续镜头版式，按镜头类型修正，并用代表帧、手机尺寸和相邻动态窗口复核。已有影片沿用固定运行时，明确授权采用的新规范作为补充记录。
+
 每片的 prompt-history.jsonl 保存创建时的原始 prompt、后续用户修改要求、模型问题与用户答案。新片原文由 start 自动保存；改片和问答按 [.skill/references/workspace.md](.skill/references/workspace.md) 通过 prompt 命令逐条追加，保持原文与时间。维护评估在用户指定的项目范围内结合记录、源码、证据与成片寻找改进依据。
 
 macOS 制作与通用命令通过 `node .skill/scripts/video.mjs <slug> <command>`，通用命令使用 exec 子命令。统一入口自动校验和备份核心，.skill-backups/ 保留最近两份成功快照。Linux 团队使用[手建流程](#linux-团队手建流程)中的创建、备份与执行入口。运行条件与使用入口见 README.md。
