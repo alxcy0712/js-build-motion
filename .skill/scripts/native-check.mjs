@@ -63,7 +63,7 @@ export async function checkNative() {
         const idea = i ? '制作角色节奏短片' : '  制作太阳能原理讲解。\n保留 `literal`、$(literal) 与原始换行。\n';
         const ideaFile = join(scratch, 'original-prompt.txt');
         if (!i) writeFileSync(ideaFile, idea);
-        const result = JSON.parse(control(['start', slug, ...(i ? ['--idea', idea] : ['--idea-file', ideaFile]), '--components', i ? 'particle-assembly' : 'camera,spring,random,contour,visual-check,image-fit,particle-assembly,region-paint,paper,text-bounds']));
+        const result = JSON.parse(control(['start', '--theme', 'minimal', slug, ...(i ? ['--idea', idea] : ['--idea-file', ideaFile]), '--components', i ? 'particle-assembly' : 'camera,spring,random,contour,visual-check,image-fit,particle-assembly,region-paint,paper,text-bounds']));
         assert.equal(result.project, [a, b][i]);
         assert.equal(result.status, 'needs-intake');
         assert.equal(result.packageId, original.packageId);
@@ -98,9 +98,9 @@ export async function checkNative() {
     });
     await check('重复初始化保留内容，非法组件与路径拒绝', () => {
       writeFileSync(join(a, 'src/preserved.txt'), 'keep');
-      assert.match(control(['start', slugs[0], '--idea', 'repeat'], 1), /PROJECT_EXISTS/);
+      assert.match(control(['start', '--theme', 'minimal', slugs[0], '--idea', 'repeat'], 1), /PROJECT_EXISTS/);
       assert.equal(readFileSync(join(a, 'src/preserved.txt'), 'utf8'), 'keep');
-      assert.match(control(['start', marker + '-bad', '--idea', 'bad', '--components', '__proto__'], 1), /COMPONENT_UNKNOWN/);
+      assert.match(control(['start', '--theme', 'minimal', marker + '-bad', '--idea', 'bad', '--components', '__proto__'], 1), /COMPONENT_UNKNOWN/);
       assert.match(control(['../outside', 'capabilities'], 1), /PROJECT_SLUG/);
     });
     await check('系统沙箱运行固定 TS 核心及本片组件', () => {
@@ -181,7 +181,7 @@ export async function checkNative() {
       mkdirSync(importSources, { recursive: true });
       cpSync(skill, importSkill, { recursive: true });
       for (const slug of ['selected-film', 'other-film']) {
-        const initialized = JSON.parse(importControl(['start', slug, '--idea', '虚构导入验证']));
+        const initialized = JSON.parse(importControl(['start', '--theme', 'minimal', slug, '--idea', '虚构导入验证']));
         assert.equal(initialized.packageId, original.packageId);
       }
       writeFileSync(importSource, '独立原件\nwith literal quotes and dollars\n');

@@ -5,7 +5,7 @@ export const minimal: ThemeTokens = {
   id: 'minimal', name: '极简', summary: '近黑背景、品牌黄强调当前焦点；精简标签、局部状态变化与稳定阅读。',
   useWhen: '机制解释、证据对照、观点表达与品牌片尾；需要少量动作和清楚信息层级时。',
   fonts: { stack: ['Inter', ...CJK_STACK], mono: ['Geist Mono'], faces: [SYSTEM_FONTS.inter, SYSTEM_FONTS.notoSansSC, SYSTEM_FONTS.geistMono], probe: CJK_PROBE },
-  palette: { bg: '#000000', bgRaised: '#0B0B0D', surface: '#161618', hairline: '#2A2A2E', text: '#F5F5F7', textSecondary: '#86868B', textTertiary: '#4A4A4F', accent: '#FFC712', light: '#5E9BFF' },
+  palette: { bg: '#000000', bgRaised: '#0B0B0D', surface: '#161618', hairline: '#2A2A2E', text: '#F5F5F7', textSecondary: '#86868B', textTertiary: '#4A4A4F', accent: '#FFC712', accent2: '#5B3DF5', light: '#5E9BFF' },
   type: { vertical: { hero: 132, display: 96, title: 72, body: 44, caption: 32, micro: 26 }, horizontal: { hero: 156, display: 112, title: 80, body: 40, caption: 28, micro: 22 } },
   weight: { hero: 700, display: 700, title: 600, body: 500, caption: 500, micro: 500 },
   tracking: { hero: -0.035, display: -0.03, title: -0.02, body: -0.005 },

@@ -6,13 +6,13 @@
  *     更换账号默认时更新该文件并追加 changes 记录，只影响之后的新片。
  *   - 初始化前沿用用户已指定的主题或明确委托，其余情形按创作问答取得选择。start --theme
  *     把选择写进该片根目录的 brand.json 快照：`theme` 是本片生效风格，`defaultTheme`
- *     记录创建时的账号默认，`changes` 末尾记录显式参数或默认继承；用户原文保存到 prompt-history。
+ *     记录创建时的账号默认，`changes` 末尾记录显式参数；用户原文保存到 prompt-history。
  *   - 校验与渲染使用本片固定快照；spec 里写了与 `theme` 不同的 `style.theme` 时按
  *     enforcement 处理：override 强制改回并警告，reject 直接失败。
  *   - version 1 的旧配置用 `lockedTheme` 表示生效风格，继续可读并归一化为本结构。
  */
 import { existsSync, readFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { basename, join, resolve } from 'node:path';
 import { DEFAULT_THEME, THEME_IDS, type ThemeId } from './ids.ts';
 
 export interface BrandChange { readonly at: string; readonly theme: ThemeId; readonly reason: string }
@@ -50,6 +50,13 @@ export function parseBrand(raw: unknown): BrandConfig {
 export function loadBrand(path = join(import.meta.dirname, '..', '..', '..', 'brand.json')): BrandConfig {
   if (!existsSync(path)) return DEFAULT_BRAND;
   return parseBrand(JSON.parse(readFileSync(path, 'utf8')));
+}
+
+/** 项目运行时强制读取本片快照；核心 API 由调用方显式传入 brand。 */
+export function loadRuntimeBrand(): BrandConfig | undefined {
+  const engine = resolve(import.meta.dirname, '../..');
+  if (basename(engine) !== '.engine') return undefined;
+  return parseBrand(JSON.parse(readFileSync(join(engine, '../brand.json'), 'utf8')));
 }
 
 export interface BrandDecision {

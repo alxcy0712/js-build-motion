@@ -11,6 +11,8 @@ description: 在独立项目中制作或修改视频，涵盖编剧、导演、�
 
 ## 统一入口
 
+以下封存入口适用于 macOS ARM64；Linux 团队按根 [AGENTS.md 的手建流程](../AGENTS.md#linux-团队手建流程)执行初始化、记录、备份与命令，其余创作和验收规范继续适用。
+
 ```bash
 node .skill/scripts/video.mjs start <slug> --idea "用户原文" --theme <minimal|kinetic>
 node .skill/scripts/video.mjs backup

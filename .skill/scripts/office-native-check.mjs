@@ -68,7 +68,7 @@ export async function checkOfficeNative({ scratch, skill, run, check }) {
       ['macro.xlsx', xlsx.map(part => part.name === '[Content_Types].xml' ? { ...part, data: part.data.replace('spreadsheetml.sheet.main+xml', 'spreadsheetml.sheet.macroEnabled.main+xml') } : part)],
     ];
     for (const [name, parts] of badPackages) { const data = makeZip(parts); badOriginals.set(name, data); writeFileSync(join(invalid, name), data); }
-    control(['start', 'office-film', '--idea', '虚构离线 Office 原生门禁']);
+    control(['start', '--theme', 'minimal', 'office-film', '--idea', '虚构离线 Office 原生门禁']);
     parent = imported(selected); defaultReceipt = catalog(['--import', parent.importId]); defaultManifest = verify(defaultReceipt.catalogId);
     assert.equal(defaultManifest.policy.version, '0.4'); assert.equal(defaultManifest.assets.length, 2);
     for (const [name, source] of originals) { const asset = latest(defaultManifest, name); assert.equal(asset.technical.format, 'zip'); assert.equal(asset.technical.status, 'requires-unpack'); assert.equal(asset.source.sha256, sha(source)); assert.deepEqual(readFileSync(join(project, asset.source.fixedPath)), source); }

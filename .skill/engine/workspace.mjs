@@ -157,7 +157,7 @@ export function verifyRuntime(project) {
   if (digest(JSON.stringify(content)) !== packageId) throw new Error('RUNTIME_MANIFEST_CHANGED');
   const actual = fileHashes(engine, ['engine-manifest.json', 'isolation.json']);
   if (JSON.stringify(actual) !== JSON.stringify(content.files)) throw new Error('RUNTIME_CHANGED: use the pinned release');
-  // 本片风格选择：start 记录显式参数或默认继承，workspace.json 固定快照哈希与生效风格。
+  // 本片风格选择：start 记录显式参数，workspace.json 固定快照哈希与生效风格。
   const brandPath = join(project, 'brand.json');
   const brandRecord = lock.brand;
   if (!existsSync(brandPath)) throw new Error('RUNTIME_BRAND_CHANGED: use the initialized brand snapshot');

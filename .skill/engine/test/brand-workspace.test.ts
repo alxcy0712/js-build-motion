@@ -38,6 +38,10 @@ test('账号默认 + 每片选择：快照记录本片风格，账号默认只�
     cpSync(skill, join(workspace, '.skill'), { recursive: true, dereference: true, filter: path => !temporary.includes(path) });
     const accountDefault = setAccountDefault('minimal', 'override');
 
+    assert.match(run(['.skill/scripts/video.mjs', 'start', 'missing-theme', '--idea', '虚构未选主题。'], 1), /THEME_REQUIRED/);
+    assert.equal(existsSync(join(workspace, 'projects/missing-theme')), false);
+    assert.equal(existsSync(join(workspace, '.skill-backups')), false, '主题缺失在备份与创建项目之前拒绝');
+
     // 本片选择 kinetic：写入快照与 workspace 记录，账号默认文件保持不动
     const first = JSON.parse(run(['.skill/scripts/video.mjs', 'start', 'first', '--idea', '虚构产品发布。', '--theme', 'kinetic']));
     const firstProject = join(workspace, 'projects/first');
@@ -63,11 +67,11 @@ test('账号默认 + 每片选择：快照记录本片风格，账号默认只�
 
     const pinned = ['brand.json', 'workspace.json', '.engine/engine-manifest.json', 'video.mjs']
       .map(path => readFileSync(join(firstProject, path)));
-    const second = JSON.parse(run(['.skill/scripts/video.mjs', 'start', 'second', '--idea', '虚构原理讲解。']));
+    const second = JSON.parse(run(['.skill/scripts/video.mjs', 'start', 'second', '--idea', '虚构原理讲解。', '--theme', 'minimal']));
     assert.equal(second.packageId, first.packageId, '账号默认未变时核心版本相同');
-    assert.equal(brandOf('second')['theme'], 'minimal', '未指定风格时沿用账号默认');
+    assert.equal(brandOf('second')['theme'], 'minimal', '推荐值通过显式主题采用');
     assert.equal(brandOf('second')['defaultTheme'], 'minimal');
-    assert.equal((brandOf('second')['changes'] as { reason: string }[]).at(-1)!.reason, '初始化继承账号默认 minimal');
+    assert.equal((brandOf('second')['changes'] as { reason: string }[]).at(-1)!.reason, '初始化显式指定主题 minimal（账号默认 minimal）');
     const secondObserved = inspect('second');
     assert.equal(JSON.parse(secondObserved).theme, 'minimal');
 
@@ -90,11 +94,12 @@ test('账号默认 + 每片选择：快照记录本片风格，账号默认只�
     assert.equal(inspect('second'), secondObserved);
     assert.deepEqual(['brand.json', 'workspace.json', '.engine/engine-manifest.json', 'video.mjs']
       .map(path => readFileSync(join(firstProject, path))), pinned);
-    const third = JSON.parse(run(['.skill/scripts/video.mjs', 'start', 'third', '--idea', '虚构后续影片。']));
+    assert.match(run(['.skill/scripts/video.mjs', 'start', 'third', '--idea', '虚构后续影片。'], 1), /THEME_REQUIRED/);
+    const third = JSON.parse(run(['.skill/scripts/video.mjs', 'start', 'third', '--idea', '虚构后续影片。', '--theme', 'kinetic']));
     assert.notEqual(third.packageId, first.packageId, '账号默认变更后核心版本更新');
     assert.equal(brandOf('third')['theme'], 'kinetic');
     assert.equal(brandOf('third')['defaultTheme'], 'kinetic');
-    assert.equal((brandOf('third')['changes'] as { reason: string }[]).at(-1)!.reason, '初始化继承账号默认 kinetic');
+    assert.equal((brandOf('third')['changes'] as { reason: string }[]).at(-1)!.reason, '初始化显式指定主题 kinetic（账号默认 kinetic）');
     assert.equal(readFileSync(join(workspace, '.skill/brand.json'), 'utf8'), kineticDefault);
 
     const legacy = join(workspace, 'projects/legacy');

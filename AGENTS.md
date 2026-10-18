@@ -53,6 +53,115 @@
 - 本片 `NOTES.md` 记录每次视频渲染的生成时间（Asia/Shanghai），便于追溯版本。
 - 磁盘空间不足时可直接删除旧项目，无需另行保留。
 
+### Linux 团队手建流程
+
+当前封存入口适用于 macOS ARM64。Linux 团队使用本节的独立手建流程，适用范围为文字稿、代码画面和本片已保存素材的制作；Node 24、FFmpeg/ffprobe、Linux 版 Skia Canvas 与实际使用的字体须可用。当前代码的沙箱适配为 `sandbox-exec`，宿主已有的 `bwrap` 由团队宿主自行配置和验证。本流程的系统隔离状态记为 `host-managed-unverified`，本片文件校验按下述步骤执行。
+
+1. 按创作问答取得本片主题，准备保存用户原文的 UTF-8 文件。在仓库根运行下面的初始化示例：`JBM_FILM_SLUG` 使用新目录名，`JBM_FILM_THEME` 填已选的 `minimal` 或 `kinetic`，`JBM_IDEA_FILE` 指向实际原文。示例只写占位画面；剧本与镜头仍按已确认要求制作。
+
+```bash
+export JBM_FILM_SLUG=example-film
+export JBM_FILM_THEME=kinetic
+export JBM_IDEA_FILE=/path/to/original-prompt.txt
+node --input-type=module <<'JS'
+import { cpSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { join, relative, resolve } from 'node:path';
+import { createHash } from 'node:crypto';
+const slug = process.env.JBM_FILM_SLUG, theme = process.env.JBM_FILM_THEME;
+if (!/^[a-z0-9][a-z0-9-]{1,47}$/.test(slug ?? '')) throw Error('PROJECT_SLUG');
+if (!['minimal', 'kinetic'].includes(theme)) throw Error('THEME_REQUIRED');
+const idea = readFileSync(process.env.JBM_IDEA_FILE, 'utf8');
+if (!idea.trim()) throw Error('PROMPT_REQUIRED');
+const project = resolve('projects', slug), engine = resolve('.skill/engine');
+if (existsSync(project)) throw Error('PROJECT_EXISTS');
+const read = path => JSON.parse(readFileSync(path, 'utf8'));
+const hash = data => createHash('sha256').update(data).digest('hex');
+const account = read('.skill/brand.json'), source = read('.skill/manifest.json');
+const timestamp = new Date().toISOString();
+const at = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Shanghai' });
+for (const dir of ['spec', 'src/components', 'assets', 'evidence', 'out/.tmp']) mkdirSync(join(project, dir), { recursive: true });
+const excluded = ['node_modules', 'test', '.research', 'projects', 'assets/asr/bin', 'assets/asr/models', 'assets/ocr/tessdata'];
+cpSync(engine, join(project, '.engine'), { recursive: true, dereference: true,
+  filter: path => !excluded.includes(relative(engine, path)) });
+cpSync('.skill/references', join(project, 'guide'), { recursive: true });
+cpSync('.skill/assets/project/evidence', join(project, 'evidence'), { recursive: true });
+const write = (path, value) => writeFileSync(join(project, path), JSON.stringify(value, null, 2) + '\n');
+const brand = { ...account, theme, defaultTheme: account.theme, changes: [...account.changes,
+  { at, theme, reason: `Linux 手建显式指定主题 ${theme}（账号默认 ${account.theme}）` }] };
+write('brand.json', brand);
+write('workspace.json', { version: 'manual-0.1', mode: 'manual-linux', sourcePackageId: source.packageId,
+  host: { platform: process.platform, arch: process.arch, node: process.version }, engineSha256: null,
+  sandbox: 'host-managed-unverified', brand: { theme, defaultTheme: account.theme, sha256: hash(readFileSync(join(project, 'brand.json'))) } });
+write('project.json', { version: '0.1', slug, title: slug, status: 'draft', entry: 'spec/main.json', brief: 'brief.json', outDir: 'out' });
+write('spec/main.json', { version: '0.1', video: { width: 1080, height: 1920, fps: 24, duration: 3, seed: 1 },
+  style: { theme }, scenes: [{ id: 's1', start: 0, end: 3, environment: 'theme_stage', headline: ['等待剧本'] }],
+  audio: { narration: [], bgm: { volume: 0 } }, captions: { enabled: false } });
+write('brief.json', { version: '0.1', archetype: 'code-animation-no-assets', intent: '根据已记录的用户原文制作本片，当前为初始化占位。',
+  deliverable: { duration: 3, aspect: '9:16', fps: 24, captions: 'none' }, assets: [], tools: { allowed: ['skia-canvas', 'ffmpeg', 'ffprobe'] },
+  claims: { humanRounds: null, pureCode: true, zeroExternalAssets: true, humanRevision: false } });
+writeFileSync(join(project, 'prompt-history.jsonl'), JSON.stringify({ timestamp, kind: 'prompt', text: idea }) + '\n');
+writeFileSync(join(project, 'NOTES.md'), '# 制作记录\n\nLinux 手建工作区；主题原文与问答待补齐。按本片 guide 完成创作和验收。\n\n每次渲染记录 Asia/Shanghai 生成时间。\n\n学习状态：pending。\n');
+writeFileSync(join(project, 'AGENTS.md'), '# Linux 手建入口\n\n本片 mode 为 manual-linux，命令使用 node .engine/src/cli/index.ts，项目参数传入本片绝对路径，系统隔离由团队宿主管理。每次运行前按根 AGENTS.md 核对 engineSha256 和 brand.sha256；以下通用规范中的统一入口在本片按本段执行。\n\n' + readFileSync('.skill/assets/project/AGENTS.md', 'utf8'));
+write('package.json', { private: true, type: 'module' });
+const pkg = read(join(project, '.engine/package.json'));
+const versions = new Map(source.dependencies.map(item => [item.slice(0, item.lastIndexOf('@')), item.slice(item.lastIndexOf('@') + 1)]));
+pkg.dependencies = Object.fromEntries(Object.keys(pkg.dependencies).map(name => {
+  if (!versions.has(name)) throw Error(`DEPENDENCY_VERSION: ${name}`);
+  return [name, versions.get(name)];
+}));
+write('.engine/package.json', pkg);
+JS
+npm install --prefix "projects/$JBM_FILM_SLUG/.engine" --omit=dev --bin-links=false
+cd "projects/$JBM_FILM_SLUG"
+export TMPDIR="$PWD/out/.tmp/"
+```
+
+2. 在本片 `.engine/assets/fonts/` 恢复所需字体及许可，尤其是 `LXGWWenKai-Regular.ttf`；下载来源见根 README 的字体归因。依赖使用 Linux 原生包，`package-lock.json` 随本片保留。完成依赖准备后登记运行时摘要：
+
+```bash
+node --input-type=module <<'JS'
+import { readFileSync, writeFileSync } from 'node:fs';
+import { digest, fileHashes } from './.engine/workspace.mjs';
+const workspace = JSON.parse(readFileSync('workspace.json', 'utf8'));
+const files = fileHashes('.engine');
+workspace.engineSha256 = digest(JSON.stringify(files));
+writeFileSync('evidence/runtime-files.json', JSON.stringify(files, null, 2) + '\n');
+writeFileSync('workspace.json', JSON.stringify(workspace, null, 2) + '\n');
+JS
+```
+
+`brand.json` 的 `theme` 是本片已选主题，`defaultTheme` 是当时账号推荐值，最后一条 `changes` 记录初始化事实；用户选择依据另存原文。`workspace.json` 使用 `manual-0.1` 标明执行方式，`sourcePackageId` 只记录来源版本，`engineSha256` 是本片安装完成后的实际字节摘要，`brand.sha256` 是完整快照文件的 SHA-256。每次恢复、执行和交付前运行以下检查，运行时变化须先明确迁移范围并保留旧版本证据：
+
+```bash
+node --input-type=module <<'JS'
+import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import { assertIndependentTree, digest, fileHashes } from './.engine/workspace.mjs';
+const workspace = JSON.parse(readFileSync('workspace.json', 'utf8'));
+assert.equal(workspace.mode, 'manual-linux');
+assertIndependentTree('.');
+assert.equal(digest(JSON.stringify(fileHashes('.engine'))), workspace.engineSha256);
+assert.equal(digest(readFileSync('brand.json')), workspace.brand.sha256);
+JS
+```
+
+3. `prompt-history.jsonl` 每行是 `{ "timestamp": "ISO 8601 时间", "kind": "prompt|question|answer", "text": "原文" }`，首条保存用户原始 prompt；后续修改要求用 `prompt`，模型问题用 `question`，用户答复用 `answer`，按沟通顺序追加。`timestamp` 记录入库时间，补录时保留实际原文。可使用本片 CLI 追加，所有参数文件、素材和输出继续放在本片：
+
+```bash
+node .engine/src/cli/index.ts prompt "$PWD" --kind question --text "实际提出的问题原文"
+node .engine/src/cli/index.ts prompt "$PWD" --kind answer --text "实际收到的用户答案原文"
+node .engine/src/cli/index.ts capabilities --schema
+node .engine/src/cli/index.ts env --out-dir out --json
+node .engine/src/cli/index.ts validate "$PWD"
+node .engine/src/cli/index.ts brief validate "$PWD"
+node .engine/src/cli/index.ts project audit "$PWD"
+node .engine/src/cli/index.ts frame "$PWD" --at 1
+```
+
+4. 更新占位 spec、brief 和本片源码后执行 `qa "$PWD"`、`render "$PWD"`、`artifact "$PWD" --out evidence/artifact.json`、`disclosure "$PWD"`，命令前缀均为 `node .engine/src/cli/index.ts`。辅助脚本使用 `node .engine/scripts/<脚本>`，默认输出为本片 `out/`；通用命令由宿主在本片工作目录执行，`TMPDIR` 设为本片 `out/.tmp/`。原片、图片、配音按授权复制为本片独立文件，并记录来源、许可和哈希。引擎 `.engine` 自动读取同级 `brand.json`；从共享核心调用 `validateSpec` 的自定义脚本显式传入 `{ brand: loadBrand(本片brand路径) }`。
+
+本流程跳过的项目为：macOS 封存清单的宿主匹配、根 `video.mjs` 自动备份、`verifyRuntime` 的发行包校验、`sandbox-exec` 进程门禁及 macOS `--native`／`--standalone` 宿主检查。替代记录为手建工作区摘要、修改前的本片备份和宿主隔离事实。文案确认、主题确认、原文记录、普通独立文件检查、规格／声明／路径校验、实际音视频验收、来源权利与用户发布审批继续执行。OCR／ASR、受限素材入库与视频准备、Production 及结构化交付命令依赖各自固定原生闭包和系统隔离，留待 Linux 适配后启用；本流程交付使用当前编码、真实 run.json 和人工审片证据。
+
 ### 锁定规则
 
 - 审片修改中的时间戳、引号、叠化等问题，只改代码并重新渲染，沿用已生成的镜头。只有人物长相或动作整段不对时，才重新生成对应镜头。
@@ -112,7 +221,7 @@ Grok Bot 的配音使用本团队已获授权的音色、凭据与实际可用�
 
 每片的 prompt-history.jsonl 保存创建时的原始 prompt、后续用户修改要求、模型问题与用户答案。新片原文由 start 自动保存；改片和问答按 [.skill/references/workspace.md](.skill/references/workspace.md) 通过 prompt 命令逐条追加，保持原文与时间。维护评估在用户指定的项目范围内结合记录、源码、证据与成片寻找改进依据。
 
-所有制作与通用命令通过 `node .skill/scripts/video.mjs <slug> <command>`，通用命令使用 exec 子命令。统一入口自动校验和备份核心，.skill-backups/ 保留最近两份成功快照。运行条件与使用入口见 README.md。
+macOS 制作与通用命令通过 `node .skill/scripts/video.mjs <slug> <command>`，通用命令使用 exec 子命令。统一入口自动校验和备份核心，.skill-backups/ 保留最近两份成功快照。Linux 团队使用[手建流程](#linux-团队手建流程)中的创建、备份与执行入口。运行条件与使用入口见 README.md。
 
 影片制作的输入、计划、代码、证据与生成文件保存在对应的 projects/<slug>/，包含生图候选与修订、参考下载、三维模型与纹理、依赖副本、预览、截图、日志及临时产物。工具固定位置的输出立即迁入对应影片项目；影片制作工具的临时目录使用本片 out/.tmp/。制作时按本片边界访问，新增画法编辑本片 src/ 和组件副本。按[素材选择](.skill/references/assets.md)组合生图与精确代码图形，按[电影化运镜](.skill/references/cinematography.md)设计镜头并验证代表性短样片。核心位于 .skill/，不同模型、题材和参考输入使用相同契约；本片的参考用途与特有约束记录在本片。
 

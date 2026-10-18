@@ -17,7 +17,7 @@ README.md        用户入口
 
 每次渲染保存到 `projects/<slug>/out/renders/<attemptId>/final.mp4`，默认便捷副本为 `out/<slug>.mp4`，当前成片以本片 `run.json` 为准。初始化复制本片运行时、所选组件及规范快照；本片扩展在自己的 src/ 实现。题材与参考资料影响本片设计，通用核心保持固定。文件权威位置与维护步骤见 [核心维护](.skill/references/maintenance.md)。
 
-Agent 按[创作问答](.skill/references/intake.md)取得本片主题选择后使用唯一命令入口。下例假定用户已选择 `minimal`：
+Agent 按[创作问答](.skill/references/intake.md)取得本片主题选择后使用命令入口。macOS 使用以下封存流程，Linux 团队使用 [AGENTS.md 的手建流程](AGENTS.md#linux-团队手建流程)。下例假定用户已选择 `minimal`：
 
 ```bash
 node .skill/scripts/video.mjs start my-film --idea "制作一支 30 秒的讲解视频" --theme minimal
@@ -48,7 +48,7 @@ node .skill/scripts/video.mjs my-film render
 
 [素材选择](.skill/references/assets.md)按镜头组合生图、官方矢量和精确代码图形，先核验当前会话的实际生图接口。复杂场景优先评估生成素材，技术结构依据可靠参考验证。图片及所有候选版本、模型、纹理、参考下载、预览、截图、日志与临时文件归入本片目录。
 
-[风格选择](.skill/references/styles.md#账号默认与每片风格选择)：账号默认 `minimal`，每片通过 `start --theme` 传入已确认的 `minimal` 或 `kinetic`，spec 与本片 `brand.json` 保持一致。主题差异见[任务与编排](.skill/references/styles.md#按任务选择表现方式)，镜头与时序按[导演计划](.skill/references/direction.md)和[字幕与分镜](.skill/references/captions-and-shots.md)执行。
+[风格选择](.skill/references/styles.md#账号默认与每片风格选择)：账号推荐 `minimal`，每片通过必填的 `start --theme` 传入已确认的 `minimal` 或 `kinetic`，spec 与本片 `brand.json` 保持一致。两者共用主色 #FFC712 与默认第二色 #5B3DF5，其他辅助色按内容选用；[配色范本](.skill/references/styles.md#按设计范本展开)列出颜色职责、镜头编排与验证方式。主题差异见[任务与编排](.skill/references/styles.md#按任务选择表现方式)，镜头与时序按[导演计划](.skill/references/direction.md)和[字幕与分镜](.skill/references/captions-and-shots.md)执行。
 
 [个人视频包装规范](.skill/references/visual-identity.md)固定品牌黄、文字层级、标注、资料卡、人物条与收尾的跨片规则；[完整元素目录](.skill/references/editing-element-catalogue.md)提供 17 类、154 项元素与 23 组处理方式供按需选用。新片自动复制规范，选用和实现状态进入分镜记录，统一风格进入审片检查；具体组件画法与视听效果按实际实现和样片验收。
 
@@ -66,7 +66,7 @@ node .skill/scripts/video.mjs my-film render
 
 每次入口执行前自动验证和备份 .skill/，最多保留两份成功快照；已有影片继续使用初始化时的固定运行时。进入不同影片时始终指定其 slug。
 
-当前运行条件为 macOS ARM64、Node 24、FFmpeg/ffprobe；Edge 在线配音需要 Python/edge-tts>=7.3.1，可用 `python3 -m pip install --upgrade 'edge-tts>=7.3.1'` 更新握手与日期解析支持。豆包在线配音需要 Python/websockets>=14 与 `DOUBAO_API_KEY`，预制配音使用本片授权的真实 voice.wav。JS 生产依赖与字体已内置。系统沙箱覆盖制作入口启动的进程及后代，编辑器与其他文件工具的访问范围由宿主管理。
+封存入口的运行条件为 macOS ARM64、Node 24、FFmpeg/ffprobe；Linux 手建流程在本片安装对应平台的 JS 依赖与字体，系统隔离由团队宿主管理。Edge 在线配音需要 Python/edge-tts>=7.3.1，可用 `python3 -m pip install --upgrade 'edge-tts>=7.3.1'` 更新；Linux 虚拟环境安装、探测退出码和离线配音见 [Edge 配音依赖](.skill/references/execution.md#edge-配音依赖与可选安装)。Edge 探测失败只影响该 provider 的可用状态，其他制作步骤继续执行。豆包在线配音需要 Python/websockets>=14 与 `DOUBAO_API_KEY`，预制配音使用本片授权的真实 voice.wav。macOS 系统沙箱覆盖制作入口启动的进程及后代，编辑器与其他文件工具的访问范围由宿主管理。
 
 维护检查：`node .skill/scripts/check.mjs --docs` 检查本地文档链接、标题锚点及新片 guide 路径；`--engine` 验证引擎行为；`--standalone` 仅复制完整 `.skill/`，在隔离已有生成区的空工作区中运行引擎测试、四种输入初始化与契约查询；`--native` 验证备份、恢复、独立项目、系统隔离与真实音视频。通用升级按核心维护规范先备份、验证，再重新 seal。
 
@@ -143,12 +143,13 @@ node .skill/scripts/video.mjs my-film render
 
 感谢本项目所用的工具与字体：
 
-- **Christian Swinehart / samizdatco 与 [skia-canvas](https://github.com/samizdatco/skia-canvas) 贡献者**：Canvas 2D 渲染基础。
+- **Christian Swinehart / samizdatco 与 [skia-canvas](https://github.com/samizdatco/skia-canvas) 贡献者**：Canvas 2D 渲染基础；宿主安装与原生包说明见[官方安装文档](https://skia-canvas.org/getting-started)，手建项目按来源清单固定直接依赖版本。
 - **Evgeny Poberezkin 与 [Ajv](https://github.com/ajv-validator/ajv) 贡献者**：JSON Schema 校验基础。
 - **[Node.js](https://nodejs.org/) 与 [FFmpeg](https://ffmpeg.org/) 贡献者社区**：脚本运行、音视频编码、混音与探测。
 - **rany2 与 [edge-tts](https://github.com/rany2/edge-tts) 贡献者**：在线配音工具；[7.3.0](https://github.com/rany2/edge-tts/releases/tag/7.3.0) 的新版握手和 [7.3.1](https://github.com/rany2/edge-tts/releases/tag/7.3.1) 的日期解析修复为依赖下限依据。
 - **火山引擎豆包语音文档团队**：[公版音色列表](https://docs.volcengine.com/docs/DoubaoVoice/Tonelist-1?lang=zh)、[双向流式 WebSocket](https://docs.volcengine.com/docs/DoubaoVoice/WebSocketBidirectionalStreaming-V3?lang=zh) 与 [单向流式 HTTP](https://docs.volcengine.com/docs/DoubaoVoice/unidirectional-streaming-text-to-speech-http?lang=zh)，提供[音色目录](.skill/engine/src/audio/tts/doubao-voices.ts)和[豆包配音适配](.skill/engine/src/audio/tts/doubao.ts)的接口依据。
 - **[websockets](https://websockets.readthedocs.io/) 贡献者**：豆包流式配音的 Python WebSocket 客户端。
+- **Python 文档贡献者**：[venv 官方说明](https://docs.python.org/3/library/venv.html)用于独立安装可选配音依赖并选择同一解释器。
 - **LXGW（霞鹜）、FONTWORKS 与字体贡献者**：[霞鹜文楷](https://github.com/lxgw/LxgwWenKai)及其上游 Klee One 为中文画面提供字体基础。
 
 后续新增参考继续补充作者、原始链接和具体借鉴点；复用代码、字体或素材时保留各自许可证与署名要求。

@@ -50,7 +50,7 @@ function checkStandalone() {
       ['video-input', '结合视频素材与讲解稿说明一次植物观察。'],
     ];
     for (const [slug, idea] of cases) {
-      const result = run(['.skill/scripts/video.mjs', 'start', slug, '--idea', idea]);
+      const result = run(['.skill/scripts/video.mjs', 'start', slug, '--idea', idea, '--theme', 'minimal']);
       if (result.packageId !== original.packageId || result.status !== 'needs-intake') throw new Error('STANDALONE_INITIALIZATION_INVALID');
     }
     // Project commands apply their own sandbox; include the original root in its protected scope.

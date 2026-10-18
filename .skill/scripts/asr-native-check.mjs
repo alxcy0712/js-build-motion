@@ -70,7 +70,7 @@ export async function checkAsrNative({ scratch, skill, run, check, denied }) {
       log({ kind: 'fixture', language, voice, text, generator: '/usr/bin/say', networkPolicy: 'deny network*', aiffSha256: sha(readFileSync(aiff)), sourcePath: wav, sourceBytes: readFileSync(wav).length, sourceSha256: sha(readFileSync(wav)), rate, channels, status: 'passed' });
     }
     writeFileSync(join(selected, 'silence.wav'), wave(16000));
-    for (const slug of ['asr-film', 'asr-other']) control(['start', slug, '--idea', '虚构离线 ASR 门禁']);
+    for (const slug of ['asr-film', 'asr-other']) control(['start', '--theme', 'minimal', slug, '--idea', '虚构离线 ASR 门禁']);
     const { DEFAULT_INSPECT_POLICY } = await import(pathToFileURL(join(core, 'engine/src/project/catalog.ts')).href); initialPolicy = DEFAULT_INSPECT_POLICY; assert.equal(initialPolicy.version, '0.4'); assert.equal(initialPolicy.asr.enabled, false);
     policy(); initialImport = imported(selected);
   });

@@ -1,6 +1,6 @@
 # 项目布局与隔离
 
-唯一制作入口为node .skill/scripts/video.mjs；每次调用验证并备份核心，.skill-backups/保留最近两份成功快照。新片按[创作问答](intake.md)取得本片主题选择，再用 `start --theme` 创建projects/<slug>/；剩余重要选择完成后进入制作，后续命令指定已有影片。
+macOS 封存制作入口为node .skill/scripts/video.mjs；每次调用验证并备份核心，.skill-backups/保留最近两份成功快照。新片按[创作问答](intake.md)取得本片主题选择，再用 `start --theme` 创建projects/<slug>/；剩余重要选择完成后进入制作，后续命令指定已有影片。Linux 团队按根 AGENTS.md 的手建流程保存独立运行时、brand.json、manual-0.1 工作区及沟通原文，并使用本片引擎 CLI；该流程的校验范围与平台适用边界以对应条款为准。
 
 ## 生成区的外部依赖约束
 

@@ -3,7 +3,7 @@ import { parseFocus, type FocusRect } from '../motion/focus.ts';
 import { minShotSeconds } from '../motion/shot-timing.ts';
 import { parseFootageClip, type FootageClip } from '../footage/spec.ts';
 import { THEME_IDS } from '../themes/ids.ts';
-import { enforceBrand, loadBrand, type BrandConfig } from '../themes/brand.ts';
+import { enforceBrand, loadRuntimeBrand, type BrandConfig } from '../themes/brand.ts';
 import { Ajv } from 'ajv';
 import { COMPOSITION_SCHEMA, type Composition } from './motion.ts';
 import { graphicIssues } from './graphic.ts';
@@ -213,8 +213,8 @@ export function repairSpec(input: unknown, options: RepairOptions = {}): RepairR
   const rawStyle = input['style'];
   const requestedTheme = typeof rawStyle === 'string' ? rawStyle
     : isPlainObject(rawStyle) && typeof rawStyle['theme'] === 'string' ? (rawStyle['theme'] as string) : undefined;
-  const brand = options.brand ?? loadBrand();
-  const decision = enforceBrand(requestedTheme, brand);
+  const brand = options.brand ?? loadRuntimeBrand();
+  const decision = brand ? enforceBrand(requestedTheme, brand) : { theme: repairedStyle.theme, violation: null };
   if (decision.violation?.action === 'reject') {
     r.fatal('BRAND_THEME_LOCKED', 'style.theme', `本片固定主题为 ${decision.theme}，请求值为 ${decision.violation.requested}；请让 style.theme 与本片 brand.json 一致。更换本片主题须先明确迁移范围与验证方案，并保留原版本；账号默认仅影响之后的新片。`);
   } else if (decision.violation) {

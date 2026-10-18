@@ -11,7 +11,7 @@ export async function checkCatalogNative({ scratch, skill, run, check, denied })
   let imported, receipt, manifest;
   await check('素材目录真实入口、媒体动态库闭包、格式/版本身份及固定契约', () => {
     mkdirSync(root, { recursive: true }); cpSync(skill, core, { recursive: true }); mkdirSync(selected); writeFileSync(external, 'external');
-    for (const slug of ['catalog-film', 'other-film']) control(['start', slug, '--idea', '虚构素材目录验收']); writeFileSync(join(selected, 'notes.txt'), 'source data');
+    for (const slug of ['catalog-film', 'other-film']) control(['start', '--theme', 'minimal', slug, '--idea', '虚构素材目录验收']); writeFileSync(join(selected, 'notes.txt'), 'source data');
     for (const [name, args] of [['image.png', ['-f', 'lavfi', '-i', 'color=s=64x48', '-frames:v', '1']], ['audio.wav', ['-f', 'lavfi', '-i', 'sine=sample_rate=16000:duration=0.5']], ['video.mp4', ['-f', 'lavfi', '-i', 'color=s=64x48:r=2:d=1', '-c:v', 'libx264']]]) { const r = spawnSync('/opt/homebrew/bin/ffmpeg', ['-v', 'error', '-y', ...args, join(selected, name)], { encoding: 'utf8' }); assert.equal(r.status, 0, r.stderr); }
     imported = JSON.parse(control(['catalog-film', 'import', '--source', selected])); const prior = readFileSync(join(project, 'inputs/import.json'));
     receipt = JSON.parse(control(['catalog-film', 'catalog', '--import', imported.importId])); assert.equal(receipt.status, 'succeeded'); manifest = JSON.parse(control(['catalog-film', 'catalog', '--verify', receipt.catalogId])).manifest;

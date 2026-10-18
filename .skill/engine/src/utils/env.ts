@@ -8,7 +8,7 @@
 import { spawnSync } from 'node:child_process';
 import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
-import { dirname, join, resolve } from 'node:path';
+import { basename, dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { EngineError, ERROR_CODES } from './errors.ts';
@@ -260,7 +260,8 @@ export function checkEnvironment(options: CheckEnvironmentOptions = {}): EnvRepo
   // 探测非项目产物的落点：仓库根的 out/ 兼容层已删除（task-11），
   // 非项目 spec（探针 / 引擎级夹具）的产物一律落 .research/out/（AGENTS.md 硬性规则 1）。
   // 项目渲染不需要在这里探测：每个项目有自己的 outDir，渲染时自己建。
-  const outDir = options.outDir ?? join(PROJECT_ROOT, '.research', 'out');
+  const outDir = options.outDir ?? (basename(PROJECT_ROOT) === '.engine'
+    ? join(dirname(PROJECT_ROOT), 'out') : resolve(PROJECT_ROOT, '../../.research/out'));
   const outWritable = checkOutput ? checkOutWritable(outDir) : true;
   if (!outWritable) {
     errors.push(`输出目录不可写: ${outDir}`);

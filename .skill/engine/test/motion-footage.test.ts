@@ -6,7 +6,7 @@ import { test } from 'node:test';
 import { spawnSync } from 'node:child_process';
 import { mkdirSync, mkdtempSync, symlinkSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { join, resolve } from 'node:path';
 import { Canvas } from 'skia-canvas';
 import { CAMERA_GRAMMAR, cameraMove, evaluateCameraPath, parseCameraPath, push } from '../src/motion/camera-path.ts';
 import { focusCenter, parseFocus, zoomToFill } from '../src/motion/focus.ts';
@@ -193,7 +193,7 @@ test('字体目录：按平台给出，且可用 JBM_FONT_DIRS 追加', () => {
   assert.ok(systemFontDirs('linux', {}).includes('/usr/share/fonts'));
 });
 test('核心探针输出使用临时区，可由 JBM_OUTPUT_DIR 指定维护目录', () => {
-  assert.match(outputRoot({}), /[\\/]\.research[\\/]out$/);
+  assert.equal(outputRoot({}), resolve(import.meta.dirname, '../../../.research/out'));
   assert.equal(outputRoot({ JBM_OUTPUT_DIR: '/tmp/jbm-out' }), '/tmp/jbm-out');
 });
 

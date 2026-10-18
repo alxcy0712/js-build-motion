@@ -68,7 +68,7 @@ export async function checkDocumentOcrNative({ scratch, skill, check }) {
       ppm = Buffer.concat([Buffer.from(`P6\n${width} ${height}\n255\n`), rgb]); png = await canvas.toBuffer('png'); pdf = scanPdf(rgb, width, height);
       writeFileSync(join(selected, 'scan.pdf'), pdf); writeFileSync(join(selected, 'embedded.docx'), imageDocx(makeZip, png)); writeFileSync(join(records, 'source-oracle.ppm'), ppm);
       writeFileSync(join(records, 'image.png'), png); writeFileSync(join(records, 'scan.pdf'), pdf); writeFileSync(join(records, 'embedded.docx'), readFileSync(join(selected, 'embedded.docx')));
-      control(['start', 'document-ocr-film', '--idea', '虚构扫描文档OCR宿主验收']); mkdirSync(join(project, 'inputs'), { recursive: true }); domain = await import(pathToFileURL(join(core, 'engine/src/project/catalog.ts')).href); defaults = domain.DEFAULT_INSPECT_POLICY;
+      control(['start', '--theme', 'minimal', 'document-ocr-film', '--idea', '虚构扫描文档OCR宿主验收']); mkdirSync(join(project, 'inputs'), { recursive: true }); domain = await import(pathToFileURL(join(core, 'engine/src/project/catalog.ts')).href); defaults = domain.DEFAULT_INSPECT_POLICY;
       policy = { ...domain.INSPECT_POLICY_06, documentOcr: { ...domain.INSPECT_POLICY_06.documentOcr, enabled: true, dpi: 72, pdfPages: [1], docxImages: [1, 2] } }; setPolicy({}); imported = importSource(selected);
       first = catalog(['--import', imported.importId]); assert.equal(first.version, '0.6'); manifest = verify(first.catalogId); assert.equal(manifest.assets.length, 2);
       for (const asset of manifest.assets) {

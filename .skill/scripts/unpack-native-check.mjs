@@ -14,7 +14,7 @@ export async function checkUnpackNative({ scratch, skill, run, check, denied }) 
   let imported, unpacked;
   await check('显式 ZIP 统一入口、编码/字节身份、独立版本、复查与冻结依赖', () => {
     mkdirSync(root, { recursive: true }); cpSync(skill, core, { recursive: true });
-    for (const slug of ['selected-film', 'other-film']) control(['start', slug, '--idea', '虚构归档展开验收']);
+    for (const slug of ['selected-film', 'other-film']) control(['start', '--theme', 'minimal', slug, '--idea', '虚构归档展开验收']);
     const archive = makeZip([{ name: "folder/notes 'quoted' $(literal).txt", data: 'literal member bytes', method: 0 }, { name: '目录/中文.txt', data: '示例', descriptor: true }, { name: 'empty/', directory: true }], { zip64: true });
     writeFileSync(selected, archive); writeFileSync(external, 'unselected source');
     imported = JSON.parse(control(['selected-film', 'import', '--source', selected]));

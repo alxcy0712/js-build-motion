@@ -53,7 +53,7 @@ export async function checkAudioInputNative({ scratch, skill, check }) {
       cpSync(skill, core, { recursive: true }); writeFileSync(join(selected, 'known.wav'), wave(44273));
       for (const [name, codec, extra] of [['known.flac', 'flac', []], ['known.mp3', 'libmp3lame', ['-b:a', '128k']], ['known.m4a', 'aac', ['-profile:a', 'aac_low', '-b:a', '128k']]])
         collect(root, lock.tools.ffmpeg.executable, ['-nostdin', '-v', 'error', '-xerror', '-protocol_whitelist', 'file', '-i', join(selected, 'known.wav'), '-map', '0:a:0', '-threads', '1', '-c:a', codec, ...extra, join(selected, name)]);
-      control(['start', 'audio-film', '--idea', '虚构有界音频容器验收']); mkdirSync(join(project, 'inputs'));
+      control(['start', '--theme', 'minimal', 'audio-film', '--idea', '虚构有界音频容器验收']); mkdirSync(join(project, 'inputs'));
       const domain = await import(pathToFileURL(join(core, 'engine/src/project/catalog.ts')).href), alignment = await import(pathToFileURL(join(core, 'engine/src/project/alignment.ts')).href);
       inspectPolicy = domain.INSPECT_POLICY_05; alignmentPolicy = alignment.ALIGNMENT_POLICY_02; subject = alignment.alignmentSubjectSha256; setPolicy({});
       imported = JSON.parse(control(['audio-film', 'import', '--source', selected])); first = catalog(['--import', imported.importId]); manifest = catalog(['--verify', first.catalogId]).manifest;

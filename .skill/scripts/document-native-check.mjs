@@ -55,7 +55,7 @@ export async function checkDocumentNative({ scratch, skill, run, check, denied }
     writeFileSync(join(selected, 'entity.docx'), packageBytes(`<!DOCTYPE w:document [<!ENTITY secret SYSTEM "file:///etc/passwd">]>${body('<w:p><w:r><w:t>&secret;</w:t></w:r></w:p>')}`));
     writeFileSync(join(selected, 'external-main.docx'), packageBytes(body('<w:p/>'), `<Relationships xmlns="${relationships}"><Relationship Id="rId1" Type="${officeDocument}" Target="https://example.invalid/main.xml" TargetMode="External"/></Relationships>`));
     writeFileSync(join(selected, 'missing-opc.docx'), makeZip([{ name: 'notes.txt', data: 'ordinary archive' }]));
-    for (const slug of ['document-film', 'document-other']) control(['start', slug, '--idea', '虚构离线文档门禁']);
+    for (const slug of ['document-film', 'document-other']) control(['start', '--theme', 'minimal', slug, '--idea', '虚构离线文档门禁']);
     selectedImport = importSelected(selected); initialReceipt = catalog(['--import', selectedImport.importId]); assert.equal(initialReceipt.status, 'succeeded'); initialManifest = verify(initialReceipt.catalogId);
     assert.equal(initialManifest.version, '0.4'); assert.equal(initialManifest.policy.version, '0.4'); assert.equal(initialManifest.assets.length, 6);
     initialPdf = initialManifest.assets.find(a => a.source.path === 'native.pdf'); initialDocx = initialManifest.assets.find(a => a.source.path === 'native.docx');

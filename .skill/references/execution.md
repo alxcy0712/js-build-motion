@@ -20,6 +20,20 @@ disclosure
 
 env核对宿主、字体和音频工具。旁白使用真实TTS或授权的本片音频。audio生成narration-timing.json，核对逐句完整性、起止、句间空档和尾留；据实测调整文案与镜长，再生成对应规格的音频。关键词时间可驱动画面事件。
 
+### Edge 配音依赖与可选安装
+
+`edge-tts>=7.3.1` 是 Edge 在线配音的依赖。`prompt`、`capabilities`、规格校验和画面制作可独立运行；`env` 将 Edge 不可用写入 warnings。辅助脚本 `edge-tts-helper.py --probe` 的退出码 3 表示该 provider 不可用，环境探测会吸收这个结果，继续报告其他能力。默认音频选择按 edge → 本片授权的 `assets/audio/voice.wav` → mock 占位音处理；mock 用于工程预览，正式旁白按真实 TTS 或授权录音验收。
+
+在 Linux 或采用受管理 Python 的宿主，可先在宿主工具目录建立独立环境，再从同一终端调用制作入口：
+
+```bash
+python3 -m venv --copies "$HOME/.local/share/js-build-motion/edge-tts"
+. "$HOME/.local/share/js-build-motion/edge-tts/bin/activate"
+python3 -m pip install --upgrade 'edge-tts>=7.3.1'
+```
+
+Debian／Ubuntu 的 Python 环境缺少 venv 时，通过该宿主的包管理流程安装 `python3-venv`。CLI 按 PATH 查找 `python3`、`python`；安装与制作沿用同一解释器。需要在线合成时核对网络可用性，离线制作使用 `audio --tts-provider file --no-network` 或 `render --tts-provider file --no-network` 并提供本片录音。Linux 手建流程使用 `node .engine/src/cli/index.ts audio "$PWD" …`／`render "$PWD" …`。`--tts-provider mock --no-network` 用于明确的工程试片，配音待办保留在本片记录中。
+
 audio之后再次运行qa，读取匹配当前规格的实测时间，报告发声占比、逐段空档、平均/最长空档与首尾停留。超过1秒的句间空档和不足0.8秒的尾留提供复核提示，按本片的信息变化、揭幕和阅读用途判定，并在brief.acceptance设定适用目标。时序缺口保留NARRATION_TIMING_PENDING；修改规格后重新audio以更新缓存。
 
 原生VideoSpec可逐句设置audio.narration[].voice与rate（整数百分比，省略为+8%），start决定绝对起点；audio.sfx按绝对秒排程。Edge的voice-*.words.json记录服务音色与实际语速参数。句间空档和句内语速分别核对，语速变化后重新测量关键词与句尾，并更新对应画面。

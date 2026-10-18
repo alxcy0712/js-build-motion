@@ -69,7 +69,7 @@ export async function checkAlignmentNative({ scratch, skill, check, denied }) {
         const bytes = readFileSync(wav); log({ kind: 'fixture', language, voice, text, generator: '/usr/bin/say', network: 'deny network*', bytes: bytes.length, sha256: sha(bytes), sourcePath: wav });
       }
       writeFileSync(join(selected, 'long.wav'), wave(1920000)); writeFileSync(join(selected, 'silence.wav'), wave(16000));
-      for (const slug of ['alignment-film', 'alignment-other']) control(['start', slug, '--idea', '虚构离线词级对齐门禁']);
+      for (const slug of ['alignment-film', 'alignment-other']) control(['start', '--theme', 'minimal', slug, '--idea', '虚构离线词级对齐门禁']);
       mkdirSync(join(project, 'inputs'), { recursive: true });
       const domain = await import(pathToFileURL(join(core, 'engine/src/project/alignment.ts')).href); defaults = domain.DEFAULT_ALIGNMENT_POLICY; makeSubject = domain.alignmentSubjectSha256;
       policy = patch => save(join(project, 'inputs/alignment-policy.json'), { ...defaults, ...patch }); policy({});

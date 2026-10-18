@@ -2,7 +2,7 @@ import type { ThemeTokens } from '../types.ts';
 import { CJK_PROBE, CJK_STACK, SAFE_AREA, SYSTEM_FONTS } from '../shared.ts';
 /** 动感：品牌黄与蓝紫反差，形状接力、语义切点与稳定落定。 */
 export const kinetic: ThemeTokens = {
-  id: 'kinetic', name: '炫酷', summary: '深蓝黑底、品牌黄与蓝紫关系色；形状接力展示过程，短词强调结果，强弱节奏交替。',
+  id: 'kinetic', name: '动感', summary: '深蓝黑底、品牌黄与蓝紫关系色；形状接力展示过程，短词强调结果，强弱节奏交替。',
   useWhen: '工具与机制讲解、操作结果、效率对比、产品发布；需要清楚的状态变化与关键揭示时。',
   fonts: { stack: ['Inter Tight', ...CJK_STACK], mono: ['Geist Mono'], faces: [SYSTEM_FONTS.interTight, SYSTEM_FONTS.notoSansSC, SYSTEM_FONTS.geistMono], probe: CJK_PROBE },
   palette: { bg: '#05060A', surface: '#0E1220', hairline: '#1E2440', text: '#FFFFFF', textSecondary: '#8B93B8', accent: '#FFC712', accent2: '#5B3DF5', warn: '#FF8A4C' },

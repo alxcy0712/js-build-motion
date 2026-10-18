@@ -37,6 +37,13 @@ test('未写 theme 的片子取本片生效风格', () => {
   assert.equal(out.spec!.style.theme, 'kinetic');
   assert.ok(!out.issues.some((i) => i.code === 'BRAND_THEME_LOCKED'));
 });
+test('核心 validateSpec 保留显式主题，账号推荐值仅供初始化使用', () => {
+  for (const style of [{ theme: 'kinetic' }, 'kinetic']) {
+    const out = validateSpec(spec(style));
+    assert.equal(out.spec!.style.theme, 'kinetic');
+    assert.ok(!out.issues.some(i => i.code === 'BRAND_THEME_LOCKED'));
+  }
+});
 test('override 模式：单片换风格被改回并警告', () => {
   for (const style of [{ theme: 'kinetic' }, 'kinetic']) {
     const out = validateSpec(spec(style), { brand: brand('minimal') });

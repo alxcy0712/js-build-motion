@@ -138,7 +138,7 @@ export async function checkAssetsNative({ scratch, skill, run, check }) {
   await check('素材标准入口与独立 PNG/VFR 原件、完整 CFR 映射和固定发布身份', async () => {
     mkdirSync(root, { recursive: true }); cpSync(skill, core, { recursive: true }); mkdirSync(selected);
     packageId = json(join(skill, 'manifest.json')).packageId;
-    assert.equal(JSON.parse(control(['start', 'assets-film', '--idea', '虚构素材连续镜头与裁框样片'])).packageId, packageId);
+    assert.equal(JSON.parse(control(['start', '--theme', 'minimal', 'assets-film', '--idea', '虚构素材连续镜头与裁框样片'])).packageId, packageId);
     writeFileSync(join(project, 'asset-native-fixture.mjs'), fixtureProgram); film(['exec', process.execPath, 'asset-native-fixture.mjs']); fixture = json(join(output, 'fixture-report.json'));
     assert.equal(fixture.packageId, packageId); cpSync(join(project, 'assets/known-vfr.mp4'), join(selected, 'known-vfr.mp4'));
     const { Canvas } = await import(pathToFileURL(join(skill, 'engine/node_modules/skia-canvas/lib/index.mjs')).href);
@@ -429,7 +429,7 @@ export async function checkProductionAssetsNative({ scratch, skill, run, check }
   try {
     await check('生产后段：26 秒/624 帧/>64 MiB 原件，960×540 交付与 512×288 预览、48 帧及完整原声样本',()=>{
       mkdirSync(root,{recursive:true}); cpSync(skill,core,{recursive:true}); mkdirSync(sources); packageId=json(join(skill,'manifest.json')).packageId;
-      assert.equal(JSON.parse(control(['start','production-assets','--idea','虚构长素材后段与源时钟声画验证'])).packageId,packageId); prepare('base');
+      assert.equal(JSON.parse(control(['start','--theme','minimal','production-assets','--idea','虚构长素材后段与源时钟声画验证'])).packageId,packageId); prepare('base');
     });
     await check('独立非零音视频 epoch：leading-empty edit 的原始 PTS 与全 PCM 时钟对应',()=>{prepare('epoch');});
     await check('实际资源政策失败与保留原声的标准 render 明确 pending',()=>{
