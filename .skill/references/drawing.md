@@ -6,6 +6,8 @@
 
 自定义入口在project.json中配置drawing: "src/draw.mjs"，模块导出同步drawScene(context, frame)。context提供ctx、width、height、scene、progress、seed；frame提供帧号、fps和整片时间。ctx为共享Canvas 2D上下文，progress为当前镜头进度，转场可能求值两个镜头。
 
+`context.noText` 为 true 时只绘制场景底层与主体，文字在其余调用中绘制；`riseFade` 等转场使用这份无字画面承接两层文字的进退。
+
 帧由seed、规格、帧号和登记输入确定；随机数使用固定种子，乱序求值同帧一致。素材和字体使用本片文件。构图、材质、动作与特效由本片需求决定。
 
 绘制入口接管镜头内容，统一管线处理相机、转场、字幕、音频和编码。复杂需求可在本片实现并用实际帧与动作预览验证。

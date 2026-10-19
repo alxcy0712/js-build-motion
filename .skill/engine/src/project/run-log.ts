@@ -97,6 +97,8 @@ export interface RunLogFacts {
     readonly sha256: string;
     readonly registered: boolean;
   }[];
+  /** 实际文字绘制的 Skia glyph runs 命中字族；历史记录可省略。 */
+  readonly fontUsage?: readonly string[];
   readonly captions: {
     readonly insideFrame: boolean;
     readonly cues: number;
@@ -188,6 +190,7 @@ export interface FactsInput {
     readonly absPath: string;
     readonly registered: boolean;
   }[];
+  readonly fontUsage?: readonly string[];
   readonly captions: RunLogFacts['captions'];
 }
 
@@ -305,6 +308,7 @@ export function buildFacts(input: FactsInput): RunLogFacts {
       const { attemptId, inputSnapshotSha256, ...facts } = validateAssetUsage(input.assetUsage); return facts;
     })() } : {}) },
     fonts,
+    ...(input.fontUsage ? { fontUsage: [...new Set(input.fontUsage)].sort() } : {}),
     captions: input.captions,
   };
 }

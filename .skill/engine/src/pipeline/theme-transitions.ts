@@ -70,10 +70,11 @@ export function drawThemeTransition(id: TransitionId, f: TransitionFrame): void 
       return;
     }
     case 'riseFade': {
-      // 透明度与位移解耦：旧画面先退（前 60%），新画面从下方 3% 处升起
+      // 透明度在中点交接：前半段旧字淡出，后半段新字淡入；共享切点最多产生一帧无字画面。
+      // 位移仍独立求值：旧画面上移 1.5%，新画面从下方 3% 处升起。
       // 底层直接是新镜头无字版本（背景/光环/IP 处于目标亮度），不从暗场淡起
       if (f.drawIncomingBase && f.incomingBase) { f.drawIncomingBase(f.incomingBase.getContext('2d')); drawImg(f.incomingBase); } else bg();
-      const outA = 1 - clamp01(m / 0.6), inA = clamp01((m - 0.3) / 0.7);
+      const outA = 1 - clamp01(m / 0.5), inA = clamp01((m - 0.5) / 0.5);
       ctx.save(); ctx.globalAlpha = outA; ctx.translate(0, -h * 0.015 * e); ctx.drawImage(f.outgoing, 0, 0); ctx.restore();
       ctx.save(); ctx.globalAlpha = cubicBezier(theme.easings.enter)(inA); ctx.translate(0, h * 0.03 * (1 - e)); ctx.drawImage(f.incoming, 0, 0); ctx.restore();
       return;

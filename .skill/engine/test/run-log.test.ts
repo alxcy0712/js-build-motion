@@ -150,6 +150,14 @@ test('字体哈希进 facts.fonts（工具链资产也要可核对）', () => {
   }
 });
 
+test('实际命中字族进 facts.fontUsage，并参与运行身份核对', () => {
+  const facts = buildFacts(factsInput({ fontUsage: ['Noto Sans CJK SC', 'Inter', 'Noto Sans CJK SC'] }));
+  assert.deepEqual(facts.fontUsage, ['Inter', 'Noto Sans CJK SC']);
+  const other = buildFacts(factsInput({ fontUsage: ['PingFang SC'] }));
+  assert.notEqual(computeRunId('spec-hash', null, facts), computeRunId('spec-hash', null, other));
+  assert.equal(buildFacts(factsInput()).fontUsage, undefined);
+});
+
 // ------------------------------------------------------------ 可复现性
 
 test('同输入两次构建：facts 与 runId 完全相同', () => {

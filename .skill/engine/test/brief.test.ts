@@ -68,6 +68,14 @@ test('原型库存在时 临时夹具 的 archetype 必须真实存在于库中'
 
 // ------------------------------------------------------------ schema 级
 
+test('字幕枚举错误包含实际值及允许值', () => {
+  const result = checkBrief(briefOf({ deliverable: { duration: 8, aspect: '9:16', captions: 'burned-in' } }));
+  assert.equal(result.ok, false);
+  const message = find(result.issues, 'BRIEF_SCHEMA')?.message ?? '';
+  assert.match(message, /deliverable.captions.*"burned-in"/);
+  for (const value of ['inside_frame', 'sidecar', 'both', 'none']) assert.ok(message.includes(value), message);
+});
+
 test('缺必填字段 → BRIEF_INVALID，问题里指出字段', () => {
   const raw = briefOf();
   delete raw['claims'];

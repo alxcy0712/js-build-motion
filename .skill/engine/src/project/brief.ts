@@ -114,7 +114,7 @@ const ASPECT_TOLERANCE = 0.01;
 /** 时长容差（秒）：与 ffprobe 校验用的是同一量级 */
 const DURATION_TOLERANCE = 0.05;
 
-const ajv = new Ajv({ allErrors: true, strict: false });
+const ajv = new Ajv({ allErrors: true, strict: false, verbose: true });
 let compiledBrief: ReturnType<typeof ajv.compile> | null = null;
 function briefValidator(): ReturnType<typeof ajv.compile> {
   let v = compiledBrief;

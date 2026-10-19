@@ -1,6 +1,9 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { Canvas, FontLibrary } from 'skia-canvas';
+import { join } from 'node:path';
+import { PROJECT_ROOT } from '../src/utils/env.ts';
+import { registerThemeFonts, trackFontUsage } from '../src/themes/fonts.ts';
 import {
   THEME_IDS, THEMES, getTheme, isThemeId, listThemes, validateTheme, revealState, springOvershoot,
   cubicBezier, exceedsScreenBudget, assertThemeFonts, detectFallback, NO_OVERSHOOT_EPSILON,
@@ -79,4 +82,28 @@ test('字体注册与回退检测（本机字体可用时）', () => {
     const report = assertThemeFonts(THEMES[id], FontLibrary, ctx, '/nonexistent-bundle', { strict: false });
     assert.equal(report.length, THEMES[id].fonts.faces.length);
   }
+});
+
+test('主题只从内嵌文件注册，覆盖系统同名字族并缓存相同文件', () => {
+  const uses: string[] = [];
+  const lib = { families: THEMES.minimal.fonts.faces.map((face) => face.family), use: (family: string) => uses.push(family) };
+  const dir = join(PROJECT_ROOT, 'assets/fonts');
+  const first = registerThemeFonts(THEMES.minimal, lib, dir);
+  assert.ok(first.every((font) => font.registered && font.file?.startsWith(dir + '/')));
+  assert.deepEqual(uses, lib.families);
+  registerThemeFonts(THEMES.minimal, lib, dir);
+  assert.equal(uses.length, first.length);
+  assert.ok(registerThemeFonts(THEMES.minimal, lib, '/nonexistent-bundle').every((font) => !font.registered));
+});
+
+test('字体实测读取 glyph runs 的实际字族，保持原有文字绘制', () => {
+  registerThemeFonts(THEMES.minimal, FontLibrary, join(PROJECT_ROOT, 'assets/fonts'));
+  const ctx = new Canvas(320, 80).getContext('2d'), families = new Set<string>();
+  trackFontUsage(ctx, families);
+  ctx.font = '32px "Inter", "Noto Sans CJK SC"';
+  ctx.fillText('中文 ABC', 0, 40);
+  ctx.strokeText('中文', 0, 75);
+  ctx.fillText(42 as unknown as string, 150, 75);
+  assert.deepEqual([...families].sort(), ['Inter', 'Noto Sans CJK SC']);
+  assert.ok(ctx.getImageData(0, 0, 320, 80).data.some((value) => value > 0));
 });

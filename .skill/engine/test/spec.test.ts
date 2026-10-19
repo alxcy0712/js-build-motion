@@ -57,6 +57,17 @@ function baseSpec(): Record<string, unknown> {
 const findIssue = (issues: readonly Issue[], code: string): Issue | undefined =>
   issues.find((i) => i.code === code);
 
+test('暗角覆盖保留 0 和小数，省略时沿用主题；越界数值按范围修复', () => {
+  assert.equal(validateSpec(baseSpec()).spec?.style.vignette, undefined);
+  for (const [value, expected] of [[0, 0], [0.2, 0.2], [-1, 0], [2, 1], ['low', 0.55]] as const) {
+    const raw = baseSpec();
+    raw.style = { ...(raw.style as object), vignette: value };
+    const result = validateSpec(raw);
+    assert.equal(result.spec?.style.vignette, expected);
+    assert.equal(schemaValidate(result.spec), true);
+  }
+});
+
 test('字幕版面字段保留并校验，缺省规格保持原有字段', () => {
   const raw = baseSpec();
   const layout = { fontScale: 40 / 1080, translationScale: 0.625, maxWidth: 0.78, bottomInset: 0.11 };

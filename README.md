@@ -52,7 +52,7 @@ node .skill/scripts/video.mjs my-film render
 
 [个人视频包装规范](.skill/references/visual-identity.md)固定品牌黄、文字层级、标注、资料卡、人物条与收尾的跨片规则；[完整元素目录](.skill/references/editing-element-catalogue.md)提供 17 类、154 项元素与 23 组处理方式供按需选用。新片自动复制规范，选用和实现状态进入分镜记录，统一风格进入审片检查；具体组件画法与视听效果按实际实现和样片验收。
 
-制作文件统一归入 `projects/<slug>/`：成片、抽帧、预览与临时缓存写入本片 `out/`，素材保存在本片 `assets/`。统一入口按本片 manifest 解析输出路径；维护检查的临时产物放 `.research/out/` 并在检查后清理。字体先找 `.skill/engine/assets/fonts/`，再找 `JBM_FONT_DIRS` 和本机系统字体目录（macOS / Linux / Windows），不依赖任何固定机器路径。
+制作文件统一归入 `projects/<slug>/`：成片、抽帧、预览与临时缓存写入本片 `out/`，素材保存在本片 `assets/`。统一入口按本片 manifest 解析输出路径；维护检查的临时产物放 `.research/out/` 并在检查后清理。主题字体与字幕固定使用运行时 `assets/fonts/` 中的文件，恢复版本与摘要见下方[内嵌字体恢复](#内嵌字体恢复)；通用字体查找接口另支持 `JBM_FONT_DIRS` 和系统目录。
 
 [电影化运镜](.skill/references/cinematography.md)把推拉、跟拍、环绕、焦点转移和遮挡接力转成逐镜设计，并用代表性短样片与编码主片复核。three.js 已登记为备选，当前共享运行时为 Skia Canvas 2D；需要三维的本片按[绘制规范](.skill/references/drawing.md)先验证 WebGL、依赖及固定时间导帧，再记录实际采用的路径。
 
@@ -69,6 +69,8 @@ node .skill/scripts/video.mjs my-film render
 封存入口的运行条件为 macOS ARM64、Node 24、FFmpeg/ffprobe；Linux 手建流程在本片安装对应平台的 JS 依赖与字体，系统隔离由团队宿主管理。Edge 在线配音需要 Python/edge-tts>=7.3.1，可用 `python3 -m pip install --upgrade 'edge-tts>=7.3.1'` 更新；Linux 虚拟环境安装、探测退出码和离线配音见 [Edge 配音依赖](.skill/references/execution.md#edge-配音依赖与可选安装)。Edge 探测失败只影响该 provider 的可用状态，其他制作步骤继续执行。豆包在线配音需要 Python/websockets>=14 与 `DOUBAO_API_KEY`，预制配音使用本片授权的真实 voice.wav。macOS 系统沙箱覆盖制作入口启动的进程及后代，编辑器与其他文件工具的访问范围由宿主管理。
 
 维护检查：`node .skill/scripts/check.mjs --docs` 检查本地文档链接、标题锚点及新片 guide 路径；`--engine` 验证引擎行为；`--standalone` 仅复制完整 `.skill/`，在隔离已有生成区的空工作区中运行引擎测试、四种输入初始化与契约查询；`--native` 验证备份、恢复、独立项目、系统隔离与真实音视频。通用升级按核心维护规范先备份、验证，再重新 seal。
+
+npm 11 安装时可能提示 skia-canvas 的安装脚本未执行；随包预编译模块可正常使用，以模块加载和实际出帧检查为准。
 
 ## 致谢
 
@@ -152,6 +154,21 @@ node .skill/scripts/video.mjs my-film render
 - **[websockets](https://websockets.readthedocs.io/) 贡献者**：豆包流式配音的 Python WebSocket 客户端。
 - **Python 文档贡献者**：[venv 官方说明](https://docs.python.org/3/library/venv.html)用于独立安装可选配音依赖并选择同一解释器。
 - **LXGW（霞鹜）、FONTWORKS 与字体贡献者**：[霞鹜文楷](https://github.com/lxgw/LxgwWenKai)及其上游 Klee One 为中文画面提供字体基础。
+- **Noto 与字体贡献者**：[Noto Sans CJK](https://github.com/notofonts/noto-cjk/tree/Sans2.004)为字幕和主题中文提供统一黑体；**Rasmus Andersson、Inter Tight 与 Geist 贡献者**提供主题原有西文与等宽字体，下表固定其发行文件。
+
+### 内嵌字体恢复
+
+字体二进制沿用 Git 忽略规则，完整核心封存、备份及新片运行时包含实际文件。Git 克隆后将下列原版文件保存到 `.skill/engine/assets/fonts/`；Linux 手建项目保存到本片 `.engine/assets/fonts/`。逐项核对字节数和 SHA-256 后登记本片运行时摘要；Mac 与 Linux 使用同一文件，主题渲染在缺少固定文件时报告 `FONT_NOT_FOUND`。对应 OFL 许可文本随源码保存于同目录。
+
+| 文件与固定来源 | 字节数 | SHA-256 | 许可 |
+|---|---|---|---|
+| [NotoSansCJKsc-VF.otf](https://raw.githubusercontent.com/notofonts/noto-cjk/523d033d6cb47f4a80c58a35753646f5c3608a78/Sans/Variable/OTF/NotoSansCJKsc-VF.otf)，Sans 2.004 | 30737452 | `2745e9681cb9d8a5c8901b62c9e1bd98c9c774365fc3b84dd467621013b51cd3` | [OFL-NotoSansCJK.txt](.skill/engine/assets/fonts/OFL-NotoSansCJK.txt) |
+| [Inter-Variable.ttf](https://raw.githubusercontent.com/google/fonts/47d54ca1ebb14fd864695f1d39dc734f39017c33/ofl/inter/Inter%5Bopsz,wght%5D.ttf) | 876576 | `29160a80ff49ddcab2c97711247e08b1fab27a484a329ce8b813d820dc559031` | [OFL-Inter.txt](.skill/engine/assets/fonts/OFL-Inter.txt) |
+| [InterTight-Variable.ttf](https://raw.githubusercontent.com/google/fonts/47d54ca1ebb14fd864695f1d39dc734f39017c33/ofl/intertight/InterTight%5Bwght%5D.ttf) | 581588 | `b81b73dcb64df3c230cabade7df6c5773bf863233f24c9ee51087519f1f88b6f` | [OFL-InterTight.txt](.skill/engine/assets/fonts/OFL-InterTight.txt) |
+| [GeistMono-Variable.ttf](https://raw.githubusercontent.com/google/fonts/47d54ca1ebb14fd864695f1d39dc734f39017c33/ofl/geistmono/GeistMono%5Bwght%5D.ttf) | 171948 | `d00e590b8eb3a59acc329b2d044fd143ae935090b7da33199ebee27cc7de8196` | [OFL-GeistMono.txt](.skill/engine/assets/fonts/OFL-GeistMono.txt) |
+| [LXGWWenKai-Regular.ttf](https://github.com/lxgw/LxgwWenKai/releases/download/v1.522/LXGWWenKai-Regular.ttf)，1.522（原有绘图字体） | 25575676 | `39ad71264b588165b469e35e6afb162a378dacd1f95348160240ba9038ac3009` | [OFL.txt](.skill/engine/assets/fonts/OFL.txt)，来自[固定上游许可](https://github.com/lxgw/LxgwWenKai/blob/7ebd0771fda4285299670f83c398f32f32c7bef8/OFL.txt) |
+
+运行记录的 `facts.fonts` 包含注册文件与完整摘要，`facts.fontUsage` 包含实际文字绘制命中的字族。字幕和主题中文应命中 `Noto Sans CJK SC`，西文按主题命中 `Inter` 或 `Inter Tight`。
 
 后续新增参考继续补充作者、原始链接和具体借鉴点；复用代码、字体或素材时保留各自许可证与署名要求。
 

@@ -48,4 +48,17 @@ export function drawTreatments(ctx: CanvasRenderingContext2D, theme: ThemeTokens
     const pattern = ctx.createPattern(tiles[idx]!, 'repeat');
     if (pattern) { ctx.save(); ctx.globalAlpha = T.grain.opacity; ctx.globalCompositeOperation = 'overlay'; ctx.fillStyle = pattern; ctx.fillRect(0, 0, width, height); ctx.restore(); }
   }
+  if (T.vignette > 0) {
+    // 8bit 合成后添加 ±1 级的中性噪声；暗部 overlay 颗粒的振幅随亮度减小，单独覆盖量化色带。
+    const image = ctx.getImageData(0, 0, width, height), data = image.data;
+    let state = (seed ^ Math.floor(time * T.grain.fps)) >>> 0;
+    for (let i = 0; i < data.length; i += 4) {
+      state = (state * 1664525 + 1013904223) >>> 0;
+      const noise = (state >>> 31) * 2 - 1;
+      data[i] = data[i]! + noise;
+      data[i + 1] = data[i + 1]! + noise;
+      data[i + 2] = data[i + 2]! + noise;
+    }
+    ctx.putImageData(image, 0, 0);
+  }
 }

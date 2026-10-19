@@ -8,7 +8,7 @@ export type TransitionId =
   | 'whipPan' | 'glitchCut' | 'zoomIntoElement' | 'lineScan' | 'paperFlip' | 'inkBleed';
 export type TypeRole = 'hero' | 'display' | 'title' | 'body' | 'caption' | 'micro';
 
-export interface FontFace { readonly family: string; readonly files: readonly string[]; readonly weight?: number }
+export interface FontFace { readonly family: string; readonly files: readonly string[]; readonly weight?: number; readonly bundled?: boolean }
 export interface ThemeFonts {
   /** CSS 风格字体栈，第一项为主字体，后续为 CJK 与兜底 */
   readonly stack: readonly string[];

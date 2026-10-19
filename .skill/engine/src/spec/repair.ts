@@ -3,6 +3,8 @@ import { parseFocus, type FocusRect } from '../motion/focus.ts';
 import { minShotSeconds } from '../motion/shot-timing.ts';
 import { parseFootageClip, type FootageClip } from '../footage/spec.ts';
 import { THEME_IDS } from '../themes/ids.ts';
+import { getTheme } from '../themes/registry.ts';
+import { isThemeTransition } from '../pipeline/theme-transitions.ts';
 import { enforceBrand, loadRuntimeBrand, type BrandConfig } from '../themes/brand.ts';
 import { Ajv } from 'ajv';
 import { COMPOSITION_SCHEMA, type Composition } from './motion.ts';
@@ -223,6 +225,13 @@ export function repairSpec(input: unknown, options: RepairOptions = {}): RepairR
   const style = { ...repairedStyle, theme: decision.theme };
   const characters = repairCharacters(input['characters'], r);
   const scenes = repairScenes(input['scenes'], characters, video, r);
+  const theme = getTheme(style.theme);
+  for (const [index, scene] of scenes.entries()) {
+    if (isThemeTransition(scene.transition) && !theme.transitions.includes(scene.transition)) {
+      r.fatal('THEME_TRANSITION_UNSUPPORTED', `scenes[${index}].transition`,
+        `主题 ${theme.id} 的转场 ${scene.transition} 不受支持。允许的主题转场: ${theme.transitions.join(' | ')}`);
+    }
+  }
   const captions = repairCaptions(input['captions'], r);
   const audio = repairAudio(input['audio'], video, scenes, r);
 
@@ -391,15 +400,17 @@ function repairStyle(raw: unknown, r: Repairer): VideoSpec['style'] {
     r.add({ severity: 'SAFE_REPAIR', code: 'NOT_AN_OBJECT', path: 'style', message: '应为对象，已使用默认值', from: raw });
   }
   const o = isPlainObject(raw) ? raw : {};
-  r.stripUnknown(o, ['theme', 'preset', 'palette', 'paper', 'line'], 'style');
+  r.stripUnknown(o, ['theme', 'preset', 'palette', 'paper', 'line', 'vignette'], 'style');
+  const theme = r.enumValue(o['theme'], THEME_IDS, d.theme, 'style.theme');
 
   // 缺整个 style 不记为问题——它本来就有默认值（§11：残缺也要能出片）
   return {
-    theme: r.enumValue(o['theme'], THEME_IDS, d.theme, 'style.theme'),
+    theme,
     preset: r.enumValue(o['preset'], STYLE_PRESETS, d.preset, 'style.preset'),
     palette: r.enumValue(o['palette'], PALETTES, d.palette, 'style.palette'),
     paper: r.enumValue(o['paper'], PAPER_KINDS, d.paper, 'style.paper'),
     line: r.enumValue(o['line'], LINE_STYLES, d.line, 'style.line'),
+    ...(o['vignette'] !== undefined ? { vignette: r.numberValue(o['vignette'], 0, 1, getTheme(theme).treatments.vignette, 'style.vignette') } : {}),
   };
 }
 

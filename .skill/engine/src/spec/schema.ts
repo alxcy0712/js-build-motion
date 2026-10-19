@@ -118,6 +118,7 @@ export const VIDEO_SPEC_SCHEMA: Record<string, unknown> = {
         palette: enumSchema(PALETTES),
         paper: enumSchema(PAPER_KINDS),
         line: enumSchema(LINE_STYLES),
+        vignette: { type: 'number', minimum: 0, maximum: 1 },
       },
     },
 

@@ -1,5 +1,5 @@
 {
-  "packageId": "f766358929b9008750d82d1c4cb66d88d55e584b06f7651914378b9b5be61969",
+  "packageId": "1f701a3ace2379571cb1917a4ef51d3473abe869f200dd71dc59129f389a8cf0",
   "version": "0.2",
   "engineVersion": "0.1.0",
   "platform": "darwin",
@@ -73,7 +73,7 @@
     },
     {
       "path": "references/captions-and-shots.md",
-      "sha256": "394fe81181ea5c39dde15fe1cb7c28c782b52fac03c084e83a3bf3a0de2ecc21"
+      "sha256": "236067e6af8102bac56da0cd9e455779e0941552e88295d3673112cf07865d45"
     },
     {
       "path": "references/cinematography.md",
@@ -93,7 +93,7 @@
     },
     {
       "path": "references/drawing.md",
-      "sha256": "b65eed80e7a3266473e7d6a446402deb8cab4d860f2e34996b88e38c8fd1d9fd"
+      "sha256": "cbc8100479018db308d52f89761e9f978eb1ecd99ab881a82ffd6819378a95d7"
     },
     {
       "path": "references/editing-element-catalogue.md",
@@ -145,7 +145,7 @@
     },
     {
       "path": "references/styles.md",
-      "sha256": "e7c5ae177d4e0bc0f9ada933b163e807f0901657355c0a87cecf7ec31b3dcfb7"
+      "sha256": "3ead1dfeb4dd6790af1b2c549478b653379e242751965d09f96d94781feb8691"
     },
     {
       "path": "references/vertical-framing.md",
@@ -258,8 +258,44 @@
       "sha256": "b9516c14d6a02e2adf5a4214c52eef28b4dcc2276a50b1562c06e0164a613073"
     },
     {
+      "path": "assets/fonts/GeistMono-Variable.ttf",
+      "sha256": "d00e590b8eb3a59acc329b2d044fd143ae935090b7da33199ebee27cc7de8196"
+    },
+    {
+      "path": "assets/fonts/Inter-Variable.ttf",
+      "sha256": "29160a80ff49ddcab2c97711247e08b1fab27a484a329ce8b813d820dc559031"
+    },
+    {
+      "path": "assets/fonts/InterTight-Variable.ttf",
+      "sha256": "b81b73dcb64df3c230cabade7df6c5773bf863233f24c9ee51087519f1f88b6f"
+    },
+    {
       "path": "assets/fonts/LXGWWenKai-Regular.ttf",
       "sha256": "39ad71264b588165b469e35e6afb162a378dacd1f95348160240ba9038ac3009"
+    },
+    {
+      "path": "assets/fonts/NotoSansCJKsc-VF.otf",
+      "sha256": "2745e9681cb9d8a5c8901b62c9e1bd98c9c774365fc3b84dd467621013b51cd3"
+    },
+    {
+      "path": "assets/fonts/OFL-GeistMono.txt",
+      "sha256": "1781d2806a07d91c4edf4740b88449fab7d0eadad53f7c351b94cd4d4eb8c00f"
+    },
+    {
+      "path": "assets/fonts/OFL-Inter.txt",
+      "sha256": "5b9321a4298cfeb6b34354164a1c3afc3db114569984c502b9b35d988fd58c57"
+    },
+    {
+      "path": "assets/fonts/OFL-InterTight.txt",
+      "sha256": "50240ab035cf1b6b3307940235481d515c4b6de3ab1fa843dbe59e7892cb9d58"
+    },
+    {
+      "path": "assets/fonts/OFL-NotoSansCJK.txt",
+      "sha256": "6a73f9541c2de74158c0e7cf6b0a58ef774f5a780bf191f2d7ec9cc53efe2bf2"
+    },
+    {
+      "path": "assets/fonts/OFL.txt",
+      "sha256": "1a25e35da1031c6c3436fde545bb9cb5aca954e9873afe510c834b8b79bd21a0"
     },
     {
       "path": "assets/ocr/LICENSE",
@@ -5431,7 +5467,7 @@
     },
     {
       "path": "src/cli/index.ts",
-      "sha256": "52e42e3b95a58809830c9a74834ae0d8976a0a564badafbcfe08c2bdc46c60cd"
+      "sha256": "93a01d579173f385ac3d19e10294c9871bfcc60b576ec0421d000c69a94d45c8"
     },
     {
       "path": "src/cli/production.ts",
@@ -5563,15 +5599,15 @@
     },
     {
       "path": "src/pipeline/spec-renderer.ts",
-      "sha256": "340dcac12b24922cabc6af17a763bbce092aefd6b68a50f9f7f2689fa0ce6925"
+      "sha256": "c75a4ff9342da77075170607acc79d7fa0a464480d82eb32b260f16f2a9eb66a"
     },
     {
       "path": "src/pipeline/theme-transitions.ts",
-      "sha256": "963b276f4746a36786b2b7c36ba7030b60ab41c80d7a5fb62585a5c5899c03be"
+      "sha256": "f8d73745d6aabfdeb166a2c7a1fc13cee076caac434f59fec521bd633a48b1e5"
     },
     {
       "path": "src/pipeline/theme-treatments.ts",
-      "sha256": "9f37f40def2957fd638fa14cbcb796f35ba88ebad8545dbafbc88a565a564ce7"
+      "sha256": "4deefe646e5a0f7f04d1197eb5db463c64bb10d8be446e65538dafa01788d75f"
     },
     {
       "path": "src/ports/assets.ts",
@@ -5607,7 +5643,7 @@
     },
     {
       "path": "src/project/brief.ts",
-      "sha256": "9367c34bc874d152d21299aaaef734f56deb3d1758963aaba66ee5b172b4521d"
+      "sha256": "113018cc81bd1008cc34a3d1edb4954c06e0b6160856589b3fe67968e668687a"
     },
     {
       "path": "src/project/catalog.ts",
@@ -5691,7 +5727,7 @@
     },
     {
       "path": "src/project/run-log.ts",
-      "sha256": "4fc1d55ccfa13fb65e51fe7ae9fce60460d3118c8aaca805e933306a14a9e311"
+      "sha256": "ad0096aa883a7939a1100879802f0bbbb54cf7e3335c6ecaa1d9c732ab4f5cc5"
     },
     {
       "path": "src/project/scaffold.ts",
@@ -5739,15 +5775,15 @@
     },
     {
       "path": "src/spec/repair.ts",
-      "sha256": "25c7e149ac91b0319d46a9c2684d703c1300f512ab658584efbbccb446472df2"
+      "sha256": "701c67fab36042f832930862355b9a670e34439fdc377f7ba445e02bd8d182b9"
     },
     {
       "path": "src/spec/schema.ts",
-      "sha256": "f156b7184595ec0ee9c98813dc1c98a5232453cd63e52f6161c8b31f7a5d0521"
+      "sha256": "6deda636b6d034c0463350a8bc703637d26f49cd7c0bd8b32fda1cff1adfd062"
     },
     {
       "path": "src/spec/types.ts",
-      "sha256": "330ecfb9539503baa1987e6b06d9c8bb21e45451c1b45662e4c972d11a34f616"
+      "sha256": "3dff8c7ed28fe6ed2bd503d43721af8672e70dc17a90ae7b3daa476788d0b120"
     },
     {
       "path": "src/spec/validate.ts",
@@ -5755,7 +5791,7 @@
     },
     {
       "path": "src/themes/README.md",
-      "sha256": "2c99e05c43c04d5e459aeded57a59a5b4627b9a40522d1590f17b28473091f6f"
+      "sha256": "a0578a27e0f3e5ccecbbc7182b273c98f36a44fd374c232e9621d45486d9ba25"
     },
     {
       "path": "src/themes/brand.ts",
@@ -5763,7 +5799,7 @@
     },
     {
       "path": "src/themes/fonts.ts",
-      "sha256": "6be7a98a9215400a0ac06989136551b8fa8701e257352d7e1e90967725606308"
+      "sha256": "e9fd38edcd652908d83b5d8d37ce2fbe31c9f56cd17f60905d5d7b73b8ec5283"
     },
     {
       "path": "src/themes/ids.ts",
@@ -5787,15 +5823,15 @@
     },
     {
       "path": "src/themes/shared.ts",
-      "sha256": "fe09beed86adc5ef52cf53266f7e7a848e40e1766bd14887694e75a50d37f03d"
+      "sha256": "bdaeb2f818e3f36837dcab36f3f086a09b5224772ddb8e4d626554383763dd36"
     },
     {
       "path": "src/themes/styles/kinetic.ts",
-      "sha256": "503dca79b6e51041564acea280fb896f6a9eedcb26eb32b88679ac91606267b1"
+      "sha256": "8c91f2305cdecd18d82e69af0945b6586b3e3ff98f087b57c1de47660b9ae56c"
     },
     {
       "path": "src/themes/styles/minimal.ts",
-      "sha256": "3b6a75d7b8cdf15338d614e9f02671686db71903523a51844d7c4996f8759484"
+      "sha256": "adde3852407def00cca0abf2eb78715f76dbbd212ddae5b1884edad30ae74f13"
     },
     {
       "path": "src/themes/text-reveal.ts",
@@ -5803,7 +5839,7 @@
     },
     {
       "path": "src/themes/types.ts",
-      "sha256": "da257d4be0aa9d36cb9b73903802b2f1491b1ae17df46615dbf3845edf9bcfcb"
+      "sha256": "9b27cf60c9e0988989140e75cdfeb9cc7363f302332bda6b251218aebeec1a86"
     },
     {
       "path": "src/themes/validate.ts",
@@ -5929,7 +5965,7 @@
     },
     {
       "path": "brief.test.ts",
-      "sha256": "cf806281533604c12fcd7d5f9a6f603d014abfc0644988f8cee22f0bf7a77a74"
+      "sha256": "37e04751ed6bd9eb22d8a213ed365e0c42d505773b6290a404ef462fbe3153bd"
     },
     {
       "path": "camera-pose.test.ts",
@@ -6197,11 +6233,11 @@
     },
     {
       "path": "run-log.test.ts",
-      "sha256": "e80bc4d37b89e8f622268c43a33a9b6a4b700b54c132685f4a0b429f99c08262"
+      "sha256": "c91e03adc4eebae46cd052816fb90bb3f6e293e222834be0486b868344f578ca"
     },
     {
       "path": "spec.test.ts",
-      "sha256": "bb643ee49b2b4b11c8ee47fd52851c581e8cf51e17784bef40867ffb85f0e77b"
+      "sha256": "ab7715061c2e52170a8a4e1157ffe2fdab7ef4913840ab425a0ec2ccfb490a39"
     },
     {
       "path": "spring.test.ts",
@@ -6209,11 +6245,11 @@
     },
     {
       "path": "theme-pipeline.test.ts",
-      "sha256": "3f768fdd5552b0bf34676b8d16506669501903ae5a3fe9095f49364e4926a4f7"
+      "sha256": "ff3cb7cefe3a9cd2138a010d028f77bff92ef52ebe7d0aab539b0389acd1a869"
     },
     {
       "path": "themes.test.ts",
-      "sha256": "3660faad89e56553965f4636eb2f8916244af9b27241bb35e509341f7c867151"
+      "sha256": "4bf51207cf78c273571b710db9e74714646b7bb50bacd73882a467938a9b4953"
     },
     {
       "path": "tts-helper.test.ts",

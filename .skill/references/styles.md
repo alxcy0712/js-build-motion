@@ -4,19 +4,26 @@
 
 | theme | 名称 | 关键 token | 适用 |
 |---|---|---|---|
-| `minimal`（默认） | 极简 | 底 #000、字 #F5F5F7、品牌黄 #FFC712；Inter + 中文字体栈；竖屏 hero 132；文字弹簧 k100 c25（零过冲）；进场 0.9s、holdMin 1.2s | 机制解释、证据对照、观点表达、品牌片尾 |
-| `kinetic` | 动感 | 底 #05060A、品牌黄 #FFC712、默认第二色蓝紫 #5B3DF5；Inter Tight + 中文字体栈；竖屏 hero 168；文字进场 k380 c28（过冲 ≤4%）；进场 0.45s、holdMin 0.6s | 状态变化、操作结果、效率对比、产品与机制揭示 |
+| `minimal`（默认） | 极简 | 底 #000、字 #F5F5F7、品牌黄 #FFC712；Inter + Noto Sans CJK SC；竖屏 hero 132；文字弹簧 k100 c25（零过冲）；进场 0.9s、holdMin 1.2s | 机制解释、证据对照、观点表达、品牌片尾 |
+| `kinetic` | 动感 | 底 #05060A、品牌黄 #FFC712、默认第二色蓝紫 #5B3DF5；Inter Tight + Noto Sans CJK SC；竖屏 hero 168；文字进场 k380 c28（过冲 ≤4%）；进场 0.45s、holdMin 0.6s | 状态变化、操作结果、效率对比、产品与机制揭示 |
 
 | 运行时预设参数 | minimal | kinetic |
 |---|---|---|
 | 可选推镜 `treatments.drift` | `scaleTo: 1.03, seconds: 5` | `scaleTo: 1.06, seconds: 3` |
 | 颗粒 `treatments.grain` | `opacity: 0.03, fps: 24` | `opacity: 0.04, fps: 30` |
+| 暗角 `treatments.vignette` | 0.55 | 0.6 |
 | 辉光 `treatments.glow` | `blur: 120, opacity: 0.3`，目标 accent / subject | `blur: 60, opacity: 0.6`，目标 accent / text |
 | 常规转场 `durations.transition` | 0.7s | 0.4s |
 | 甩切 `durations.whip` | 沿用常规转场参数；默认转场列表采用其他类型 | 0.35s；当前管线将 whipPan / glitchCut 的实际时长上限设为 0.3s |
 | 节拍 `bpm` | 96 | 128 |
 
 参数权威来源为运行时的 `src/themes/styles/minimal.ts`、`src/themes/styles/kinetic.ts`；转场时长还经过 `src/pipeline/theme-transitions.ts` 计算，微运动轨迹由 `src/themes/liveness.ts` 求值。`scaleTo` 与 `seconds` 定义缓动推进的尺度和时间参数，实际逐帧值按该轨迹计算。表格随代码更新；采用值和当前编码的实际效果分别记录。
+
+本片可用 `style: { "theme": "kinetic", "vignette": 0 }` 关闭暗角，或在 0–1 内调低强度；省略 `vignette` 时使用表中默认值。颗粒继续按主题参数绘制。暗角开启时在最终 RGBA8 合成上加入确定性的 ±1 色阶中性噪声，分散深色渐变的量化色带。
+
+字幕与主题中文统一使用随运行时保存的 Noto Sans CJK SC；Inter、Inter Tight 与 Geist Mono 同样采用内嵌原版文件。恢复来源与摘要见根 README 的字体归因。缺少主题字体时渲染报 `FONT_NOT_FOUND`；`run.json` 的 `facts.fonts` 保存注册文件与完整 SHA-256，`facts.fontUsage` 保存实际文字绘制命中的 Skia 字族。
+
+主题转场按最终生效的主题在 validate 阶段校验，越界值报 `THEME_TRANSITION_UNSUPPORTED` 并给出允许列表。`riseFade` 前半段淡出旧层、后半段淡入新层，共享切点的无字空档最多一帧；位移保留旧层上移 1.5%、新层从下方 3% 升起。
 
 字号、停留、BPM 和转场列表提供预设起点。镜长按实测台词、动作与读时决定，主体和关系承担讲解；各类风格的强度选择和共同验收按[动效语言与制作标准](motion-language.md)。
 

@@ -149,6 +149,8 @@ export interface StyleSettings {
   palette: Palette;
   paper: PaperKind;
   line: LineStyle;
+  /** 暗角强度 [0,1]；0 关闭，省略时使用主题默认值。 */
+  vignette?: number;
 }
 
 export interface CharacterDefinition {

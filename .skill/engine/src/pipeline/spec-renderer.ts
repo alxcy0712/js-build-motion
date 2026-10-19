@@ -2,7 +2,7 @@ import { EngineError, ERROR_CODES } from '../utils/errors.ts';
 import { Canvas, FontLibrary, type CanvasRenderingContext2D } from 'skia-canvas';
 import { join } from 'node:path';
 import { getTheme } from '../themes/registry.ts';
-import { registerThemeFonts } from '../themes/fonts.ts';
+import { registerThemeFonts, trackFontUsage, type FontUsage } from '../themes/fonts.ts';
 import { drawThemeTransition, isThemeTransition, themeTransitionDuration } from './theme-transitions.ts';
 import { applyMicroMotion, drawTreatments } from './theme-treatments.ts';
 import { PROJECT_ROOT } from '../utils/env.ts';
@@ -101,20 +101,24 @@ export function resolveCharacter(
  *
  * 返回的 Renderer 可以直接交给 `renderVideo()` 走 rawvideo → FFmpeg 管道。
  */
-export function createSpecRenderer(options: SpecRendererOptions): Renderer & { toPng(): Buffer; textBounds(): readonly TextDraw[] } {
+export function createSpecRenderer(options: SpecRendererOptions): Renderer & { toPng(): Buffer; textBounds(): readonly TextDraw[]; fontUsage(): FontUsage } {
   const { spec, onWarning } = options;
   const width = options.width ?? spec.video.width;
   const height = options.height ?? spec.video.height;
   const palette = getPalette(spec.style.palette);
   // 风格层：spec.style.theme 已在 repair 阶段按品牌锁解析。
-  const theme = getTheme(spec.style.theme);
+  const baseTheme = getTheme(spec.style.theme);
+  const theme = spec.style.vignette === undefined ? baseTheme
+    : { ...baseTheme, treatments: { ...baseTheme.treatments, vignette: spec.style.vignette } };
   // 旧环境（rain_window / motion_stage）保持原有绘制与回归基线；风格质感作用于 theme_stage 镜头。
   const themedScene = (shot: ResolvedScene): boolean => shot.environment === 'theme_stage';
   const themed = spec.scenes.some(themedScene);
   const themeFonts = registerThemeFonts(theme, FontLibrary, join(PROJECT_ROOT, 'assets', 'fonts'));
+  for (const font of themeFonts) if (!font.registered) {
+    throw new EngineError(ERROR_CODES.FONT_NOT_FOUND, `主题 ${theme.id} 需要内嵌字体 ${font.family}，请按 README 恢复 assets/fonts/ 中的固定文件`);
+  }
 
-  // 字幕：项目字体必须显式注册（§26）。字体缺失时 registerProjectFonts 返回未注册，
-  // 此时 resolveFontFamily 会沿兜底链取系统字体，并已在环境自检里报过 FONT_NOT_FOUND。
+  // 原有绘图组件继续显式注册项目字体；字幕使用上面注册的主题中文黑体。
   const fontState = registerProjectFonts();
   if (!fontState.registered) throw new EngineError(ERROR_CODES.FONT_NOT_FOUND, '渲染需要内嵌字体，请检查本片运行时的 assets/fonts/ 字体');
   const captionFontDefault = resolveFontFamily(fontState.registered);
@@ -129,9 +133,7 @@ export function createSpecRenderer(options: SpecRendererOptions): Renderer & { t
     warned.add(key);
     onWarning?.(message);
   };
-  for (const f of themeFonts) if (!f.registered) warnOnce(`font:${f.family}`, `风格 ${theme.id} 的字体 ${f.family} 未找到，将回退`);
   const themeCjkFamily = themeFonts.find((f) => f.registered && /CJK|SC/.test(f.family))?.family;
-  const captionFamily = themed && themeCjkFamily ? themeCjkFamily : null;
 
   // 提前告警未实现的环境（在设计阶段就能看到，而不是渲完才发现是占位）
   for (const scene of spec.scenes) {
@@ -153,7 +155,12 @@ export function createSpecRenderer(options: SpecRendererOptions): Renderer & { t
     } catch (e) { warnOnce(`footage:${scene.id}`, `镜头 ${scene.id} 素材不可用：${(e as Error).message}`); }
   }
 
-  const captionFont = captionFamily ?? captionFontDefault;
+  const captionFont = themeCjkFamily ?? captionFontDefault;
+  const usedFontFamilies = new Set<string>(), fontContexts = new WeakSet<CanvasRenderingContext2D>();
+  const trackFonts = (ctx: CanvasRenderingContext2D): void => {
+    if (fontContexts.has(ctx)) return;
+    trackFontUsage(ctx, usedFontFamilies); fontContexts.add(ctx);
+  };
   const outgoing = new Canvas(width, height);
   const incomingBase = new Canvas(width, height);
   const incoming = new Canvas(width, height);
@@ -164,10 +171,12 @@ export function createSpecRenderer(options: SpecRendererOptions): Renderer & { t
     width,
     height,
     draw: (ctx, rc) => {
+      trackFonts(ctx);
       if (options.trackText) { mainText ??= trackTextBounds(ctx); mainText.reset(); }
       const t = rc.time;
       const { scene, localTime } = resolveScene(spec.scenes, t);
       const drawScene = (context: CanvasRenderingContext2D, shot: ResolvedScene, noText = false): void => {
+        trackFonts(context);
         const shotTime = Math.max(0, Math.min(shot.end - shot.start, t - shot.start));
         const progress = shot.composition
           ? shotTime / Math.max(0.001, shot.end - shot.start)
@@ -383,7 +392,14 @@ export function createSpecRenderer(options: SpecRendererOptions): Renderer & { t
     },
   });
 
-  return Object.assign(renderer, { textBounds: (): readonly TextDraw[] => mainText?.draws ?? [] });
+  return Object.assign(renderer, {
+    textBounds: (): readonly TextDraw[] => mainText?.draws ?? [],
+    fontUsage: (): FontUsage => ({
+      registered: [...themeFonts.filter((font) => font.file).map((font) => ({ family: font.family, absPath: font.file!, registered: font.registered })),
+        { family: fontState.family, absPath: fontState.filePath, registered: fontState.registered }],
+      families: [...usedFontFamilies].sort(),
+    }),
+  });
 }
 
 /** 环境是否为已实现的完整版本（供 CLI 提示） */

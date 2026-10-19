@@ -7,12 +7,12 @@ themes/
   ids.ts          风格 ID 与默认值（minimal）
   brand.ts        账号默认、本片主题快照与旧版配置读取
   types.ts        ThemeTokens 契约
-  shared.ts       共用字体候选文件名（含 macOS 自带的同类字体）、中文字体栈、抖音/小红书安全区
+  shared.ts       主题内嵌字体文件名、固定中文字体栈、抖音/小红书安全区
   styles/*.ts     每个风格一份 token
   registry.ts     getTheme(id) / listThemes() / orientationOf()
   validate.ts     token 校验（色值、对比度、字号递减、禁止线性缓动、文字过冲上限、安全区）
   motion.ts       cubicBezier、弹簧过冲/收敛解析
-  fonts.ts        字体注册（按文件名查找：engine/assets/fonts → $JBM_FONT_DIRS → 当前平台系统字体目录）+ 回退检测，严格模式缺字即失败
+  fonts.ts        主题内嵌字体注册、通用候选查找、回退检测与实际绘制字族观测
   text-reveal.ts  统一文字进退场组件 revealState / drawRevealText
 ```
 

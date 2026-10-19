@@ -6,10 +6,15 @@ import { existsSync, readdirSync, statSync } from 'node:fs';
 import { homedir, platform } from 'node:os';
 import { basename, delimiter, isAbsolute, join } from 'node:path';
 import type { ThemeTokens } from './types.ts';
+import type { CanvasRenderingContext2D } from 'skia-canvas';
 
 export interface FontLibraryLike { use(family: string, files: string[]): unknown; has?(family: string): boolean; readonly families?: readonly string[] }
 export interface MeasureCtx { font: string; measureText(s: string): { width: number } }
 export interface FontReport { family: string; file: string | null; registered: boolean }
+export interface FontUsage {
+  registered: { family: string; absPath: string; registered: boolean }[];
+  families: string[];
+}
 
 /** 当前平台的系统字体目录（不存在的目录在扫描时自动跳过）。$JBM_FONT_DIRS 可追加自定义目录，优先于系统目录。 */
 export function systemFontDirs(os: NodeJS.Platform = platform(), env: NodeJS.ProcessEnv = process.env): string[] {
@@ -56,15 +61,27 @@ export function resolveFace(files: readonly string[], fontsDir: string, searchDi
   for (const f of files) { const p = resolveFontFile(f, fontsDir, searchDirs); if (p) return p; }
   return null;
 }
-const registered = new WeakMap<object, Set<string>>();
+const registered = new WeakMap<object, Map<string, string>>();
 export function registerThemeFonts(theme: ThemeTokens, lib: FontLibraryLike, fontsDir: string): FontReport[] {
   return theme.fonts.faces.map((face) => {
-    const file = resolveFace(face.files, fontsDir);
+    const file = resolveFace(face.files, fontsDir, face.bundled ? [] : systemFontDirs());
     // 已注册的字族不重复加载：CJK 字体文件 20MB 级，每个渲染器重复注册会迅速耗尽内存
-    const already = registered.get(lib)?.has(face.family) || lib.families?.includes(face.family);
-    if (file && !already) { lib.use(face.family, [file]); if (!registered.has(lib)) registered.set(lib, new Set()); registered.get(lib)!.add(face.family); }
+    const already = registered.get(lib)?.get(face.family) === file && (lib.has?.(face.family) ?? lib.families?.includes(face.family) ?? true);
+    if (file && !already) { lib.use(face.family, [file]); if (!registered.has(lib)) registered.set(lib, new Map()); registered.get(lib)!.set(face.family, file); }
     return { family: face.family, file, registered: Boolean(file) };
   });
+}
+
+/** 从实际文字绘制的 Skia 字形 run 读取命中字族，包含逐字回退。每个 context 安装一次。 */
+export function trackFontUsage(ctx: CanvasRenderingContext2D, families: Set<string>): void {
+  for (const method of ['fillText', 'strokeText'] as const) {
+    const original = ctx[method].bind(ctx);
+    ctx[method] = (text, x, y, maxWidth) => {
+      original(text, x, y, maxWidth);
+      if (ctx.globalAlpha <= 0 || !String(text).trim()) return;
+      for (const line of ctx.measureText(text, maxWidth).lines) for (const run of line.runs) families.add(run.family);
+    };
+  }
 }
 const MISSING = '__jbm_missing_font__';
 export function detectFallback(ctx: MeasureCtx, family: string, probe: string, size = 64): boolean {

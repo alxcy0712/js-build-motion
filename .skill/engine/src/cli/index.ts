@@ -865,15 +865,7 @@ async function cmdRender(argv: string[]): Promise<number> {
     let runLogPath: string | null = null;
     if (attempt || !values['no-run-log']) {
       runLogPath = runLogPathFor(outPath, project?.dir ?? null);
-      const fonts = envReport.fonts.fileExists
-        ? [
-            {
-              family: envReport.fonts.family,
-              absPath: envReport.fonts.filePath,
-              registered: envReport.fonts.registered,
-            },
-          ]
-        : [];
+      const fontUsage = renderer.fontUsage();
       const facts = buildFacts({
         ...(assets ? { assetUsage: assets.usage(!project?.manifest.drawing && !assetPlan && !locked && !declaredAssets.length &&
           Object.values(providerInfo ?? {}).every(p => ['(none)', 'none', 'procedural'].includes(p))) } : {}),
@@ -908,7 +900,8 @@ async function cmdRender(argv: string[]): Promise<number> {
         providers: providerInfo ?? { tts: '(none)', bgm: '(none)', sfx: '(none)' },
         ...(renderProject ? { projectDir: renderProject.dir } : {}),
         declaredAssets,
-        fonts,
+        fonts: fontUsage.registered,
+        fontUsage: fontUsage.families,
         captions: {
           insideFrame: !values['no-captions'] && spec.captions.enabled,
           cues: cues.length,
