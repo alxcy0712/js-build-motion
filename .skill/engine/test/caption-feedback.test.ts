@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { Canvas } from 'skia-canvas';
+import { Canvas, type CanvasRenderingContext2D } from 'skia-canvas';
 import { segmentCaption } from '../src/captions/segment.ts';
 import { buildCaptionTrack } from '../src/captions/track.ts';
 import { toSrt, toVtt } from '../src/captions/export.ts';
@@ -112,7 +112,7 @@ test('三种字幕样式共用默认中轴线，显式底距保留位置覆盖',
 });
 
 for (const theme of ['minimal', 'kinetic'] as const) {
-  test(`${theme}: 静镜锚点固定，底部像素跨时间稳定，局部语义动作保留`, () => {
+  test(`${theme}: 静镜锚点固定，全画幅场景与局部语义动作保留`, () => {
     const spec = validateSpec({ video: { width: 1080, height: 1920, duration: 6, fps: 24, seed: 9 }, style: { theme },
       scenes: [{ start: 0, end: 6, environment: 'theme_stage', cameraMove: 'static' }], captions: { enabled: false } }).spec!;
     const transforms: number[][] = [];
@@ -120,12 +120,35 @@ for (const theme of ['minimal', 'kinetic'] as const) {
       const m = ctx.getTransform(); transforms.push([m.a, m.b, m.c, m.d, m.e, m.f]);
       ctx.fillStyle = '#46525e'; ctx.fillRect(0, 0, 270, 480);
       ctx.fillStyle = '#ffc712'; ctx.fillRect(50, 120, 20 + sceneTime * 12, 4);
+      ctx.fillStyle = '#ee4422'; ctx.fillRect(120, 430, 30, 20);
     } });
     try {
       const frames = [1, 2.5, 4].map(time => Buffer.from(renderer.renderFrame(makeFrameContext({ frameIndex: time * 24, totalFrames: 144, fps: 24, width: 270, height: 480, seed: 9 })).data));
       assert.deepEqual(transforms, transforms.map(() => [1, 0, 0, 1, 0, 0]));
-      for (const frame of frames.slice(1)) assert.deepEqual(frame.subarray(350 * 270 * 4), frames[0]!.subarray(350 * 270 * 4));
+      for (const frame of frames) {
+        const i = (440 * 270 + 135) * 4;
+        assert.ok(frame[i]! > 100 && frame[i]! > frame[i + 1]! * 2, '底部场景标记保持可见');
+      }
       assert.notDeepEqual(frames[0], frames[2]);
     } finally { renderer.dispose(); }
+  });
+
+  test(`${theme}: 普通字幕叠加保留框外场景与字幕空档，淡出覆盖全画幅`, () => {
+    const spec = validateSpec({ video: { width: 1080, height: 1920, duration: 6, fps: 24, seed: 9 }, style: { theme },
+      scenes: [{ start: 0, end: 6, environment: 'theme_stage', cameraMove: 'static', transition: 'fade' }],
+      captions: { enabled: true, style: 'boxed', mode: 'sentence' } }).spec!;
+    const options = { spec, width: 270, height: 480, captionCues: [{ index: 0, text: '普通字幕', start: 1, end: 2 }],
+      drawScene: ({ ctx }: { ctx: CanvasRenderingContext2D }) => { ctx.fillStyle = '#46525e'; ctx.fillRect(0, 0, 270, 480); } };
+    const withCaptions = createSpecRenderer(options), withoutCaptions = createSpecRenderer({ ...options, captions: false });
+    const frame = (renderer: typeof withCaptions, time: number) => Buffer.from(renderer.renderFrame(makeFrameContext({ frameIndex: time * 24, totalFrames: 144, fps: 24, width: 270, height: 480, seed: 9 })).data);
+    try {
+      const captioned = frame(withCaptions, 1.5), plain = frame(withoutCaptions, 1.5);
+      assert.notDeepEqual(captioned, plain);
+      assert.deepEqual(captioned.subarray(410 * 270 * 4), plain.subarray(410 * 270 * 4));
+      assert.ok(captioned[(440 * 270 + 135) * 4]! > 30, '字幕框下方保留场景');
+      assert.deepEqual(frame(withCaptions, 3), frame(withoutCaptions, 3));
+      const faded = frame(withCaptions, 0);
+      for (let i = 0; i < faded.length; i += 4) assert.equal(faded[i]! + faded[i + 1]! + faded[i + 2]!, 0);
+    } finally { withCaptions.dispose(); withoutCaptions.dispose(); }
   });
 }

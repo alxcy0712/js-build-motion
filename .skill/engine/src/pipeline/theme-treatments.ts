@@ -1,5 +1,5 @@
 /**
- * 风格质感：可选镜头微运动、扫光、暗角、颗粒。静镜与底部静色带由管线约束。
+ * 风格质感：可选镜头微运动、扫光、暗角、颗粒。静镜相机由管线约束。
  * 只作用于 theme_stage 镜头；旧环境（rain_window / motion_stage）不经过这里，保持原水彩外观。
  */
 import { Canvas, type CanvasRenderingContext2D } from 'skia-canvas';
@@ -27,7 +27,7 @@ function grainTiles(seed: number): Canvas[] {
   grainCache.set(key, tiles); return tiles;
 }
 
-/** 在场景后、字幕前调用；调用方裁切到固定底色带上方。 */
+/** 在完整场景后、字幕前调用。 */
 export function drawTreatments(ctx: CanvasRenderingContext2D, theme: ThemeTokens, time: number, sceneTime: number, width: number, height: number, seed: number): void {
   const L = theme.liveness, T = theme.treatments;
   const m = microMotionAt(theme, sceneTime);

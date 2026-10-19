@@ -1,5 +1,5 @@
 {
-  "packageId": "5784be083164409c465366bb0b3af6dfac68fb94afc3da96a973f8fec6672f21",
+  "packageId": "f766358929b9008750d82d1c4cb66d88d55e584b06f7651914378b9b5be61969",
   "version": "0.2",
   "engineVersion": "0.1.0",
   "platform": "darwin",
@@ -73,11 +73,11 @@
     },
     {
       "path": "references/captions-and-shots.md",
-      "sha256": "8f303dc40436de2cf3a255626d491c8cd40d6bb1600b97561c3d282ee251355d"
+      "sha256": "394fe81181ea5c39dde15fe1cb7c28c782b52fac03c084e83a3bf3a0de2ecc21"
     },
     {
       "path": "references/cinematography.md",
-      "sha256": "892cf3b13e7587ae9c20b4ef1ce1a77a90ed755533e4ca7f472544b736fe53cc"
+      "sha256": "e264b4ee2386e5f8f2a40d69b8325029434f1271a2d637659a8d83c8938b9131"
     },
     {
       "path": "references/design-learning.md",
@@ -133,7 +133,7 @@
     },
     {
       "path": "references/quality.md",
-      "sha256": "1e818e6acb2ef047d434c81495c7d2ebe197a84d5401115b5bd8b6811db7be9b"
+      "sha256": "9098c9920cc8b2bdbe8d38f45d460dc8358955cc54cf48230456bda4db63cfc5"
     },
     {
       "path": "references/reference-geometry.md",
@@ -145,7 +145,7 @@
     },
     {
       "path": "references/styles.md",
-      "sha256": "e1b6c1152147cf91f762982eacbc632941c1b4bd7ad193fc8dcd2c4cf5149699"
+      "sha256": "e7c5ae177d4e0bc0f9ada933b163e807f0901657355c0a87cecf7ec31b3dcfb7"
     },
     {
       "path": "references/vertical-framing.md",
@@ -5407,7 +5407,7 @@
     },
     {
       "path": "src/captions/render.ts",
-      "sha256": "f1fbf8e0d39f4340f967f69bc003be4e68777192bf1bc621613f88eb76949d68"
+      "sha256": "99e1b79260bc8e455afa5aea1c95bf058b042f0c20d7111097e7dd9423e6887e"
     },
     {
       "path": "src/captions/segment.ts",
@@ -5563,7 +5563,7 @@
     },
     {
       "path": "src/pipeline/spec-renderer.ts",
-      "sha256": "bbeb98c93eded2746211e29d433ed654427e4687880912137b8eeb7d2a6adbc0"
+      "sha256": "340dcac12b24922cabc6af17a763bbce092aefd6b68a50f9f7f2689fa0ce6925"
     },
     {
       "path": "src/pipeline/theme-transitions.ts",
@@ -5571,7 +5571,7 @@
     },
     {
       "path": "src/pipeline/theme-treatments.ts",
-      "sha256": "69441134cff28f2b6d47c074343e69925729c5d84b2cca4ccd81e5ea27c68df0"
+      "sha256": "9f37f40def2957fd638fa14cbcb796f35ba88ebad8545dbafbc88a565a564ce7"
     },
     {
       "path": "src/ports/assets.ts",
@@ -5937,7 +5937,7 @@
     },
     {
       "path": "caption-feedback.test.ts",
-      "sha256": "98caefab1fbf810b7c2045672ffe4b2f938778e73bbda76784f2d4965572405e"
+      "sha256": "515e346ab9757b7229e35509ff8031c66f857a7408e334db20cd01540b7cee50"
     },
     {
       "path": "captions.test.ts",

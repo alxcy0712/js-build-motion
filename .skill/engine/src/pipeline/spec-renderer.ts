@@ -30,7 +30,7 @@ import {
 } from '../drawing/scenes/rain-window.ts';
 import { getPalette } from '../drawing/styles/palette.ts';
 import { buildCaptionTrack, type CaptionCue, type MeasuredNarration } from '../captions/track.ts';
-import { captionGeometry, drawCaptions } from '../captions/render.ts';
+import { drawCaptions } from '../captions/render.ts';
 import { hashString, mulberry32 } from '../animation/random.ts';
 import { registerProjectFonts, resolveFontFamily } from '../utils/env.ts';
 import { trackTextBounds, type TextDraw } from '../drawing/primitives/text-bounds.ts';
@@ -154,12 +154,6 @@ export function createSpecRenderer(options: SpecRendererOptions): Renderer & { t
   }
 
   const captionFont = captionFamily ?? captionFontDefault;
-  // 全片固定底色带覆盖所有字幕外框；条目切换与空档沿用同一高度。
-  const measureContext = new Canvas(width, height).getContext('2d');
-  const footerTop = Math.min(
-    height - theme.safeArea[height >= width ? 'vertical' : 'horizontal'].bottom * width / (height >= width ? 1080 : 1920),
-    ...(captionsEnabled ? cueTrack.map(cue => captionGeometry({ ctx: measureContext, width, height, fontFamily: captionFont, layout: spec.captions, style: spec.captions.style }, cue).outerY) : []),
-  );
   const outgoing = new Canvas(width, height);
   const incomingBase = new Canvas(width, height);
   const incoming = new Canvas(width, height);
@@ -345,19 +339,13 @@ export function createSpecRenderer(options: SpecRendererOptions): Renderer & { t
         }
       } else drawScene(ctx, scene);
 
-      // 主题质感限制在静色带上方；字幕最后绘制，保持底板与文字的颜色稳定。
+      // 主题质感作用于完整场景，字幕随后叠加。
       const themedFrame = themedScene(scene) || (previous && themedScene(previous) &&
         (themeTransition ? localTime < themeMixDur : blending && mix < 1));
       if (themedFrame) {
-        ctx.save();
-        ctx.beginPath(); ctx.rect(0, 0, width, Math.max(0, footerTop)); ctx.clip();
         drawTreatments(ctx, theme, t, localTime, width, height, spec.video.seed);
-        ctx.restore();
-        ctx.fillStyle = theme.palette.bg;
-        ctx.fillRect(0, Math.floor(footerTop), width, height - Math.floor(footerTop));
       }
       // 字幕：画在场景之后、淡出之前。
-      // 代码主题镜头的淡出同样避开底部静色带与字幕。
       if (captionsEnabled && cueTrack.length > 0) {
         drawCaptions({
           ctx,
@@ -388,7 +376,7 @@ export function createSpecRenderer(options: SpecRendererOptions): Renderer & { t
           ctx.save();
           ctx.globalAlpha = Math.min(1, Math.max(0, fade));
           ctx.fillStyle = '#000000';
-          ctx.fillRect(0, 0, width, themedFrame ? Math.max(0, Math.floor(footerTop)) : height);
+          ctx.fillRect(0, 0, width, height);
           ctx.restore();
         }
       }

@@ -365,7 +365,7 @@ export interface DrawCaptionsOptions {
   readonly themeColors?: { readonly text: string; readonly active: string; readonly plate: string; readonly secondary: string };
 }
 
-/** 同一几何用于绘制、底部静色区与尺寸验收，h 为含内边距的外框总高。 */
+/** 同一几何用于字幕绘制与尺寸验收，h 为含内边距的外框总高。 */
 export function captionGeometry(o: Pick<DrawCaptionsOptions, 'ctx' | 'width' | 'height' | 'layout' | 'fontFamily'> & { style?: CaptionStyle }, cue: CaptionCue) {
   const ctx = o.ctx;
   ctx.save();
