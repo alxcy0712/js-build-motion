@@ -23,7 +23,8 @@ function fixture(fps = 24): ProductionBundle {
       { shotId: 'shot-detail', startFrame: 4 * fps, endFrame: 8 * fps, composition: visual('event-shadow'), camera: 'close', cameraMove: 'static', transition: 'cut' }],
     clips: [], takes: [{ takeId: 'take-voice', kind: 'voice', lineId: 'line-open',
       file: { path: 'assets/derived/audio/take-voice/source.wav', bytes: 960044, sha256: 'a'.repeat(64) }, sampleRate: 48000, durationSamples: 240000,
-      words: [{ pointId: 'word-open', text: bundle.script!.lines[0]!.text, startSample: 1000, endSample: 240000, basis: 'observed' }], beats: [] }],
+      words: [{ pointId: 'word-open', text: '走进公园', startSample: 1000, endSample: 120000, basis: 'observed' },
+        { pointId: 'word-conclusion', text: '让脚步慢一点', startSample: 130000, endSample: 240000, basis: 'observed' }], beats: [] }],
     placements: [{ placementId: 'place-voice', takeId: 'take-voice', startSample: 48000, inSample: 0, outSample: 240000, gain: 1, mute: false }],
     events: [{ eventId: 'event-arrive', shotId: 'shot-open', prepareFrame: 1, visibleFrame: visible, peakFrame: visible + 3,
       completeFrame: visible + 6, readingEndFrame: 4 * fps - 1,
@@ -55,6 +56,17 @@ test('observed voice and word anchors share the 48k origin at 24/25/30fps across
     assert.equal(productionHash(bundle), before);
     assert.deepEqual(validateSpec(JSON.parse(JSON.stringify(result.spec))).spec, result.spec);
   }
+});
+
+test('whole-line observed span retains its event anchor and exposes estimated clause timing', () => {
+  const bundle = fixture();
+  bundle.timeline!.takes[0]!.words = [{ ...bundle.timeline!.takes[0]!.words[0]!, text: bundle.script!.lines[0]!.text, endSample: 240000 }];
+  const result = compileProductionTimeline(bundle);
+  assert.ok(result.spec);
+  assert.equal(result.events[0]!.anchorSample, 49000);
+  assert.equal(result.captionCues.length, 2);
+  assert.ok(result.captionCues.every(cue => cue.timingSource === 'estimated' && cue.words === undefined));
+  assert.ok(result.conflicts.some(conflict => conflict.code === 'CAPTION_TIMING_ESTIMATED' && conflict.severity === 'soft'));
 });
 
 test('event stages drive graphic keyframes and retain unrelated animation channels', () => {

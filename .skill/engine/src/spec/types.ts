@@ -259,11 +259,11 @@ export interface CaptionLayoutSettings {
   translationScale?: number;
   /** 字幕区最大宽度占画幅宽度的比例。 */
   maxWidth?: number;
-  /** 字幕底板下沿距画面底部的比例。 */
+  /** 显式覆盖框底距画面底部的比例；省略时外框中轴线位于画面高度的 77.5%。 */
   bottomInset?: number;
 }
 
-export const CAPTION_LAYOUT_DEFAULTS = { fontScale: 0.052, translationScale: 0.62, maxWidth: 0.84, bottomInset: 0.14 } as const;
+export const CAPTION_LAYOUT_DEFAULTS = { fontScale: 0.052, translationScale: 0.62, maxWidth: 0.84, bottomInset: undefined, centerY: 0.775 } as const;
 
 export interface CaptionSettings extends CaptionLayoutSettings {
   enabled: boolean;

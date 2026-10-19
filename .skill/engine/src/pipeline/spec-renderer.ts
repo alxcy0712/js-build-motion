@@ -30,7 +30,7 @@ import {
 } from '../drawing/scenes/rain-window.ts';
 import { getPalette } from '../drawing/styles/palette.ts';
 import { buildCaptionTrack, type CaptionCue, type MeasuredNarration } from '../captions/track.ts';
-import { drawCaptions } from '../captions/render.ts';
+import { captionGeometry, drawCaptions } from '../captions/render.ts';
 import { hashString, mulberry32 } from '../animation/random.ts';
 import { registerProjectFonts, resolveFontFamily } from '../utils/env.ts';
 import { trackTextBounds, type TextDraw } from '../drawing/primitives/text-bounds.ts';
@@ -154,6 +154,12 @@ export function createSpecRenderer(options: SpecRendererOptions): Renderer & { t
   }
 
   const captionFont = captionFamily ?? captionFontDefault;
+  // 全片固定底色带覆盖所有字幕外框；条目切换与空档沿用同一高度。
+  const measureContext = new Canvas(width, height).getContext('2d');
+  const footerTop = Math.min(
+    height - theme.safeArea[height >= width ? 'vertical' : 'horizontal'].bottom * width / (height >= width ? 1080 : 1920),
+    ...(captionsEnabled ? cueTrack.map(cue => captionGeometry({ ctx: measureContext, width, height, fontFamily: captionFont, layout: spec.captions, style: spec.captions.style }, cue).outerY) : []),
+  );
   const outgoing = new Canvas(width, height);
   const incomingBase = new Canvas(width, height);
   const incoming = new Canvas(width, height);
@@ -187,7 +193,7 @@ export function createSpecRenderer(options: SpecRendererOptions): Renderer & { t
         context.save();
         if (shot.cameraPath) applyCameraPose(context, evaluateCameraPath(shot.cameraPath, shotTime, width, height, theme.easings.camera), width, height);
         else applyCamera(context, shot.composition ? { ...camera, offsetX: camera.offsetX * width / 1080, offsetY: camera.offsetY * height / 1920 } : camera, width, height);
-        if (themedScene(shot)) applyMicroMotion(context, theme, shotTime, width, height);
+        if (themedScene(shot) && shot.cameraMove !== 'static' && !shot.cameraPath) applyMicroMotion(context, theme, shotTime, width, height);
         if (options.drawScene) {
           const result = options.drawScene(sceneCtx, rc) as unknown;
           if (result && typeof (result as Promise<unknown>).then === 'function') {
@@ -339,9 +345,19 @@ export function createSpecRenderer(options: SpecRendererOptions): Renderer & { t
         }
       } else drawScene(ctx, scene);
 
-      // 字幕：画在场景之后、转场之前。
-      // 放在转场之前是有意的——淡入淡出时字幕应该跟着画面一起淡，
-      // 而不是浮在黑幕之上。
+      // 主题质感限制在静色带上方；字幕最后绘制，保持底板与文字的颜色稳定。
+      const themedFrame = themedScene(scene) || (previous && themedScene(previous) &&
+        (themeTransition ? localTime < themeMixDur : blending && mix < 1));
+      if (themedFrame) {
+        ctx.save();
+        ctx.beginPath(); ctx.rect(0, 0, width, Math.max(0, footerTop)); ctx.clip();
+        drawTreatments(ctx, theme, t, localTime, width, height, spec.video.seed);
+        ctx.restore();
+        ctx.fillStyle = theme.palette.bg;
+        ctx.fillRect(0, Math.floor(footerTop), width, height - Math.floor(footerTop));
+      }
+      // 字幕：画在场景之后、淡出之前。
+      // 代码主题镜头的淡出同样避开底部静色带与字幕。
       if (captionsEnabled && cueTrack.length > 0) {
         drawCaptions({
           ctx,
@@ -356,11 +372,8 @@ export function createSpecRenderer(options: SpecRendererOptions): Renderer & { t
           fontFamily: captionFont,
           seed: spec.video.seed,
           ...(themed ? { themeColors: { text: theme.palette.text, active: theme.palette.accent, plate: theme.palette.surface, secondary: theme.palette.textSecondary } } : {}),
-          ...(themed ? { layout: { ...spec.captions, bottomInset: spec.captions.bottomInset ?? theme.safeArea[height >= width ? 'vertical' : 'horizontal'].bottom / (height >= width ? 1920 : 1080) } } : {}),
         });
       }
-      // 风格逐帧质感（扫光/暗角/颗粒）：每帧都画，防止死帧
-      if (themedScene(scene) || (previous && themedScene(previous) && themeTransition && localTime < themeMixDur)) drawTreatments(ctx, theme, t, localTime, width, height, spec.video.seed);
 
       // 场景边界提示：M0 阶段用于确认时间轴切分正确，后续会被真正的转场取代
       if (scene.transition === 'fade') {
@@ -375,7 +388,7 @@ export function createSpecRenderer(options: SpecRendererOptions): Renderer & { t
           ctx.save();
           ctx.globalAlpha = Math.min(1, Math.max(0, fade));
           ctx.fillStyle = '#000000';
-          ctx.fillRect(0, 0, width, height);
+          ctx.fillRect(0, 0, width, themedFrame ? Math.max(0, Math.floor(footerTop)) : height);
           ctx.restore();
         }
       }

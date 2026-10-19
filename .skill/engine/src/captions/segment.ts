@@ -1,9 +1,25 @@
 import type { CaptionCue, CaptionWord } from './track.ts';
 
 const lexical = (text: string): string => text.replace(/[^\p{L}\p{N}]/gu, '').toLowerCase();
-const strongStop = /[。！？!?;；]\s*$/u;
+const clauseStop = /[，。！？!?;；：:,.\n]\s*[”’」』）》】]*\s*$/u;
 interface WordSpan { from: number; to: number; word: CaptionWord }
 interface TextSpan { from: number; to: number }
+
+/** 数值和技术词内部的符号属于词义；句读、引号等包装符号只用于拆句。 */
+function indivisibleSpans(text: string): TextSpan[] {
+  return [...text.matchAll(/(?:[$€¥]?[+\-]?\d(?:[\d.,:/%+\-]*\d)?[A-Za-z%]*|[\p{Script=Han}]+[-_][A-Za-z0-9]+|(?:--?|[@#.]|\.?[/])?[A-Za-z][A-Za-z0-9]*(?:[._:/%+@#'’&=?\-]+[A-Za-z0-9]+)*(?:\+\+|[#/])?)/gu)]
+    .map(match => ({ from: match.index!, to: match.index! + match[0].length }))
+    // 汉字可按字宽断行；带连接符的混合技术词作为完整单元。
+    .filter(span => /[A-Za-z0-9]/u.test(text.slice(span.from, span.to)));
+}
+
+export function captionDisplayText(text: string): string {
+  const protectedSpans = indivisibleSpans(text);
+  return [...text.matchAll(/./gsu)].map(match => {
+    const ch = match[0], at = match.index!;
+    return ch === '、' || !/\p{P}/u.test(ch) || protectedSpans.some(s => at >= s.from && at < s.to) ? ch : '';
+  }).join('').replace(/\s+/gu, ' ').trim();
+}
 
 /** 中文按字宽、Latin 按近似半字宽衡量；真实排版继续由字体测量验收。 */
 export function captionUnits(text: string): number {
@@ -11,6 +27,7 @@ export function captionUnits(text: string): number {
 }
 
 function alignWords(text: string, words: readonly CaptionWord[]): WordSpan[] | null {
+  const technical = indivisibleSpans(text);
   const offsets: number[] = [];
   let canonical = '';
   for (let i = 0; i < text.length;) {
@@ -27,6 +44,10 @@ function alignWords(text: string, words: readonly CaptionWord[]): WordSpan[] | n
     if (!token) continue;
     if (canonical.slice(cursor, cursor + token.length) !== token) return null;
     const from = offsets[cursor]!, last = offsets[cursor + token.length - 1]!;
+    // 供应方将多个小句包进同一个词时，实际小句边界未知，转为估算并交 QA 复核。
+    for (let at = from; at < last; at++) {
+      if (stopAt(text, at) && !technical.some(s => at >= s.from && at < s.to)) return null;
+    }
     spans.push({ from, to:last + String.fromCodePoint(text.codePointAt(last)!).length, word });
     cursor += token.length;
   }
@@ -35,7 +56,7 @@ function alignWords(text: string, words: readonly CaptionWord[]): WordSpan[] | n
 
 function stopAt(text: string, at: number): boolean {
   const ch = text[at]!;
-  if ('，。！？；：、,;!?:.'.includes(ch)) {
+  if ('，。！？；：,;!?:.'.includes(ch)) {
     const before = text[at-1] ?? '', after = text[at+1] ?? '';
     if (/[.,:]/u.test(ch) && /\d/u.test(before) && /\d/u.test(after)) return false;
     if (ch === '.' && /[\p{L}\p{N}]/u.test(before) && /[\p{L}\p{N}]/u.test(after)) return false;
@@ -47,8 +68,7 @@ function stopAt(text: string, at: number): boolean {
 
 /** 跨语言 ID、数值、URL 和已对齐的实测词作为完整单元保留。 */
 function textSpans(text: string, words: readonly WordSpan[] | null, limit: number): {spans: TextSpan[]; boundaries: number[]} {
-  const indivisible = [...text.matchAll(/(?:[$€¥]?\d(?:[\d.,:/%+\-]*\d)?[A-Za-z%]*|[A-Za-z][A-Za-z0-9._:/%+@#'\-]*)/gu)]
-    .map(match => ({from:match.index!,to:match.index!+match[0].length}));
+  const indivisible = indivisibleSpans(text);
   const protectedSpans = [...indivisible, ...(words ?? [])];
   const safe = (at: number): boolean => protectedSpans.every(s => at <= s.from || at >= s.to);
   const boundaries: number[] = [], stops: number[] = [];
@@ -69,7 +89,7 @@ function textSpans(text: string, words: readonly WordSpan[] | null, limit: numbe
     let to = stops.find(end => end > from && end <= ceiling) ?? ceiling;
     // 句尾的引号、括号跟随其所结束的短句，避免独立闪现。
     while (/[”’」』）》】]/u.test(text[to] ?? '') && safe(to+1)) to++;
-    if (text.slice(from,to).trim()) result.push({from,to});
+    if (captionDisplayText(text.slice(from,to))) result.push({from,to});
     from = to;
   }
   return {spans:result,boundaries};
@@ -78,7 +98,8 @@ function textSpans(text: string, words: readonly WordSpan[] | null, limit: numbe
 export function segmentCaption(cue: CaptionCue, limit: number): CaptionCue[] {
   const aligned = cue.words?.length ? alignWords(cue.text,cue.words) : null;
   // 完整译文需要人工提供语义对应的分句，保留已有的双语对应关系。
-  if (cue.translation) return [{...cue,timingSource:aligned?'words':'estimated',words:aligned?cue.words:undefined}];
+  if (cue.translation) return [{...cue,text:captionDisplayText(cue.text),translation:captionDisplayText(cue.translation),
+    timingSource:aligned?'words':'estimated',words:aligned?displayWords(cue.text,aligned):undefined}];
   const {spans,boundaries} = textSpans(cue.text,aligned,limit);
   const weight = Math.max(1,captionUnits(cue.text));
   const timeFor = (span: TextSpan): {start: number; end: number} => {
@@ -91,11 +112,11 @@ export function segmentCaption(cue: CaptionCue, limit: number): CaptionCue[] {
     const span = spans[i]!, timing = timeFor(span), text = cue.text.slice(span.from,span.to);
     if (timing.end-timing.start >= .8 && captionUnits(text) >= 4) continue;
     const next = spans[i+1], previous = spans[i-1];
-    if (next && !strongStop.test(text) && captionUnits(cue.text.slice(span.from,next.to)) <= limit) {
+    if (next && !clauseStop.test(text) && captionUnits(cue.text.slice(span.from,next.to)) <= limit) {
       next.from = span.from; spans.splice(i--,1);
-    } else if (previous && !strongStop.test(cue.text.slice(previous.from,previous.to)) && captionUnits(cue.text.slice(previous.from,span.to)) <= limit) {
+    } else if (previous && !clauseStop.test(cue.text.slice(previous.from,previous.to)) && captionUnits(cue.text.slice(previous.from,span.to)) <= limit) {
       previous.to = span.to; spans.splice(i--,1);
-    } else if (previous && !strongStop.test(cue.text.slice(previous.from,previous.to))) {
+    } else if (previous && !clauseStop.test(cue.text.slice(previous.from,previous.to))) {
       // 长句尾部的孤词向前借一个完整词组，保留字宽预算与实测边界。
       const cut = boundaries.filter(to=>to>previous.from&&to<previous.to).reverse().find(to=>{
         const tail={from:to,to:span.to},tailTiming=timeFor(tail);
@@ -107,11 +128,19 @@ export function segmentCaption(cue: CaptionCue, limit: number): CaptionCue[] {
   }
   const result = spans.map((span,i): CaptionCue => {
     const timing = timeFor(span), entries = aligned?.filter(w => w.from >= span.from && w.to <= span.to);
-    return {...cue,text:cue.text.slice(span.from,span.to).trim(),
+    return {...cue,text:captionDisplayText(cue.text.slice(span.from,span.to)),
       start:i===0?cue.start:Math.max(cue.start,timing.start-(aligned ? .06 : 0)),
       end:i===spans.length-1?cue.end:Math.min(cue.end,timing.end+(aligned ? .15 : 0)),
-      words:entries?.length ? entries.map(w=>w.word) : undefined,
+      words:entries?.length ? displayWords(cue.text,entries) : undefined,
       timingSource:aligned?'words':'estimated'};
   });
   return result.map((part,i)=>({...part,end:Math.min(part.end,result[i+1]?.start ?? cue.end)}));
+}
+
+function displayWords(text: string, entries: readonly WordSpan[]): CaptionWord[] {
+  const technical = indivisibleSpans(text);
+  return entries.map(({from,to,word}) => {
+    const token = technical.find(span => span.from <= from && span.to >= to && lexical(text.slice(span.from,span.to)) === lexical(word.text));
+    return {...word,text:captionDisplayText(text.slice(token?.from ?? from,token?.to ?? to))};
+  });
 }

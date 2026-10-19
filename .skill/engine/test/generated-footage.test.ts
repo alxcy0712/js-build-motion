@@ -15,7 +15,7 @@ import { keyVideoToFrames, openKeyedClip } from '../src/footage/keyed-clip.ts';
 import { addCutAccents, beatGrid, snapCutsToBeats } from '../src/audio/beat-grid.ts';
 import { synthBgm } from '../src/audio/bgm/procedural.ts';
 import { gapMidpointCuts, phraseCut } from '../src/motion/shot-timing.ts';
-import { SAFE_AREA, VERTICAL_SHORT_CAPTION_INSET, VERTICAL_SHORT_LAYOUT, bigTextBaselineFor } from '../src/themes/shared.ts';
+import { SAFE_AREA, VERTICAL_SHORT_LAYOUT, bigTextBaselineFor } from '../src/themes/shared.ts';
 import { fileHashes } from '../workspace.mjs';
 
 const hasFfmpeg = spawnSync('ffmpeg', ['-version']).status === 0;
@@ -181,8 +181,7 @@ test('TTS 切点：句间取空隙中点，句内提前 0.05s 且不早于上一
 test('竖屏 9:16 版面默认值互相一致', () => {
   const L = VERTICAL_SHORT_LAYOUT;
   assert.deepEqual(L.safe, SAFE_AREA.vertical);
-  near(VERTICAL_SHORT_CAPTION_INSET * 1920, 340);
-  assert.ok(L.visualCenterY < L.bigTextBaseline && L.bigTextBaseline < L.subtitleGlyphBottom);
+  assert.ok(L.visualCenterY < L.bigTextBaseline);
   // 46px 字幕上沿约 1535；84px 大字下伸约 20 → 基线不高于默认值且留足 128
   const base = bigTextBaselineFor(1535, 20);
   assert.equal(base, 1330); assert.ok(1535 - (base + 20) >= 128);

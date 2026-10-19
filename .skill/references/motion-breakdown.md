@@ -47,7 +47,7 @@
 ]
 ```
 
-`cameraPath` 优先于镜头的 `cameraMove`。需要固定参照时，按[稳定阅读](styles.md#防死帧)选择绘制环境并保持相机路径稳定。二维横移与旋转可以表达空间提示；真实三维绕行按[三维路径](drawing.md)验证投影和遮挡。
+`cameraPath` 优先于镜头的 `cameraMove`，由该路径独立控制相机。需要固定参照时，`motion_stage` 和 `theme_stage` 使用 `cameraMove: "static"` 并省略 `cameraPath`，页面与背景保持固定坐标，进场、划线和语义聚焦分别按事件发生，见[稳定阅读](styles.md#防死帧)。二维横移与旋转可以表达空间提示；真实三维绕行按[三维路径](drawing.md)验证投影和遮挡。
 
 ## 执行与检查
 

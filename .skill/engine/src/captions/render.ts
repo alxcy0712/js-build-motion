@@ -37,9 +37,9 @@ export interface SafeArea {
 /**
  * 竖屏安全区（相对画面尺寸的比例）。
  *
- * 默认底部留14%、水平各留8%，供竖屏字幕布局使用。
+ * 水平各留8%；底部默认按实际字幕外框高定位，显式 bottomInset 可覆盖。
  */
-export const SAFE_INSET = { left: 0.08, right: 0.08, top: 0.08, bottom: CAPTION_LAYOUT_DEFAULTS.bottomInset } as const;
+export const SAFE_INSET = { left: 0.08, right: 0.08, top: 0.08, bottom: 0 } as const;
 
 export function safeAreaFor(width: number, height: number, layout: CaptionLayoutSettings = {}): SafeArea {
   const w = width * (layout.maxWidth ?? (1 - SAFE_INSET.left - SAFE_INSET.right));
@@ -47,7 +47,7 @@ export function safeAreaFor(width: number, height: number, layout: CaptionLayout
     x: layout.maxWidth === undefined ? width * SAFE_INSET.left : (width - w) / 2,
     y: height * SAFE_INSET.top,
     w,
-    h: height * (1 - SAFE_INSET.top - (layout.bottomInset ?? CAPTION_LAYOUT_DEFAULTS.bottomInset)),
+    h: height * (1 - SAFE_INSET.top - (layout.bottomInset ?? 0)),
   };
 }
 
@@ -365,22 +365,17 @@ export interface DrawCaptionsOptions {
   readonly themeColors?: { readonly text: string; readonly active: string; readonly plate: string; readonly secondary: string };
 }
 
-/**
- * 把当前生效的字幕画进帧里。
- *
- * 竖屏字幕统一**底部对齐到安全区下沿**：多行时向上生长。
- * 这样单行与多行不会让画面重心上下跳。
- */
-export function drawCaptions(o: DrawCaptionsOptions): void {
-  const cue = activeCueAt(o.cues, o.time);
-  if (!cue) return;
-
+/** 同一几何用于绘制、底部静色区与尺寸验收，h 为含内边距的外框总高。 */
+export function captionGeometry(o: Pick<DrawCaptionsOptions, 'ctx' | 'width' | 'height' | 'layout' | 'fontFamily'> & { style?: CaptionStyle }, cue: CaptionCue) {
   const ctx = o.ctx;
+  ctx.save();
+  ctx.textBaseline = 'alphabetic';
   const safe = safeAreaFor(o.width, o.height, o.layout);
 
   const baseFontSize = Math.round(Math.min(o.width, o.height) * (o.layout?.fontScale ?? CAPTION_LAYOUT_DEFAULTS.fontScale));
+  const contentWidth = safe.w - Math.round(baseFontSize * 0.7) * 2;
   const layout = layoutCaption(ctx, cue.text, {
-    maxWidth: safe.w,
+    maxWidth: contentWidth,
     maxHeight: safe.h * 0.42,
     fontFamily: o.fontFamily,
     baseFontSize,
@@ -394,7 +389,7 @@ export function drawCaptions(o: DrawCaptionsOptions): void {
   const secondarySize = Math.round(baseFontSize * (o.layout?.translationScale ?? CAPTION_LAYOUT_DEFAULTS.translationScale));
   const secondaryLayout = cue.translation
     ? layoutCaption(ctx, cue.translation, {
-      maxWidth: safe.w,
+      maxWidth: contentWidth,
       maxHeight: Math.max(secondarySize, safe.h - layout.textHeight - gap),
       fontFamily: o.fontFamily,
       baseFontSize: secondarySize,
@@ -413,10 +408,40 @@ export function drawCaptions(o: DrawCaptionsOptions): void {
   const plateW = Math.min(safe.w, widestLine + padX * 2);
   const plateH = layout.textHeight + padY * 2 + (secondaryLayout ? gap + secondaryLayout.textHeight : 0);
   const plateX = o.width / 2 - plateW / 2;
-  // 底边贴安全区下沿
-  const plateY = safe.y + safe.h - plateH;
+  const outerPad = o.style === 'handwritten' ? 2 : 0;
+  const outerH = plateH + outerPad * 2;
+  const outerY = o.layout?.bottomInset === undefined
+    ? o.height * CAPTION_LAYOUT_DEFAULTS.centerY - outerH / 2
+    : o.height - outerH - o.height * o.layout.bottomInset;
+  const plateY = outerY + outerPad;
+
+  // 使用真实字形上/下伸度居中整个文字块，基线间距保持一致。
+  let inkTop = Infinity, inkBottom = -Infinity;
+  const measureInk = (block: CaptionLayout, weight: number, top: number): void => {
+    ctx.font = `${weight} ${block.fontSize}px "${o.fontFamily}"`;
+    block.lines.forEach((line, i) => {
+      const m = ctx.measureText(line), baseline = top + i * block.lineHeight;
+      inkTop = Math.min(inkTop, baseline - m.actualBoundingBoxAscent);
+      inkBottom = Math.max(inkBottom, baseline + m.actualBoundingBoxDescent);
+    });
+  };
+  measureInk(layout, 700, 0);
+  if (secondaryLayout) measureInk(secondaryLayout, 600, layout.textHeight + gap + (secondaryLayout.lineHeight - layout.lineHeight) / 2);
+  const textHeight = plateH - padY * 2;
+  const baselineOffset = textHeight / 2 - (inkTop + inkBottom) / 2;
+  ctx.restore();
+  return { layout, secondaryLayout, gap, padY, plateW, plateH, plateX, plateY, outerY, outerH, baselineOffset };
+}
+
+/** 把当前字幕画进帧；默认外框中轴线在 77.5% 屏高，实际字形在框内上下居中。 */
+export function drawCaptions(o: DrawCaptionsOptions): void {
+  const cue = activeCueAt(o.cues, o.time);
+  if (!cue) return;
+  const ctx = o.ctx;
+  const { layout, secondaryLayout, gap, padY, plateW, plateH, plateX, plateY, baselineOffset } = captionGeometry(o, cue);
 
   ctx.save();
+  ctx.textBaseline = 'alphabetic';
 
   // ---- 底板 ----
   if (o.style === 'boxed' || o.style === 'handwritten') {
@@ -451,14 +476,16 @@ export function drawCaptions(o: DrawCaptionsOptions): void {
   const wordSpans = isWordMode ? splitIntoWordSpans(cue) : null;
 
   let y = plateY + padY;
-  let charIndexAll = 0;
+  let cursor = 0;
 
   for (let lineIdx = 0; lineIdx < layout.lines.length; lineIdx++) {
     const line = layout.lines[lineIdx] as string;
+    let charIndexAll = cue.text.indexOf(line, cursor);
+    cursor = charIndexAll + line.length;
     ctx.font = `700 ${layout.fontSize}px "${o.fontFamily}"`;
     const lineWidth = ctx.measureText(line).width;
     let x = o.width / 2 - lineWidth / 2;
-    const baseline = y + layout.lineHeight * 0.5;
+    const baseline = y + baselineOffset;
 
     for (const ch of line) {
       const advance = ctx.measureText(ch).width;
@@ -473,7 +500,7 @@ export function drawCaptions(o: DrawCaptionsOptions): void {
         ctx.globalAlpha = 0.28;
         ctx.fillStyle = o.palette.accent;
         ctx.beginPath();
-        ctx.roundRect(x - advance * 0.08, y + layout.lineHeight * 0.06, advance * 1.16, layout.lineHeight * 0.82, layout.fontSize * 0.2);
+        ctx.roundRect(x - advance * 0.08, baseline - layout.fontSize, advance * 1.16, layout.fontSize * 1.2, layout.fontSize * 0.2);
         ctx.fill();
       }
 
@@ -491,7 +518,7 @@ export function drawCaptions(o: DrawCaptionsOptions): void {
       }
 
       x += advance;
-      charIndexAll++;
+      charIndexAll += ch.length;
     }
 
     y += layout.lineHeight;
@@ -504,7 +531,7 @@ export function drawCaptions(o: DrawCaptionsOptions): void {
       const lineWidth = ctx.measureText(line).width;
       ctx.globalAlpha = 0.86;
       ctx.fillStyle = o.themeColors?.secondary ?? '#d9d4c8';
-      ctx.fillText(line, o.width / 2 - lineWidth / 2, y + secondaryLayout.lineHeight * 0.5);
+      ctx.fillText(line, o.width / 2 - lineWidth / 2, y + baselineOffset + (secondaryLayout.lineHeight - layout.lineHeight) / 2);
       y += secondaryLayout.lineHeight;
     }
     ctx.globalAlpha = 1;

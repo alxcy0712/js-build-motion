@@ -191,9 +191,10 @@ test('双语字幕：16:9 成片里第二行与镜头标题之间留有空白带
   const build = (withTranslation: boolean) => {
     const p = plan();
     p.shots[0]!.title = 'Example 实验';
-    p.shots[0]!.narration = '从一个实验装置的输入数据开始，这是一段可以被逐条核对的观察过程。';
+    // 双语按语义对应的小句准备，单条外框共用固定字幕中轴线。
+    p.shots[0]!.narration = '核对实验输入数据。';
     if (withTranslation) {
-      p.shots[0]!.narrationTranslation = 'It starts with input data from a sample experiment — a process that can be checked step by step.';
+      p.shots[0]!.narrationTranslation = 'Verify the input data.';
     }
     return compileDirector(p).spec;
   };

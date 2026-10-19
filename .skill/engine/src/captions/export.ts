@@ -31,7 +31,7 @@ export function formatVttTime(seconds: number): string {
   return formatSrtTime(seconds).replace(',', '.');
 }
 
-/** 生成 SRT。字幕文本不做任何改写——尤其是中文标点必须原样保留。 */
+/** 生成 SRT，直接消费字幕轨已统一拆句、去句读的显示文本。 */
 export function toSrt(cues: readonly CaptionCue[]): string {
   const blocks = cues.map((c, i) => {
     const idx = i + 1;

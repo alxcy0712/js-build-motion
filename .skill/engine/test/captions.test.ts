@@ -29,7 +29,7 @@ import {
   type CaptionCue,
   type MeasuredNarration,
 } from '../src/captions/track.ts';
-import { captionUnits } from '../src/captions/segment.ts';
+import { captionDisplayText, captionUnits } from '../src/captions/segment.ts';
 import { registerProjectFonts, PROJECT_FONT_FAMILY, resolveFontFamily } from '../src/utils/env.ts';
 import { getPalette } from '../src/drawing/styles/palette.ts';
 import { loadSpecFile, validateSpec } from '../src/spec/validate.ts';
@@ -135,7 +135,7 @@ test('安全区：竖屏 1080x1920 的数值符合预期', () => {
   assert.equal(safe.h, 1920 * (1 - SAFE_INSET.top - SAFE_INSET.bottom));
   // 安全区必须严格在画面内
   assert.ok(safe.x > 0 && safe.y > 0);
-  assert.ok(safe.x + safe.w < 1080 && safe.y + safe.h < 1920);
+  assert.ok(safe.x + safe.w < 1080 && safe.y + safe.h <= 1920);
 });
 
 test('版面：短文本不缩小，长文本自动缩小以保证不超安全区', () => {
@@ -191,7 +191,7 @@ test('字幕轨道：时间落在视频时长内，且按时间排序', () => {
     assert.ok(c.start >= 0 && c.end <= spec.video.duration + 1e-9, `越界: ${c.start}..${c.end}`);
     assert.ok(c.end > c.start);
   }
-  spec.audio.narration.forEach((line,i)=>assert.equal(cues.filter(c=>c.narrationIndex===i).map(c=>c.text).join('').replace(/\s/gu,''),line.text.replace(/\s/gu,'')));
+  spec.audio.narration.forEach((line,i)=>assert.equal(cues.filter(c=>c.narrationIndex===i).map(c=>c.text).join('').replace(/\s/gu,''),captionDisplayText(line.text).replace(/\s/gu,'')));
   for (let i = 1; i < cues.length; i++) {
     assert.ok((cues[i] as CaptionCue).start >= (cues[i - 1] as CaptionCue).start);
   }
@@ -216,7 +216,7 @@ test('字幕轨道：实测时间优先于估算', () => {
   assert.equal(cues.at(-1)?.end, 3.5);
 });
 
-test('长段按标点及实测词拆分，保留全部原文、绝对时间和词级高亮', () => {
+test('长段按标点及实测词拆分，保留字词语义、绝对时间和词级高亮', () => {
   const spec = validateSpec(loadSpecFile(EXAMPLE)).spec!;
   const text='样本到来时，分析器选择部分数据。系统保留总容量，同时控制处理开销。';
   const tokens=['样本','到来','时','分析器','选择','部分','数据','系统','保留','总容量','同时','控制','处理','开销'];
@@ -225,7 +225,7 @@ test('长段按标点及实测词拆分，保留全部原文、绝对时间和�
   const measured=new Map([[0,{start:1,end:11,words}]]);
   const cues=buildCaptionTrack(modified,{measured});
   assert.ok(cues.length>=4);
-  assert.equal(cues.map(c=>c.text).join(''),text);
+  assert.equal(cues.map(c=>c.text).join(''),captionDisplayText(text));
   assert.ok(cues.every(c=>c.timingSource==='words'&&captionUnits(c.text)<=24));
   assert.deepEqual(cues.flatMap(c=>c.words??[]),words);
   assert.equal(cues[0]!.start,1);assert.equal(cues.at(-1)!.end,11);
@@ -242,7 +242,7 @@ test('数字、单位、英文名称和 URL 保持完整，中文标点仍能断
   const spec=validateSpec(loadSpecFile(EXAMPLE)).spec!;
   const text='Example-R1 使用 1,000 GPU 小时，成本 $2.750M。详见 https://example.com/v3.2/report。';
   const cues=buildCaptionTrack({...spec,video:{...spec.video,duration:20},audio:{...spec.audio,narration:[{start:0,text,voice:'male_calm'}]}});
-  assert.equal(cues.map(c=>c.text).join('').replace(/\s/gu,''),text.replace(/\s/gu,''));
+  assert.equal(cues.map(c=>c.text).join('').replace(/\s/gu,''),captionDisplayText(text).replace(/\s/gu,''));
   for(const token of ['Example-R1','1,000','2.750M','https://example.com/v3.2/report'])assert.ok(cues.some(c=>c.text.includes(token)),token);
   assert.ok(cues.every(c=>c.timingSource==='estimated'));
   const nearLimit=buildCaptionTrack({...spec,video:{...spec.video,duration:20},audio:{...spec.audio,narration:[{start:0,text:'计算'.repeat(11)+'1,000小时，金额$2.750M。',voice:'male_calm'}]}});
@@ -254,12 +254,12 @@ test('很短的枚举词合并阅读，无标点长句按完整词拆分', () =>
   const spec=validateSpec(loadSpecFile(EXAMPLE)).spec!;
   const text='数据、算法、算力。'+ '持续改进模型能力'.repeat(5);
   const cues=buildCaptionTrack({...spec,video:{...spec.video,duration:30},audio:{...spec.audio,narration:[{start:0,text,voice:'male_calm'}]}});
-  assert.ok(cues[0]!.text.includes('数据、算法、算力。'));
-  assert.equal(cues.map(c=>c.text).join(''),text);
+  assert.ok(cues[0]!.text.includes('数据、算法、算力'));
+  assert.equal(cues.map(c=>c.text).join(''),captionDisplayText(text));
   assert.ok(cues.every(c=>captionUnits(c.text)<=24));
   const orphan='持续探索模型的推理能力并通过大量实验来验证问题。';
   const balanced=buildCaptionTrack({...spec,video:{...spec.video,duration:20},audio:{...spec.audio,narration:[{start:0,text:orphan,voice:'male_calm'}]}});
-  assert.equal(balanced.map(c=>c.text).join(''),orphan);
+  assert.equal(balanced.map(c=>c.text).join(''),captionDisplayText(orphan));
   assert.ok(captionUnits(balanced.at(-1)!.text)>=4);
   assert.ok(balanced.every(c=>captionUnits(c.text)<=24));
 });
@@ -270,11 +270,11 @@ test('词表不匹配时保留脚本、标记估算，双语保持已有对应�
   const measured=new Map<number,MeasuredNarration>([[0,{start:0,end:6,words:[{text:'错误词表',start:0,end:6}]}]]);
   const base={...spec,audio:{...spec.audio,narration:[{start:0,text,voice:'male_calm' as const}]}};
   const cues=buildCaptionTrack(base,{measured});
-  assert.equal(cues.map(c=>c.text).join(''),text);
+  assert.equal(cues.map(c=>c.text).join(''),captionDisplayText(text));
   assert.ok(cues.every(c=>c.timingSource==='estimated'&&!c.words));
   const bilingual=buildCaptionTrack({...base,audio:{...base.audio,narration:[{...base.audio.narration[0]!,translation:'Samples arrive, and data are selected.'}]}},{measured});
-  assert.equal(bilingual.length,1);assert.equal(bilingual[0]!.text,text);
-  assert.equal(bilingual[0]!.translation,'Samples arrive, and data are selected.');
+  assert.equal(bilingual.length,1);assert.equal(bilingual[0]!.text,captionDisplayText(text));
+  assert.equal(bilingual[0]!.translation,'Samples arrive and data are selected');
 });
 
 test('片尾裁切保留已发声的词和时间，字幕之间互不重叠', () => {

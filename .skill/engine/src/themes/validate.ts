@@ -54,7 +54,7 @@ export function validateTheme(t: ThemeTokens): string[] {
   if (g < 0 || g > 0.12) e.push('grain.opacity 越界 [0,0.12]');
   if (t.treatments.motionBlur.samples < 1) e.push('motionBlur.samples ≥ 1');
   const L = t.liveness;
-  if (!L) e.push('缺少 liveness（防死帧规则）');
+  if (!L) e.push('缺少 liveness（可选微运动预设）');
   else {
     if (!L.layers.some((l) => l !== 'grain')) e.push('liveness.layers 至少需要一层非颗粒运动（drift/parallax/lightSweep/boil）');
     if (!(L.maxStillSeconds > 0 && L.maxStillSeconds <= 0.5)) e.push('liveness.maxStillSeconds 须在 (0, 0.5]');

@@ -658,7 +658,7 @@ function repairCaptions(raw: unknown, r: Repairer): CaptionSettings {
   for (const field of fields) {
     if (o[field] === undefined) continue;
     const range = CAPTION_LAYOUT_SCHEMA[field];
-    layout[field] = r.numberValue(o[field], range.minimum, range.maximum, CAPTION_LAYOUT_DEFAULTS[field], `captions.${field}`);
+    layout[field] = r.numberValue(o[field], range.minimum, range.maximum, CAPTION_LAYOUT_DEFAULTS[field] ?? 0, `captions.${field}`);
   }
   return {
     enabled: r.boolValue(o['enabled'], d.enabled, 'captions.enabled'),

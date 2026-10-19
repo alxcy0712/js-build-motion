@@ -55,7 +55,7 @@ export function drawThemeStage(c: SceneRenderContext): void {
   const o: Orientation = h >= w ? 'vertical' : 'horizontal';
   const ref = o === 'vertical' ? 1080 : 1920, k = w / ref;
   const sa = th.safeArea[o];
-  drawBackdrop(ctx, th, w, h, c.sceneTime);
+  drawBackdrop(ctx, th, w, h, scene.cameraMove === 'static' && !scene.cameraPath ? 0 : c.sceneTime);
   const left = sa.left * k, right = w - sa.right * k, maxW = right - left, cx = (left + right) / 2;
   const lines = scene.headline ?? [];
   const dur = scene.end - scene.start;
@@ -77,7 +77,7 @@ export function drawThemeStage(c: SceneRenderContext): void {
     const ipBottom = pos === 'center' ? h / 2 + size / 2 : pos === 'custom' ? (ip.y ?? 0.7) * h : bottomSafe;
     const ipOpacity = c.firstShot && !c.textCarriedIn ? Math.max(0, Math.min(1, (c.sceneTime - 4 / 30) / 0.2)) : 1;
     const expression = ip.expression ?? scene.ipExpression;
-    if (ipOpacity > 0) drawThemedIP(ctx, th, { time: c.sceneTime + scene.start, cx: ipCx, bottom: ipBottom, size, opacity: ipOpacity, ...(expression ? { expression } : {}) });
+    if (ipOpacity > 0) drawThemedIP(ctx, th, { time: c.sceneTime + scene.start, cx: ipCx, bottom: ipBottom, size, opacity: ipOpacity, motion: ip.role === 'actor', ...(expression ? { expression } : {}) });
   }
 
   // 最后一行是落点（hero），前面的行为铺垫（display，次级色）

@@ -40,6 +40,14 @@ audio之后再次运行qa，读取匹配当前规格的实测时间，报告发�
 
 配音默认选择edge-tts，voice使用female_calm、female_lively、male_calm或male_lively。用户明确声明使用豆包语音后，audio或render显式传入--tts-provider doubao；声明与后续变更保存在本片prompt-history.jsonl，并在其授权范围内沿用。voices提供豆包公版音色的名称、ID、语种、模型资源与接口；启用doubao provider后，导演计划的voice或audio.narration[].voice可使用目录ID，自动匹配资源与流式接口，四个抽象音色映射到对应的默认豆包音色。运行条件为Python/websockets>=14与环境变量DOUBAO_API_KEY。凭据只从环境变量 DOUBAO_API_KEY 读取，不读配置文件，不写入项目、日志或仓库。voice-*.words.json保存实际音色ID、模型资源、接口、语速、服务返回的词级时间和句级时间 sentences（同一句的重复事件去重）；句级时间可直接用于按句切镜。服务提供时间戳的范围以对应音色与语种为准。音色调用权限由账户开通的服务决定。
 
+### 复刻音色与接口核对
+
+个人复刻音色先核对真实 speaker ID、所属模型资源、账户权限与对应传输接口，再核对固定运行时的支持范围。显示名称只用于帮助识别；目录查询成功记录音色可见性，合成成功、完整解码和主观试听分别记录。公版目录以外的复刻音色按本片已有授权在本片适配，并保存文本、资源、接口、供应方词时间与实际试听状态。
+
+HTTP 403 记录失败接口、资源、请求身份与服务错误码，结论限定到该次组合；继续依据官方接口说明核对同一已授权音色的双向 WebSocket 等适用路径。账户开通或访问变更按实际缺口处理。日志保留诊断字段与凭据可用状态，凭据由 DOUBAO_API_KEY 环境变量传入。
+
+换音色、模型或语速后，完整解码新音频并读取新词时间，依次重排字幕、镜长、语义触发、片尾口播与停留，重建音频锁，再生成当前编码。旧词表与镜长保留为历史版本证据。离线维护用虚构文本、两套不同词时间与声音锁夹具验证重排和失效；真实授权、在线接口可用性与主观音色判断在本片单独验收。
+
 音乐驱动的段落先建立拍点网格，讲解段落以实测语义词和阅读时间组织事件；两者共用本片时间轴。每拍秒数为60/BPM、帧数为fps×60/BPM：120 BPM在30fps为15帧，在60fps为30帧。非整数拍点从时间原点逐拍换算并取整，在events.md记录fps、BPM、原点及触发时间，避免逐次累计取整误差。
 
 引擎 `src/audio/beat-grid.ts`：`beatGrid({bpm, duration, origin, fps})` 按 origin + k·60/BPM 逐拍乘法换算并给出整数帧号；`snapCutsToBeats(cuts, grid, {maxShift, direction, minGap})` 只在 maxShift（默认 0.12 秒）内把切点吸到拍点，超出保留原切点并标 kept，讲解片切点仍由旁白语义决定，`direction: 'later'` 保证不短于阅读下限；`addCutAccents(synthBgm(...), {cuts, accents})` 在程序铺底上叠加切点软底鼓/气声与强调拨弦，并在切点后短暂压低铺底。吸附结果与偏移写入 events.md。

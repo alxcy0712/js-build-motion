@@ -80,4 +80,4 @@ wetness 在 0–1 之间调整柔和底 wash 与干笔间隙，coverage 控制�
 
 图片需要等比留白或裁切时，按需复制image-fit组件并调用fitImage；源裁框、目标框和量尺依据按[图片与量尺](reference-geometry.md)核对。主体、次层、相机及声效使用同一事件时间轴；连续受力按固定时间求值，光影随实际空间关系绘制，选用机制及验收按[动效设计](motion-design.md)登记。
 
-字幕版面可在DirectorPlan的captionLayout或VideoSpec的captions设置fontScale（短边字号比例）、translationScale（译文字号比例）、maxWidth（画幅宽度比例）、bottomInset（底部留白比例）。1080宽竖屏可从40px主字、25px译文试排：fontScale=40/1080、translationScale=0.625、maxWidth=0.78、bottomInset=0.11；结合平台UI、最长双语句与主体避让复核。省略字段沿用既有默认值，预览按画幅同比缩放。
+字幕版面可在DirectorPlan的captionLayout或VideoSpec的captions设置fontScale（短边字号比例）、translationScale（译文字号比例）、maxWidth（画幅宽度比例）。1080宽竖屏可从40px主字、25px译文试排：fontScale=40/1080、translationScale=0.625、maxWidth=0.78。省略bottomInset时，外框中轴线位于77.5%屏高，单行、多行与双语共用该轴，字形上下居中；本片已确认位置覆盖时可显式设置bottomInset比例。按[字幕几何](captions-and-shots.md#字幕外框与底部)结合平台UI、最长双语句与主体避让复核，预览按画幅同比缩放。

@@ -69,6 +69,7 @@ export interface IPDrawOptions {
   readonly size: number;      // 绘制边长（rig 为 256 逻辑像素的方形）
   readonly expression?: string;
   readonly opacity?: number;
+  readonly motion?: boolean;
 }
 
 const layerCache = new Map<number, { fig: Canvas; fx: Canvas }>();
@@ -89,10 +90,10 @@ export function drawThemedIP(ctx: CanvasRenderingContext2D, theme: ThemeTokens, 
   const { fig, fx, s } = scratch(o.size);
   const pad = (s - o.size) / 2;
   const fc = fig.getContext('2d'); fc.clearRect(0, 0, s, s); fc.imageSmoothingEnabled = true; fc.imageSmoothingQuality = 'high';
-  // 轻微漂浮：与呼吸不同相位，保证停留段也有可见微运动
-  const float = Math.sin(o.time * 2 * Math.PI / 5.2) * o.size * 0.006;
+  // 身份阅读段固定位置，演员动作按镜头用途显式启用。
+  const float = o.motion ? Math.sin(o.time * 2 * Math.PI / 5.2) * o.size * 0.006 : 0;
   const drawPersonalIP = puppetDraw(ip.root); if (!drawPersonalIP) return false;
-  drawPersonalIP(fc, ip.images, ip.rig, { time: o.time, x: pad, y: pad + float, size: o.size, expression: o.expression ?? 'neutral', blink: true, motion: true });
+  drawPersonalIP(fc, ip.images, ip.rig, { time: o.time, x: pad, y: pad + float, size: o.size, expression: o.expression ?? 'neutral', blink: true, motion: o.motion ?? false });
   // 底部渐隐：肩颈在画面中自然消失，不出现硬切边
   fc.save(); fc.globalCompositeOperation = 'destination-in';
   // 只在卫衣下沿 36px（1080 宽参考）内渐隐，保留完整肩部

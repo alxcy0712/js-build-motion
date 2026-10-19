@@ -97,6 +97,7 @@ node .skill/scripts/video.mjs my-film render
 |---|---|---|
 | **Pentagram、Domenic Lippa 与设计团队** | [London Design Festival 2025](https://www.pentagram.com/work/london-design-festival-2025) | 用稳定的识别色、字体和排版系统适配多种媒介；[统一视频封面模板](assets/douyin-cover/README.md)沿用固定配色与信息层级，独立设计两个画幅的图文构图。 |
 | **A1 Gallery 与所收录网站的创作者** | [Typographic Portfolio](https://www.a1.gallery/websites/typographic-portfolio) | 大标题、有限字体层级与留白之间的关系；[统一视频封面模板](assets/douyin-cover/README.md)采用标题优先、实际字形对齐与独立的个人 IP 区域。具体网站作者可通过画廊原始条目追溯。 |
+| **静静的自媒体运营** | [剪映安全框与抖音预览实操](https://www.douyin.com/video/7609205181926457786) | 公开页转录介绍用平台界面叠加检查标题和互动按钮遮挡；[字幕外框与底部](.skill/references/captions-and-shots.md#字幕外框与底部)据此保留实际平台预览检查，字幕中轴线比例采用本项目制作默认。 |
 
 ### 案例整理与工程研究
 
