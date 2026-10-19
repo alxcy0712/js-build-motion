@@ -16,6 +16,6 @@ export const minimal: ThemeTokens = {
   transitions: ['blurDissolve', 'riseFade', 'maskWipeUp', 'scaleThrough', 'zoomIntoElement', 'cutOnBeat'],
   treatments: { grain: { opacity: 0.03, fps: 24 }, glow: { blur: 120, opacity: 0.3, targets: ['accent', 'subject'] }, vignette: 0.55, depth: { blurFar: 6, parallax: [1, 0.5, 0.1] }, motionBlur: { samples: 1, shutter: 0 }, drift: { scaleTo: 1.03, seconds: 5 }, paper: 'none' },
   textReveal: { opacityEase: [0.16, 1, 0.3, 1], positionSpring: { stiffness: 100, damping: 25 }, rise: 24, blurFrom: 12, scaleFrom: 0.98, opacityDuration: 0.6, exitDuration: 0.45, stagger: 0.12, unit: 'line', allowOvershoot: false, maxOvershoot: 0 },
-  liveness: { layers: ['drift', 'parallax', 'lightSweep', 'grain'], maxStillSeconds: 0.5, minMotionPx: 0.6, parallaxAmplitudePx: 6, parallaxPeriod: 9, lightSweep: { period: 7, opacity: 0.05 } },
+  liveness: { layers: ['drift', 'parallax', 'grain'], maxStillSeconds: 0.5, minMotionPx: 0.6, parallaxAmplitudePx: 6, parallaxPeriod: 9 },
   safeArea: SAFE_AREA, bpm: 96,
 };

@@ -9,10 +9,11 @@ import { findDeadSpans, type GrayFrame } from '../src/qa/dead-frames.ts';
 
 const W = 270, H = 480, FPS = 24;
 const brand = (id: ThemeId) => parseBrand({ version: 1, lockedTheme: id, enforcement: 'override', changes: [{ at: 'x', theme: id, reason: 't' }] });
-function specFor(theme: ThemeId, transition = 'blurDissolve', env = 'theme_stage') {
+function specFor(theme: ThemeId, transition = 'blurDissolve', env = 'theme_stage', cameraMove?: string) {
+  const move = cameraMove ? { cameraMove } : {};
   return validateSpec({
     video: { width: 1080, height: 1920, fps: FPS, duration: 4, seed: 7 }, style: { theme }, captions: { enabled: false },
-    scenes: [{ id: 'a', start: 0, end: 2, environment: env, headline: ['电脑', '不会焦虑。'] }, { id: 'b', start: 2, end: 4, environment: env, transition, headline: ['拆解。'] }],
+    scenes: [{ id: 'a', start: 0, end: 2, environment: env, ...move, headline: ['电脑', '不会焦虑。'] }, { id: 'b', start: 2, end: 4, environment: env, ...move, transition, headline: ['拆解。'] }],
   }, { brand: brand(theme) }).spec!;
 }
 function frames(spec: ReturnType<typeof specFor>, idx: number[]): Buffer[] {
@@ -27,10 +28,19 @@ test('theme_stage 经真实管线渲染：任意帧可复现', () => {
   const [a] = frames(s, [30]); const [b] = frames(s, [30]);
   assert.ok(a!.equals(b!));
 });
-test('theme_stage 的停留段没有死帧（微运动每帧生效）', () => {
-  const s = specFor('minimal');
+test('theme_stage 动态镜头的停留段没有死帧（微运动每帧生效）', () => {
+  // 两套主题默认不使用扫光；显式动态 cameraMove 时由主题微运动保证每帧变化。
+  for (const th of ['minimal', 'kinetic'] as const) {
+    const s = specFor(th, 'blurDissolve', 'theme_stage', 'slow_push');
   const idx = Array.from({ length: 48 }, (_, i) => i);
-  assert.deepEqual(findDeadSpans(frames(s, idx).map(gray), { fps: FPS }), []);
+    assert.deepEqual(findDeadSpans(frames(s, idx).map(gray), { fps: FPS }), [], th);
+  }
+});
+test('两套主题都不启用扫光', () => {
+  for (const th of ['minimal', 'kinetic'] as const) {
+    assert.ok(!THEMES[th].liveness.layers.includes('lightSweep'), th);
+    assert.equal(THEMES[th].liveness.lightSweep, undefined, th);
+  }
 });
 test('风格转场：中段与两端都不同，且每个已登记转场都能绘制', () => {
   for (const tr of THEME_TRANSITION_IDS) {
@@ -58,13 +68,13 @@ test('品牌锁在管线中生效：spec 请求 kinetic 但锁 minimal', () => {
 
 // ---------------------------------------------------------------- 审片第 1 轮修正
 import { revealState } from '../src/themes/text-reveal.ts';
-function spec3(theme: ThemeId, opts: { ip?: boolean; headline?: boolean } = {}) {
+function spec3(theme: ThemeId, opts: { ip?: boolean; headline?: boolean; ipRole?: 'identity' | 'actor' } = {}) {
   const tr = THEMES[theme].transitions.find((t) => t !== 'cutOnBeat')!;
   return validateSpec({
     video: { width: 1080, height: 1920, fps: FPS, duration: 4, seed: 7 }, style: { theme }, captions: { enabled: false },
     scenes: [
-      { id: 'a', start: 0, end: 2, environment: 'theme_stage', ...(opts.headline === false ? {} : { headline: ['电脑', '不会焦虑。'] }), ...(opts.ip ? { ip: { role: 'identity', size: 288 } } : {}) },
-      { id: 'b', start: 2, end: 4, environment: 'theme_stage', transition: tr, ...(opts.headline === false ? {} : { headline: ['拆解。'] }), ...(opts.ip ? { ip: { role: 'identity', size: 288 } } : {}) },
+      { id: 'a', start: 0, end: 2, environment: 'theme_stage', ...(opts.headline === false ? {} : { headline: ['电脑', '不会焦虑。'] }), ...(opts.ip ? { ip: { role: opts.ipRole ?? 'identity', size: 288 } } : {}) },
+      { id: 'b', start: 2, end: 4, environment: 'theme_stage', transition: tr, ...(opts.headline === false ? {} : { headline: ['拆解。'] }), ...(opts.ip ? { ip: { role: opts.ipRole ?? 'identity', size: 288 } } : {}) },
     ],
   }, { brand: brand(theme) }).spec!;
 }
@@ -76,7 +86,8 @@ test('IP 开关：开启后画面出现角色，关闭则没有', () => {
   assert.ok(diff(on!, off!) > 2);
 });
 test('IP 带呼吸/眨眼微运动：停留段相隔 0.5s 的帧不同', () => {
-  const [a, b] = frames(spec3('minimal', { ip: true, headline: false }), [12, 24]);
+  // actor 角色带呼吸浮动；不依赖扫光等全画面氛围层制造帧差。
+  const [a, b] = frames(spec3('minimal', { ip: true, ipRole: 'actor', headline: false }), [12, 24]);
   assert.ok(!a!.equals(b!));
 });
 test('下一镜头有风格转场时，上一镜头文字保持到转场开始并被带走（转场中段仍有文字）', () => {

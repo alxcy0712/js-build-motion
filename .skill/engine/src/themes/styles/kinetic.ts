@@ -16,6 +16,6 @@ export const kinetic: ThemeTokens = {
   transitions: ['whipPan', 'cutOnBeat', 'glitchCut', 'scaleThrough', 'maskWipeUp'],
   treatments: { grain: { opacity: 0.04, fps: 30 }, glow: { blur: 60, opacity: 0.6, targets: ['accent', 'text'] }, vignette: 0.6, depth: { blurFar: 10, parallax: [1, 0.6, 0.2] }, motionBlur: { samples: 8, shutter: 0.5 }, drift: { scaleTo: 1.06, seconds: 3 }, paper: 'none' },
   textReveal: { opacityEase: [0.16, 1, 0.3, 1], positionSpring: { stiffness: 380, damping: 28 }, rise: 40, blurFrom: 8, scaleFrom: 1.04, opacityDuration: 0.25, exitDuration: 0.2, stagger: 0.04, unit: 'word', allowOvershoot: true, maxOvershoot: 0.04, firstScreen: 'instant' },
-  liveness: { layers: ['drift', 'parallax', 'lightSweep', 'grain'], maxStillSeconds: 0.35, minMotionPx: 1.5, parallaxAmplitudePx: 14, parallaxPeriod: 4, lightSweep: { period: 2.5, opacity: 0.12 } },
+  liveness: { layers: ['drift', 'parallax', 'grain'], maxStillSeconds: 0.35, minMotionPx: 1.5, parallaxAmplitudePx: 14, parallaxPeriod: 4 },
   safeArea: SAFE_AREA, bpm: 128,
 };
