@@ -10,6 +10,7 @@
  */
 
 import type { Schema } from 'ajv';
+import { EXTERNAL_TOOL_SCHEMA } from './tool-registry.ts';
 
 /** 项目标识：小写字母/数字/连字符，必须与目录名一致 */
 export const PROJECT_SLUG_PATTERN = '^[a-z0-9][a-z0-9-]{1,47}$';
@@ -77,6 +78,21 @@ export type BriefCaptionMode = (typeof BRIEF_CAPTION_MODES)[number];
 export const BRIEF_ASSET_KINDS = ['image', 'audio', 'video', 'font', 'document'] as const;
 export type BriefAssetKind = (typeof BRIEF_ASSET_KINDS)[number];
 
+export const BRIEF_ASSET_SCHEMA = {
+  type: 'object', additionalProperties: false, required: ['path', 'kind', 'license'],
+  properties: {
+    path: { type: 'string', pattern: PROJECT_RELATIVE_PATH_LENIENT_PATTERN },
+    kind: { enum: [...BRIEF_ASSET_KINDS] },
+    license: { type: 'string', minLength: 1, maxLength: 200 },
+    source: { type: 'string', maxLength: 500 },
+    sha256: { type: 'string', pattern: '^[a-f0-9]{64}$' },
+    provenance: {
+      type: 'object', additionalProperties: false, required: ['tools'],
+      properties: { tools: { type: 'array', minItems: 1, uniqueItems: true, items: { type: 'string', minLength: 1 } } },
+    },
+  },
+} as const;
+
 /** 输入素材条目（参考片 / 资料 / 品牌资产 / 既有音频） */
 const INPUT_ITEM_SCHEMA: Schema = {
   type: 'object',
@@ -140,19 +156,7 @@ export const BRIEF_SCHEMA: Schema = {
     assets: {
       type: 'array',
       maxItems: 50,
-      items: {
-        type: 'object',
-        additionalProperties: false,
-        required: ['path', 'kind', 'license'],
-        properties: {
-          path: { type: 'string', pattern: PROJECT_RELATIVE_PATH_LENIENT_PATTERN },
-          kind: { enum: [...BRIEF_ASSET_KINDS] },
-          /** 授权：不允许留空。填 "unknown" 会被降级为警告并写进披露 */
-          license: { type: 'string', minLength: 1, maxLength: 200 },
-          source: { type: 'string', maxLength: 500 },
-          sha256: { type: 'string', pattern: '^[a-f0-9]{64}$' },
-        },
-      },
+      items: BRIEF_ASSET_SCHEMA,
     },
 
     /** 工具边界：allowed 是白名单，forbidden 是显式禁止 */
@@ -163,6 +167,7 @@ export const BRIEF_SCHEMA: Schema = {
       properties: {
         allowed: { type: 'array', minItems: 1, uniqueItems: true, items: { type: 'string' } },
         forbidden: { type: 'array', uniqueItems: true, items: { type: 'string' } },
+        external: { type: 'array', maxItems: 50, items: EXTERNAL_TOOL_SCHEMA },
       },
     },
 

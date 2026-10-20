@@ -1,6 +1,6 @@
 /** 工具能力与状态的唯一注册表，供契约校验、capabilities 和披露使用。 */
 
-export type ToolStatus = 'adopted' | 'candidate' | 'rejected' | 'unregistered';
+export type ToolStatus = 'adopted' | 'candidate' | 'rejected' | 'unregistered' | 'external';
 
 export type ToolKind =
   /** 代码渲染器：画面由代码逐帧画出 */
@@ -40,6 +40,20 @@ export interface ToolEntry {
    */
   readonly byteReproducible: boolean;
 }
+
+/** 本片声明的外部工具；登记描述事实，执行支持仍由调用方核验。 */
+export type ExternalTool = Omit<ToolEntry, 'status' | 'execution'>;
+
+export const EXTERNAL_TOOL_SCHEMA = {
+  type: 'object', additionalProperties: false,
+  required: ['id', 'label', 'kind', 'network', 'byteReproducible'],
+  properties: {
+    id: { type: 'string', pattern: '^[a-z0-9][a-z0-9-]{1,63}$' },
+    label: { type: 'string', minLength: 1, maxLength: 160 },
+    kind: { enum: ['renderer', 'tts', 'bgm', 'sfx', 'media', 'fetcher', 'asr', 'external-visual', 'editor'] },
+    network: { type: 'boolean' }, byteReproducible: { type: 'boolean' },
+  },
+} as const;
 
 export const TOOL_REGISTRY: readonly ToolEntry[] = [
   // ---------------------------------------------------------------- 渲染器
@@ -95,8 +109,9 @@ export const TOOL_REGISTRY: readonly ToolEntry[] = [
 
 const BY_ID = new Map(TOOL_REGISTRY.map((t) => [t.id, t]));
 
-export function findTool(id: string): ToolEntry | undefined {
-  return BY_ID.get(id);
+export function findTool(id: string, external: readonly ExternalTool[] = []): ToolEntry | undefined {
+  const tool = external.find(t => t.id === id);
+  return BY_ID.get(id) ?? (tool ? { ...tool, status: 'external' } : undefined);
 }
 
 export function toolIds(): string[] {

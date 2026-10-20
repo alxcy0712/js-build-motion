@@ -474,6 +474,22 @@ test('披露里只有"实际调用"的工具出现在工具链表；允许但未
   assert.ok(content.includes('"允许"不等于"使用"'));
 });
 
+test('输入素材的来源工具进入使用清单，并与渲染调用分别披露', () => {
+  const asset = { path: 'assets/voice.wav', kind: 'audio' as const, license: 'owned', sha256: 'a'.repeat(64), provenance: { tools: ['doubao-tts'] } };
+  const brief: ResolvedBrief = { ...baseBrief, assets: [asset],
+    tools: { ...baseBrief.tools, allowed: [...baseBrief.tools.allowed, 'doubao-tts'] },
+    claims: { ...baseBrief.claims, zeroExternalAssets: false } };
+  const log = logWith({ providers: { tts: 'file', bgm: '(none)', sfx: '(none)' }, assets: { external: [asset], consumed: [] } });
+  const content = renderDisclosure({ brief, log, briefPath: '/dev/null',
+    project: { manifest: { title: '输入素材回归' }, slug: 'fixture' } as Parameters<typeof renderDisclosure>[0]['project'],
+    reconcile: reconcile(brief, log), briefWarnings: [] });
+  assert.match(content, /\| `doubao-tts` \|.*用于生成输入素材.*【声明】/);
+  assert.match(content, /配音输入素材由 `doubao-tts` 生成/);
+  assert.doesNotMatch(content, /允许但.*doubao-tts|doubao-tts.*本次并未调用|配音由 file 生成/);
+  assert.equal(log.facts.tools.includes('doubao-tts'), false);
+  assert.equal(reconcile({ ...brief, tools: baseBrief.tools }, log).ok, false);
+});
+
 // ---------------------------------------------------------------- 集成
 
 test('一致的项目：buildDisclosure 生成披露文件', () => {

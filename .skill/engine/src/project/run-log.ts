@@ -83,6 +83,7 @@ export interface RunLogFacts {
       readonly sha256: string;
       readonly kind: string;
       readonly license: string;
+      readonly provenance?: BriefAsset['provenance'];
     }[];
     /** 本次**实测被读取**的素材。声明了但没读到的会在对账时被标出来 */
     readonly consumed: readonly {
@@ -258,6 +259,7 @@ export function buildFacts(input: FactsInput): RunLogFacts {
         sha256: sha ?? '',
         kind: a.kind,
         license: a.license,
+        ...(a.provenance ? { provenance: a.provenance } : {}),
       };
     })
     .sort((x, y) => (x.path < y.path ? -1 : x.path > y.path ? 1 : 0));

@@ -322,3 +322,31 @@ test('knownToolIds 与注册表一一对应且无重复', () => {
   assert.equal(new Set(ids).size, ids.length, 'id 不得重复');
   assert.deepEqual(ids.slice().sort(), TOOL_REGISTRY.map((t) => t.id).slice().sort());
 });
+
+test('本片外部工具定义支持转写、重采样、字幕脚本和素材来源', () => {
+  const external = [
+    { id: 'faster-whisper', kind: 'asr' }, { id: 'soxr', kind: 'media' },
+    { id: 'subtitle-script', kind: 'editor' }, { id: 'coverr', kind: 'fetcher' }, { id: 'mixkit', kind: 'fetcher' },
+  ].map(tool => ({ ...tool, label: tool.id, network: tool.kind === 'fetcher', byteReproducible: false }));
+  const raw = briefOf({ tools: { allowed: ['skia-canvas', ...external.map(t => t.id)], external } });
+  const result = checkBrief(raw);
+  assert.equal(result.ok, true, JSON.stringify(result.issues));
+  assert.deepEqual(result.brief?.tools.external, external);
+  const typo = structuredClone(raw) as { tools: { external: Record<string, unknown>[] } };
+  typo.tools.external[0]!.unexpected = true;
+  assert.equal(checkBrief(typo).ok, false);
+});
+
+test('外部工具定义保持现有注册和禁止项约束', () => {
+  for (const id of ['ffmpeg', 'whisper', 'seedance']) {
+    const result = checkBrief(briefOf({ tools: { allowed: ['skia-canvas', id], external: [
+      { id, label: id, kind: 'media', network: false, byteReproducible: true },
+    ] } }));
+    assert.ok(find(result.issues, 'TOOL_DEFINITION_CONFLICT'));
+  }
+  const result = checkBrief(briefOf({
+    assets: [{ path: 'assets/voice.wav', kind: 'audio', license: 'owned', provenance: { tools: ['doubao-tts'] } }],
+    claims: { humanRounds: 1, pureCode: true, zeroExternalAssets: false, humanRevision: false },
+  }));
+  assert.ok(find(result.issues, 'ASSET_TOOL_UNDECLARED'));
+});

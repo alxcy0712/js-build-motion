@@ -5,6 +5,7 @@ import { buildProductionAudio } from '../audio/production.ts';
 import { createProductionDrawing } from '../pipeline/production-drawing.ts';
 import { cmdProduction } from './production.ts';
 import { cmdDelivery } from './delivery.ts';
+import { cmdPostprocess } from './postprocess.ts';
 import { assertContained } from '../project/paths.ts';
 import { inspectQuality } from '../project/quality.ts';
 import { inspectArtifact } from '../project/artifact.ts';
@@ -127,6 +128,7 @@ const COMMANDS = [
   'project',
   'brief',
   'disclosure',
+  'postprocess',
   'artifact',
 ] as const;
 type CommandName = (typeof COMMANDS)[number];
@@ -179,6 +181,9 @@ const USAGE = `js-build-motion —— 模型无关的程序化视频引擎
   project audit <slug|--all>     审计项目隔离（输入是否越界引用别的项目/产物）
   brief validate <项目|json>     校验提示词契约（brief.json）
   disclosure <项目>              声明—实测对账，生成 DISCLOSURE.md
+    --postprocess <本片JSON>      使用指定外部后期登记（默认 evidence/postprocess.json）
+  postprocess <项目> --request <本片JSON> 登记后期处理链与最终交付文件
+    --verify | --schema request|record  复查后期登记或查询契约
   artifact <项目> [--out evidence/artifact.json] [--review evidence/artifact.json]
                                  核对实际成片、渲染输入与审片身份快照
 
@@ -1555,7 +1560,7 @@ function cmdArtifact(argv: string[]): number {
 function cmdDisclosure(argv: string[]): number {
   const { values, positionals } = parseArgs({
     args: argv,
-    options: { json: { type: 'boolean', default: false } },
+    options: { json: { type: 'boolean', default: false }, postprocess: { type: 'string' } },
     allowPositionals: true,
   });
   const arg = positionals[0];
@@ -1567,7 +1572,7 @@ function cmdDisclosure(argv: string[]): number {
   }
 
   const project = loadProject(arg);
-  const result = buildDisclosure(project);
+  const result = buildDisclosure(project, values.postprocess ? { postprocessPath: values.postprocess } : {});
 
   if (values.json) {
     process.stdout.write(
@@ -1796,6 +1801,7 @@ async function run(argv: string[]): Promise<number> {
     case 'project': return cmdProject(rest);
     case 'brief': return cmdBrief(rest);
     case 'disclosure': return cmdDisclosure(rest);
+    case 'postprocess': return cmdPostprocess(rest);
     case 'artifact': return cmdArtifact(rest);
   }
 }

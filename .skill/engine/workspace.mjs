@@ -421,11 +421,11 @@ export function importCommandOptions(args) {
 export function engineArguments(project, args) {
   const [command, ...rest] = args;
   if (command === 'audio' && rest[0] === 'lock') return ['audio', 'lock', project, ...rest.slice(1)];
-  if (['validate', 'frame', 'storyboard', 'render', 'qa', 'diagnose', 'audio', 'subtitles', 'disclosure', 'artifact', 'prompt', 'import', 'unpack', 'catalog', 'align', 'assets', 'video', 'production', 'review', 'credits', 'deliver'].includes(command)) return [command, project, ...rest];
+  if (['validate', 'frame', 'storyboard', 'render', 'qa', 'diagnose', 'audio', 'subtitles', 'disclosure', 'postprocess', 'artifact', 'prompt', 'import', 'unpack', 'catalog', 'align', 'assets', 'video', 'production', 'review', 'credits', 'deliver'].includes(command)) return [command, project, ...rest];
   if (command === 'direct' && rest[0] === 'compile') return ['direct', 'compile', project, ...rest.slice(1)];
   if (command === 'brief' && rest[0] === 'validate') return ['brief', 'validate', project, ...rest.slice(1)];
   if (command === 'project' && rest[0] === 'audit') return ['project', 'audit', project, ...rest.slice(1)];
   if (['capabilities', 'voices'].includes(command)) return args;
   if (command === 'env') return ['env', '--out-dir', join(project, 'out'), ...rest];
-  throw new Error('WORKSPACE_COMMAND: use capabilities/voices/env/direct compile/prompt/import/unpack/catalog/align/assets/video/production/review/credits/deliver/validate/qa/audio/frame/storyboard/render/subtitles/brief validate/project audit/disclosure/artifact');
+  throw new Error('WORKSPACE_COMMAND: use capabilities/voices/env/direct compile/prompt/import/unpack/catalog/align/assets/video/production/review/credits/deliver/validate/qa/audio/frame/storyboard/render/subtitles/brief validate/project audit/disclosure/postprocess/artifact');
 }

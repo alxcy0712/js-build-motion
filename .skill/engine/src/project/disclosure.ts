@@ -12,6 +12,7 @@ import { loadBriefFile, validateBrief, type ResolvedBrief } from './brief.ts';
 import { readRunLog, verifyRunLog, type RunLog } from './run-log.ts';
 import { findTool, isCodeRenderer, type ToolEntry } from './tool-registry.ts';
 import { assertRecordedAttemptInputs } from './attempt.ts';
+import { POSTPROCESS_FILE, postprocessBrief, readPostprocess, type PostprocessRecord } from './postprocess.ts';
 
 export const DISCLOSURE_FILE = 'DISCLOSURE.md';
 
@@ -46,23 +47,36 @@ export interface ReconcileResult {
  * 「提示词允许了工具但实际没用」和「实际用了但没声明」是两种完全不同的失实，
  * 前者是浪费自由度，后者是漏报输入。
  */
-export function reconcile(brief: ResolvedBrief, log: RunLog): ReconcileResult {
+function disclosedAssets(brief: ResolvedBrief, log: RunLog) {
+  return [...new Map([...brief.assets.map(a => ({ ...a, sha256: a.sha256 ?? '' })), ...log.facts.assets.external].map(a => [a.path, a])).values()];
+}
+
+function usedToolIds(brief: ResolvedBrief, log: RunLog, postprocess?: PostprocessRecord | null): string[] {
+  return [...new Set([...log.facts.tools, ...brief.assets.flatMap(a => a.provenance?.tools ?? []),
+    ...log.facts.assets.external.flatMap(a => a.provenance?.tools ?? []), ...(postprocess?.steps.flatMap(s => s.tools) ?? [])])];
+}
+
+export function reconcile(brief: ResolvedBrief, log: RunLog, postprocess?: PostprocessRecord | null): ReconcileResult {
   const findings: Finding[] = [];
+  if (postprocess?.sourceVerification === 'records-only') findings.push({ severity: 'WARNING', code: 'SOURCE_VERIFICATION_PARTIAL', field: 'postprocess.sourceVerification',
+    message: `归档记录复查：${postprocess.unavailable.length} 项原件或快照文件待复核；最终交付文件已实测` });
   const usage = log.facts.assets.usage;
+  const externalAssets = disclosedAssets(brief, log);
   const usedAssets = [...log.facts.assets.consumed.map(a => ({ ...a, path: log.project && a.path.startsWith(`projects/${log.project}/`)
     ? a.path.slice(`projects/${log.project}/`.length) : a.path })),
-    ...new Map((usage?.receipts ?? []).map(r => [r.useId, { path: r.source.path, sha256: r.byteSha256, role: r.role }])).values()];
+    ...new Map((usage?.receipts ?? []).map(r => [r.useId, { path: r.source.path, sha256: r.byteSha256, role: r.role }])).values(),
+    ...(postprocess?.steps.flatMap(s => s.inputs.filter(i => externalAssets.some(a => a.path === i.path)).map(i => ({ ...i, role: 'postprocess' }))) ?? [])];
   const allowed = new Set(brief.tools.allowed);
   const forbidden = new Set(brief.tools.forbidden);
 
   // ---- 1. 工具边界 ----
-  for (const id of log.facts.tools) {
+  for (const id of usedToolIds(brief, log, postprocess)) {
     if (forbidden.has(id)) {
       findings.push({
         severity: 'FATAL',
         code: 'USED_FORBIDDEN_TOOL',
         field: 'tools.forbidden',
-        message: `明确禁止的工具被实际调用: ${id}`,
+        message: `制作链使用了明确禁止的工具: ${id}`,
         hint: '要么改 brief（并说明原因），要么改渲染链路把该工具去掉',
       });
       continue;
@@ -72,7 +86,7 @@ export function reconcile(brief: ResolvedBrief, log: RunLog): ReconcileResult {
         severity: 'FATAL',
         code: 'USED_UNDECLARED_TOOL',
         field: 'tools.allowed',
-        message: `实际调用了未声明的工具: ${id}`,
+        message: `制作链使用了未声明的工具: ${id}`,
         hint: '把该工具写进 brief.tools.allowed，或把这次调用从链路里去掉',
       });
     }
@@ -84,7 +98,7 @@ export function reconcile(brief: ResolvedBrief, log: RunLog): ReconcileResult {
       code: 'TOOL_NOT_IN_REGISTRY',
       field: 'tools.allowed',
       message: `观测到未登记的工具/提供方: ${raw}`,
-      hint: '给它补一个工具注册表条目，否则它无法被声明，也无法出现在披露的工具链里',
+      hint: '外部工具通过 tools.external 登记；渲染提供方的映射通过核心维护接入',
     });
   }
 
@@ -105,7 +119,7 @@ export function reconcile(brief: ResolvedBrief, log: RunLog): ReconcileResult {
   }
 
   if (brief.claims.zeroExternalAssets) {
-    const external = log.facts.assets.external;
+    const external = externalAssets;
     if (external.length > 0) {
       findings.push({
         severity: 'FATAL',
@@ -129,7 +143,7 @@ export function reconcile(brief: ResolvedBrief, log: RunLog): ReconcileResult {
   }
 
   // ---- 3. 素材：用了没声明 / 声明了没用 ----
-  const declaredPaths = new Set(log.facts.assets.external.map((a) => a.path));
+  const declaredPaths = new Set(externalAssets.map((a) => a.path));
   for (const used of usedAssets) {
     const declared = declaredPaths.has(used.path);
     if (!declared) {
@@ -141,11 +155,11 @@ export function reconcile(brief: ResolvedBrief, log: RunLog): ReconcileResult {
         hint: '把该素材写进 brief.assets 并填授权，否则输入边界不完整',
       });
     }
-    const match = log.facts.assets.external.find(a => a.path === used.path);
+    const match = externalAssets.find(a => a.path === used.path);
     if (match && match.sha256 !== used.sha256) findings.push({ severity: 'FATAL', code: 'ASSET_DECLARATION_HASH_MISMATCH', field: 'assets',
       message: `声明与实际读取的 SHA-256 不一致: ${used.path}` });
   }
-  for (const declared of log.facts.assets.external) {
+  for (const declared of externalAssets) {
     const used = usedAssets.some(c => c.path === declared.path && c.sha256 === declared.sha256);
     if (!used) {
       findings.push({
@@ -167,13 +181,22 @@ export function reconcile(brief: ResolvedBrief, log: RunLog): ReconcileResult {
   }
 
   // ---- 4. 交付规格（双保险：brief 校验已查过一次，这里再对产物查一次） ----
-  if (Math.abs(brief.deliverable.duration - log.facts.video.duration) > 0.05) {
+  const duration = postprocess?.media.durationSeconds ?? log.facts.video.duration;
+  if (Math.abs(brief.deliverable.duration - duration) > 0.05) {
     findings.push({
       severity: 'FATAL',
       code: 'DELIVERABLE_DRIFT',
       field: 'deliverable.duration',
-      message: `声明时长 ${brief.deliverable.duration}s，实测 ${log.facts.video.duration}s`,
+      message: `声明时长 ${brief.deliverable.duration}s，实测 ${duration}s`,
       hint: 'brief 与产物必须描述同一支片子',
+    });
+  }
+  if (postprocess?.media.video) {
+    const video = postprocess.media.video;
+    const [w, h] = brief.deliverable.aspect.split(':').map(Number);
+    if (Math.abs(video.width / video.height / (w! / h!) - 1) > 0.01 ||
+        brief.deliverable.fps !== null && Math.abs(video.fps - brief.deliverable.fps) > 0.01) findings.push({
+      severity: 'FATAL', code: 'DELIVERABLE_DRIFT', field: 'deliverable', message: '最终交付文件的画幅或帧率与 brief 不一致',
     });
   }
 
@@ -193,7 +216,7 @@ export interface DisclosureResult {
   readonly warnings: readonly string[];
 }
 
-export function buildDisclosure(project: ProjectHandle): DisclosureResult {
+export function buildDisclosure(project: ProjectHandle, options: { postprocessPath?: string } = {}): DisclosureResult {
   if (project.briefPath === null) {
     throw new EngineError(ERROR_CODES.BRIEF_INVALID, `项目 ${project.slug} 没有 brief.json，无法生成披露`, {
       details: { projectDir: project.dir },
@@ -209,7 +232,6 @@ export function buildDisclosure(project: ProjectHandle): DisclosureResult {
   // 而真正的病因是"没重新渲染"——后者才是可执行的建议。
   const logPath = join(project.dir, 'run.json');
   const log = readRunLog(logPath);
-  if (log.execution) assertRecordedAttemptInputs(project, log.execution, log);
 
   const specSha256 = sha256File(project.specPath);
   const briefSha256 = sha256File(briefPath);
@@ -222,13 +244,17 @@ export function buildDisclosure(project: ProjectHandle): DisclosureResult {
     });
   }
 
+  const postprocess = readPostprocess(project, log, options.postprocessPath);
+  if (log.execution && postprocess?.sourceVerification !== 'records-only') assertRecordedAttemptInputs(project, log.execution, log);
   const spec = validateSpec(loadSpecFile(project.specPath)).spec;
-  const { brief, warnings } = validateBrief(briefRaw, {
+  const validated = validateBrief(briefRaw, {
     ...(spec ? { spec } : {}),
-    projectDir: project.dir,
+    ...(postprocess?.sourceVerification === 'records-only' ? {} : { projectDir: project.dir }),
   });
+  const brief = postprocess ? postprocessBrief(project, postprocess) : validated.brief;
+  const warnings = validated.warnings;
 
-  const result = reconcile(brief, log);
+  const result = reconcile(brief, log, postprocess);
   const content = renderDisclosure({
     brief,
     briefPath,
@@ -237,6 +263,7 @@ export function buildDisclosure(project: ProjectHandle): DisclosureResult {
     reconcile: result,
     briefWarnings: warnings.map((w) => `${w.code} @ ${w.path}: ${w.message}`),
     ...(spec ? { spec } : {}),
+    ...(postprocess ? { postprocess, postprocessPath: options.postprocessPath ?? POSTPROCESS_FILE } : {}),
   });
 
   return {
@@ -265,6 +292,8 @@ interface RenderInput {
   readonly briefWarnings: readonly string[];
   /** 当前 spec（已校验）。用于把字幕/双语等实际内容与 run.json 实测对齐 */
   readonly spec?: ResolvedVideoSpec | undefined;
+  readonly postprocess?: PostprocessRecord;
+  readonly postprocessPath?: string;
 }
 
 /**
@@ -273,8 +302,9 @@ interface RenderInput {
  * 按实际输入、运行记录和对账结果说明制作过程与成果声明的证据范围。
  */
 export function renderDisclosure(input: RenderInput): string {
-  const { brief, log, reconcile: rec } = input;
+  const { brief, log, reconcile: rec, postprocess } = input;
   const f = log.facts;
+  const allTools = usedToolIds(brief, log, postprocess);
   const lines: string[] = [];
   const p = (...s: string[]): void => {
     lines.push(...s);
@@ -283,7 +313,7 @@ export function renderDisclosure(input: RenderInput): string {
   p(`# 披露 · ${input.project.manifest.title}`);
   p('');
   p(`> 本文件由 \`node .skill/engine/src/cli/index.ts disclosure ${input.project.slug}\` 生成，**不要手改**。`);
-  p(`> 每条结论都标了证据等级：${EVIDENCE.measured} 引擎观测 · ${EVIDENCE.declared} 人写进 brief 且不可验证 · ${EVIDENCE.inferred} 由前两者推出。`);
+  p(`> 每条结论都标了证据等级：${EVIDENCE.measured} 引擎观测或文件核验 · ${EVIDENCE.declared} brief / 外部后期登记的制作事实 · ${EVIDENCE.inferred} 由前两者推出。`);
   p('');
   p(`| 项 | 值 |`);
   p(`|---|---|`);
@@ -291,6 +321,7 @@ export function renderDisclosure(input: RenderInput): string {
   p(`| runId | \`${log.runId}\` |`);
   p(`| 输入 spec | \`${log.spec.path}\` \`${log.spec.sha256.slice(0, 16)}…\` |`);
   p(`| 提示词契约 | ${log.brief ? `\`${log.brief.path}\` \`${log.brief.sha256.slice(0, 16)}…\`` : '（未使用）'} |`);
+  if (postprocess) p(`| 来源复查范围 | ${postprocess.sourceVerification === 'records-only' ? '归档记录与现存文件；缺失原件待复核' : '已登记输入与处理文件'} |`);
   p(`| 生成命令 | \`node .skill/engine/src/cli/index.ts render ${input.project.slug}\` → \`node .skill/engine/src/cli/index.ts disclosure ${input.project.slug}\` |`);
   p('');
 
@@ -299,16 +330,45 @@ export function renderDisclosure(input: RenderInput): string {
   p('');
   p(`| 项 | 值 |`);
   p(`|---|---|`);
+  if (postprocess) {
+    const media = postprocess.media;
+    p(`| 成片 | \`${postprocess.final.path}\` |`);
+    p(`| SHA-256 | \`${postprocess.final.sha256}\` |`);
+    p(`| 分辨率 | ${media.video!.width}×${media.video!.height} |`);
+    p(`| 帧率 / 时长 | ${media.video!.fps} fps / ${media.durationSeconds}s |`);
+    p(`| 视频编码 | ${media.video!.codec} / ${media.video!.pixelFormat} |`);
+    p(`| 音频编码 | ${media.audio ? `${media.audio.codec} / ${media.audio.sampleRate} Hz / ${media.audio.channels} 声道` : '无音频流'} |`);
+    p(`| 产物体积 | ${(media.sizeBytes / 1048576).toFixed(2)} MB |`);
+    p(`| 后期记录 | \`${input.postprocessPath ?? POSTPROCESS_FILE}\` / recordId \`${postprocess.recordId}\` |`);
+    for (const evidence of postprocess.evidence ?? []) p(`| 后期声明依据 | \`${evidence.path}\` / SHA-256 \`${evidence.sha256}\` |`);
+    p('');
+    p('最终交付文件的 SHA-256、体积和流信息已重新核验；处理链与烧录字幕的事实按外部后期登记声明。');
+    p('');
+    p('### 中间渲染件（run.json 的观测范围）');
+    p(''); p('| 项 | 值 |'); p('|---|---|');
+  }
   p(`| 分辨率 | ${f.video.width}×${f.video.height} |`);
   p(`| 帧率 / 时长 | ${f.video.fps} fps / ${f.video.duration}s（${f.video.frames} 帧） |`);
   p(`| 视频编码 | ${f.encoder.video} / ${f.encoder.pixelFormat}${f.encoder.crf !== null ? ` / crf ${f.encoder.crf}` : ''} |`);
   p(`| 音频编码 | ${f.encoder.audio ?? '无音频流'} |`);
   p(`| 随机种子 | ${f.video.seed} |`);
-  p(`| 成片 | \`${log.measured.outputPath}\` |`);
+  p(`| ${postprocess ? '中间渲染件' : '渲染产物'} | \`${log.measured.outputPath}\` |`);
+  p(`| SHA-256 | \`${log.measured.outputSha256}\` |`);
   p(`| 产物体积 | ${(log.measured.outputBytes / 1048576).toFixed(2)} MB |`);
   p(`| 渲染耗时 | ${(log.measured.renderMs / 1000).toFixed(2)}s（${log.measured.msPerFrame.toFixed(1)} ms/帧） |`);
   p('');
-  p(`以上全部由引擎在渲染时观测并写入 \`run.json\`；耗时不参与对账，仅作参考。`);
+  p(`以上为引擎在渲染时观测并写入 \`run.json\` 的${postprocess ? '中间件' : '渲染产物'}信息；耗时不参与对账，仅作参考。`);
+  if (postprocess) {
+    p(''); p('### 最终交付处理链'); p('');
+    p(`| 步骤 ${EVIDENCE.declared} | 工具 | 输入 SHA-256 | 输出 SHA-256 |`);
+    p('|---|---|---|---|');
+    const fileLabel = (file: { path: string; sha256: string }) => `\`${file.path}\` (${file.sha256}) ${postprocess.unavailable.includes(file.path) ? EVIDENCE.declared : EVIDENCE.measured}`;
+    for (const step of postprocess.steps) p(`| ${step.id}：${step.description} | ${step.tools.map(id => `\`${id}\``).join('、')} | ${step.inputs.map(fileLabel).join('<br>')} | ${fileLabel(step.output)} |`);
+    if (postprocess.sourceVerification === 'records-only') {
+      p(''); p('原件待复核清单（当前归档副本缺失，来源身份沿用已绑定记录）：'); p('');
+      for (const path of postprocess.unavailable) p(`- \`${path}\``);
+    }
+  }
   p('');
 
   // ------------------------------------------------------------ 画面来源
@@ -323,13 +383,13 @@ export function renderDisclosure(input: RenderInput): string {
       brief.claims.pureCode ? EVIDENCE.inferred : EVIDENCE.declared
     } | ${brief.claims.pureCode ? '渲染器类型 + 工具链清单' : 'brief.claims.pureCode = false'} |`,
   );
-  p(`| 未使用视频生成模型（Seedance / Kling / MiniMax H3 等） | ${EVIDENCE.inferred} | 工具链里不存在 \`external-visual\` 类工具 |`);
+  if (!allTools.some(id => findTool(id, brief.tools.external)?.kind === 'external-visual')) p(`| 工具链未登记外部视觉模型 | ${EVIDENCE.inferred} | 已登记制作链的工具类别 |`);
   p('');
 
   // ------------------------------------------------------------ 输入边界
   p(`## 3. 输入边界`);
   p('');
-  const external = f.assets.external;
+  const external = disclosedAssets(brief, log);
   const consumed = f.assets.consumed;
   const usage = f.assets.usage, preparedReceipts = usage?.receipts ?? [];
   p(`素材消费覆盖：\`${usage?.coverage ?? 'partial'}\`。观测范围：${usage?.scope.join('、') ?? '历史管线文件读取'}。`);
@@ -342,7 +402,7 @@ export function renderDisclosure(input: RenderInput): string {
     p(`|---|---|---|`);
     p(`| 内容素材输入为空 | ${EVIDENCE.measured} | run.json \`facts.assets.usage\` 的 complete 观测范围 |`);
   } else {
-    p(`外部素材清单（含哈希，用于证明文件未被替换）：`);
+    p(postprocess?.sourceVerification === 'records-only' ? '外部素材的来源记录与 SHA-256；现存文件和缺失原件的复查范围见 §1：' : `外部素材清单（含哈希，用于证明文件未被替换）：`);
     p('');
     p(`| 素材 | 类型 | 授权 | sha256 |`);
     p(`|---|---|---|---|`);
@@ -396,32 +456,38 @@ export function renderDisclosure(input: RenderInput): string {
   }
 
   // ------------------------------------------------------------ 工具链
-  p(`## 4. 工具链 ${EVIDENCE.measured}`);
+  p(`## 4. 工具链`);
   p('');
-  p(`渲染时**实际调用**的工具（不是提示词里允许的工具）：`);
+  p(`工具按渲染调用、输入素材来源和外部后期步骤分别记录：`);
   p('');
-  p(`| 工具 | 用途 | 状态 | 属性 |`);
-  p(`|---|---|---|---|`);
-  for (const id of f.tools) {
-    const tool = findTool(id);
+  p(`| 工具 | 用途 | 使用范围 / 证据 | 状态 | 属性 |`);
+  p(`|---|---|---|---|---|`);
+  for (const id of allTools) {
+    const tool = findTool(id, brief.tools.external);
+    const scopes: string[] = [];
+    if (f.tools.includes(id)) scopes.push(`渲染时实际调用 ${EVIDENCE.measured}`);
+    const assets = brief.assets.filter(a => a.provenance?.tools.includes(id));
+    if (assets.length) scopes.push(`${tool?.kind === 'fetcher' ? '用于获取输入素材' : '用于生成输入素材'} ${assets.map(a => `\`${a.path}\``).join('、')} ${EVIDENCE.declared}`);
+    const steps = postprocess?.steps.filter(s => s.tools.includes(id)) ?? [];
+    if (steps.length) scopes.push(`外部后期步骤 ${steps.map(s => s.id).join('、')} ${EVIDENCE.declared}`);
     p(
-      `| \`${id}\` | ${tool ? toolKindLabel(tool) : '—'} | ${tool ? statusLabel(tool) : '—'} | ${
+      `| \`${id}\` | ${tool ? toolKindLabel(tool) + (tool.status === 'external' ? `（${tool.label}）` : '') : '—'} | ${scopes.join('；')} | ${tool ? statusLabel(tool) : '—'} | ${
         tool?.network ? '依赖网络' : '本地'
       }${tool && !tool.byteReproducible ? ' · 输出不逐字节可复现' : ''} |`,
     );
   }
   p('');
-  const allowedUnused = brief.tools.allowed.filter((id) => !f.tools.includes(id));
+  const allowedUnused = brief.tools.allowed.filter((id) => !allTools.includes(id));
   if (allowedUnused.length > 0) {
     p(`提示词允许但**本次未使用**的工具：${allowedUnused.map((id) => `\`${id}\``).join('、')}。`);
     p('');
     p(`> 公开说明里不要把这些工具写成本片用过的工具——"允许"不等于"使用"。`);
     p('');
   }
-  if (f.network.length > 0) {
-    p(`其中依赖网络的服务：${f.network.map((id) => `\`${id}\``).join('、')}。`);
-    p(`这些服务的调用不产生任何可复用的素材输入，因此不影响"零外部素材"的判定，`);
-    p(`但它们本身的输出不保证逐字节可复现（见 §6）。`);
+  const network = allTools.filter(id => findTool(id, brief.tools.external)?.network);
+  if (network.length > 0) {
+    p(`其中依赖网络的服务：${network.map((id) => `\`${id}\``).join('、')}。`);
+    p(`素材生成与获取计入输入边界；输出的字节可复现性按工具属性披露（见 §6）。`);
     p('');
   }
 
@@ -433,19 +499,28 @@ export function renderDisclosure(input: RenderInput): string {
   const voiceArtifacts = log.measured.audioArtifacts.filter((a) => a.role === 'voice').length;
   p(`| 项 | 值 |`);
   p(`|---|---|`);
-  p(`| 帧内字幕 | ${f.captions.cues} 条（run.json \`facts.captions\`） |`);
-  p(`| 词级时间戳 | ${f.captions.wordLevel ? '有（时间轴来自 TTS 实测）' : '无（回退到确定性估算）'} |`);
-  p(`| 双语字幕 | ${narration.length === 0 ? '本片无旁白' : `${bilingual}/${narration.length} 条旁白带第二语言行（由渲染层画入帧内，并写入外挂 .srt/.vtt）`} |`);
-  p(`| 旁白音轨 | ${f.audioReuse ? `复用声音锁（原来源 ${f.audioReuse.sourceProviders.tts}）` : f.providers.tts}：实测成功 ${voiceArtifacts}/${narration.length} 条${voiceArtifacts < narration.length ? '，**存在回退/缺失**' : '，无回退'} |`);
-  p('');
-  if (voiceArtifacts < narration.length) {
-    p(`> 明确写出：有 ${narration.length - voiceArtifacts} 条旁白未能合成，成片里没有对应人声；字幕时间轴对这些条目只能退回估算。`);
+  if (postprocess) {
+    p(`| 成片音轨 ${EVIDENCE.measured} | ${postprocess.media.audio ? `${postprocess.media.audio.codec} / ${postprocess.media.audio.channels} 声道` : '无音频流'} |`);
+    p(`| 成片帧内字幕 ${EVIDENCE.declared} | ${postprocess.captions.insideFrame ? `${postprocess.captions.cues} 条（外部后期烧录）` : '外部后期登记为关闭'} |`);
+    p(`| 成片词级时间戳 ${EVIDENCE.declared} | ${postprocess.captions.wordLevel ? '有' : '未登记'} |`);
+    p(`| 中间件字幕 ${EVIDENCE.measured} | ${f.captions.cues} 条（run.json） |`);
     p('');
-  }
-  if (bilingual > 0) {
-    p(`> 双语字幕的第二行**不参与 TTS**：配音只念主语言文本，译文仅上屏。
-> 两行共用同一条 cue 的时间轴，因此不会出现中英各行其是的情况。`);
+    p('配音来源见输入素材工具，混音和字幕处理见最终交付处理链；试听与字幕像素验收另行记录。');
+  } else {
+    p(`| 帧内字幕 | ${f.captions.cues} 条（run.json \`facts.captions\`） |`);
+    p(`| 词级时间戳 | ${f.captions.wordLevel ? '有（时间轴来自 TTS 实测）' : '无（回退到确定性估算）'} |`);
+    p(`| 双语字幕 | ${narration.length === 0 ? '本片无旁白' : `${bilingual}/${narration.length} 条旁白带第二语言行（由渲染层画入帧内，并写入外挂 .srt/.vtt）`} |`);
+    p(`| 旁白音轨 | ${f.audioReuse ? `复用声音锁（原来源 ${f.audioReuse.sourceProviders.tts}）` : f.providers.tts}：实测成功 ${voiceArtifacts}/${narration.length} 条${voiceArtifacts < narration.length ? '，**存在回退/缺失**' : '，无回退'} |`);
     p('');
+    if (voiceArtifacts < narration.length) {
+      p(`> 明确写出：有 ${narration.length - voiceArtifacts} 条旁白未能合成，成片里没有对应人声；字幕时间轴对这些条目只能退回估算。`);
+      p('');
+    }
+    if (bilingual > 0) {
+      p(`> 双语字幕的第二行**不参与 TTS**：配音只念主语言文本，译文仅上屏。
+  > 两行共用同一条 cue 的时间轴，因此不会出现中英各行其是的情况。`);
+      p('');
+    }
   }
 
   // ------------------------------------------------------------ 四项独立声称
@@ -471,23 +546,23 @@ export function renderDisclosure(input: RenderInput): string {
   p('');
   p(`### 可以这样描述`);
   p('');
-  p(canSaySentence(brief, log));
+  p(canSaySentence(brief, log, postprocess));
   p('');
   p(`### 不应这样描述`);
   p('');
-  for (const s of cannotSay(brief, log)) p(`- ${s}`);
+  for (const s of cannotSay(brief, log, postprocess)) p(`- ${s}`);
   p('');
 
   // ------------------------------------------------------------ 确定性
   p(`## 6. 关于「确定性」`);
   p('');
-  p(`本项目对确定性的准确表述是：**相同音频输入 → 逐帧相同的画面**。`);
-  const nondet = f.tools.filter((id) => findTool(id)?.byteReproducible === false);
+  p(postprocess ? '引擎画面的确定性范围为原始渲染；外部后期按文件哈希和处理链核验。' : `本项目对确定性的准确表述是：**相同音频输入 → 逐帧相同的画面**。`);
+  const nondet = allTools.filter((id) => findTool(id, brief.tools.external)?.byteReproducible === false);
   if (nondet.length > 0) {
     p('');
     p(`本次用到了输出不逐字节可复现的工具：${nondet.map((id) => `\`${id}\``).join('、')}。`);
     p(`因此**不应声称"同一条命令得到逐字节相同的 MP4"**。`);
-    p(`run.json 记录这些中间产物的哈希，正是为了让这一点可被事后核对。`);
+    p(`输入素材、run.json 和外部后期记录中的哈希用于复核已保存的版本。`);
   }
   p('');
 
@@ -522,7 +597,8 @@ export function renderDisclosure(input: RenderInput): string {
   p('');
 
   if (brief.notes) {
-    p(`## 9. 备注 ${EVIDENCE.declared}`);
+    p(`## 9. 渲染时备注 ${EVIDENCE.declared}`);
+    if (postprocess) p('以下保留原始渲染契约的历史备注；当前交付身份、工具和复查范围见 §1、§4 及后期记录。');
     p('');
     p(brief.notes);
     p('');
@@ -560,24 +636,32 @@ function statusLabel(tool: ToolEntry): string {
     candidate: '备选',
     rejected: '否决',
     unregistered: '未登记',
+    external: '外部声明',
   };
   return labels[tool.status];
 }
 
 /** "可以这样描述"：只写能站得住的那部分 */
-function canSaySentence(brief: ResolvedBrief, log: RunLog): string {
+function canSaySentence(brief: ResolvedBrief, log: RunLog, postprocess?: PostprocessRecord): string {
   const f = log.facts;
   const parts: string[] = [];
   parts.push(
-    `${f.video.duration} 秒 / ${f.video.width}×${f.video.height} / ${f.video.fps}fps 的影片，` +
+    `${postprocess?.media.durationSeconds ?? f.video.duration} 秒 / ${postprocess?.media.video?.width ?? f.video.width}×${postprocess?.media.video?.height ?? f.video.height} / ${postprocess?.media.video?.fps ?? f.video.fps}fps 的影片，` +
       `画面由 ${f.renderer.package} 逐帧绘制`,
   );
   if (brief.claims.zeroExternalAssets && f.assets.usage?.coverage === 'complete' && !f.assets.external.length && !f.assets.consumed.length && !f.assets.usage.receipts.length) parts.push('封闭制作路径的内容素材消费次数为零');
   if (f.audioReuse) parts.push('声音沿用有哈希的定稿声音包');
-  else if (f.providers.tts !== '(none)') {
+  else if (!['(none)', 'none', 'file'].includes(f.providers.tts)) {
     // 用注册表里的正式名（"edge" → "edge-tts"）：披露里出现的工具名必须能在登记表查到
     const ttsTool = f.tools.map((id) => findTool(id)).find((t) => t?.kind === 'tts');
     parts.push(`配音由 ${ttsTool?.label ?? f.providers.tts} 生成`);
+  }
+  const inputTts = [...new Set(brief.assets.filter(a => a.kind === 'audio').flatMap(a => a.provenance?.tools ?? []))]
+    .filter(id => findTool(id, brief.tools.external)?.kind === 'tts');
+  if (inputTts.length) parts.push(`配音输入素材由 ${inputTts.map(id => `\`${id}\``).join('、')} 生成 ${EVIDENCE.declared}`);
+  if (postprocess) {
+    parts.push(`外部后期处理链：${postprocess.steps.map(s => `${s.id}（${s.tools.join('、')}）`).join(' → ')} ${EVIDENCE.declared}`);
+    parts.push(`最终交付 \`${postprocess.final.path}\`，SHA-256 \`${postprocess.final.sha256}\``);
   }
   if (f.providers.bgm === 'procedural') parts.push('配乐由代码合成');
   if (f.providers.sfx === 'procedural') parts.push('音效由代码合成');  const human =
@@ -589,7 +673,7 @@ function canSaySentence(brief: ResolvedBrief, log: RunLog): string {
 }
 
 /** "不应这样描述"：把这次渲染不支持的表述逐条列出来 */
-function cannotSay(brief: ResolvedBrief, log: RunLog): string[] {
+function cannotSay(brief: ResolvedBrief, log: RunLog, postprocess?: PostprocessRecord): string[] {
   const out: string[] = [];
   if (brief.claims.humanRounds === null) {
     out.push(`**"one prompt 做出了这支片"**——轮数未记录，这句话无依据。`);
@@ -602,14 +686,15 @@ function cannotSay(brief: ResolvedBrief, log: RunLog): string[] {
   if (!brief.claims.zeroExternalAssets) {
     out.push(`**"零外部素材"**——brief 声明存在外部输入，详见 §3。`);
   }
-  const nondet = log.facts.tools.filter((id) => findTool(id)?.byteReproducible === false);
+  const allTools = usedToolIds(brief, log, postprocess);
+  const nondet = allTools.filter((id) => findTool(id, brief.tools.external)?.byteReproducible === false);
   if (nondet.length > 0) {
     out.push(
       `**"逐字节可复现"**——${nondet.map((id) => `\`${id}\``).join('、')} 的输出不逐字节一致；` +
-        `只能声称"相同音频输入下画面逐帧相同"。`,
+        (postprocess ? '当前版本按输入与最终文件的 SHA-256 复核。' : `只能声称"相同音频输入下画面逐帧相同"。`),
     );
   }
-  const allowedUnused = brief.tools.allowed.filter((id) => !log.facts.tools.includes(id));
+  const allowedUnused = brief.tools.allowed.filter((id) => !allTools.includes(id));
   if (allowedUnused.length > 0) {
     out.push(
       `**把这些工具写成本片用过的工具**：${allowedUnused.map((id) => `\`${id}\``).join('、')} 只是提示词允许，本次并未调用。`,

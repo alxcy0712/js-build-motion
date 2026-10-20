@@ -32,7 +32,7 @@ import {
   type BriefAssetKind,
   type BriefCaptionMode,
 } from './schema.ts';
-import { TOOL_REGISTRY, findTool, knownToolIds } from './tool-registry.ts';
+import { TOOL_REGISTRY, findTool, knownToolIds, type ExternalTool } from './tool-registry.ts';
 
 // ---------------------------------------------------------------- 类型
 
@@ -42,6 +42,7 @@ export interface BriefAsset {
   readonly license: string;
   readonly source?: string;
   readonly sha256?: string;
+  readonly provenance?: { readonly tools: readonly string[] };
 }
 
 export interface BriefInputItem {
@@ -78,6 +79,7 @@ export interface ResolvedBrief {
   readonly tools: {
     readonly allowed: readonly string[];
     readonly forbidden: readonly string[];
+    readonly external?: readonly ExternalTool[];
   };
   readonly claims: BriefClaims;
   readonly acceptance: readonly string[];
@@ -223,8 +225,9 @@ export function checkBrief(raw: unknown, ctx: BriefContext = {}): BriefCheckResu
       license: String(a['license']),
       ...(a['source'] !== undefined ? { source: String(a['source']) } : {}),
       ...(a['sha256'] !== undefined ? { sha256: String(a['sha256']) } : {}),
+      ...(a['provenance'] !== undefined ? { provenance: a['provenance'] as BriefAsset['provenance'] } : {}),
     })),
-    tools: { allowed, forbidden },
+    tools: { allowed, forbidden, ...(toolsRaw['external'] ? { external: toolsRaw['external'] as ExternalTool[] } : {}) },
     claims: {
       humanRounds: claimsRaw['humanRounds'] === null ? null : Number(claimsRaw['humanRounds']),
       pureCode: Boolean(claimsRaw['pureCode']),
@@ -322,7 +325,14 @@ function checkArchetype(brief: ResolvedBrief, issues: Issue[]): void {
 }
 
 function checkTools(brief: ResolvedBrief, issues: Issue[]): void {
-  const known = new Set(knownToolIds());
+  const external = brief.tools.external ?? [];
+  const known = new Set([...knownToolIds(), ...external.map(t => t.id)]);
+  const ids = new Set<string>();
+  for (const tool of external) {
+    if (findTool(tool.id) || ids.has(tool.id)) issues.push({ severity: 'FATAL', code: 'TOOL_DEFINITION_CONFLICT', path: 'tools.external',
+      message: `外部工具 id 重复或覆盖已有注册: ${tool.id}`, hint: '为外部工具使用独立 id，沿用已有注册工具的状态' });
+    ids.add(tool.id);
+  }
 
   for (const id of brief.tools.allowed) {
     if (!known.has(id)) {
@@ -336,7 +346,7 @@ function checkTools(brief: ResolvedBrief, issues: Issue[]): void {
       });
       continue;
     }
-    const tool = findTool(id);
+    const tool = findTool(id, external);
     if (!tool) continue;
     if (tool.status === 'rejected') {
       issues.push({
@@ -392,6 +402,10 @@ function checkTools(brief: ResolvedBrief, issues: Issue[]): void {
       hint: '删掉其中一处；自相矛盾的工具边界无法对账',
     });
   }
+  for (const [index, asset] of brief.assets.entries()) for (const id of asset.provenance?.tools ?? []) {
+    if (!brief.tools.allowed.includes(id) || brief.tools.forbidden.includes(id)) issues.push({ severity: 'FATAL', code: 'ASSET_TOOL_UNDECLARED',
+      path: `assets[${index}].provenance.tools`, message: `素材来源工具须在 tools.allowed 内且符合禁止清单: ${id}` });
+  }
 }
 
 function checkClaims(
@@ -399,7 +413,7 @@ function checkClaims(
   inputs: ResolvedBrief['inputs'],
   issues: Issue[],
 ): void {
-  const allowedTools = brief.tools.allowed.map((id) => findTool(id)).filter((t) => t !== undefined);
+  const allowedTools = brief.tools.allowed.map((id) => findTool(id, brief.tools.external)).filter((t) => t !== undefined);
   const externalVisual = allowedTools.filter((t) => t.kind === 'external-visual');
 
   if (brief.claims.pureCode) {
@@ -566,9 +580,9 @@ function checkAssets(brief: ResolvedBrief, projectDir: string, issues: Issue[]):
 
 /** 网络服务的可复现性提醒：直接影响"确定性"能说到哪一步 */
 function checkToolRuntimeNotes(brief: ResolvedBrief, issues: Issue[]): void {
-  const tools = brief.tools.allowed.map((id) => findTool(id)).filter((t) => t !== undefined);
+  const tools = brief.tools.allowed.map((id) => findTool(id, brief.tools.external)).filter((t) => t !== undefined);
   for (const tool of tools) {
-    if (tool.status === 'adopted' && !tool.byteReproducible) {
+    if ((tool.status === 'adopted' || tool.status === 'external') && !tool.byteReproducible) {
       issues.push({
         severity: 'WARNING',
         code: 'NONDETERMINISTIC_TOOL',

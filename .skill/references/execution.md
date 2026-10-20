@@ -60,7 +60,30 @@ BGM承托情绪与段落，SFX按点击、接触、冲击或完成事件排程�
 
 纯视觉改片使用 `node .skill/scripts/video.mjs <slug> render --audio-lock <返回的相对路径>`，沿用相同 master、分轨和实测字幕时间。复用时登记锁包和音轨来源，本次工具事实记录实际编码与文件校验。旁白文本、音色、语速、起点、片长或混音排布发生变化，以及锁包、媒体或源素材被替换时，命令要求重新定稿；画面、译文和字幕样式调整可沿用声音。当前复用保证 PCM master 身份，AAC 封装由每次渲染执行。
 
-此类分阶段制作保存实际渲染和封装记录，使用本片运行时的 buildFacts / buildMeasured / buildRunLog 生成 run.json，登记音轨来源、哈希、素材消耗与实际字幕数；最终输出哈希和源码哈希必须对应成片，再生成 disclosure。所有制作步骤继续通过统一入口，原脚本、镜长、声音和编码参数的保持情况写入本片证据。
+此类声音复用由渲染入口保存实际调用、来源哈希、素材消耗与字幕数，`run.json` 继续绑定该次渲染产物。渲染后的外部混音、字幕烧录或转码按下节登记最终交付，原脚本、镜长、声音和编码参数的保持情况写入本片证据。
+
+### 输入素材来源与外部后期披露
+
+`brief.assets[].provenance.tools` 登记生成或获取该素材的工具 id，例如配音素材使用 `{"tools":["doubao-tts"]}`。来源工具进入披露的已使用清单，使用范围标为“用于生成输入素材”或“用于获取输入素材”，证据等级为声明；本次渲染调用继续按 `run.json` 的实际观测列出。
+
+外部工具通过 `brief.tools.external` 声明，每项包含 `id`、`label`、`kind`、`network`、`byteReproducible`，并将 id 加入 `tools.allowed`。`kind` 沿用 `asr`、`media`、`editor`、`fetcher` 等工具类别，适用于转写器、重采样器、字幕脚本、后期脚本及素材站来源。外部定义使用独立 id，已有注册状态和 `tools.forbidden` 继续生效；登记的执行支持由调用方核验。
+
+外部后期完成后，将正式请求保存在本片，例如 `evidence/postprocess-request.json`，通过以下入口登记和复查：
+
+```text
+postprocess --schema request
+postprocess --request evidence/postprocess-request.json
+postprocess --verify
+disclosure
+```
+
+请求包含 `version="0.1"`、`assets`、`tools`、`steps`、`final`、`captions`。`assets` 沿用 brief 素材结构，`tools` 包含 `allowed` 和可选 `external`；`steps` 每项包含 `id`、`description`、`tools`、`inputs` 和 `output`，每个输入输出均为 `{path,sha256}`；`final` 使用同样的文件身份，指向最后一步输出，且位于本片 `outDir`。`captions` 声明最终文件的 `insideFrame`、`cues`、`wordLevel`。处理链按先后顺序引用原渲染件、已登记素材或前一步输出，最终文件须沿链连接到原渲染件，原件和中间输出分别保留。
+
+登记命令核对原 run 的完整性与当前输入，保存绑定原始 run 文件 SHA-256 的 `evidence/postprocess.json`，并实测最终视频的 SHA-256、体积和音视频流。旧片可在请求的 `assets` 中补充来源工具或后期素材，在 `tools` 中补充外部工具；同路径素材沿用原有身份、来源和许可。原 `brief.json`、输入快照和 `run.json` 的绑定继续复查，修改原 brief 或 spec 后通过重新渲染更新运行事实。
+
+`disclosure` 自动读取后期记录，§1 使用最终视频的实测文件信息，明确标注原始中间渲染件，并在 §4/§5 列出输入来源工具与后期步骤。输入输出哈希和流信息属于实测，处理用途、字幕烧录及词级时间属于外部声明，试听和字幕像素验收单独记录。指定其他记录使用 `disclosure --postprocess <本片记录JSON>`，其契约与默认记录一致；后期记录继续作为最终交付的身份依据，`artifact` 保留原渲染件的身份检查范围。
+
+归档副本缺少源媒体时，请求可显式采用 `sourceVerification="records-only"`，并用 `evidence: [{path,sha256}]` 绑定已有处理记录。最终视频和声明依据始终按文件实测；原始 runId、artifactId、spec / brief 哈希、输入快照与消费回执继续核验，现存来源文件逐项核对，缺失原件列入记录的 `unavailable` 和披露待复核清单，其哈希标为声明。默认 `complete` 沿用完整原件检查；恢复或移除原件后重新登记当前复查范围。
 
 字幕排时序与长旁白内部的镜头推进按[短字幕与语义分镜](captions-and-shots.md)，首次显现、强调峰值、动作完成和完整清单读时按其中的[中文语义事件排程](captions-and-shots.md#中文语义事件排程)。qa 的 captionReadability 给出分句后的条数、最长文本、最短停留与估算条数；按提示复核短词闪现、双语对应和词级匹配。画面、SRT、VTT 沿用同一条目时间线。
 
