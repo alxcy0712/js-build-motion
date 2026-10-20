@@ -228,8 +228,9 @@ export function repairSpec(input: unknown, options: RepairOptions = {}): RepairR
   const theme = getTheme(style.theme);
   for (const [index, scene] of scenes.entries()) {
     if (isThemeTransition(scene.transition) && !theme.transitions.includes(scene.transition)) {
-      r.fatal('THEME_TRANSITION_UNSUPPORTED', `scenes[${index}].transition`,
-        `主题 ${theme.id} 的转场 ${scene.transition} 不受支持。允许的主题转场: ${theme.transitions.join(' | ')}`);
+      r.warn({ code: 'THEME_TRANSITION_NOT_RECOMMENDED', path: `scenes[${index}].transition`,
+        message: `主题 ${theme.id} 默认推荐 ${theme.transitions.join(' | ')}；保留显式转场 ${scene.transition}，按镜头语义、连续性与读时验收。`,
+        allowed: theme.transitions });
     }
   }
   const captions = repairCaptions(input['captions'], r);

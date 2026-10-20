@@ -3,6 +3,9 @@ import { test } from 'node:test';
 import { Canvas } from 'skia-canvas';
 import { applyCameraPose } from '../src/drawing/primitives/camera.ts';
 import { springTrack } from '../src/animation/spring.ts';
+import { validateSpec } from '../src/spec/validate.ts';
+import { createSpecRenderer } from '../src/pipeline/spec-renderer.ts';
+import { makeFrameContext } from '../src/renderer/renderer.ts';
 
 test('focus lands at the viewport center at several zooms, angles and aspect ratios', () => {
   for (const [width, height] of [[320, 180], [180, 320], [240, 240]]) {
@@ -56,4 +59,28 @@ test('invalid camera dimensions and layer zoom fail before canvas transforms', (
     assert.throws(() => applyCameraPose(context, { x: 80, y: 45, zoom }, 160, 90), /CAMERA_POSE/);
   }
   assert.throws(() => applyCameraPose(context, { x: 80, y: 45, zoom: 0.1 }, 160, 90, 2), /CAMERA_POSE/);
+});
+
+test('splitting a continuous world into two shots preserves the absolute clock and rendered geometry', () => {
+  const renderers = [false, true].map(split => createSpecRenderer({
+    spec: validateSpec({ video: { width: 1080, height: 1920, duration: 2, fps: 30, seed: 1 },
+      captions: { enabled: false }, scenes: (split ? [[0, 1], [1, 2]] : [[0, 2]]).map(([start, end], i) =>
+        ({ id: `shot${i}`, start, end, environment: 'rain_window', cameraMove: 'static', transition: 'cut' })) }).spec!,
+    width: 160, height: 90,
+    drawScene: ({ ctx, time }) => {
+      ctx.fillStyle = '#000'; ctx.fillRect(0, 0, 160, 90);
+      ctx.save(); applyCameraPose(ctx, {
+        x: springTrack(time, [[0, 80], [0.8, 120], [1.04, 60]]), y: 45, zoom: 1.25,
+      }, 160, 90);
+      ctx.fillStyle = '#ffc712'; ctx.fillRect(85, 25, 20, 20); ctx.restore();
+      ctx.fillStyle = '#fff'; ctx.fillRect(10, 78, 140, 5);
+    },
+  }));
+  try {
+    for (const frameIndex of [24, 29, 30, 31, 32, 36, 29, 24]) {
+      const frame = makeFrameContext({ frameIndex, totalFrames: 60, fps: 30, width: 160, height: 90, seed: 1 });
+      const a = Buffer.from(renderers[0]!.renderFrame(frame).data), b = Buffer.from(renderers[1]!.renderFrame(frame).data);
+      assert.deepEqual(a, b, `frame=${frameIndex}`);
+    }
+  } finally { renderers.forEach(renderer => renderer.dispose()); }
 });

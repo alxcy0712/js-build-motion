@@ -36,13 +36,13 @@ export interface TextRevealRule {
   readonly firstScreen?: 'instant' | 'reveal';
 }
 
-/** 防死帧：每个镜头必须持续存在的微运动层。grain 不计为有效运动。 */
+/** 可选氛围微运动的主题预设；阅读、观察与情绪停留按用途验收，grain 仅提供颗粒。 */
 export type LivenessLayer = 'drift' | 'parallax' | 'lightSweep' | 'boil' | 'grain';
 export interface LivenessRule {
   readonly layers: readonly LivenessLayer[];
-  /** 任意窗口内画面无可见变化的最长时间（秒），上限 0.5 */
+  /** 所选微运动轨迹的校验窗口（秒），校验器允许 (0, 0.5]。 */
   readonly maxStillSeconds: number;
-  /** 每个 maxStillSeconds 窗口内画面角点的最小位移（1080 宽参考像素） */
+  /** 所选轨迹在每个校验窗口内的角点最小位移（1080 宽参考像素）。 */
   readonly minMotionPx: number;
   readonly parallaxAmplitudePx: number;  // 视差层正弦漂移幅度
   readonly parallaxPeriod: number;       // 秒
@@ -64,7 +64,7 @@ export interface ThemeTokens {
   readonly durations: Readonly<Record<'micro' | 'enter' | 'exit' | 'transition' | 'holdMin', number>> & Readonly<Record<string, number>>;
   readonly springs: Readonly<Record<'text' | 'layout' | 'accent', SpringParams>> & Readonly<Record<string, SpringParams>>;
   readonly easings: Readonly<Record<'standard' | 'enter' | 'exit' | 'camera', Bezier>> & Readonly<Record<string, Bezier>>;
-  readonly transitions: readonly TransitionId[];
+  readonly transitions: readonly TransitionId[]; // Style recommendations; registered explicit choices remain valid.
   readonly treatments: {
     readonly grain: { readonly opacity: number; readonly fps: number };
     readonly glow: { readonly blur: number; readonly opacity: number; readonly targets: readonly ('accent' | 'text' | 'subject')[] };

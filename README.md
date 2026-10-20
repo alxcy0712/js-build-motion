@@ -114,6 +114,8 @@ npm 11 安装时可能提示 skia-canvas 的安装脚本未执行；随包预编
 |---|---|---|
 | **Prompt Motion / @p4nthera_** | [案例库](https://prompt-motion.com/)、[展演模板](https://prompt-motion.com/templates/showreel) | 提炼内容概念、状态顺序与检查步骤，区分展演节奏和解释读时；见[风格任务与编排](.skill/references/styles.md#按任务选择表现方式)。模板参数按内容选用。 |
 | **zero / @twoclipping** | [Shape morphing through UI states](https://prompt-motion.com/twoclipping-5cba86) | 同一容器保持身份、内容独立进退；见[状态联动与容器交接](.skill/references/motion-design.md#状态联动与容器交接)。 |
+| **Stephan Livera / @stephanlivera** | [Claude motion designer showreel](https://prompt-motion.com/stephanlivera-df17a2) | 轮廓、尺度与快慢层次的研究参照；展演节奏按本片内容与读时选择，见[风格任务与编排](.skill/references/styles.md#按任务选择表现方式)。 |
+| **@LinearUncle** | [Derivative concept explainer](https://prompt-motion.com/linearuncle-5d2bae) | 同一讲解对象与变量跨阶段延续、稳定参照与阅读停留，见[创作主线](.skill/references/motion-language.md#创作主线)。 |
 | **ultima / @ultimaxbt** | [Orange dot motion system](https://prompt-motion.com/ultimaxbt-bbebf5) | 贯穿对象在文字、图形和章节间接力；见[动效语言](.skill/references/motion-language.md)。具体实现以视频观察核对。 |
 | **testarossa / @rossaxbt** | [White ball UI motion loop](https://prompt-motion.com/rossaxbt-94583b) | 提示词中的状态联动、操作反馈和闭环检查；见[产品与体验叙事](.skill/references/product-film-language.md)。 |
 | **Parker Rex / @ParkerRex** | [Token bucket rate limiter](https://prompt-motion.com/parkerrex-1a54fe) | 稳定空间内并列展示状态、事件与历史，作为 minimal 机制讲解的取样参照；见[风格任务与编排](.skill/references/styles.md#按任务选择表现方式)。 |

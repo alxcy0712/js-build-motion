@@ -210,9 +210,10 @@ export function createSpecRenderer(options: SpecRendererOptions): Renderer & { t
       const transitionDuration = Math.min(0.5, (scene.end - scene.start) / 3);
       const mix = Math.min(1, localTime / transitionDuration);
       const blending = (BLENDED_TRANSITIONS as readonly string[]).includes(scene.transition);
-      const themeTransition = isThemeTransition(scene.transition)
-        ? (theme.transitions.includes(scene.transition) ? scene.transition : (warnOnce(`tr:${scene.id}`, `转场 ${scene.transition} 不在风格 ${theme.id} 的允许列表，改用 ${theme.transitions[0]}`), theme.transitions[0]!))
-        : null;
+      const themeTransition = isThemeTransition(scene.transition) ? scene.transition : null;
+      if (themeTransition && !theme.transitions.includes(themeTransition)) {
+        warnOnce(`tr:${scene.id}`, `风格 ${theme.id} 默认推荐 ${theme.transitions.join(' | ')}；使用显式转场 ${themeTransition}，请核对连续性与读时。`);
+      }
       const themeMixDur = themeTransition ? Math.min(themeTransitionDuration(themeTransition, theme), (scene.end - scene.start) / 3) : 0;
       if (previous && themeTransition && localTime < themeMixDur) {
         incomingText?.reset();

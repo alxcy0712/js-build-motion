@@ -1,5 +1,5 @@
 {
-  "packageId": "6f4dfb348b4a4ada7d14534d12a8a1ec75202c63a7724a952c211f233a026928",
+  "packageId": "bb2a47fc25b8942c6164431431d60d503805193e6c987a273a12b8a4a11331cd",
   "version": "0.2",
   "engineVersion": "0.1.0",
   "platform": "darwin",
@@ -29,7 +29,7 @@
   "skillFiles": [
     {
       "path": "SKILL.md",
-      "sha256": "7e0669e466b581b9d9cbe70563c08199059c4f4856fe0cf8fb647f935127f037"
+      "sha256": "41169d3f0da2e6bc7306bdd062e938d758f97e65c1e09655b3f2f409afcf8b6c"
     },
     {
       "path": "assets/components.json",
@@ -73,7 +73,7 @@
     },
     {
       "path": "references/captions-and-shots.md",
-      "sha256": "236067e6af8102bac56da0cd9e455779e0941552e88295d3673112cf07865d45"
+      "sha256": "eabb00a0f95456f7e3b039344cf49b3ea68c1de82aaa9a78b90e3c63a8934620"
     },
     {
       "path": "references/cinematography.md",
@@ -93,7 +93,7 @@
     },
     {
       "path": "references/drawing.md",
-      "sha256": "cbc8100479018db308d52f89761e9f978eb1ecd99ab881a82ffd6819378a95d7"
+      "sha256": "0eca112084cf3126b00de75bfb7035a9aa6c46cf14f065ccf5301fc6abb2a862"
     },
     {
       "path": "references/editing-element-catalogue.md",
@@ -105,7 +105,7 @@
     },
     {
       "path": "references/intake.md",
-      "sha256": "ac420d41842f9adf01568905a8643d7e0e0389632da0b6604c97d60c87b91e28"
+      "sha256": "57733871da342d56c8c7875adc75b70627664cdb807c6ab5db93f649718e3b90"
     },
     {
       "path": "references/maintenance.md",
@@ -117,11 +117,11 @@
     },
     {
       "path": "references/motion-design.md",
-      "sha256": "2eafbcba560607ebecda9c7d3153cf6f2edfdbe4e0c1b85f1b4ec9bfd33df1a6"
+      "sha256": "1654c44f0eb097d62a4d46a627c742b110263dd8bc73b77d9383cda872c0bdac"
     },
     {
       "path": "references/motion-language.md",
-      "sha256": "82643d93e49f8153cade0be208a5945d99134bc3032e096f991b61945e5ee316"
+      "sha256": "3db2373f30acf11224c23f4399353410e30135a453fb2fb69ff737858a9c9c7d"
     },
     {
       "path": "references/product-film-language.md",
@@ -133,7 +133,7 @@
     },
     {
       "path": "references/quality.md",
-      "sha256": "9098c9920cc8b2bdbe8d38f45d460dc8358955cc54cf48230456bda4db63cfc5"
+      "sha256": "d61691b4b479993eea98ef2ced10470ba5fac3e89b10ffdff3fd831bab7ad321"
     },
     {
       "path": "references/reference-geometry.md",
@@ -145,7 +145,7 @@
     },
     {
       "path": "references/styles.md",
-      "sha256": "3ead1dfeb4dd6790af1b2c549478b653379e242751965d09f96d94781feb8691"
+      "sha256": "6d474d2726b8ebe1fdf8665c4cd87a6ec399c505dc0e4f18669dca40b731d910"
     },
     {
       "path": "references/vertical-framing.md",
@@ -5603,7 +5603,7 @@
     },
     {
       "path": "src/pipeline/spec-renderer.ts",
-      "sha256": "c75a4ff9342da77075170607acc79d7fa0a464480d82eb32b260f16f2a9eb66a"
+      "sha256": "082c5b01fc446e162e173f021c4142b60e85633dc976419155b89ec85fe6f0f8"
     },
     {
       "path": "src/pipeline/theme-transitions.ts",
@@ -5783,7 +5783,7 @@
     },
     {
       "path": "src/spec/repair.ts",
-      "sha256": "701c67fab36042f832930862355b9a670e34439fdc377f7ba445e02bd8d182b9"
+      "sha256": "ba667ed63c0af6f2dccbc6dbc7e0a87e47f5351c894adef8aa16bd0f0294b511"
     },
     {
       "path": "src/spec/schema.ts",
@@ -5791,7 +5791,7 @@
     },
     {
       "path": "src/spec/types.ts",
-      "sha256": "3dff8c7ed28fe6ed2bd503d43721af8672e70dc17a90ae7b3daa476788d0b120"
+      "sha256": "d4e74453c56f107240b7c2b155fac4532617554b26d0ff69dffd1ee8bc63c562"
     },
     {
       "path": "src/spec/validate.ts",
@@ -5847,7 +5847,7 @@
     },
     {
       "path": "src/themes/types.ts",
-      "sha256": "9b27cf60c9e0988989140e75cdfeb9cc7363f302332bda6b251218aebeec1a86"
+      "sha256": "b0ce87bdcb612c8bf745bb8a326195fe72d0fd7fad1d8663c95e067a27b0de95"
     },
     {
       "path": "src/themes/validate.ts",
@@ -5977,7 +5977,7 @@
     },
     {
       "path": "camera-pose.test.ts",
-      "sha256": "e00dad81e12209d4c56edef1228996a78cbfafa99c4982f97f975a896003afde"
+      "sha256": "49d9e6bf7a6e4ad3fc4da5c5d4bee34ae73b9ba61aef68ea352b315980b1f73f"
     },
     {
       "path": "caption-feedback.test.ts",
@@ -6257,7 +6257,7 @@
     },
     {
       "path": "theme-pipeline.test.ts",
-      "sha256": "ff3cb7cefe3a9cd2138a010d028f77bff92ef52ebe7d0aab539b0389acd1a869"
+      "sha256": "c0e76bbd7c92bc9c89cf1c3c98b7f10eeec21ec46cf874fe30a43d6bc56e32c2"
     },
     {
       "path": "themes.test.ts",

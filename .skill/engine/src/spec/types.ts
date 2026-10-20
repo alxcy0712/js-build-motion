@@ -6,16 +6,15 @@ export { THEME_IDS, type ThemeId } from '../themes/ids.ts';
 import type { Composition } from './motion.ts';
 import { DOUBAO_VOICES, type DoubaoVoiceId } from '../audio/tts/doubao-voices.ts';
 /**
- * VideoSpec 类型定义（需求 §11、§12）。
+ * VideoSpec 类型定义。
  *
  * 设计原则：
- *   1. **封闭词汇**——所有可选值是 `as const` 数组，模型只能「选」，不能「造」
- *   2. **全量默认值**——每个字段都有默认值，残缺的 spec 也能渲出可看的画面
- *   3. **单一事实来源**——枚举数组同时被 JSON Schema 与 TS 类型消费，
- *      因此 schema 与类型**不可能漂移**（不需要代码生成）
+ *   1. 内置规格的枚举值由 `as const` 数组登记，供 JSON Schema 与 TS 类型共用。
+ *   2. 默认值由本文件常量登记，修复规则由 repair.ts 实现，输入经校验后进入渲染。
+ *   3. 本片可通过 drawing 入口和组件副本独立实现主体、场景与轨迹，
+ *      并通过已验证的预渲染路径准备素材；输出沿用固定时间、来源与渲染契约。
  *
- * 模型看到的只有「场景 / 人物 / 动作 / 镜头 / 风格 / 情绪」这类语义词汇，
- * 看不到任何 Skia / Canvas / FFmpeg 概念（§8）。
+ * 枚举约束作用于内置字段；具体画法及可调默认的范围见 references/drawing.md、styles.md。
  */
 
 // ------------------------------------------------------------------ 枚举
@@ -43,7 +42,7 @@ export type CameraMove = (typeof CAMERA_MOVES)[number];
 
 export const TRANSITIONS = [
   'cut', 'fade', 'dissolve', 'wipe', 'iris', 'zoom', 'grid', 'glitch', 'tokenize',
-  // 风格转场（themes/）：只能使用当前风格 transitions 列表中的项，否则回退到该风格第一项
+  // 风格转场（themes/）：主题列表提供推荐，已登记的显式选择保留并按需告警。
   'blurDissolve', 'riseFade', 'maskWipeUp', 'scaleThrough', 'cutOnBeat', 'whipPan', 'glitchCut', 'zoomIntoElement', 'lineScan', 'paperFlip', 'inkBleed',
 ] as const;
 export type Transition = (typeof TRANSITIONS)[number];

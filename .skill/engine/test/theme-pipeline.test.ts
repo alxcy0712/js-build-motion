@@ -5,7 +5,7 @@ import { validateSpec } from '../src/spec/validate.ts';
 import { createSpecRenderer } from '../src/pipeline/spec-renderer.ts';
 import { makeFrameContext } from '../src/renderer/renderer.ts';
 import { parseBrand, THEMES, type ThemeId } from '../src/themes/index.ts';
-import { drawThemeTransition, themeTransitionDuration } from '../src/pipeline/theme-transitions.ts';
+import { drawThemeTransition, themeTransitionDuration, THEME_TRANSITION_IDS } from '../src/pipeline/theme-transitions.ts';
 import { drawTreatments } from '../src/pipeline/theme-treatments.ts';
 import { PROJECT_FONT_FAMILY, registerProjectFonts } from '../src/utils/env.ts';
 import { findDeadSpans, type GrayFrame } from '../src/qa/dead-frames.ts';
@@ -68,35 +68,50 @@ test('两套主题都不启用扫光', () => {
   }
 });
 test('风格转场：中段与两端都不同，且每个已登记转场都能绘制', () => {
-  for (const tr of new Set(Object.values(THEMES).flatMap((theme) => theme.transitions))) {
-    const theme = (Object.keys(THEMES) as ThemeId[]).find((id) => THEMES[id].transitions.includes(tr))!;
+  for (const theme of ['minimal', 'kinetic'] as const) for (const tr of THEME_TRANSITION_IDS) {
     const s = specFor(theme, tr);
     const [before, mid, after] = frames(s, [47, 48 + 3, 72]);
     if (tr !== 'cutOnBeat') assert.ok(!mid!.equals(before!) && !mid!.equals(after!), `${tr}@${theme}`);
   }
 });
-test('转场不在风格允许列表时回退并告警', () => {
+test('推荐外的已登记转场告警并实际绘制所选效果', () => {
   const warnings: string[] = [];
-  // 绕过 validate 注入坏值，验证渲染兜底继续可用。
-  const s = specFor('minimal', 'cut');
-  s.scenes[1]!.transition = 'whipPan';
-  const renderer = createSpecRenderer({ spec: s, width: W, height: H, onWarning: (m) => warnings.push(m) });
-  try { renderer.renderFrame(makeFrameContext({ frameIndex: 50, fps: FPS, totalFrames: 96, width: W, height: H, seed: 7 })); }
+  const s = specFor('minimal', 'whipPan', 'rain_window', 'static');
+  const paint = (ctx: any, incoming: boolean) => { ctx.fillStyle = incoming ? '#0000ff' : '#ff0000'; ctx.fillRect(0, 0, W, H); };
+  const renderer = createSpecRenderer({ spec: s, width: W, height: H, onWarning: (m) => warnings.push(m),
+    drawScene: ({ ctx, scene }) => paint(ctx, scene.id === 'b') });
+  try {
+    const actual = renderer.renderFrame(makeFrameContext({ frameIndex: 50, fps: FPS, totalFrames: 96, width: W, height: H, seed: 7 })).data;
+    const canvas = new Canvas(W, H), incoming = new Canvas(W, H), outgoing = new Canvas(W, H);
+    paint(incoming.getContext('2d'), true);
+    drawThemeTransition('whipPan', { ctx: canvas.getContext('2d'), width: W, height: H,
+      mix: (50 / FPS - 2) / themeTransitionDuration('whipPan', THEMES.minimal), theme: THEMES.minimal, incoming, outgoing, seed: 6,
+      drawPrevious: c => paint(c, false) });
+    assert.deepEqual(actual, Buffer.from(canvas.getContext('2d').getImageData(0, 0, W, H).data));
+    renderer.renderFrame(makeFrameContext({ frameIndex: 51, fps: FPS, totalFrames: 96, width: W, height: H, seed: 7 }));
+  }
   finally { renderer.dispose(); }
-  assert.ok(warnings.some((w) => /whipPan/.test(w)));
+  assert.equal(warnings.length, 1);
+  assert.ok(warnings[0]!.includes('whipPan'));
 });
-test('validate 按最终主题拒绝越界转场，并给出主题与允许列表', () => {
+test('validate 按最终主题给出推荐，保留显式转场与未知值校验', () => {
   for (const [theme, transition] of [['kinetic', 'riseFade'], ['minimal', 'whipPan']] as const) {
-    assert.throws(() => specFor(theme, transition), (error: unknown) => {
-      const message = (error as Error).message;
-      assert.ok(message.includes(theme) && message.includes(transition), message);
-      for (const allowed of THEMES[theme].transitions) assert.ok(message.includes(allowed), message);
-      return true;
-    });
+    assert.equal(specFor(theme, transition).scenes[1]!.transition, transition);
     for (const transition of [...THEMES[theme].transitions, 'cut', 'dissolve']) assert.ok(specFor(theme, transition));
   }
-  assert.throws(() => validateSpec({ style: 'minimal', scenes: [{ start: 0, end: 2, transition: 'riseFade' }] },
-    { brand: brand('kinetic') }), /kinetic.*riseFade/);
+  const validate = (transition: unknown) => validateSpec({ style: 'minimal', scenes: [{ start: 0, end: 2, transition }] }, { brand: brand('kinetic') });
+  const result = validate('riseFade');
+  assert.equal(result.spec!.style.theme, 'kinetic');
+  assert.equal(result.spec!.scenes[0]!.transition, 'riseFade');
+  const warning = result.issues.find(i => i.code === 'THEME_TRANSITION_NOT_RECOMMENDED')!;
+  assert.equal(warning.severity, 'WARNING');
+  assert.deepEqual(warning.allowed, THEMES.kinetic.transitions);
+  assert.ok(warning.message.includes('kinetic') && warning.message.includes('riseFade'));
+  for (const value of ['unregisteredTransition', 17, {}]) {
+    const repaired = validate(value);
+    assert.equal(repaired.spec!.scenes[0]!.transition, 'cut');
+    assert.ok(repaired.issues.some(i => i.code === 'INVALID_ENUM' && i.path === 'scenes[0].transition'));
+  }
 });
 
 test('riseFade：24fps 逐帧只出现一层文字，共享切点最多空一帧', () => {
