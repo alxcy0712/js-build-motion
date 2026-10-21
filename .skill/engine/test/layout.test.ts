@@ -130,3 +130,18 @@ test('required offscreen glyphs remain clipped by the destination clip and unsup
   assert.ok(dst.report().issues.some(i=>i.code==='REQUIRED_CONTENT_CLIPPED'&&i.severity==='error'));
   dst.trace.reset(.5);dst.ctx.globalCompositeOperation='multiply';dst.ctx.drawImage(src.canvas,0,0);assert.equal(dst.report().status,'pending');
 });
+
+test('hard offset shadows keep geometry checking pending for pixel review',()=>{
+  const {ctx,report}=fixture();ctx.shadowColor='#fff';ctx.shadowOffsetX=80;ctx.shadowBlur=0;ctx.fillText('A',20,100);
+  assert.equal(report().status,'pending');assert.ok(report().limitations.some(s=>/shadow/.test(s)));
+  const src=fixture(),dst=fixture();src.ctx.fillText('Layer',20,100);dst.ctx.shadowColor='#fff';dst.ctx.shadowOffsetX=80;dst.ctx.drawImage(src.canvas,0,0);assert.equal(dst.report().status,'pending');
+});
+test('direct pixel writes declare their untracked visibility coverage',()=>{
+  const {ctx,report}=fixture();ctx.putImageData(ctx.createImageData(100,100),20,30);
+  assert.equal(report().status,'pending');assert.ok(report().limitations.some(s=>/putImageData/.test(s)));
+});
+test('stroke text review bounds include line width after the current transform',()=>{
+  const {ctx,trace}=fixture();ctx.scale(2,1);ctx.fillText('Border',40,100);const fill=trace.draws[0]!.bounds;
+  trace.reset(.5);ctx.lineWidth=12;ctx.strokeText('Border',40,100);const stroke=trace.draws[0]!;
+  assert.equal(stroke.confidence,'bounds');assert.ok(stroke.bounds.x<=fill.x-12);assert.ok(stroke.bounds.width>=fill.width+24);
+});

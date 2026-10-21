@@ -1,5 +1,5 @@
 import { Path2D, type CanvasRenderingContext2D } from 'skia-canvas';
-import { activeAt, elementIssues, layoutPlanIssues, regionAt, type LayoutElement, type LayoutPlan, type Matrix, type Protection, type Rect, type Space } from './plan.ts';
+import { activeAt, elementIssues, layoutPlanIssues, regionAt, type LayoutElement, type LayoutPlan, type Matrix, type Protection, type Rect } from './plan.ts';
 export const IDENTITY: Matrix = [1,0,0,1,0,0];
 export const rectPath = (r: Rect): Path2D => { const p = new Path2D(); p.rect(r.x,r.y,r.width,r.height); return p; };
 export const pathBounds = (p: Path2D): Rect => ({ x:p.bounds.left, y:p.bounds.top, width:p.bounds.width, height:p.bounds.height });
@@ -29,6 +29,7 @@ function paint(style: unknown): { alpha: number; color?: string; exact: boolean 
   if (hex) return {alpha:hex[1]!.length===8?parseInt(hex[1]!.slice(6),16)/255:hex[1]!.length===4?parseInt(hex[1]!.slice(3).repeat(2),16)/255:1,color:style,exact:true};
   return {alpha:style==='transparent'?0:1,color:style,exact:style==='transparent'};
 }
+const hasShadow=(ctx:CanvasRenderingContext2D):boolean=>paint(ctx.shadowColor).alpha>0&&(ctx.shadowBlur>0||ctx.shadowOffsetX!==0||ctx.shadowOffsetY!==0);
 function geometry(draw: Omit<TraceDraw,'geometry'|'original'>, visible: Path2D, original: Path2D): TraceDraw {
   return Object.defineProperties(draw,{geometry:{value:visible},original:{value:original}}) as TraceDraw;
 }
@@ -76,8 +77,8 @@ export function trackLayout(ctx: CanvasRenderingContext2D): LayoutTrace {
     const alpha=options.alpha??ctx.globalAlpha*style.alpha;
     if(alpha<=0)return;
     const visible=p.intersect(clip),bounds=pathBounds(p);
-    const confidence=options.confidence??(style.exact&&!mixed&&ctx.filter==='none'&&ctx.shadowBlur===0&&ctx.globalCompositeOperation==='source-over'?'exact':'bounds');
-    if(confidence==='bounds')trace.limitations.add('stroke, filter, gradient, bitmap alpha or composite mode requires pixel review');
+    const confidence=options.confidence??(style.exact&&!mixed&&ctx.filter==='none'&&!hasShadow(ctx)&&ctx.globalCompositeOperation==='source-over'?'exact':'bounds');
+    if(confidence==='bounds')trace.limitations.add('stroke, shadow, filter, gradient, bitmap alpha or composite mode requires pixel review');
     const full=bounds.x<=0&&bounds.y<=0&&bounds.width>=ctx.canvas.width&&bounds.height>=ctx.canvas.height;
     const record=geometry({id:e?.id??`${state.scene??'screen'}:auto-${trace.draws.length}`,role:e?.role??(options.text?'text':full?'background':'shape'),
       space:e?.space??'world',...e,operation,bounds,visible:pathBounds(visible),alpha,matrix:matrixOf(ctx),outputSpace:'output',sourceBounds:bounds,
@@ -97,9 +98,14 @@ export function trackLayout(ctx: CanvasRenderingContext2D): LayoutTrace {
     if(!String(text).trim())return;
     const outline=maxWidth===undefined?ctx.outlineText(String(text)):ctx.outlineText(String(text),maxWidth);
     if (!outline) { const m=ctx.measureText(String(text));trace.limitations.add('font outline unavailable');add(rectPath({x:x-m.actualBoundingBoxLeft,y:y-m.actualBoundingBoxAscent,width:m.actualBoundingBoxLeft+m.actualBoundingBoxRight,height:m.actualBoundingBoxAscent+m.actualBoundingBoxDescent}).transform([...matrixOf(ctx)]),name,{text:String(text),confidence:'bounds'});return; }
-    const p=outline.transform([...multiply(matrixOf(ctx),[1,0,0,1,x,y])]);
+    let p=outline.transform([...multiply(matrixOf(ctx),[1,0,0,1,x,y])]);
+    if(name==='strokeText'){
+      const b=pathBounds(p),m=matrixOf(ctx),pad=ctx.lineWidth/2,px=pad*Math.hypot(m[0],m[2]),py=pad*Math.hypot(m[1],m[3]);
+      p=rectPath({x:b.x-px,y:b.y-py,width:b.width+2*px,height:b.height+2*py});
+    }
     add(p,name,{text:String(text),...(name==='strokeText'?{confidence:'bounds' as const}:{})});
   });
+  wrap('putImageData',()=>{if(!trace.state.skip)trace.limitations.add('putImageData bypasses path tracking; direct pixel writes require pixel review');});
   wrap('clearRect',([x,y,width,height])=>{
     const cleared=rectPath({x,y,width,height}).transform([...matrixOf(ctx)]).intersect(clip);
     trace.draws=trace.draws.map(d=>geometry({...d,visible:pathBounds(d.geometry.difference(cleared))},d.geometry.difference(cleared),d.original));
@@ -121,14 +127,14 @@ export function trackLayout(ctx: CanvasRenderingContext2D): LayoutTrace {
     const crop=rectPath({x:sx,y:sy,width:sw,height:sh}),destination=rectPath({x:dx,y:dy,width:dw,height:dh}).transform([...matrixOf(ctx)]),target=destination.intersect(clip);
     const source=surfaces.get(image);
     if(source){
-      if(ctx.filter!=='none'||ctx.globalCompositeOperation!=='source-over')trace.limitations.add('filtered or composited offscreen surface requires pixel review');
+      if(ctx.filter!=='none'||hasShadow(ctx)||ctx.globalCompositeOperation!=='source-over')trace.limitations.add('filtered, shadowed or composited offscreen surface requires pixel review');
       for(const limit of source.limitations)trace.limitations.add(limit);
       for(const d of [...source.draws]){
         const fixed=d.protection?.space==='output';
         const original=fixed?d.original:d.original.transform([...mapping]),p=fixed?d.geometry.intersect(clip):d.geometry.intersect(crop).transform([...mapping]).intersect(target);
         trace.draws.push(geometry({...d,bounds:pathBounds(original),visible:pathBounds(p),matrix:fixed?d.matrix:multiply(mapping,d.matrix),alpha:d.alpha*ctx.globalAlpha,
           clipped:d.clipped||original.difference(p).bounds.width>0.5,order:trace.draws.length,
-          confidence:ctx.filter==='none'&&ctx.globalCompositeOperation==='source-over'?d.confidence:'bounds'},p,original));
+          confidence:ctx.filter==='none'&&!hasShadow(ctx)&&ctx.globalCompositeOperation==='source-over'?d.confidence:'bounds'},p,original));
       }
     }else add(destination,'drawImage',{sourceBounds:{x:sx,y:sy,width:sw,height:sh},role:trace.state.element?.role??'media',alpha:ctx.globalAlpha,confidence:'bounds'});
     for(const r of trace.state.plan.protections??[]){
