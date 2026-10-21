@@ -1,3 +1,4 @@
+import { stableStringify as canonical } from '../utils/json.ts';
 import { randomUUID } from 'node:crypto';
 import { copyFileSync, existsSync, lstatSync, mkdirSync, readFileSync, renameSync, rmSync, writeFileSync } from 'node:fs';
 import { basename, dirname, isAbsolute, join, relative, resolve, sep } from 'node:path';
@@ -55,11 +56,6 @@ const validate = new Ajv({ allErrors: true }).compile({ $id: 'js-build-motion/au
 }) });
 
 function fail(message: string): never { throw new Error(`AUDIO_LOCK_INVALID: ${message}`); }
-function canonical(value: unknown): string {
-  if (Array.isArray(value)) return `[${value.map(canonical).join(',')}]`;
-  if (value && typeof value === 'object') return `{${Object.entries(value).filter(([, v]) => v !== undefined).sort(([a], [b]) => a < b ? -1 : a > b ? 1 : 0).map(([k, v]) => `${JSON.stringify(k)}:${canonical(v)}`).join(',')}}`;
-  return JSON.stringify(value) ?? 'null';
-}
 function contentHash(lock: Omit<AudioLock, 'contentSha256'> | AudioLock): string {
   const { contentSha256: _hash, ...content } = lock as AudioLock;
   return sha256Text(canonical(content));

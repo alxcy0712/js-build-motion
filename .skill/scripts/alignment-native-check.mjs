@@ -1,9 +1,10 @@
+import { nativeCollector } from './native-runner.mjs';
 import assert from 'node:assert/strict';
 import { appendFileSync, cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { createHash, randomUUID } from 'node:crypto';
-import { spawn, spawnSync } from 'node:child_process';
+import { spawn } from 'node:child_process';
 import { createServer } from 'node:net';
 
 const sha = value => createHash('sha256').update(value).digest('hex');
@@ -27,21 +28,8 @@ export async function checkAlignmentNative({ scratch, skill, check, denied }) {
     'engine/src/cli/index.ts', 'scripts/video.mjs', 'scripts/alignment-native-check.mjs', 'engine/asr-dependencies.lock.json'].map(path => ({ path, sha256: sha(readFileSync(join(skill, path))) }));
   save(join(records, 'identity.json'), { packageId, manifestSha256: sha(manifestBytes), sourceIdentity, host: { platform: process.platform, arch: process.arch, node: process.version },
     runtime: json(join(skill, 'engine/asr-dependencies.lock.json')), claims: { timing: 'provider estimates', listening: 'unverified', recognitionAccuracy: 'not measured', hardRss: 'not claimed' } });
-  let ordinal = 0; const groups = [], log = value => appendFileSync(join(records, 'commands.jsonl'), JSON.stringify(value) + '\n');
-  const collect = (cwd, executable, argv, expected = 0, timeout = 210000) => {
-    const id = `command-${String(++ordinal).padStart(4, '0')}`, began = Date.now(), startedAt = new Date().toISOString();
-    const r = spawnSync(executable, argv, { cwd, encoding: 'utf8', timeout, killSignal: 'SIGKILL', detached: true, maxBuffer: 32 * 1024 * 1024 });
-    let cleanup = 'no-pid', cleanupError;
-    if (r.pid) try { process.kill(-r.pid, 'SIGKILL'); cleanup = 'SIGKILL-sent'; } catch (e) { if (e.code === 'ESRCH') cleanup = 'already-exited'; else { cleanupError = e; cleanup = 'failed'; } }
-    const stdout = r.stdout ?? '', stderr = r.stderr ?? ''; writeFileSync(join(records, id + '.stdout.log'), stdout); writeFileSync(join(records, id + '.stderr.log'), stderr);
-    const exitAccepted = Array.isArray(expected) ? expected.includes(r.status) : r.status === expected;
-    log({ id, packageId, cwd, executable, argv, startedAt, finishedAt: new Date().toISOString(), elapsedMs: Date.now() - began, timeoutMs: timeout,
-      expectedExitCode: expected, exitCode: r.status, signal: r.signal, stdoutSha256: sha(stdout), stderrSha256: sha(stderr),
-      error: r.error?.message ?? cleanupError?.message ?? null, collectorPid: r.pid ?? null, collectorGroupCleanup: cleanup,
-      status: r.error || cleanupError || !exitAccepted ? 'failed' : 'passed' });
-    if (r.error || cleanupError) throw r.error ?? cleanupError; assert.ok(exitAccepted, `${argv.join(' ')}\n${stderr}\n${stdout}`);
-    return stdout + (expected === 1 ? stderr : '');
-  };
+  const groups = [], log = value => appendFileSync(join(records, 'commands.jsonl'), JSON.stringify(value) + '\n');
+  const collect = nativeCollector({ records, packageId, timeoutMs: 210000, stderrMode: 'one' });
   const control = (args, expected = 0) => collect(root, process.execPath, [join(core, 'scripts/video.mjs'), ...args], expected);
   const catalog = (args, expected = 0) => JSON.parse(control(['alignment-film', 'catalog', ...args], expected));
   const align = (args, expected = 0) => JSON.parse(control(['alignment-film', 'align', ...args], expected));

@@ -3,7 +3,7 @@ import { Canvas, FontLibrary, type CanvasRenderingContext2D } from 'skia-canvas'
 import { join } from 'node:path';
 import { getTheme } from '../themes/registry.ts';
 import { registerThemeFonts, trackFontUsage, type FontUsage } from '../themes/fonts.ts';
-import { drawThemeTransition, isThemeTransition, themeTransitionDuration } from './theme-transitions.ts';
+import { drawTransition, drawTransitionFade, isThemeTransition, transitionDuration, isBlendedTransition } from './theme-transitions.ts';
 import { applyMicroMotion, drawTreatments } from './theme-treatments.ts';
 import { PROJECT_ROOT } from '../utils/env.ts';
 /**
@@ -30,15 +30,8 @@ import {
 import { getPalette } from '../drawing/styles/palette.ts';
 import { buildCaptionTrack, type CaptionCue, type MeasuredNarration } from '../captions/track.ts';
 import { drawCaptions } from '../captions/render.ts';
-import { hashString, mulberry32 } from '../animation/random.ts';
 import { registerProjectFonts, resolveFontFamily } from '../utils/env.ts';
 import { trackTextBounds, type TextDraw } from '../drawing/primitives/text-bounds.ts';
-
-/** 转场专用中性色：与暗场主题的暖白/橙色一致，不依赖调色板名称。 */
-const TRANSITION_INK = '#fff0d7';
-const TRANSITION_ACCENT = '#f1aa65';
-/** 有混合过程的转场；cut 与 fade 不需要预绘上一镜头。 */
-const BLENDED_TRANSITIONS = ['dissolve', 'wipe', 'iris', 'zoom', 'grid', 'glitch', 'tokenize'] as const;
 
 export interface SpecRendererOptions {
   readonly spec: ResolvedVideoSpec;
@@ -197,151 +190,28 @@ export function createSpecRenderer(options: SpecRendererOptions): Renderer & { t
       };
       const index = spec.scenes.indexOf(scene);
       const previous = spec.scenes[index - 1];
-      const transitionDuration = Math.min(0.5, (scene.end - scene.start) / 3);
-      const mix = Math.min(1, localTime / transitionDuration);
-      const blending = (BLENDED_TRANSITIONS as readonly string[]).includes(scene.transition);
+      const duration = Math.min(transitionDuration(scene.transition, theme), (scene.end - scene.start) / 3);
+      const mix = Math.min(1, localTime / duration);
+      const blending = isBlendedTransition(scene.transition);
       const themeTransition = isThemeTransition(scene.transition) ? scene.transition : null;
       if (themeTransition && !theme.transitions.includes(themeTransition)) {
         warnOnce(`tr:${scene.id}`, `风格 ${theme.id} 默认推荐 ${theme.transitions.join(' | ')}；使用显式转场 ${themeTransition}，请核对连续性与读时。`);
       }
-      const themeMixDur = themeTransition ? Math.min(themeTransitionDuration(themeTransition, theme), (scene.end - scene.start) / 3) : 0;
-      if (previous && themeTransition && localTime < themeMixDur) {
+      if (previous && mix < 1 && blending) {
         incomingText?.reset();
         incomingContext.clearRect(0, 0, width, height);
         drawScene(incomingContext, scene);
-        drawThemeTransition(themeTransition, {
-          ctx, width, height, mix: localTime / themeMixDur, theme, incoming, outgoing,
+        drawTransition(scene.transition, {
+          ctx, width, height, mix, theme, incoming, outgoing, sceneId: scene.id,
           drawPrevious: (c) => drawScene(c, previous), seed: spec.video.seed ^ index,
           ...(previous.focus ? { focus: previous.focus } : {}),
           drawIncomingBase: (c) => { c.clearRect(0, 0, width, height); drawScene(c, scene, true); }, incomingBase,
         });
-      } else if (previous && mix < 1 && blending) {
-        /** 新镜头先画进离屏画布，再由各转场决定怎么合上去。 */
-        const incomingReady = (): void => {
-          incomingText?.reset();
-          incomingContext.clearRect(0, 0, width, height);
-          drawScene(incomingContext, scene);
-        };
-        if (scene.transition === 'zoom') {
-          // 旧画面被镜头推近并压暗，新画面从稍远处放大到位。
-          const ease = mix * mix * (3 - 2 * mix);
-          ctx.save();
-          ctx.globalAlpha = 1 - 0.7 * mix;
-          const push = 1 + 0.32 * mix;
-          ctx.translate(width / 2, height / 2); ctx.scale(push, push); ctx.translate(-width / 2, -height / 2);
-          drawScene(ctx, previous);
-          ctx.restore();
-          incomingReady();
-          ctx.save();
-          ctx.globalAlpha = Math.min(1, ease * 1.35);
-          const arrive = 1.16 - 0.16 * ease;
-          ctx.translate(width / 2, height / 2); ctx.scale(arrive, arrive); ctx.translate(-width / 2, -height / 2);
-          ctx.drawImage(incoming, 0, 0);
-          ctx.restore();
-        } else {
-          drawScene(ctx, previous);
-          if (scene.transition === 'dissolve' || scene.transition === 'wipe' || scene.transition === 'iris') {
-            incomingReady();
-            ctx.save();
-            if (scene.transition === 'dissolve') ctx.globalAlpha = mix;
-            else {
-              ctx.beginPath();
-              if (scene.transition === 'wipe') ctx.rect(0, 0, width * mix, height);
-              else ctx.arc(width / 2, height / 2, Math.hypot(width, height) / 2 * mix, 0, Math.PI * 2);
-              ctx.clip();
-            }
-            ctx.drawImage(incoming, 0, 0);
-            ctx.restore();
-          } else if (scene.transition === 'grid') {
-            // 网格式接管：每格按种子确定的次序从上方滑入，未完成的格子留一条亮边。
-            incomingReady();
-            const cols = 6, rows = Math.max(3, Math.round(6 * height / width));
-            const cellW = width / cols, cellH = height / rows;
-            const rng = mulberry32(hashString(`${scene.id}:grid`));
-            const total = cols * rows;
-            for (let i = 0; i < total; i++) {
-              const threshold = rng();
-              const p = Math.max(0, Math.min(1, (mix - threshold * 0.7) / 0.3));
-              if (p <= 0) continue;
-              const x = (i % cols) * cellW, y = Math.floor(i / cols) * cellH;
-              ctx.save();
-              ctx.beginPath(); ctx.rect(x, y, cellW, cellH); ctx.clip();
-              ctx.globalAlpha = p;
-              ctx.translate(0, (1 - p) * cellH * 0.55);
-              ctx.drawImage(incoming, 0, 0);
-              ctx.restore();
-              if (p < 1) {
-                ctx.save();
-                ctx.globalAlpha = (1 - p) * 0.5; ctx.strokeStyle = TRANSITION_INK; ctx.lineWidth = 1.5;
-                ctx.strokeRect(x + 0.75, y + 0.75, cellW - 1.5, cellH - 1.5);
-                ctx.restore();
-              }
-            }
-          } else if (scene.transition === 'tokenize') {
-            // 逐行「重新排版」：新画面像一行行文字被重新打散再对齐，
-            // 自上而下错峰落位，未落定的行保留一条亮边，读起来像词元在逐行归位。
-            incomingReady();
-            const rows = 7, bandH = height / rows;
-            const rng = mulberry32(hashString(`${scene.id}:tokenize`));
-            for (let i = 0; i < rows; i++) {
-              const delay = (i / rows) * 0.34;
-              const p = Math.max(0, Math.min(1, (mix - delay) / (1 - 0.34)));
-              if (p <= 0) continue;
-              const e = p * p * (3 - 2 * p);
-              const y = i * bandH;
-              const dir = rng() < 0.5 ? -1 : 1;
-              ctx.save();
-              ctx.beginPath(); ctx.rect(0, y, width, bandH + 1); ctx.clip();
-              ctx.globalAlpha = Math.min(1, p * 1.6);
-              ctx.translate((1 - e) * dir * width * 0.05, 0);
-              ctx.translate(width / 2, y); ctx.scale(0.94 + 0.06 * e, 1); ctx.translate(-width / 2, -y);
-              ctx.drawImage(incoming, 0, 0);
-              ctx.restore();
-              if (p < 1) {
-                ctx.save();
-                ctx.globalAlpha = (1 - p) * 0.45; ctx.fillStyle = TRANSITION_ACCENT;
-                ctx.fillRect(0, y - 1.5, width, 3);
-                ctx.restore();
-              }
-            }
-          } else if (scene.transition === 'glitch') {
-            // 条带位移 + 扫描光带：中段最强烈，两端回到稳定画面。
-            incomingReady();
-            const slices = 18, sliceH = height / slices;
-            const intensity = Math.sin(Math.PI * mix);
-            const coverage = Math.min(1, mix * 1.25);
-            const rng = mulberry32(hashString(`${scene.id}:glitch`));
-            const alpha = Math.min(1, mix * 2.2);
-            for (let i = 0; i < slices; i++) {
-              const roll = rng();
-              const shift = (roll * 2 - 1) * intensity * width * 0.09;
-              const y = i * sliceH;
-              if (roll < coverage) {
-                ctx.save();
-                ctx.beginPath(); ctx.rect(0, y, width, sliceH + 1); ctx.clip();
-                ctx.globalAlpha = alpha; ctx.translate(shift, 0); ctx.drawImage(incoming, 0, 0);
-                ctx.restore();
-              }
-              if (roll > 0.9) {
-                ctx.save();
-                ctx.globalAlpha = 0.12 * intensity; ctx.fillStyle = TRANSITION_ACCENT;
-                ctx.fillRect(shift * 0.6, y, width, sliceH);
-                ctx.restore();
-              }
-            }
-            ctx.save();
-            ctx.globalAlpha = 0.18 * intensity; ctx.fillStyle = TRANSITION_ACCENT;
-            ctx.fillRect(0, mix * height - 3, width, 6);
-            ctx.globalAlpha = 0.1 * intensity; ctx.fillStyle = TRANSITION_INK;
-            ctx.fillRect(0, mix * height - 9, width, 2);
-            ctx.restore();
-          }
-        }
       } else drawScene(ctx, scene);
 
       // 主题质感作用于完整场景，字幕随后叠加。
       const themedFrame = themedScene(scene) || (previous && themedScene(previous) &&
-        (themeTransition ? localTime < themeMixDur : blending && mix < 1));
+        (blending && mix < 1));
       if (themedFrame) {
         drawTreatments(ctx, theme, t, localTime, width, height, spec.video.seed);
       }
@@ -363,23 +233,7 @@ export function createSpecRenderer(options: SpecRendererOptions): Renderer & { t
         });
       }
 
-      // 场景边界提示：M0 阶段用于确认时间轴切分正确，后续会被真正的转场取代
-      if (scene.transition === 'fade') {
-        const sinceStart = localTime;
-        const untilEnd = scene.end - t;
-        const fadeDur = 0.6;
-        const fade = Math.max(
-          sinceStart < fadeDur ? 1 - sinceStart / fadeDur : 0,
-          untilEnd < fadeDur ? 1 - untilEnd / fadeDur : 0,
-        );
-        if (fade > 0) {
-          ctx.save();
-          ctx.globalAlpha = Math.min(1, Math.max(0, fade));
-          ctx.fillStyle = '#000000';
-          ctx.fillRect(0, 0, width, height);
-          ctx.restore();
-        }
-      }
+      if (scene.transition === 'fade') drawTransitionFade(ctx, width, height, localTime, scene.end - t);
     },
   });
 

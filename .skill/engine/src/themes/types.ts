@@ -3,9 +3,8 @@ import type { ThemeId } from './ids.ts';
 export type Orientation = 'vertical' | 'horizontal';
 export type Bezier = readonly [number, number, number, number];
 export interface SpringParams { readonly stiffness: number; readonly damping: number; readonly mass?: number }
-export type TransitionId =
-  | 'blurDissolve' | 'riseFade' | 'maskWipeUp' | 'scaleThrough' | 'cutOnBeat'
-  | 'whipPan' | 'glitchCut' | 'zoomIntoElement' | 'lineScan' | 'paperFlip' | 'inkBleed';
+import type { TransitionId } from './transition-ids.ts';
+export type { TransitionId } from './transition-ids.ts';
 export type TypeRole = 'hero' | 'display' | 'title' | 'body' | 'caption' | 'micro';
 
 export interface FontFace { readonly family: string; readonly files: readonly string[]; readonly weight?: number; readonly bundled?: boolean }

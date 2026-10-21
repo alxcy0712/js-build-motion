@@ -28,12 +28,8 @@ export type Environment = (typeof ENVIRONMENTS)[number];
 export const CAMERA_MOVES = ['static', 'slow_push', 'slow_pull', 'pan_left', 'pan_right', 'tilt_up', 'tilt_down'] as const;
 export type CameraMove = (typeof CAMERA_MOVES)[number];
 
-export const TRANSITIONS = [
-  'cut', 'fade', 'dissolve', 'wipe', 'iris', 'zoom', 'grid', 'glitch', 'tokenize',
-  // 风格转场（themes/）：主题列表提供推荐，已登记的显式选择保留并按需告警。
-  'blurDissolve', 'riseFade', 'maskWipeUp', 'scaleThrough', 'cutOnBeat', 'whipPan', 'glitchCut', 'zoomIntoElement', 'lineScan', 'paperFlip', 'inkBleed',
-] as const;
-export type Transition = (typeof TRANSITIONS)[number];
+export { TRANSITIONS, type Transition } from '../themes/transition-ids.ts';
+import type { Transition } from '../themes/transition-ids.ts';
 
 export const PALETTES = ['warm_night', 'dusk', 'dawn', 'cool_blue', 'sepia', 'mono'] as const;
 export type Palette = (typeof PALETTES)[number];

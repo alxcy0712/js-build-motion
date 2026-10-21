@@ -13,14 +13,16 @@ import { checkAudioInputNative } from './audio-input-native-check.mjs';
 import { checkOcrNative } from './ocr-native-check.mjs';
 import { checkCatalogNative } from './catalog-native-check.mjs';
 import { checkUnpackNative } from './unpack-native-check.mjs';
-import { backups, engine, root, skill, verifyCore } from './core.mjs';
+import { root as sourceRoot, skill as sourceSkill, verifyCore } from './core.mjs';
 import { digest, fileHashes, json, writeJson } from '../engine/workspace.mjs';
 
 export async function checkNative() {
   const original = verifyCore();
-  const output = join(root, '.research/out');
+  const output = join(sourceRoot, '.research/out');
   mkdirSync(output, { recursive: true });
   const scratch = mkdtempSync(join(output, 'core-check-'));
+  const root = join(scratch, 'workspace'), skill = join(root, '.skill'), engine = join(skill, 'engine'), backups = join(root, '.skill-backups');
+  mkdirSync(root); cpSync(sourceSkill, skill, { recursive: true });
   const marker = `core-check-${randomBytes(4).toString('hex')}`;
   const slugs = [marker + '-one', marker + '-two'];
   const [a, b] = slugs.map(slug => join(root, 'projects', slug));

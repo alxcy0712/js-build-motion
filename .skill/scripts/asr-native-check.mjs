@@ -1,8 +1,9 @@
+import { nativeCollector } from './native-runner.mjs';
 import assert from 'node:assert/strict';
 import { cpSync, existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync, appendFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
-import { spawn, spawnSync } from 'node:child_process';
+import { spawn } from 'node:child_process';
 import { createServer } from 'node:net';
 import { createHash, randomUUID } from 'node:crypto';
 
@@ -31,19 +32,9 @@ export async function checkAsrNative({ scratch, skill, run, check, denied }) {
   const manifestBytes = readFileSync(join(skill, 'manifest.json')), packageId = JSON.parse(manifestBytes).packageId;
   const sourceIdentity = ['engine/src/project/asr.ts', 'engine/src/project/catalog.ts', 'engine/src/application/catalog.ts', 'engine/src/adapters/asr-wav.ts', 'engine/src/adapters/asr-json.ts', 'engine/src/adapters/inspection-asr.ts', 'engine/workspace.mjs', 'engine/asr-dependencies.lock.json', 'scripts/asr-native-check.mjs', 'engine/test/catalog-asr.test.ts', 'engine/test/asr-security.test.ts'].map(path => ({ path, sha256: sha(readFileSync(join(skill, path))) }));
   save(join(records, 'identity.json'), { packageId, manifestSha256: sha(manifestBytes), sourceIdentity, runtime: json(join(skill, 'engine/asr-dependencies.lock.json')), stdoutPatchSha256: sha(readFileSync(join(skill, 'engine/assets/asr/stdout-stream.patch'))), host: { platform: process.platform, arch: process.arch, node: process.version }, recognitionAccuracy: 'not measured', humanListening: 'not performed' });
-  let ordinal = 0;
   const log = value => appendFileSync(join(records, 'commands.jsonl'), JSON.stringify(value) + '\n');
   // Catalog alone has a 330s outer collector; unrelated calls keep their existing 60s default.
-  const collect = (cwd, executable, argv, expected = 0, timeout = 60000) => {
-    const id = `command-${String(++ordinal).padStart(4, '0')}`, startedAt = new Date().toISOString(), began = Date.now();
-    const r = spawnSync(executable, argv, { cwd, encoding: 'utf8', timeout, killSignal: 'SIGKILL', detached: true, maxBuffer: 32 * 1024 * 1024 });
-    let groupCleanup = 'no-pid', cleanupError;
-    if (r.pid) try { process.kill(-r.pid, 'SIGKILL'); groupCleanup = 'SIGKILL-sent'; } catch (error) { if (error.code === 'ESRCH') groupCleanup = 'already-exited'; else { groupCleanup = 'failed'; cleanupError = error; } }
-    const stdout = r.stdout ?? '', stderr = r.stderr ?? ''; writeFileSync(join(records, `${id}.stdout.log`), stdout); writeFileSync(join(records, `${id}.stderr.log`), stderr);
-    log({ id, executable, argv, cwd, packageId, startedAt, finishedAt: new Date().toISOString(), elapsedMs: Date.now() - began, timeoutMs: timeout, expectedExitCode: expected, exitCode: r.status, signal: r.signal,
-      stdoutSha256: sha(stdout), stderrSha256: sha(stderr), error: r.error?.message ?? cleanupError?.message ?? null, collectorPid: r.pid ?? null, collectorGroupCleanup: groupCleanup, status: r.error || cleanupError || r.status !== expected ? 'failed' : 'passed' });
-    if (cleanupError) throw new Error('ASR_COLLECTOR_GROUP_TERMINATION_FAILED', { cause: cleanupError }); if (r.error) throw r.error; assert.equal(r.status, expected, `${argv.slice(0, 4).join(' ')}\n${stderr}\n${stdout}`); return stdout + (expected ? stderr : '');
-  };
+  const collect = nativeCollector({ records, packageId, timeoutMs: 60000, stderrMode: 'truthy', cleanupErrorCode: 'ASR_COLLECTOR_GROUP_TERMINATION_FAILED' });
   const control = (args, expected = 0, timeout = args[1] === 'catalog' ? 330000 : 60000) => collect(root, process.execPath, [join(core, 'scripts/video.mjs'), ...args], expected, timeout);
   const catalog = (args, expected = 0) => JSON.parse(control(['asr-film', 'catalog', ...args], expected));
   const verify = id => catalog(['--verify', id]).manifest;

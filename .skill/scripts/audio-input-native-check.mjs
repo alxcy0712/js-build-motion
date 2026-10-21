@@ -1,9 +1,10 @@
+import { nativeCollector } from './native-runner.mjs';
 import assert from 'node:assert/strict';
 import { appendFileSync, cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { createHash, randomUUID } from 'node:crypto';
-import { spawn, spawnSync } from 'node:child_process';
+import { spawn } from 'node:child_process';
 
 const sha = data => createHash('sha256').update(data).digest('hex');
 const json = path => JSON.parse(readFileSync(path, 'utf8'));
@@ -27,18 +28,8 @@ export async function checkAudioInputNative({ scratch, skill, check }) {
     .map(path => ({ path, sha256: sha(readFileSync(join(skill, path))) }));
   save(join(records, 'identity.json'), { packageId, sourceIdentity, host: { platform: process.platform, arch: process.arch, node: process.version },
     scope: 'complete-decoded-frames', presentationMapping: 'unknown', timing: 'estimated', listening: 'unverified' });
-  let ordinal = 0; const groups = [], log = value => appendFileSync(join(records, 'commands.jsonl'), JSON.stringify(value) + '\n');
-  const collect = (cwd, executable, argv, expected = 0, binary = false) => {
-    const id = `command-${String(++ordinal).padStart(4, '0')}`, start = Date.now();
-    const result = spawnSync(executable, argv, { cwd, encoding: binary ? null : 'utf8', timeout: 210000, maxBuffer: 32 * 1024 * 1024, detached: true, killSignal: 'SIGKILL' });
-    let cleanup = 'already-exited'; if (result.pid) try { process.kill(-result.pid, 'SIGKILL'); cleanup = 'SIGKILL-sent'; } catch (e) { if (e.code !== 'ESRCH') throw e; }
-    const stdout = result.stdout ?? (binary ? Buffer.alloc(0) : ''), stderr = result.stderr ?? '';
-    writeFileSync(join(records, id + '.stdout.log'), stdout); writeFileSync(join(records, id + '.stderr.log'), stderr);
-    log({ id, packageId, cwd, executable, argv, exitCode: result.status, signal: result.signal, elapsedMs: Date.now() - start, timeoutMs: 210000,
-      stdoutBytes: Buffer.byteLength(stdout), stderrBytes: Buffer.byteLength(stderr), stdoutSha256: sha(stdout), stderrSha256: sha(stderr), binary, collectorGroupCleanup: cleanup,
-      status: !result.error && result.status === expected ? 'passed' : 'failed', error: result.error?.message ?? null });
-    if (result.error) throw result.error; assert.equal(result.status, expected, `${argv.join(' ')}\n${String(stderr)}\n${binary ? '' : stdout}`); return stdout;
-  };
+  const groups = [], log = value => appendFileSync(join(records, 'commands.jsonl'), JSON.stringify(value) + '\n');
+  const collect = nativeCollector({ records, packageId, timeoutMs: 210000, stderrMode: 'never' });
   const control = (argv, expected = 0) => collect(root, process.execPath, [join(core, 'scripts/video.mjs'), ...argv], expected);
   const catalog = (argv, expected = 0) => JSON.parse(control(['audio-film', 'catalog', ...argv], expected));
   const align = (argv, expected = 0) => JSON.parse(control(['audio-film', 'align', ...argv], expected));
