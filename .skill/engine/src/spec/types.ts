@@ -14,7 +14,7 @@ import { DOUBAO_VOICES, type DoubaoVoiceId } from '../audio/tts/doubao-voices.ts
  *   3. 本片可通过 drawing 入口和组件副本独立实现主体、场景与轨迹，
  *      并通过已验证的预渲染路径准备素材；输出沿用固定时间、来源与渲染契约。
  *
- * 枚举约束作用于内置字段；具体画法及可调默认的范围见 references/drawing.md、styles.md。
+ * 枚举约束作用于内置字段；具体画法及可调默认的范围见 references/drawing.md、style-and-identity.md。
  */
 
 // ------------------------------------------------------------------ 枚举
