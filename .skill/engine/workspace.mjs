@@ -92,47 +92,6 @@ export function asrRuntimeIdentity({ toolsOnly = false } = {}) {
 }
 export function audioInputRuntimeIdentity() { return asrRuntimeIdentity({ toolsOnly: true }); }
 
-/** Relocatable document renderer closure, excluding unrelated models and tests. */
-export function documentRasterRuntimeIdentity() {
-  const engine = dirname(fileURLToPath(import.meta.url)), executable = realpathSync(process.execPath);
-  const fixed = path => {
-    const before = lstatSync(path, { bigint: true });
-    if (!before.isFile() || before.nlink !== 1n) throw Error('DOCUMENT_RASTER_RUNTIME_FILE_INVALID');
-    const same = stat => ['dev', 'ino', 'nlink', 'size', 'mtimeNs', 'ctimeNs'].every(key => stat[key] === before[key]);
-    const fd = openSync(path, constants.O_RDONLY | constants.O_NOFOLLOW | constants.O_NONBLOCK), hash = createHash('sha256'); let bytes = 0;
-    try {
-      if (!same(fstatSync(fd, { bigint: true }))) throw Error('DOCUMENT_RASTER_RUNTIME_CHANGED');
-      const chunk = Buffer.alloc(65536);
-      for (;;) { const count = readSync(fd, chunk, 0, chunk.length, bytes); if (!count) break; bytes += count; if (BigInt(bytes) > before.size) throw Error('DOCUMENT_RASTER_RUNTIME_CHANGED'); hash.update(chunk.subarray(0, count)); }
-      if (BigInt(bytes) !== before.size || !same(fstatSync(fd, { bigint: true })) || !same(lstatSync(path, { bigint: true }))) throw Error('DOCUMENT_RASTER_RUNTIME_CHANGED');
-      return { bytes, sha256: hash.digest('hex') };
-    } finally { closeSync(fd); }
-  };
-  const files = [], excluded = new Set(['test', 'assets/asr', 'assets/ocr', 'engine-manifest.json', 'isolation.json', '.research', 'projects']);
-  const walk = path => {
-    const name = relative(engine, path).split(sep).join('/'); if (excluded.has(name) || name.split('/').at(-1) === '.DS_Store') return;
-    const stat = lstatSync(path); if (stat.isSymbolicLink() || stat.isFile() && stat.nlink !== 1) throw Error('DOCUMENT_RASTER_RUNTIME_FILE_INVALID');
-    if (stat.isDirectory()) for (const child of readdirSync(path).sort()) walk(join(path, child));
-    else if (stat.isFile()) files.push({ path: name, ...fixed(path) });
-    else throw Error('DOCUMENT_RASTER_RUNTIME_FILE_INVALID');
-    if (files.length > 4096) throw Error('DOCUMENT_RASTER_RUNTIME_LIMIT');
-  };
-  walk(engine); files.sort((a, b) => a.path < b.path ? -1 : a.path > b.path ? 1 : 0);
-  // A fresh Node process fixes the startup closure before renderer addons are loaded.
-  const probe = spawnSync(executable, ['--input-type=module', '-e',
-    'console.log(JSON.stringify({version:process.version,executable:process.execPath,files:process.report.getReport().sharedObjects}))'],
-    { encoding: 'utf8', maxBuffer: 65536, timeout: 5000 });
-  if (probe.error || probe.status !== 0 || probe.signal) throw Error('DOCUMENT_RASTER_RUNTIME_NODE_PROBE_FAILED');
-  let initial; try { initial = JSON.parse(probe.stdout); } catch { throw Error('DOCUMENT_RASTER_RUNTIME_NODE_PROBE_INVALID'); }
-  if (initial.version !== process.version || realpathSync(initial.executable) !== executable || !Array.isArray(initial.files) ||
-      initial.files.some(file => typeof file !== 'string' || !file.startsWith('/'))) throw Error('DOCUMENT_RASTER_RUNTIME_NODE_PROBE_INVALID');
-  const nativePaths = [...new Set([executable, ...initial.files.filter(file => !file.startsWith('/System/Library/') && !file.startsWith('/usr/lib/')).map(file => realpathSync(file))])].sort();
-  if (nativePaths.length > 256) throw Error('DOCUMENT_RASTER_RUNTIME_LIMIT');
-  const nodeFiles = nativePaths.map(path => ({ path, ...fixed(path) })), nodeFile = nodeFiles.find(file => file.path === executable);
-  return { id: 'bounded-document-raster', version: '0.1', platform: process.platform, arch: process.arch,
-    node: { version: process.version, executable, bytes: nodeFile.bytes, sha256: nodeFile.sha256, files: nodeFiles }, files };
-}
-
 /** Hash only independent files, in path order. Used by packaging and execution. */
 export function fileHashes(root, excluded = []) {
   const files = [];

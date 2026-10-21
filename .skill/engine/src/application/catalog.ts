@@ -5,24 +5,19 @@ import { performance } from 'node:perf_hooks';
 import { NodeImportFiles, importJsonText, sameImportNode } from '../adapters/import-files.ts';
 import { ProjectLease } from '../adapters/project-lease.ts';
 import { inspectAsset, inspectFormat, readFixed, type InspectContext } from '../adapters/inspection.ts';
-import { documentOcrScope, documentOcrRasterTransform, documentOcrArguments, documentRasterRequest, effectiveDocumentOcrPolicy,
-  runDocumentRaster, documentRasterPixels, documentRasterOcr } from '../adapters/inspection-document-ocr.ts';
 import { parseOcrTsv } from '../adapters/ocr-tsv.ts';
 import { preflightOcrImage } from '../adapters/ocr-raster.ts';
-import { ocrRuntimeIdentity, asrRuntimeIdentity, audioInputRuntimeIdentity, documentRasterRuntimeIdentity } from '../../workspace.mjs';
+import { ocrRuntimeIdentity, asrRuntimeIdentity, audioInputRuntimeIdentity } from '../../workspace.mjs';
 import { preflightAudioInput, decodeAudioInput, audioInputProbeArguments, audioInputDecodeArguments, audioInputNormalizeArguments } from '../adapters/audio-input.ts';
 import { audioInputProbeMetadata, AUDIO_INPUT_PCM_TRANSFORM, AUDIO_INPUT_CANONICAL_TRANSFORM } from '../adapters/inspection-audio.ts';
 import { validateAudioInputMap, validateAudioInputRuntime, type AudioInputMap } from '../project/audio-input.ts';
 import { parseAsrJson } from '../adapters/asr-json.ts';
 import { preflightAsrWav } from '../adapters/asr-wav.ts';
 import { asrArguments, validateAsrEngine, validateAsrMap, type AsrMap, type AsrObservation } from '../project/asr.ts';
-import { validateDocumentMap, type DocumentMap, type DocumentObservation } from '../project/document.ts';
-import { assertDocumentOcr, validateDocumentOcrSelectionMap, validateDocumentOcrUnitMap, validateDocumentOcrObservation,
-  validateDocumentRasterRuntime, type DocumentOcrInvocationRecord, type DocumentOcrSelectionMap, type DocumentOcrUnitMap, type DocumentOcrObservation } from '../project/document-ocr.ts';
 import { validateOcrEngine, validateOcrMap, validateOcrObservation, type OcrMap, type OcrObservation } from '../project/ocr.ts';
 import { assertImportIndex, assertImportManifest, type ImportManifest } from '../project/import.ts';
 import { assertUnpackIndex, assertUnpackManifest, type UnpackManifest } from '../project/unpack.ts';
-import { assertCatalog, assertInspectPolicy, adoptInspectPolicy, documentLimits, ocrLimits, asrLimits, audioInputLimits, catalogAttemptPattern, catalogIdPattern, DEFAULT_INSPECT_POLICY, emptyCatalogCounts, safeCatalogPath,
+import { assertCatalog, assertInspectPolicy, adoptInspectPolicy, ocrLimits, asrLimits, audioInputLimits, catalogAttemptPattern, catalogIdPattern, DEFAULT_INSPECT_POLICY, emptyCatalogCounts, safeCatalogPath,
   type AssetVersion, type CatalogIndex, type CatalogManifest, type CatalogReceipt, type CatalogSelection, type CatalogSource, type InspectPolicy, type Observation, type LegacyObservation, type Rights, type ToolRun } from '../project/catalog.ts';
 const digest = (value: unknown) => createHash('sha256').update(importJsonText(value)).digest('hex');
 const active = new Set<string>();
@@ -92,33 +87,6 @@ function versionFor(assets: AssetVersion[], record: Observation | Rights): Asset
   const asset = assets.find(v => v.assetId === record.assetId && v.assetVersion === record.assetVersion);
   if (!asset || asset.source.sha256 !== record.byteSha256) throw new Error('CATALOG_RECORD_ASSET_MISMATCH'); return asset;
 }
-async function documentEvidence(context: Context, asset: AssetVersion): Promise<{ map: DocumentMap; text: Buffer } | null> {
-  const descriptor = asset.technical.document, items = (context.policy.version === '0.6' || context.policy.version === '0.7') ? asset.technical.evidence.filter(e => !e.kind.startsWith('document-ocr-')) : asset.technical.evidence,
-    nativeStatus = (context.policy.version === '0.6' || context.policy.version === '0.7') && asset.technical.documentOcr ? asset.technical.documentOcr.nativeStatus : asset.technical.status;
-  if (!descriptor) { if (items.some(e => e.kind === 'document-map') || ['pdf', 'docx', 'pptx', 'xlsx'].includes(asset.technical.format) && (items.length || (context.policy.version === '0.6' || context.policy.version === '0.7') && ['supported', 'partial'].includes(nativeStatus))) throw new Error('CATALOG_DOCUMENT_DESCRIPTOR_REQUIRED'); return null; }
-  if (['pptx', 'xlsx'].includes(asset.technical.format) && (context.policy.version !== '0.7' || descriptor.version !== '0.2')) throw Error('CATALOG_OFFICE_POLICY_REQUIRED');
-  if (context.policy.version === '0.1' || !['supported', 'partial'].includes(nativeStatus) || items.length !== 2 || asset.technical.streams.length) throw new Error('CATALOG_DOCUMENT_DESCRIPTOR_INVALID');
-  const textEvidence = items.find(e => e.id === descriptor.textEvidenceId), mapEvidence = items.find(e => e.id === descriptor.mapEvidenceId), limits = documentLimits(context.policy);
-  if (textEvidence?.kind !== 'text' || mapEvidence?.kind !== 'document-map' || textEvidence === mapEvidence) throw new Error('CATALOG_DOCUMENT_EVIDENCE_INVALID');
-  const text = await readFixed(context.files.projectPath(join(context.dir, textEvidence.path)), limits.maxDocumentTextBytes, context.signal, context.read),
-    raw = await readFixed(context.files.projectPath(join(context.dir, mapEvidence.path)), limits.maxDocumentMapBytes, context.signal, context.read);
-  if (text.bytes !== textEvidence.bytes || text.sha256 !== textEvidence.sha256 || raw.bytes !== mapEvidence.bytes || raw.sha256 !== mapEvidence.sha256) throw new Error('CATALOG_DOCUMENT_EVIDENCE_CHANGED');
-  const map = JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(raw.data)) as DocumentMap; validateDocumentMap(map, text.data, limits);
-  if (digest(map) !== raw.sha256 || descriptor.version !== map.version || descriptor.format !== asset.technical.format || map.format !== descriptor.format || map.source.bytes !== asset.source.bytes || map.source.sha256 !== asset.source.sha256 ||
-      map.policySha256 !== asset.inspection.policySha256 || digest(map.parser) !== digest(descriptor.parser) || map.coverage.scope !== descriptor.scope ||
-      map.coverage.totalUnits !== descriptor.totalUnits || map.coverage.completedUnits !== descriptor.completedUnits ||
-      nativeStatus === 'supported' && (map.coverage.totalUnits === null || map.coverage.completedUnits !== map.coverage.totalUnits || map.units.some(u => !['complete', 'empty'].includes(u.status)))) throw new Error('CATALOG_DOCUMENT_BINDING_INVALID');
-  if (!asset.technical.text || asset.technical.text.bytes !== text.bytes || asset.technical.text.lines !== text.data.toString('utf8').split('\n').length || asset.technical.text.bom || asset.technical.text.lineEndings !== (text.data.includes(10) ? 'LF' : 'none') || items.some(e => e.coverage !== (nativeStatus === 'supported' ? 'full' : 'partial'))) throw new Error('CATALOG_DOCUMENT_TEXT_FACT_INVALID');
-  return { map, text: text.data };
-}
-async function validateDocumentObservation(context: Context, asset: AssetVersion, record: DocumentObservation): Promise<void> {
-  const document = await documentEvidence(context, asset), descriptor = asset.technical.document, loc = record.locator;
-  if (!document || !descriptor || loc.evidenceId !== descriptor.textEvidenceId || loc.mapEvidenceId !== descriptor.mapEvidenceId || !record.evidenceRefs.includes(descriptor.mapEvidenceId)) throw new Error('CATALOG_DOCUMENT_OBSERVATION_EVIDENCE_MISMATCH');
-  const unit = document.map.units.find(u => u.id === loc.unitId);
-  if (!unit || !['complete', 'empty'].includes(unit.status) || unit.byteStart === null || unit.byteEnd === null || loc.byteStart < unit.byteStart || loc.byteEnd > unit.byteEnd || loc.byteEnd < loc.byteStart) throw new Error('CATALOG_DOCUMENT_UNIT_RANGE_INVALID');
-  for (const pos of [loc.byteStart, loc.byteEnd]) if (pos < document.text.length && (document.text[pos]! & 0xc0) === 0x80) throw new Error('CATALOG_DOCUMENT_UTF8_BOUNDARY_INVALID');
-  if (record.coverage === 'full' && (loc.byteStart !== unit.byteStart || loc.byteEnd !== unit.byteEnd)) throw new Error('CATALOG_DOCUMENT_COVERAGE_INVALID');
-}
 async function ocrEvidence(context: Context, asset: AssetVersion): Promise<{ map: OcrMap; text: Buffer } | null> {
   const descriptor = asset.technical.ocr, items = asset.technical.evidence, ocrItems = items.filter(e => ['ocr-raster', 'ocr-tsv', 'ocr-map'].includes(e.kind));
   const image = ['png_pipe', 'jpeg_pipe'].includes(asset.technical.format);
@@ -161,143 +129,6 @@ async function ocrObservation(context: Context, asset: AssetVersion, record: Ocr
   const ocr = await ocrEvidence(context, asset), descriptor = asset.technical.ocr;
   if (!ocr || !descriptor || record.locator.mapEvidenceId !== descriptor.mapEvidenceId) throw new Error('CATALOG_OCR_OBSERVATION_EVIDENCE_MISMATCH');
   validateOcrObservation(record, ocr.map, ocr.text);
-}
-interface DocumentOcrEvidence { selection: DocumentOcrSelectionMap; selectionMapEvidenceId: string; units: Map<string, { map: DocumentOcrUnitMap; text: Buffer }>; pixels: number; embeddedBytes: number }
-function documentOcrToolOrigin(context: Context, asset: AssetVersion, origin: CatalogManifest, unit: DocumentOcrSelectionMap['units'][number], journal: DocumentOcrInvocationRecord): void {
-  const suffix = `/out/.tmp/catalog-${origin.attemptId}/${asset.inspectionId}/document-ocr-${unit.ordinal}-`, at = journal.cwd.lastIndexOf(suffix), root = journal.cwd.slice(0, at), request = journal.request;
-  if (at < 1 || resolve(journal.cwd) !== journal.cwd || /[\x00-\x1f\x7f]/.test(journal.cwd) || !/^[a-f0-9-]{36}$/.test(journal.cwd.slice(at + suffix.length)) ||
-      journal.inspectionId !== asset.inspectionId || journal.unitId !== unit.id || journal.reason !== unit.reason ||
-      digest(request) !== digest(documentRasterRequest(`${root}/${asset.source.fixedPath}`, asset.technical.format as 'pdf' | 'docx', unit.ordinal,
-        asset.source.bytes, asset.source.sha256, context.policy, request.runtime))) throw Error('CATALOG_DOCUMENT_OCR_COMMAND_BINDING_INVALID');
-  const limits = effectiveDocumentOcrPolicy(context.policy), worker = journal.commands.worker;
-  if (!worker || worker.executable !== request.runtime.node.executable || worker.version !== `node@${request.runtime.node.version.slice(1)}/document-raster-worker@0.1` ||
-      JSON.stringify(worker.argv) !== JSON.stringify([`--max-old-space-size=${limits.workerOldSpaceMiB}`, `${root}/.engine/src/adapters/document-raster-worker.ts`, `${journal.cwd}/request.json`])) throw Error('CATALOG_DOCUMENT_OCR_WORKER_COMMAND_INVALID');
-  const decode = journal.commands.decode, ocr = journal.commands.ocr, loc = journal.workerResult?.locator;
-  if (decode.length > (request.format === 'pdf' ? 0 : 1) || decode.length && (!loc || loc.kind !== 'docx-image')) throw Error('CATALOG_DOCUMENT_OCR_DECODE_COMMAND_INVALID');
-  for (const run of [worker, ...decode, ...(ocr ? [ocr] : [])]) {
-    if (origin.tools.filter(t => digest(t) === digest(run)).length !== 1 || run.stdoutBytes !== 0 || run.stdout !== '' ||
-        run.stdoutBytes + run.stderrBytes > Math.min(1048576, context.policy.maxToolOutputBytes) ||
-        run.elapsedMs > Math.min(context.policy.maxToolElapsedMs, limits.workerElapsedMs) + 1000) throw Error('CATALOG_DOCUMENT_OCR_TOOL_ORIGIN_INVALID');
-    if (!run.error && (run.exitCode !== 0 || run.signal !== null)) throw Error('CATALOG_DOCUMENT_OCR_TOOL_FACT_INVALID');
-  }
-  if (decode.length) {
-    const run = decode[0]!, format = (loc as Extract<NonNullable<typeof loc>, { kind: 'docx-image' }>).format, tool = asset.technical.documentOcr!.engine!.tools.ffmpeg;
-    const argv = ['-nostdin', '-hide_banner', '-loglevel', 'error', '-xerror', '-max_alloc', '67108864', '-probesize', '4194304', '-analyzeduration', '5000000',
-      '-protocol_whitelist', 'file', '-format_whitelist', format, '-f', format, '-max_streams', '1', '-threads', '1', '-noautorotate',
-      '-c:v', format === 'png_pipe' ? 'png' : 'mjpeg', '-i', `${journal.cwd}/embedded.image`, '-map', '0:v:0', '-an', '-sn', '-dn', '-frames:v', '1',
-      '-fps_mode', 'passthrough', '-threads', '1', '-c:v', 'rawvideo', '-pix_fmt', 'rgba', '-f', 'rawvideo', 'pipe:1'];
-    if (run.executable !== tool.executable || run.version !== `${tool.version}/ocr-raster@0.1` || JSON.stringify(run.argv) !== JSON.stringify(argv) ||
-        !run.error && run.binaryBytes !== 4 * loc!.width * loc!.height) throw Error('CATALOG_DOCUMENT_OCR_DECODE_COMMAND_INVALID');
-  }
-  if (ocr) {
-    const tool = asset.technical.documentOcr!.engine!.tools.tesseract;
-    if (ocr.executable !== tool.executable || ocr.version !== `${tool.version}/ocr-tsv@0.1` ||
-        JSON.stringify(ocr.argv) !== JSON.stringify(documentOcrArguments(`${journal.cwd}/raster.ppm`, `${root}/.engine/assets/ocr/tessdata`)) ||
-        request.format === 'docx' && decode.length !== 1 || ocr.binaryBytes > limits.ocr.maxOcrTsvBytes) throw Error('CATALOG_DOCUMENT_OCR_ENGINE_COMMAND_INVALID');
-  }
-}
-async function documentOcrEvidence(context: Context, asset: AssetVersion): Promise<DocumentOcrEvidence | null> {
-  const items = asset.technical.evidence, special = items.filter(e => e.kind.startsWith('document-ocr-')), descriptor = asset.technical.documentOcr,
-    format = asset.technical.format as 'pdf' | 'docx';
-  if (!descriptor) { if (special.length || (context.policy.version === '0.6' || context.policy.version === '0.7') && ['pdf', 'docx'].includes(format)) throw Error('CATALOG_DOCUMENT_OCR_DESCRIPTOR_REQUIRED'); return null; }
-  if ((context.policy.version !== '0.6' && context.policy.version !== '0.7') || !['pdf', 'docx'].includes(format)) throw Error('CATALOG_DOCUMENT_OCR_POLICY_REQUIRED');
-  assertDocumentOcr('descriptor', descriptor); const limits = effectiveDocumentOcrPolicy(context.policy), selection = format === 'pdf' ? limits.pdfPages : limits.docxImages;
-  if (descriptor.scope !== documentOcrScope(format) || JSON.stringify(descriptor.selection) !== JSON.stringify(selection)) throw Error('CATALOG_DOCUMENT_OCR_SELECTION_INVALID');
-  if (!limits.enabled || !selection.length) {
-    if (descriptor.status !== (limits.enabled ? 'skipped' : 'disabled') || descriptor.reason !== (limits.enabled ? 'DOCUMENT_OCR_SELECTION_EMPTY' : 'DOCUMENT_OCR_DISABLED') ||
-        descriptor.mapEvidenceId !== null || descriptor.runtime !== null || descriptor.engine !== null || descriptor.totalUnits !== null || descriptor.completedUnits || special.length ||
-        descriptor.nativeStatus !== asset.technical.status) throw Error('CATALOG_DOCUMENT_OCR_REFUSAL_INVALID');
-    return null;
-  }
-  if (!descriptor.runtime || !descriptor.engine || !descriptor.mapEvidenceId) throw Error('CATALOG_DOCUMENT_OCR_DESCRIPTOR_INVALID');
-  validateDocumentRasterRuntime(descriptor.runtime); validateOcrEngine(descriptor.engine);
-  if (digest(documentRasterRuntimeIdentity()) !== digest(descriptor.runtime) || digest(ocrRuntimeIdentity()) !== digest(descriptor.engine)) throw Error('CATALOG_DOCUMENT_OCR_RUNTIME_CHANGED');
-  const overallFile = special.find(e => e.id === descriptor.mapEvidenceId);
-  if (overallFile?.kind !== 'document-ocr-selection-map' || !overallFile.path.endsWith('.json')) throw Error('CATALOG_DOCUMENT_OCR_SELECTION_EVIDENCE_INVALID');
-  const read = async (entry: typeof overallFile, maximum: number) => {
-    const fixed = await readFixed(context.files.projectPath(join(context.dir, entry.path)), maximum, context.signal, context.read);
-    if (fixed.bytes !== entry.bytes || fixed.sha256 !== entry.sha256) throw Error('CATALOG_DOCUMENT_OCR_EVIDENCE_CHANGED'); return fixed.data;
-  };
-  const overall = JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(await read(overallFile, limits.maxMapBytes))) as DocumentOcrSelectionMap;
-  validateDocumentOcrSelectionMap(overall, limits);
-  const expectedStatus = descriptor.nativeStatus === 'failed' || descriptor.nativeStatus === 'unsupported' || overall.status !== 'completed' ?
-    overall.completedUnits || ['supported', 'partial'].includes(descriptor.nativeStatus) ? 'partial' : descriptor.nativeStatus : descriptor.nativeStatus;
-  if (digest(overall) !== overallFile.sha256 || overall.format !== format || overall.source.bytes !== asset.source.bytes || overall.source.sha256 !== asset.source.sha256 ||
-      overall.policySha256 !== asset.inspection.policySha256 || overall.nativeStatus !== descriptor.nativeStatus || overall.status !== descriptor.status ||
-      overall.totalUnits !== descriptor.totalUnits || overall.completedUnits !== descriptor.completedUnits || digest(overall.runtime) !== digest(descriptor.runtime) ||
-      digest(overall.engine) !== digest(descriptor.engine) || descriptor.reason !== (overall.status === 'completed' ? '' : 'DOCUMENT_OCR_SELECTION_PARTIAL') ||
-      asset.technical.status !== expectedStatus || special.length !== 1 + overall.completedUnits * 4) throw Error('CATALOG_DOCUMENT_OCR_BINDING_INVALID');
-  const origin = await audioOrigin(context, asset), receipt = assertCatalog<CatalogReceipt>('receipt', (await json(context, `runs/${origin.attemptId}/receipt.json`)).value);
-  if (receipt.catalogId !== origin.catalogId || receipt.attemptId !== origin.attemptId || receipt.policySha256 !== origin.policySha256 || digest(receipt.tools) !== digest(origin.tools) ||
-      !receipt.assets.some(a => digest(a) === digest(asset)) || !['running', 'prepared', 'succeeded'].includes(receipt.status)) throw Error('CATALOG_DOCUMENT_OCR_RECEIPT_ORIGIN_INVALID');
-  const used = new Set([overallFile.id]), units: DocumentOcrEvidence['units'] = new Map(); let pixels = 0, embeddedBytes = 0;
-  await context.files.ensureDirectory(join(context.dir, 'out/.tmp'));
-  for (const unit of overall.units) {
-    const ref = unit.invocation;
-    if (!ref || !new RegExp(`^runs/${origin.attemptId}/document-ocr-command-[a-f0-9-]{36}\\.json$`).test(ref.path) || ref.bytes > limits.maxMapBytes) throw Error('CATALOG_DOCUMENT_OCR_COMMAND_REFERENCE_INVALID');
-    const rawJournal = await json(context, ref.path), journal = assertDocumentOcr<DocumentOcrInvocationRecord>('invocation', rawJournal.value);
-    if (rawJournal.bytes !== ref.bytes || rawJournal.sha256 !== ref.sha256 || digest(journal) !== ref.sha256 || digest(journal.request.runtime) !== digest(overall.runtime) ||
-        digest(journal.workerResult?.locator ?? null) !== digest(unit.locator) || journal.workerResult && journal.workerResult.totalUnits !== overall.totalUnits) throw Error('CATALOG_DOCUMENT_OCR_COMMAND_CHANGED');
-    documentOcrToolOrigin(context, asset, origin, unit, journal);
-    const result = journal.workerResult;
-    if (result?.status === 'complete' && result.locator) { pixels += result.locator.width * result.locator.height; embeddedBytes += result.locator.kind === 'docx-image' ? result.locator.embeddedBytes : 0; }
-    const cwd = context.files.projectPath(join(context.dir, 'out/.tmp', `document-ocr-verify-${randomUUID()}`)); await mkdir(cwd, { mode: 0o700 });
-    let readBytes = 0; const counts = { ...emptyCatalogCounts(), get sourceReadBytes() { return readBytes; }, set sourceReadBytes(value: number) { const amount = value - readBytes; readBytes = value; context.read?.(amount); } };
-    const replay: InspectContext = { projectDir: context.dir, temporaryDir: cwd, evidenceDir: cwd, publishedDir: '', policy: context.policy, counts, tools: [],
-      signal: context.signal ?? new AbortController().signal, check: () => { context.signal?.throwIfAborted(); context.check?.(); } };
-    let currentFailure = '', rebuilt: Awaited<ReturnType<typeof runDocumentRaster>> | null = null;
-    try {
-      try { rebuilt = await runDocumentRaster({ ...journal.request, sourcePath: context.files.projectPath(join(context.dir, asset.source.fixedPath)) }, replay, cwd); }
-      catch (error) { replay.check(); currentFailure = message(error); }
-      if (result) {
-        const actual = rebuilt?.result, stripped = actual ? { ...actual, payload: actual.payload ? { format: actual.payload.format, bytes: actual.payload.bytes, sha256: actual.payload.sha256 } : null } : null;
-        if (digest(stripped) !== digest(result) || rebuilt!.run.binaryBytes !== journal.commands.worker!.binaryBytes) throw Error('CATALOG_DOCUMENT_OCR_SOURCE_REPLAY_INVALID');
-      } else if (!journal.commands.worker!.error || !currentFailure || currentFailure !== unit.reason) throw Error('CATALOG_DOCUMENT_OCR_WORKER_FAILURE_REPLAY_INVALID');
-      if (rebuilt?.result.status === 'failed') { if (unit.status !== 'failed' || rebuilt.result.reason !== unit.reason || journal.commands.decode.length || journal.commands.ocr) throw Error('CATALOG_DOCUMENT_OCR_FAILURE_REPLAY_INVALID'); continue; }
-      if (!rebuilt) continue;
-      let ppm: Buffer | null = null, parsed: Awaited<ReturnType<typeof documentRasterOcr>> | null = null;
-      try { ppm = await documentRasterPixels(rebuilt.result, replay, overall.engine, cwd); parsed = await documentRasterOcr(ppm, rebuilt.result.locator!.width, rebuilt.result.locator!.height, replay, overall.engine, cwd); }
-      catch (error) { replay.check(); currentFailure = message(error); }
-      if (unit.status === 'failed') {
-        if (currentFailure === unit.reason) continue;
-        if (parsed && ppm && journal.commands.ocr && journal.commands.worker) {
-          const loc = rebuilt.result.locator!, ids = Array.from({ length: 4 }, (_, i) => `evidence-00000000-0000-0000-0000-${String(i + 1).padStart(12, '0')}`);
-          const prospective: DocumentOcrUnitMap = { version: '0.1', kind: 'document-ocr-map', format, unitId: unit.id, scope: overall.scope, mapperVersion: 'ocr-tsv@0.1', status: parsed.status,
-            policySha256: overall.policySha256, source: overall.source, runtime: overall.runtime, locator: loc,
-            raster: { evidenceId: ids[0]!, bytes: ppm.length, sha256: createHash('sha256').update(ppm).digest('hex'), width: loc.width, height: loc.height, encoding: 'P6/RGB8', background: 'white', transform: 'identity', orientationApplied: false },
-            rawTsv: { evidenceId: ids[1]!, bytes: parsed.tsv.length, sha256: createHash('sha256').update(parsed.tsv).digest('hex') }, text: { evidenceId: ids[2]!, bytes: parsed.text.length, sha256: createHash('sha256').update(parsed.text).digest('hex') },
-            engine: overall.engine, regions: parsed.regions, commands: { worker: journal.commands.worker, decode: journal.commands.decode, ocr: journal.commands.ocr }, cwd: journal.cwd,
-            limitations: [...rebuilt.result.limitations, 'Coordinates address the selected raster pixels. OCR confidence is an engine score.'] };
-          try { validateDocumentOcrUnitMap(prospective, parsed.text, ppm, parsed.tsv, limits); const length = Buffer.byteLength(importJsonText(prospective)); if (length > limits.maxMapBytes || length > limits.ocr.maxOcrMapBytes) throw Error('DOCUMENT_OCR_MAP_LIMIT'); } catch (error) { if (message(error) === unit.reason) continue; }
-        }
-        throw Error('CATALOG_DOCUMENT_OCR_FAILURE_REPLAY_INVALID');
-      }
-      if (!ppm || !parsed || currentFailure || !journal.commands.ocr || journal.commands.worker!.error || journal.commands.decode.some(run => run.error) || journal.commands.ocr.error) throw Error('CATALOG_DOCUMENT_OCR_REPLAY_INVALID');
-      const mapFile = special.find(e => e.id === unit.mapEvidenceId);
-      if (mapFile?.kind !== 'document-ocr-map' || !mapFile.path.endsWith('.json') || used.has(mapFile.id)) throw Error('CATALOG_DOCUMENT_OCR_UNIT_GROUP_INVALID');
-      const map = JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(await read(mapFile, Math.min(limits.maxMapBytes, limits.ocr.maxOcrMapBytes)))) as DocumentOcrUnitMap;
-      const rasterFile = special.find(e => e.id === map.raster.evidenceId), tsvFile = special.find(e => e.id === map.rawTsv.evidenceId), textFile = special.find(e => e.id === map.text.evidenceId);
-      if (rasterFile?.kind !== 'document-ocr-raster' || tsvFile?.kind !== 'document-ocr-tsv' || textFile?.kind !== 'document-ocr-text' ||
-          !rasterFile.path.endsWith('.ppm') || !tsvFile.path.endsWith('.txt') || !textFile.path.endsWith('.txt')) throw Error('CATALOG_DOCUMENT_OCR_UNIT_GROUP_INVALID');
-      const raster = await read(rasterFile, Math.min(limits.maxRasterBytes, limits.ocr.maxOcrRasterBytes)), tsv = await read(tsvFile, limits.ocr.maxOcrTsvBytes), text = await read(textFile, limits.ocr.maxOcrTextBytes);
-      validateDocumentOcrUnitMap(map, text, raster, tsv, limits);
-      if (digest(map) !== mapFile.sha256 || map.format !== format || map.unitId !== unit.id || map.status !== unit.status || digest(map.source) !== digest(overall.source) ||
-          map.policySha256 !== overall.policySha256 || digest(map.runtime) !== digest(overall.runtime) || digest(map.engine) !== digest(overall.engine) ||
-          digest(map.locator) !== digest(unit.locator) || map.cwd !== journal.cwd || digest(map.commands) !== digest(journal.commands) ||
-          !raster.equals(ppm) || !tsv.equals(parsed.tsv) || !text.equals(parsed.text) || digest(map.regions) !== digest(parsed.regions) || map.status !== parsed.status ||
-          journal.commands.ocr.binaryBytes !== tsv.length || rasterFile.width !== map.locator.width || rasterFile.height !== map.locator.height ||
-          rasterFile.sourceWidth !== map.locator.width || rasterFile.sourceHeight !== map.locator.height || rasterFile.transform !== documentOcrRasterTransform(format)) throw Error('CATALOG_DOCUMENT_OCR_REPLAY_INVALID');
-      for (const entry of [rasterFile, tsvFile, textFile, mapFile]) { if (used.has(entry.id) || entry.coverage !== 'full') throw Error('CATALOG_DOCUMENT_OCR_GROUP_OVERLAP'); used.add(entry.id); }
-      units.set(unit.id, { map, text });
-    } finally { await rm(cwd, { recursive: true, force: true }); }
-  }
-  if (used.size !== special.length || special.some(e => !used.has(e.id)) || digest(documentRasterRuntimeIdentity()) !== digest(overall.runtime) || digest(ocrRuntimeIdentity()) !== digest(overall.engine)) throw Error('CATALOG_DOCUMENT_OCR_GROUP_INVALID');
-  return { selection: overall, selectionMapEvidenceId: overallFile.id, units, pixels, embeddedBytes };
-}
-async function documentOcrObservation(context: Context, asset: AssetVersion, record: DocumentOcrObservation): Promise<void> {
-  const group = await documentOcrEvidence(context, asset), unit = group?.units.get(record.locator.unitId);
-  if (!group || !unit || record.locator.mapEvidenceId !== group.selection.units.find(u => u.id === record.locator.unitId)?.mapEvidenceId) throw Error('CATALOG_DOCUMENT_OCR_OBSERVATION_EVIDENCE_MISMATCH');
-  validateDocumentOcrObservation(record, unit.map, unit.text, group.selectionMapEvidenceId);
 }
 async function audioOrigin(context: Context, asset: AssetVersion): Promise<CatalogManifest> {
   let origin = context.toolSource;
@@ -491,11 +322,8 @@ async function asrObservation(context: Context, asset: AssetVersion, record: Asr
 export async function validateObservation(context: Context, assets: AssetVersion[], record: Observation): Promise<void> {
   assertCatalog('observation', record); const asset = versionFor(assets, record); context = await inspectionContext(context, asset); const evidence = asset.technical.evidence.find(e => e.id === record.locator.evidenceId);
   if (!evidence || !record.evidenceRefs.includes(evidence.id) || record.evidenceRefs.some(id => !asset.technical.evidence.some(e => e.id === id))) throw new Error('CATALOG_OBSERVATION_EVIDENCE_MISMATCH');
-  if (record.version === '0.2') { await validateDocumentObservation(context, asset, record); return; }
   if (record.version === '0.3') { await ocrObservation(context, asset, record); return; }
-  if (record.version === '0.6') { await documentOcrObservation(context, asset, record); return; }
   if (record.version === '0.4' || record.version === '0.5') { if (record.version !== (asset.technical.asr?.version === '0.2' ? '0.5' : '0.4')) throw Error('CATALOG_ASR_OBSERVATION_VERSION_INVALID'); await asrObservation(context, asset, record); return; }
-  if (asset.technical.document || ['pdf', 'docx', 'pptx', 'xlsx'].includes(asset.technical.format)) throw new Error('CATALOG_DOCUMENT_LOCATOR_REQUIRED');
   const loc = record.locator;
   if (loc.kind === 'text' && asset.technical.ocr) throw new Error('CATALOG_OCR_LOCATOR_REQUIRED');
   if (loc.kind === 'text' && asset.technical.asr) throw new Error('CATALOG_ASR_LOCATOR_REQUIRED');
@@ -547,17 +375,16 @@ async function stored(context: Context, catalogId: string, expected: string): Pr
   if ((await context.files.children(join(context.dir, 'assets/catalogs', catalogId))).join() !== 'manifest.json') throw new Error('CATALOG_MANIFEST_UNLISTED');
   const isAsrRun = (run: CatalogManifest['tools'][number]) => (policy.version === '0.4' || policy.version === '0.5' || (policy.version === '0.6' || policy.version === '0.7')) && run.version === '1.9.5/asr-json@0.1' && manifest.assets.some(a => a.inspection.catalogId === catalogId && a.technical.asr?.engine && run.executable.endsWith('/' + a.technical.asr.engine.program.path));
   const binaryLimit = (version: string) => (policy.version === '0.4' || policy.version === '0.5' || (policy.version === '0.6' || policy.version === '0.7')) && version.endsWith('/asr-json@0.1') ? asrLimits(policy).maxAsrRawBytes :
-    (policy.version === '0.6' || policy.version === '0.7') && version.endsWith('/document-raster-worker@0.1') ? policy.documentOcr.maxWorkerPayloadBytes :
     ['0.5', '0.6', '0.7'].includes(policy.version) && version.endsWith('/audio-input@0.1/probe') ? 0 :
     ['0.5', '0.6', '0.7'].includes(policy.version) && version.endsWith('/audio-input@0.1/decode') ? audioInputLimits(policy).maxPcmBytes :
     ['0.5', '0.6', '0.7'].includes(policy.version) && version.endsWith('/audio-input@0.1/normalize') ? Math.min(audioInputLimits(policy).maxSamples * 2, audioInputLimits(policy).maxAudioBytes - 44) :
-    policy.version === '0.4' && version.endsWith('/asr-audio@0.1') ? Math.min(asrLimits(policy).maxAsrSamples * 2, asrLimits(policy).maxAsrAudioBytes - 44) : policy.version !== '0.1' && version.endsWith('/document-worker@0.1') ? policy.document.maxWorkerPayloadBytes :
-    (policy.version === '0.3' || policy.version === '0.4' || policy.version === '0.5' || (policy.version === '0.6' || policy.version === '0.7')) && version.endsWith('/ocr-tsv@0.1') ? Math.max(ocrLimits(policy).maxOcrTsvBytes, (policy.version === '0.6' || policy.version === '0.7') ? policy.documentOcr.ocr.maxOcrTsvBytes : 0) :
-    (policy.version === '0.3' || policy.version === '0.4' || policy.version === '0.5' || (policy.version === '0.6' || policy.version === '0.7')) && version.endsWith('/ocr-raster@0.1') ? 4 * Math.max(ocrLimits(policy).maxOcrSourcePixels, (policy.version === '0.6' || policy.version === '0.7') ? policy.documentOcr.ocr.maxOcrSourcePixels : 0) : policy.maxDerivedBytes;
+    policy.version === '0.4' && version.endsWith('/asr-audio@0.1') ? Math.min(asrLimits(policy).maxAsrSamples * 2, asrLimits(policy).maxAsrAudioBytes - 44) :
+    (policy.version === '0.3' || policy.version === '0.4' || policy.version === '0.5' || (policy.version === '0.6' || policy.version === '0.7')) && version.endsWith('/ocr-tsv@0.1') ? ocrLimits(policy).maxOcrTsvBytes :
+    (policy.version === '0.3' || policy.version === '0.4' || policy.version === '0.5' || (policy.version === '0.6' || policy.version === '0.7')) && version.endsWith('/ocr-raster@0.1') ? 4 * ocrLimits(policy).maxOcrSourcePixels : policy.maxDerivedBytes;
   const elapsedLimit = (run: CatalogManifest['tools'][number]) => isAsrRun(run) && (policy.version === '0.4' || policy.version === '0.5' || (policy.version === '0.6' || policy.version === '0.7')) ? policy.asr.maxAsrToolElapsedMs :
     ['0.5', '0.6', '0.7'].includes(policy.version) && /\/audio-input@0\.1\/(probe|decode|normalize)$/.test(run.version) ? Math.min(policy.maxToolElapsedMs, policy.audioInput.maxToolElapsedMs) : policy.maxToolElapsedMs;
   if (manifest.counts.selectedFiles > policy.maxSelectedFiles || manifest.counts.sourceBytes > policy.maxTotalSourceBytes || manifest.counts.derivedBytes > policy.maxDerivedBytes || manifest.counts.decodedAudioBytes > policy.maxDecodedAudioBytes || manifest.counts.elapsedMs > policy.maxElapsedMs || manifest.tools.some(t => t.stdoutBytes + t.stderrBytes > policy.maxToolOutputBytes || t.binaryBytes > binaryLimit(t.version) || t.elapsedMs > elapsedLimit(t) + 1000)) throw new Error('CATALOG_COUNTS_INVALID');
-  const versions = new Set<string>(), evidenceIds = new Set<string>(), dirs = new Map<string, Set<string>>(), documentOcrBudget = { units: 0, pixels: 0, embeddedBytes: 0 };
+  const versions = new Set<string>(), evidenceIds = new Set<string>(), dirs = new Map<string, Set<string>>();
   for (const asset of manifest.assets) {
     let toolSource = manifest;
     if (versions.has(asset.assetVersion)) throw new Error('CATALOG_VERSION_DUPLICATE'); versions.add(asset.assetVersion);
@@ -576,12 +403,6 @@ async function stored(context: Context, catalogId: string, expected: string): Pr
       const actual = await readFixed(context.files.projectPath(join(context.dir, e.path)), Math.max(policy.maxDerivedBytes, policy.maxTextBytes), context.signal, context.read, false);
       if (actual.bytes !== e.bytes || actual.sha256 !== e.sha256) throw new Error('CATALOG_EVIDENCE_CHANGED'); listed.add(e.path.slice(prefix.length));
       if (e.kind === 'audio-pcm' && (e.samples !== Math.floor(e.bytes / 2) || e.bytes % 2 || !e.sampleRate) || ['preview', 'frame'].includes(e.kind) && (!e.width || !e.height || !e.sourceWidth || !e.sourceHeight)) throw new Error('CATALOG_EVIDENCE_FACT_INVALID');
-    }
-    await documentEvidence(originalContext, asset);
-    const documentOcr = await documentOcrEvidence(originalContext, asset);
-    if (documentOcr && asset.inspection.catalogId === catalogId && (policy.version === '0.6' || policy.version === '0.7')) {
-      documentOcrBudget.units += documentOcr.selection.units.length; documentOcrBudget.pixels += documentOcr.pixels; documentOcrBudget.embeddedBytes += documentOcr.embeddedBytes;
-      if (documentOcrBudget.units > policy.documentOcr.maxUnitsPerAttempt || documentOcrBudget.pixels > policy.documentOcr.maxTotalPixels || documentOcrBudget.embeddedBytes > policy.documentOcr.maxTotalEmbeddedBytes) throw Error('CATALOG_DOCUMENT_OCR_ATTEMPT_BUDGET_INVALID');
     }
     await ocrEvidence(originalContext, asset);
     const audio = await audioEvidence(originalContext, asset);
@@ -630,10 +451,6 @@ async function recover(context: Context, attemptId: string) {
         for (const asset of receipt.assets) {
           if (asset.inspection.attemptId !== name || asset.inspection.catalogId !== receipt.catalogId) throw Error('CATALOG_RECOVERY_ASSET_ORIGIN_INVALID');
           inspections.add(asset.inspectionId);
-        }
-        if ((receipt.policy?.version === '0.6' || receipt.policy?.version === '0.7')) for (const file of await context.files.children(join(context.dir, 'runs', name))) if (/^document-ocr-command-[a-f0-9-]{36}\.json$/.test(file)) {
-          const command = assertDocumentOcr<DocumentOcrInvocationRecord>('invocation', (await json(context, `runs/${name}/${file}`)).value), suffix = `/out/.tmp/catalog-${name}/${command.inspectionId}/document-ocr-`;
-          if (!command.cwd.includes(suffix)) throw Error('CATALOG_RECOVERY_COMMAND_ORIGIN_INVALID'); inspections.add(command.inspectionId);
         }
         for (const inspectionId of inspections) {
           const path = join(context.dir, 'assets/derived/inspection', inspectionId), staged = join(context.dir, receipt.tempPath, inspectionId);
@@ -690,12 +507,11 @@ export async function catalogAssets(projectDir: string, selection: CatalogSelect
     } else {
       const selected = await sources(context, selection);
       if (selection.assetId && (selected.length !== 1 || !selection.path || !assets.some(a => a.assetId === selection.assetId))) throw new Error('CATALOG_REPLACEMENT_INVALID');
-      let documents = 0, images = 0, audios = 0, commonAudios = 0; const documentOcrBudget = { units: 0, pixels: 0, embeddedBytes: 0 };
+      let images = 0, audios = 0, commonAudios = 0;
       receipt.counts.selectedFiles = selected.length; receipt.counts.sourceBytes = selected.reduce((n, s) => n + s.bytes, 0); await phase('inspecting');
       for (const source of selected) {
         context.check!(); await fixedSource(context, source);
         const { format, header } = await inspectFormat(files.projectPath(join(dir, source.fixedPath)), source.path, { projectDir: dir, temporaryDir, evidenceDir: temporaryDir, publishedDir: '', policy, counts: receipt.counts, tools: receipt.tools, signal, check: context.check! });
-        if (['pdf', 'docx', 'pptx', 'xlsx'].includes(format) && ++documents > documentLimits(policy).maxDocumentsPerAttempt) throw new Error('CATALOG_DOCUMENT_COUNT_LIMIT');
         if ((policy.version === '0.3' || policy.version === '0.4' || policy.version === '0.5' || (policy.version === '0.6' || policy.version === '0.7')) && policy.ocr.enabled && ['png_pipe', 'jpeg_pipe'].includes(format) && ++images > policy.ocr.maxOcrImagesPerAttempt) throw new Error('CATALOG_OCR_IMAGE_COUNT_LIMIT');
         const sameSource = assets.filter(a => digest(a.source) === digest(source)), latestSource = sameSource.at(-1),
           existing = (policy.version === '0.6' || policy.version === '0.7') ? latestSource?.inspection.policySha256 === receipt.policySha256 ? latestSource : undefined : sameSource[0];
@@ -708,12 +524,7 @@ export async function catalogAssets(projectDir: string, selection: CatalogSelect
         const assetId = selection.assetId ?? ((policy.version === '0.6' || policy.version === '0.7') ? sameSource.at(-1)?.assetId : undefined) ?? `asset-${randomUUID()}`, assetVersion = `asset-version-${randomUUID()}`, inspectionId = `inspection-${randomUUID()}`, publishedDir = `assets/derived/inspection/${inspectionId}`, evidenceDir = join(temporaryDir, inspectionId);
         const before = await files.inspect(join(dir, source.fixedPath));
         const technical = await inspectAsset(files.projectPath(join(dir, source.fixedPath)), source.path, { projectDir: dir, temporaryDir, evidenceDir, publishedDir, policy, counts: receipt.counts, tools: receipt.tools, signal, check: context.check!, sourceBytes: source.bytes, sourceSha256: source.sha256, policySha256: receipt.policySha256!,
-          format, header, documentOcrBudget, recordDocumentOcrInvocation: async value => {
-            assertDocumentOcr('invocation', value); const data = Buffer.from(importJsonText(value)), path = `runs/${attemptId}/document-ocr-command-${randomUUID()}.json`;
-            if (data.length > Math.min(policy.maxCatalogBytes, (policy.version === '0.6' || policy.version === '0.7') ? policy.documentOcr.maxMapBytes : 0)) throw Error('CATALOG_DOCUMENT_OCR_COMMAND_LIMIT');
-            if (receipt.counts.derivedBytes + data.length > policy.maxDerivedBytes) throw Error('CATALOG_DERIVED_LIMIT'); receipt.counts.derivedBytes += data.length;
-            await files.writeJson(join(dir, path), value); return { path, bytes: data.length, sha256: createHash('sha256').update(data).digest('hex') };
-          }, recordAsrInvocation: async (run, cwd) => { await files.writeJson(join(runDir, `asr-command-${randomUUID()}.json`), { version: '0.1', kind: 'asr-command', cwd, run }); } });
+          format, header, recordAsrInvocation: async (run, cwd) => { await files.writeJson(join(runDir, `asr-command-${randomUUID()}.json`), { version: '0.1', kind: 'asr-command', cwd, run }); } });
         if (asrIdentity && digest(asrRuntimeIdentity()) !== digest(asrIdentity)) throw Error('CATALOG_ASR_RUNTIME_CHANGED_AFTER_INSPECTION');
         if (JSON.stringify(before) !== JSON.stringify(await files.inspect(join(dir, source.fixedPath)))) throw new Error('CATALOG_SOURCE_CHANGED: analysis node'); await fixedSource(context, source);
         publishedInspections.push({ path: join(dir, publishedDir), staged: evidenceDir }); await files.moveDirectory(evidenceDir, join(dir, publishedDir));
@@ -729,11 +540,6 @@ export async function catalogAssets(projectDir: string, selection: CatalogSelect
     await stored(context, catalogId, receipt.manifestSha256); context.check!(); receipt.status = 'prepared'; await phase('committing');
     const ocrAssets = receipt.assets.filter(a => a.technical.ocr && ['completed', 'no-text'].includes(a.technical.ocr.status));
     if (ocrAssets.length) { const identity = ocrRuntimeIdentity(); if (ocrAssets.some(a => digest(a.technical.ocr!.engine) !== digest(identity))) throw new Error('CATALOG_OCR_RUNTIME_CHANGED_BEFORE_COMMIT'); }
-    const documentOcrAssets = receipt.assets.filter(a => a.technical.documentOcr?.mapEvidenceId);
-    if (documentOcrAssets.length) {
-      const runtime = documentRasterRuntimeIdentity(), engine = ocrRuntimeIdentity();
-      if (documentOcrAssets.some(a => digest(a.technical.documentOcr!.runtime) !== digest(runtime) || digest(a.technical.documentOcr!.engine) !== digest(engine))) throw Error('CATALOG_DOCUMENT_OCR_RUNTIME_CHANGED_BEFORE_COMMIT');
-    }
     if (asrIdentity && digest(asrRuntimeIdentity()) !== digest(asrIdentity)) throw new Error('CATALOG_ASR_RUNTIME_CHANGED_BEFORE_COMMIT');
     await stored(context, catalogId, receipt.manifestSha256); if ((await index(context))?.sha256 !== oldIndex?.sha256) throw new Error('CATALOG_INDEX_CHANGED'); context.check!();
     const current = new Map((oldIndex?.value.assets ?? []).map(a => [a.assetId, a.currentVersion])); for (const a of receipt.assets) current.set(a.assetId, a.assetVersion);

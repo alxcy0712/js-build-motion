@@ -18,11 +18,6 @@
 | 素材目录、观察、权利与探测政策契约 | .skill/engine/src/project/catalog.ts |
 | OCR 词区域、栅格/定位图与依赖身份契约 | .skill/engine/src/project/ocr.ts |
 | OCR 有界图像准入、TSV 与原生适配 | .skill/engine/src/adapters/ocr-raster.ts、ocr-tsv.ts、inspection-ocr.ts |
-| 文档单位、定位图与 worker 契约 | .skill/engine/src/project/document.ts |
-| 文档受限 worker、PDF、DOCX 与 Office 原生解析 | .skill/engine/src/adapters/inspection-document.ts、document-worker.ts、document-pdf.ts、document-docx.ts、document-office.ts |
-| 文档 OCR 选择、栅格、词区域与命令身份契约 | .skill/engine/src/project/document-ocr.ts |
-| PDF 结构闭包/有界栅格与 DOCX 嵌图出现位置 | .skill/engine/src/adapters/document-raster-source.ts、document-raster-worker.ts、document-raster-pdf.ts、document-raster-docx.ts |
-| 文档 OCR 串行编排与固定原件像素重放 | .skill/engine/src/adapters/inspection-document-ocr.ts、application/catalog.ts |
 | WAV ASR 政策、采样/文本定位与固定依赖契约 | .skill/engine/src/project/asr.ts |
 | WAV 有界结构/重采样、严格 JSON 与原生转写 | .skill/engine/src/adapters/asr-wav.ts、asr-json.ts、inspection-asr.ts |
 | 批准稿、词与汉字对齐政策/定位图契约 | .skill/engine/src/project/alignment.ts |
@@ -73,7 +68,6 @@ node .skill/scripts/check.mjs --native
 
 通用音频改动同时验证完整容器结构、原件解码样本数、原率 PCM 和唯一 canonical 的字节重放。显式 0.5 inspection 与 0.2 alignment 分别测试 ASR 关闭/启用、旧政策继承、截断成功退出反例、外部引用、协调外层哈希修改、累计配额、中断恢复及移根；真实宿主门禁通过固定原生工具产生独立已知样本输入并运行统一入口。
 
-文档 OCR 改动采用显式 0.6 inspection，保持默认 0.4 和历史采用身份。必需校验 PDF 的经典结构、页树、解压/资源/画布配额与完整像素 oracle，DOCX 全包 CRC、正文 drawing occurrence/关系/部件身份，以及每单位栅格/TSV/text/map 与选择映射/原始命令记录的闭合关联。代表性宿主门禁从独立已知原件逐字节重建像素，覆盖双语/无文本、局部失败、协调摘要替换、累计配额、三种中断、恢复和移根；历史原生文本与单图/语音组分别沿自己的政策复查。选择覆盖、识别准确度与 DOCX 显示布局各自保存事实。
 
 备份内容为完整 .skill/，每次统一入口执行前创建新快照，成功后删除超过两份的旧快照。备份失败时保留已有快照并停止调用。快照在 .skill-backups/，其文件名记录时间和核心哈希；恢复时先备份当前核心，再将所选快照解压到空的临时目录并核验，替换 .skill/ 后执行检查。影片运行时继续保持原版本。
 

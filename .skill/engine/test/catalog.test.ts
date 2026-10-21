@@ -217,3 +217,21 @@ test('unpack selection quotas count member bytes; real postcommit SIGKILL recove
     const entry = json(join(f.dir, 'assets/catalog.json')).catalogs.at(-1); const durable = json(join(f.dir, 'runs', entry.attemptId, 'receipt.json')); assert.equal(durable.status, 'prepared'); await catalogAssets(f.dir, { unpackId: un.unpackId, path: 'note.txt' }); const recovered = json(join(f.dir, 'runs', entry.attemptId, 'receipt.json')); assert.equal(recovered.status, 'succeeded'); assert.equal(recovered.indexCommitted, true); assert.ok(recovered.counts.sourceReadBytes >= durable.counts.sourceReadBytes); await verifyCatalog(f.dir, entry.catalogId);
   } finally { f.cleanup(); }
 });
+
+
+test('removed document parsers retain immutable originals and report unsupported without evidence', async () => {
+  const f = fixture();
+  try {
+    const sources = { 'source.pdf': Buffer.from('%PDF-1.7\nfixture'), 'source.docx': makeZip([{ name: 'word/document.xml', data: 'fixture' }]) };
+    for (const [name, bytes] of Object.entries(sources)) writeFileSync(join(f.selected, name), bytes);
+    const imported = await f.import(), receipt = await catalogAssets(f.dir, { importId: imported.importId });
+    const catalog = await verifyCatalog(f.dir, receipt.catalogId);
+    for (const asset of catalog.assets) {
+      assert.equal(asset.technical.status, 'unsupported');
+      assert.match(asset.technical.reason, /DOCUMENT_IMPORT_REMOVED/);
+      assert.deepEqual(asset.technical.evidence, []);
+      assert.deepEqual(readFileSync(join(f.dir, asset.source.fixedPath)), sources[asset.source.path as keyof typeof sources]);
+    }
+    assert.deepEqual(catalog.tools, []);
+  } finally { f.cleanup(); }
+});

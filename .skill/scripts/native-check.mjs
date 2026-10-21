@@ -6,13 +6,10 @@ import { randomBytes } from 'node:crypto';
 import { createRequire } from 'node:module';
 import { spawn, spawnSync } from 'node:child_process';
 import { createServer } from 'node:net';
-import { checkDocumentNative } from './document-native-check.mjs';
-import { checkOfficeNative } from './office-native-check.mjs';
 import { checkAssetsNative, checkProductionAssetsNative } from './assets-native-check.mjs';
 import { checkAsrNative } from './asr-native-check.mjs';
 import { checkAlignmentNative } from './alignment-native-check.mjs';
 import { checkAudioInputNative } from './audio-input-native-check.mjs';
-import { checkDocumentOcrNative } from './document-ocr-native-check.mjs';
 import { checkOcrNative } from './ocr-native-check.mjs';
 import { checkCatalogNative } from './catalog-native-check.mjs';
 import { checkUnpackNative } from './unpack-native-check.mjs';
@@ -48,7 +45,7 @@ export async function checkNative() {
   try {
     await check('唯一核心源码与独立生产依赖', () => {
       const require = createRequire(join(engine, 'package.json'));
-      assert.deepEqual(original.dependencies, ['agent-base@7.1.4', 'ajv@8.20.0', 'debug@4.4.3', 'detect-libc@2.1.2', 'fast-deep-equal@3.1.3', 'fast-uri@3.1.8', 'follow-redirects@1.16.0', 'https-proxy-agent@7.0.6', 'json-schema-traverse@1.0.0', 'ms@2.1.3', 'parenthesis@3.1.8', 'pdfjs-dist@6.4.299', 'pend@1.2.0', 'require-from-string@2.0.2', 'saxes@6.0.0', 'skia-canvas@3.0.8', 'string-split-by@1.0.0', 'xmlchars@2.2.0', 'yauzl@3.4.0']);
+      assert.deepEqual(original.dependencies, ['agent-base@7.1.4', 'ajv@8.20.0', 'debug@4.4.3', 'detect-libc@2.1.2', 'fast-deep-equal@3.1.3', 'fast-uri@3.1.8', 'follow-redirects@1.16.0', 'https-proxy-agent@7.0.6', 'json-schema-traverse@1.0.0', 'ms@2.1.3', 'parenthesis@3.1.8', 'pend@1.2.0', 'require-from-string@2.0.2', 'skia-canvas@3.0.8', 'string-split-by@1.0.0', 'yauzl@3.4.0']);
       assert.ok(original.dependencies.includes('yauzl@3.4.0'));
       assert.ok(original.dependencies.includes('pend@1.2.0'));
       for (const dependency of original.dependencies) {
@@ -276,15 +273,12 @@ export async function checkNative() {
     });
     await checkUnpackNative({ scratch, skill, run, check, denied });
     await checkCatalogNative({ scratch, skill, run, check, denied });
-    await checkDocumentNative({ scratch, skill, run, check, denied });
-    await checkOfficeNative({ scratch, skill, run, check });
     await checkAssetsNative({ scratch, skill, run, check });
     await checkProductionAssetsNative({ scratch, skill, run, check });
     await checkOcrNative({ scratch, skill, run, check, denied });
     await checkAsrNative({ scratch, skill, run, check, denied });
     await checkAlignmentNative({ scratch, skill, run, check, denied });
     await checkAudioInputNative({ scratch, skill, check });
-    await checkDocumentOcrNative({ scratch, skill, check });
     await check('核心或运行时改动阻止调用，失败保留有效备份', () => {
       const extra = join(skill, 'unexpected.txt');
       const old = saved();

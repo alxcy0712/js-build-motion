@@ -8,12 +8,9 @@ import { performance } from 'node:perf_hooks';
 import { asrRuntimeIdentity } from '../../workspace.mjs';
 import { inspectAudioAsr } from './inspection-asr.ts';
 import { inspectAudioInput } from './inspection-audio.ts';
-import { inspectDocument } from './inspection-document.ts';
-import { inspectDocumentOcr } from './inspection-document-ocr.ts';
 import { inspectImageOcr } from './inspection-ocr.ts';
 import { assertImportPath, ensureImportDirectory, sameImportNode, NodeImportFiles } from './import-files.ts';
 import type { CatalogCounts, Evidence, InspectPolicy, MediaStream, Technical, ToolRun } from '../project/catalog.ts';
-import type { DocumentOcrInvocationRecord, DocumentOcrInvocationRef } from '../project/document-ocr.ts';
 
 /** One independent descriptor, bounded reads, and before/after node identity. */
 export async function readFixed(path: string, maximum: number, signal?: AbortSignal, onRead?: (bytes: number) => void, retain = true): Promise<{ bytes: number; sha256: string; data: Buffer }> {
@@ -145,7 +142,7 @@ function signature(data: Buffer, name: string, office = false): string {
   if (data.toString('ascii', 0, 2) === 'PK') return /\.docx$/i.test(name) ? 'docx' : office && /\.(pptx|xlsx)$/i.test(name) ? name.toLowerCase().endsWith('.pptx') ? 'pptx' : 'xlsx' : 'zip';
   if (/\.(txt|md)$/i.test(name) || /^\.[^.]+$/.test(basename(name))) return 'utf8'; return 'unknown';
 }
-export interface InspectContext { projectDir: string; temporaryDir: string; evidenceDir: string; publishedDir: string; policy: InspectPolicy; counts: CatalogCounts; tools: ToolRun[]; signal: AbortSignal; check: () => void; sourceBytes?: number; sourceSha256?: string; policySha256?: string; format?: string; header?: Buffer; documentOcrBudget?: { units: number; pixels: number; embeddedBytes: number }; recordDocumentOcrInvocation?: (value: DocumentOcrInvocationRecord) => Promise<DocumentOcrInvocationRef>; recordAsrInvocation?: (run: ToolRun, cwd: string) => Promise<void> }
+export interface InspectContext { projectDir: string; temporaryDir: string; evidenceDir: string; publishedDir: string; policy: InspectPolicy; counts: CatalogCounts; tools: ToolRun[]; signal: AbortSignal; check: () => void; sourceBytes?: number; sourceSha256?: string; policySha256?: string; format?: string; header?: Buffer; recordAsrInvocation?: (run: ToolRun, cwd: string) => Promise<void> }
 export async function inspectFormat(source: string, name: string, context: InspectContext): Promise<{ format: string; header: Buffer }> {
   const { counts } = context, files = new NodeImportFiles(context.projectDir), info = await files.inspect(source);
   // Prefix routing uses the same independent reader; source size was admitted by the application.
@@ -166,7 +163,6 @@ export async function inspectAsset(source: string, name: string, context: Inspec
     try { asrRuntimeIdentity(); } catch (error) { throw new Error('CATALOG_ASR_RUNTIME_UNAVAILABLE: ' + (error instanceof Error ? error.message : String(error))); }
   }
   const base = await inspectBaseAsset(source, name, context);
-  if ((context.policy.version === '0.6' || context.policy.version === '0.7') && (base.format === 'pdf' || base.format === 'docx')) return inspectDocumentOcr(source, base.format, base, context);
   if ((context.policy.version === '0.3' || context.policy.version === '0.4' || context.policy.version === '0.5' || (context.policy.version === '0.6' || context.policy.version === '0.7')) && (base.format === 'png_pipe' || base.format === 'jpeg_pipe')) return inspectImageOcr(source, base.format, base, context);
   return context.policy.version === '0.4' && base.format === 'wav' ? inspectAudioAsr(source, base, context) : base;
 }
@@ -175,7 +171,7 @@ async function inspectBaseAsset(source: string, name: string, context: InspectCo
   const { format, header } = context.format && context.header ? { format: context.format, header: context.header } : await inspectFormat(source, name, context);
   const result: Technical = { status: 'supported', format, method: `inspection@0.1/node@${process.versions.node}`, reason: '', raw: null, streams: [], evidence: [], text: null, containerDuration: null, limitations: ['Technical evidence requires separate semantic observation and rights records.', 'Null normalized fields indicate missing, nonfinite or unsafe numeric metadata; available fields remain in the raw probe.'] };
   await ensureImportDirectory(context.projectDir, context.evidenceDir);
-  if (['pdf', 'docx', 'pptx', 'xlsx'].includes(format)) return inspectDocument(source, format, context);
+  if (['pdf', 'docx', 'pptx', 'xlsx'].includes(format)) { result.status = 'unsupported'; result.reason = 'DOCUMENT_IMPORT_REMOVED: use an independently prepared image or UTF-8 text asset.'; return result; }
   function admit(bytes: number) { context.check(); if (counts.derivedBytes + bytes > policy.maxDerivedBytes) throw new Error('CATALOG_DERIVED_LIMIT'); counts.derivedBytes += bytes; }
   async function evidence(kind: Evidence['kind'], suffix: string, data: Buffer, fields: Partial<Evidence> = {}, admitted = false) {
     if (admitted) context.check(); else admit(data.length); const id = `evidence-${randomUUID()}`, path = join(context.evidenceDir, `${id}.${suffix}`), handle = await open(path, 'wx', 0o600);

@@ -195,9 +195,7 @@ ZIP 解析使用 [yauzl](https://github.com/thejoshwolfe/yauzl)（Josh Wolfe，M
 
 素材目录的技术证据、内容观察和权利记录按固定素材版本保存；默认限额、定位与恢复约定见[工作区规范](.skill/references/workspace.md#素材目录与可定位记录)。媒体探测使用 [FFprobe](https://ffmpeg.org/ffprobe.html)、[FFmpeg](https://ffmpeg.org/ffmpeg.html) 的固定参数与实际时间戳，协议/格式准入依据其[协议文档](https://ffmpeg.org/ffmpeg-protocols.html)和[格式文档](https://ffmpeg.org/ffmpeg-formats.html)。
 
-文档原生解析使用 [PDF.js](https://github.com/mozilla/pdf.js)（pdfjs-dist 6.4.299，Apache-2.0）、[saxes](https://github.com/lddubeau/saxes)（6.0.0，ISC）及 [xmlchars](https://github.com/lddubeau/xmlchars)（2.2.0，MIT）。PDF 文本提取复用既有 Skia 的 DOMMatrix/Path2D；DOCX 包核验复用既有 yauzl。精确发行包与 integrity 保存在 `.skill/engine/document-dependencies.lock.json`，格式、限额和观察契约见[工作区规范](.skill/references/workspace.md#文档原生文本与定位图)。
 
-显式文档OCR采用同一固定PDF发行和Skia Canvas，渲染生命周期参考[固定版本Node示例](https://github.com/mozilla/pdf.js/blob/v6.4.299/examples/node/pdf2png/pdf2png.mjs)与[viewport/render接口](https://github.com/mozilla/pdf.js/blob/v6.4.299/src/display/api.js)。项目独立实现经典PDF对象/页树闭包、有限解压与资源/画布准入、DOCX全包CRC及正文嵌图出现定位，并从固定原件逐字节重放所选栅格；使用与覆盖约定见[扫描PDF与DOCX嵌图OCR](.skill/references/workspace.md#扫描-pdf-与-docx-嵌图-ocr)。
 
 PNG/JPEG 单图 OCR 使用 [Tesseract 5.5.0](https://github.com/tesseract-ocr/tesseract/tree/5.5.0)（Apache-2.0）、[Leptonica](https://github.com/DanBloomberg/leptonica) 与现有 FFmpeg，固定 TSV、语言/PSM/坐标规则依据 [Tesseract 命令行文档](https://tesseract-ocr.github.io/tessdoc/Command-Line-Usage.html)和[初始化实现](https://github.com/tesseract-ocr/tesseract/blob/5.5.0/src/ccmain/tessedit.cpp)。静态 PNG/动画边界依据 [PNG 规范](https://www.w3.org/TR/png-3/)，编码方向控制依据 [FFmpeg 视频选项](https://ffmpeg.org/ffmpeg.html#Video-Options)。项目独立实现有界结构准入、整数白底合成、严格 TSV、定位图与词区域观察，使用规则见[单图 OCR](.skill/references/workspace.md#单图-ocr-与词区域)。
 

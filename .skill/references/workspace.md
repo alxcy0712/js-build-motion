@@ -120,7 +120,7 @@ evidence/events.md连接导演承诺、素材、动作、声音和主片时间�
 
 已提交原件和展开成员通过 `catalog --import <importId>` 或 `catalog --unpack <unpackId>` 登记；`--path <条目路径>` 选择一个普通文件。每次登记生成独立目录修订；相同固定来源复用素材 ID 与内容版本。替换来源使用新入库/展开身份，通过 `--path <条目> --asset <assetId>` 建立新内容版本。`assets/catalog.json` 指向当前修订与素材版本；`assets/catalogs/<catalogId>/manifest.json` 保存该修订的全部素材版本、技术结果、观察与权利，旧修订和派生证据保留。每个内容版本引用最初探测目录、运行身份与政策快照哈希；后续批次调整准入限额时，既有版本按原探测政策复查。
 
-首批适配 UTF-8 MD/TXT、PNG/JPEG、WAV/MP3/FLAC/M4A、MP4/MOV/WebM。格式路由使用字节签名和固定 demuxer。ZIP 登记显式展开待办；PDF 原生文本与 DOCX 正文使用下述文档契约。PNG/JPEG OCR 使用下述单图契约；转写、词级对齐、其他 Office 格式与连续视频代理按后续契约扩展。文本证据保留 BOM、行尾与原始 UTF-8 字节。图像预览记录实际像素尺寸、源尺寸及缩放映射，自动旋转关闭。视频帧记录流索引、原时间基准、整数 PTS、请求时间和实际时间；已知流时长取起点、中点与接近终点的有限目标，缺失时长只取已知位置。音频保存首音轨原采样率的单声道 s16le PCM 证据和实际样本数；完整、局部与抽样覆盖单独登记，容器时长保留原字段。
+首批适配 UTF-8 MD/TXT、PNG/JPEG、WAV/MP3/FLAC/M4A、MP4/MOV/WebM。格式路由使用字节签名和固定 demuxer。ZIP 登记显式展开待办；PDF/Office 原件仅接收与校验身份，解析状态为 unsupported；素材可预先转换为图片或 UTF-8 文本。PNG/JPEG OCR 使用下述单图契约；转写、词级对齐、其他 Office 格式与连续视频代理按后续契约扩展。文本证据保留 BOM、行尾与原始 UTF-8 字节。图像预览记录实际像素尺寸、源尺寸及缩放映射，自动旋转关闭。视频帧记录流索引、原时间基准、整数 PTS、请求时间和实际时间；已知流时长取起点、中点与接近终点的有限目标，缺失时长只取已知位置。音频保存首音轨原采样率的单声道 s16le PCM 证据和实际样本数；完整、局部与抽样覆盖单独登记，容器时长保留原字段。
 
 `inputs/inspect-policy.json` 控制文件数、源/文本/目录字节、媒体流数、像素、工具日志、派生输出、PCM 输出、视频样本数、预览边长与逐工具/全批时间。`catalog --schema policy` 查询默认值与闭合契约。原始和采用政策保存在 `runs/<attemptId>/inspect-policy.{source,adopted}.json`。回执的 sourceReadBytes 统计受限 Node 描述符读取与签名窗口，工具内部和复制适配器的读取量保留未测口径。回执登记可观测读取/输出数量、固定 argv、工具版本、退出码与失败原因；目录元数据在逐项累积时执行准入，超限失败回执保留测量计数并注明省略的逐项细节。媒体工具使用格式/协议白名单、本片临时目录、最小环境和离线沙箱，FFmpeg 单次分配上限与预览像素准入分别记录；全进程内存仍受宿主条件约束。
 
@@ -129,20 +129,6 @@ evidence/events.md连接导演承诺、素材、动作、声音和主片时间�
 `catalog --rights <本片JSON>` 增补权利记录，`catalog --schema rights` 查询结构。unknown 保留未知状态；user-declared 引用本片 prompt/answer 原文，程序冻结实际 prompt-history 快照；documented 绑定已登记许可证据的路径、哈希和原文片段。每条记录包含用途、限制、署名、视频/音频流适用范围和第三方权利状态；同一记录 ID 按 revision 递增，素材版本与记录修订各自固定。观察/权利提交的原始 JSON 保存在本次运行快照。
 
 `catalog --verify <catalogId>` 复查提交索引、清单哈希、固定父来源及实际字节、政策快照、派生证据和目录中的观察/权利定位。受限解析失败作为单项状态提交；来源身份变化、权威记录损坏、全批输出限额、取消或发布故障保留旧索引。目录使用独立租约和回执；下一次调用依据已验证提交索引恢复成功，未提交且已停止的运行恢复 interrupted。中断回执中的读取与工具计数保留最后一次持久化观察。WebM 使用 EBML DocType 准入。大量固定证据的沙箱规则通过本片临时配置文件传入，调用结束后清理。已提交证据在目录沙箱内只读；新修订验证后通过原子索引发布。
-
-## 文档原生文本与定位图
-
-新 catalog/index/receipt 与 inspect policy 写入封闭 0.3；历史 0.1、0.2 目录和政策、普通观察与权利记录按原契约读取和继承。原始政策字节和有效政策摘要各自保存；历史 0.2 adoption 保持其冻结文档默认值，新运行采用冻结的 0.3 文档与 OCR 默认值。已有影片继续使用初始化时的固定运行时。升级历史 unsupported 文档记录时，从原选外部来源重新 import，再通过 `catalog --import <新importId> --path <条目> --asset <旧assetId>` 建立修订。
-
-PDF 按签名读取，原生文本顺序遵循 PDF.js 文本项输出，每页一个单位；扫描页与空页登记原生文本为空，视觉内容和阅读顺序保留覆盖局限。PK 签名和 `.docx` 名称共同触发普通 Word OPC 包校验，正文固定为 `word/document.xml`；解析主体段落和基础表格单元格，保留空段落和结构序号。DOCX 分页未知，未读 part、复杂修订、兼容分支、图像、文本框和未计算字段等进入遗漏清单。XML 接受 UTF-8 和 BOM UTF-16；预定义实体和合法数字引用正常解析，DTD/自定义实体、宏、异常路径或外部主关系触发拒绝。
-
-成功或合法 partial 提取保存固定 UTF-8 text 和 `document-map` JSON 两份证据。`catalog --schema document-map` 查询 map 契约，map 绑定原件字节/hash、parser/version、有效政策 hash、文本 bytes/hash、单位顺序和 UTF-8 半开区间；PDF 定位为实际页码，DOCX 定位为 namespace 已识别的 part/结构路径。完整单位之间使用 LF，失败或 skipped 单位保留原因和空范围。
-
-`catalog --schema observation` 同时提供历史观察和 `DocumentObservation@0.2`。文档观察指定 `locator.kind=document`、text/map evidence ID、unitId 与派生文本内的字节范围，以及 `coverageScope=unit-native-text`。full 表示一个实际完成单位的全部原生文本范围；整篇 partial 可包含完整单位。语义判断与权利声明各自显式提交。
-
-`policy.document` 默认限额为源 32 MiB、每批文档 20、PDF 200 页、单位 20,000、文本 8 MiB、map 4 MiB、payload 32 MiB；DOCX 条目 2,000、声明展开总量 64 MiB、XML 单 part 8 MiB/实际总量 32 MiB、路径深度 16、XML 深度 64/节点 200,000、单项和总压缩比 200:1。数值可在闭合政策内收紧，上限允许等于；文本同时接受通用 maxTextBytes 的较小值。完整前缀可在页/单位/文本限额下形成 partial，map/包结构限额产生单项 failed。每批候选数、通用来源/累计派生配额和身份变化导致全批失败，旧有效索引保留。
-
-每文档单独串行 Node worker，固定 executable/argv、最小环境、离线 catalog 沙箱和本片临时目录；stdout 为独立限额的完整 JSON payload，诊断经 stderr 计入工具配额。单工具时间接受 30 秒与通用政策的较小值，诊断接受 1 MiB 与通用政策的较小值。V8 old-space 最多 512 MiB，实际峰值 maxRSSKiB 保存到 map；全进程硬 RSS 与库内部 IO 各自保留未测口径。父进程验证完整协议与身份后发布 text/map；超时、退出、截断或协议错误登记单项 failed。
 
 ## 单图 OCR 与词区域
 
@@ -177,32 +163,6 @@ WAV 接受完整 RIFF PCM16；FLAC 接受 PCM16、正 STREAMINFO 样本数和有
 `verify` 重读完整原件和固定四证据，复查政策、原件哈希、封闭结构、全部 probe 包边界、工具物理闭包与三个原始 ToolRun/cwd，再从原件重新解码和规范化，逐字节比对 PCM/WAV。临时重放归本片 `out/.tmp/`，退出时清理。ASR 关闭时这组证据照常可用；ASR 启用时 `.2` 转写复用同一规范 WAV，追加 raw JSON/text/map，`.5` ASR 观察维持 estimated/unknown 与 null confidence。通用音频覆盖、容器呈现时长、语音文本、识别准确度和听音状态各自登记。
 
 新 catalog/receipt/index 按当前政策与历史最高版本写入 0.4 或 0.5，素材复查沿用原始 inspection 政策。历史 0.1–0.4 与 ASR map 0.1 保持原契约；已提交 0.5 证据在后续 0.4 政策运行中继续继承和复查。
-
-## 扫描 PDF 与 DOCX 嵌图 OCR
-
-`inputs/inspect-policy.json` 显式采用完整 `INSPECT_POLICY_06` 并设置 `documentOcr.enabled=true`。`pdfPages` 与 `docxImages` 分别为升序、唯一的 1 起始页码/图片出现序号；两组选择各自应用于本次选中的同类文档，使用 `catalog --import <importId> --path <条目>` 选择具体文件。默认政策为0.4，0.6文档OCR默认disabled；空选择保存skipped。0.6同原件的有效政策变化会建立同assetId的新assetVersion，各历史版本的政策、观察和权利继续保留。
-
-PDF 接受1.0–1.7、无加密、单次修订的classic xref；逐对象核对offset/generation/stream Length、完整源extent、字典键、内部引用和页树归属。名称先解码 `#xx`。外部stream/file/action、XFA、object/xref stream、增量链、inline图像、JPX/JBIG2与结构降级形成明确失败。流接受raw、单层Flate与Image DCT，检查实际完整解压、图像字节/尺寸和累计像素；渲染警告和解码错误形成失败。选页采用固定CropBox、固有Rotate、UserUnit、72/150/300 DPI与 `ceil(viewport)` 尺寸，白底P6/RGB8、annotations关闭；定位保存viewBox、scale和六项坐标变换。其scope为`selected-pdf-page-pixels`。
-
-DOCX 接受普通Word Transitional OPC，完整准入并解压全部ZIP entry核对CRC。主正文段落/基础表格中的DrawingML inline/anchor按出现顺序分配序号，通过mainPart、structurePath、relationshipsPart、relationshipId、embeddedPart及其字节/SHA/CRC绑定PNG/JPEG。相同part的多次出现各有独立定位。main图像关系为规范Internal且目标/内容类型/签名闭合；外部/linked/歧义关系、越界或别名target、宏和异常包结构形成失败。栅格沿用单图静态PNG/JPEG、编码方向和整数白底规则。scope为`selected-docx-embedded-source-pixels`；页眉页脚等其他part内容与Word分页、crop/rotate/scale/叠层显示保持未知。
-
-每个完成或no-text单位保存`document-ocr-raster`、`document-ocr-tsv`、`document-ocr-text`、`document-ocr-map`四项。独立`document-ocr-selection-map`绑定固定容器、原始政策/运行时、明确选择、总单位数、完成单位、失败原因及nativeStatus；原生text/document-map两项按nativeStatus复查。每个已选单位引用`runs/<attempt>/`中的封闭命令记录及其bytes/SHA，记录原始request、有限worker结果、worker/decode/OCR ToolRun和cwd。失败单位保留实测总数和原始命令事实；disabled与空选择保存descriptor并保持附加证据为空。
-
-`catalog --schema document-ocr-map` 与 `document-ocr-selection-map` 查询封闭结构。观察0.6使用kind=document-ocr、unitId/regionId、text/map/selection-map/raster IDs及UTF-8半开区间，coverageScope=region-ocr-text；full指该词的完整OCR文本字节。识别分数、观察者confidence、选择范围和整个文档视觉内容各自记录。固定语言/OEM/PSM/TSV协议沿用单图OCR。
-
-`verify` 从固定容器重新提取/渲染所选单位，核对完整locator和每个P6字节，再重放TSV/text/regions；原始命令按inspection origin的政策、来源和私有路径约定验证。历史cwd/argv作为原始数据保存，迁根重放解析当前路径。运行时绑定相对有序的独立源码/依赖/资源文件与实际Node物理文件，生成区与无关模型/测试排除；OCR工具及语言文件独立核验。重放临时文件归本片out/.tmp并在退出后清理。
-
-单源32MiB、每源/每批各4单位、单单位1600万像素/边长8192/PPM48000128B、每批3200万像素；嵌图每项8MiB/每批16MiB。PDF最多200页/20000对象/200000结构token/深度64/解压流64MiB；DOCX图片出现最多20000，ZIP/XML限额沿document政策。canvas live最多3200万像素、累计分配6400万像素，固定运行时资源读取16MiB；单worker Node old-space512MiB/30秒/JSON payload64MiB，串行运行；map各4MiB，TSV/text/词数等按嵌套documentOcr.ocr限额。单单位准入/识别失败可形成partial选择映射；来源/运行时变化、取消、累计单位/像素/嵌图/通用派生配额及发布故障导致全批回滚并保留旧索引。渲染运行时身份固定本片独立代码、依赖和资源，以及Node初始加载的非System物理执行文件与动态库；System库作为宿主条件登记。硬RSS、库内部IO、跨宿主像素稳定性和识别准确度保留实测范围。
-
-新catalog/receipt/index保留已提交最高版本0.6；后续0.4/0.5政策可继续继承0.6记录，逐素材复查其原始政策。历史0.1–0.5目录、原生文档、单图OCR、ASR和音频证据继续使用各自冻结契约。
-
-## PPTX 与 XLSX 原生文本
-
-`inputs/inspect-policy.json` 显式采用完整 `INSPECT_POLICY_07` 时，PPTX/XLSX 路由进入文档 worker；默认 0.4 和历史 0.1–0.6 保留其采用身份与 ZIP 路由。`catalog --schema policy` 查询 office 与 document 的有限资源上限，既有 OCR/ASR/音频/文档 OCR 字段继续使用原语义。目录、索引和回执继承最高已提交版本，逐素材复查最初政策。
-
-Office 文档 request/result/map 使用 0.2。PPTX 按 presentation 关系顺序提取 slide 段落、基础表格与 notes 的正文占位符；XLSX 按 workbook 顺序提取 shared/inline/rich 字符串、单元格值、缓存公式结果与基础表格元数据。缓存公式的计算正确性与版面重建各自保留待核验。定位图绑定 part、namespace 结构路径、幻灯片序号或 sheet/cell/range 与固定 UTF-8 半开区间。
-
-worker 对完整 ZIP 包做 CRC 和有限解压，按已解释的 XML/关系部件提取内容，拒绝宏、DTD、路径逃逸与已解释关系中的外部目标。其余部件和关系保存 omitted/partial；全包外部引用审计保留 unknown。原件与历史目录保持固定；text/map/source 任意字节变化均在 verify 中拒绝。
 
 ## 有界视频准备
 
