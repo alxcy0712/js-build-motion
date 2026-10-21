@@ -5,7 +5,7 @@ import { join } from 'node:path';
 import { getTheme } from '../themes/registry.ts';
 import { registerThemeFonts, trackFontUsage, type FontUsage } from '../themes/fonts.ts';
 import { drawTransition, drawTransitionFade, fadeOpacity, FADE_DURATION, isThemeTransition, transitionDuration, isBlendedTransition } from './theme-transitions.ts';
-import { applyMicroMotion, drawTreatments } from './theme-treatments.ts';
+import { applyMicroMotion, drawTreatments, DitherCache } from './theme-treatments.ts';
 import { PROJECT_ROOT } from '../utils/env.ts';
 /**
  * 将VideoSpec或本片drawScene求值为像素，统一处理相机、转场和字幕。
@@ -146,6 +146,7 @@ export function createSpecRenderer(options: SpecRendererOptions): Renderer & { t
     if (fontContexts.has(ctx)) return;
     trackFontUsage(ctx, usedFontFamilies); fontContexts.add(ctx);
   };
+  const dither = new DitherCache();
   const outgoing = new Canvas(width, height);
   const incomingBase = new Canvas(width, height);
   const incoming = new Canvas(width, height);
@@ -220,7 +221,7 @@ export function createSpecRenderer(options: SpecRendererOptions): Renderer & { t
       const themedFrame = themedScene(scene) || (previous && themedScene(previous) &&
         (blending && mix < 1));
       if (themedFrame) {
-        layoutScope(ctx, { skip: true }, () => drawTreatments(ctx, theme, t, localTime, width, height, spec.video.seed));
+        layoutScope(ctx, { skip: true }, () => drawTreatments(ctx, theme, t, localTime, width, height, spec.video.seed, dither));
       }
       // 字幕：画在场景之后、淡出之前。
       if (captionsEnabled && cueTrack.length > 0) {
@@ -248,7 +249,9 @@ export function createSpecRenderer(options: SpecRendererOptions): Renderer & { t
     },
   });
 
+  const dispose = renderer.dispose.bind(renderer);
   return Object.assign(renderer, {
+    dispose: () => { dither.clear(); dispose(); },
     textBounds: (): readonly TextDraw[] => mainText?.draws ?? [],
     layoutTrace: () => mainLayout,
     fontUsage: (): FontUsage => ({

@@ -69,6 +69,8 @@ export class SkiaRenderer implements Renderer {
     if (this.disposed) throw new Error('SkiaRenderer 已 dispose');
 
     const ctx = this.ctx;
+    // Discard the previous Skia display list, including retained image buffers. Frames are independent.
+    ctx.reset();
     // 重置可能被上一帧的绘制代码改坏的状态。不依赖绘图代码自觉 save/restore。
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.globalAlpha = 1;
@@ -93,6 +95,7 @@ export class SkiaRenderer implements Renderer {
   }
 
   dispose(): void {
+    this.ctx.reset();
     this.disposed = true;
   }
 }
