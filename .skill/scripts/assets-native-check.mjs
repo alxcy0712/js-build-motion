@@ -256,7 +256,7 @@ export async function checkAssetsNative({ scratch, skill, run, check }) {
   status = 'passed';
   } catch (error) { status = 'failed'; failure = error; throw error; }
   finally {
-    const archive = join(dirname(skill), '.research/out/assets-native-evidence', randomUUID());
+    const archive = join(dirname(scratch), 'assets-native-evidence', randomUUID());
     try {
       mkdirSync(archive, { recursive: true });
       if (existsSync(project)) {
@@ -472,7 +472,7 @@ export async function checkProductionAssetsNative({ scratch, skill, run, check }
     }); status='passed';
   } catch(error) {status='failed';failure=error;throw error;}
   finally {
-    const archive=join(dirname(skill),'.research/out/assets-production-native-evidence',randomUUID());
+    const archive=join(dirname(scratch),'assets-production-native-evidence',randomUUID());
     try {
       mkdirSync(archive,{recursive:true}); if(existsSync(project)){mkdirSync(output,{recursive:true});writeFileSync(join(output,'production-calls.json'),encoded(calls));cpSync(project,join(archive,'project'),{recursive:true,filter:path=>!['.engine','guide'].includes(path.split('/').at(-1))});}
       if(existsSync(sources))cpSync(sources,join(archive,'sources'),{recursive:true});cpSync(join(skill,'scripts/assets-native-check.mjs'),join(archive,'assets-native-check.mjs'));
