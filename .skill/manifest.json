@@ -1,5 +1,5 @@
 {
-  "packageId": "c198cd75f29b923fd3b7188651bc0c2e32623788a9a519dbaae89e3acebc7a65",
+  "packageId": "7322e86303d9022e0a20c9ab79a02825eed36106533b5a200d1ce06dcb08fdc0",
   "version": "0.2",
   "engineVersion": "0.1.0",
   "platform": "darwin",
@@ -78,7 +78,7 @@
     },
     {
       "path": "references/layout-and-quality.md",
-      "sha256": "e7f12688ba933e2a349bf071dbe8a61d741f1ee5372abf06c4e8c847132b838e"
+      "sha256": "b78f9eaadf4d938bce15f2b6af4cc336bd3b6c42e6c33f5d7f37d456edad8d8a"
     },
     {
       "path": "references/maintenance.md",
@@ -3164,7 +3164,7 @@
     },
     {
       "path": "src/layout/trace.ts",
-      "sha256": "fa6c0c236fd7865225c09cc9f5c4ef09fa2000c11b71b64c1bb813f19627ef38"
+      "sha256": "a8fb1a2c4e5a1b9df21f64bcc2d6f8eb6c7dc063f7f26e96b33cb2602428837f"
     },
     {
       "path": "src/motion/camera-path.ts",
@@ -3718,7 +3718,7 @@
     },
     {
       "path": "layout.test.ts",
-      "sha256": "5ba8550ec91cb33fc7ddb66c9497affce709337b060d77350e13f696d1fca6fb"
+      "sha256": "13ca94de7ba9a8a7fbd74b2439d817a670ab063450765ed44cc626697daf65a0"
     },
     {
       "path": "motion-footage.test.ts",
