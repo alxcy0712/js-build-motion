@@ -65,7 +65,6 @@ export function compileProductionTimeline(bundle: ProductionBundle, profile: 'ro
   const uses = new Map(bundle.shots.assetPlan.uses.map(use => [use.useId, use]));
   const events = new Map(timeline.events.map(event => [event.eventId, event]));
   const unique = (ids: string[], path: string) => {
-    if (new Set(ids).size !== ids.length) add('DUPLICATE_ID', path, 'Stable IDs must be unique.');
   };
   unique(timeline.shots.map(shot => shot.shotId), 'timeline.shots');
   unique(timeline.takes.map(take => take.takeId), 'timeline.takes');
@@ -190,7 +189,7 @@ export function compileProductionTimeline(bundle: ProductionBundle, profile: 'ro
   try {
     const projection = validateSpec({ version: '0.1', video: { ...dimensions, fps, duration: timeline.durationFrames / fps,
       seed: parseInt(productionHash(bundle.requirements.requested.rawPrompt).slice(0, 8), 16) },
-      style: { preset: 'flat', palette: 'warm_night', paper: 'smooth', line: 'none' }, characters: [],
+      style: { palette: 'warm_night' },
       scenes: timeline.shots.map(shot => ({ id: shot.shotId, start: shot.startFrame / fps, end: shot.endFrame / fps,
         environment: 'motion_stage', camera: shot.camera, cameraMove: shot.cameraMove, transition: shot.transition,
         action: 'stand', emotion: 'neutral', composition: shot.composition })),

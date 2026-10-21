@@ -16,23 +16,15 @@ import { COMPOSITION_SCHEMA } from './motion.ts';
  */
 
 import {
-  ACTIONS,
   BGM_KEYS,
   BGM_PRESETS,
   CAMERAS,
   CAMERA_MOVES,
   CAPTION_MODES,
   CAPTION_STYLES,
-  CHARACTER_PRESETS,
-  CLOTHING,
-  EMOTIONS,
   ENVIRONMENTS,
-  HAIR_STYLES,
-  LINE_STYLES,
   PALETTES,
-  PAPER_KINDS,
   SFX_PRESETS,
-  STYLE_PRESETS,
   TRANSITIONS,
   TTS_VOICES,
 } from './types.ts';
@@ -114,29 +106,8 @@ export const VIDEO_SPEC_SCHEMA: Record<string, unknown> = {
       additionalProperties: false,
       properties: {
         theme: enumSchema(THEME_IDS),
-        preset: enumSchema(STYLE_PRESETS),
         palette: enumSchema(PALETTES),
-        paper: enumSchema(PAPER_KINDS),
-        line: enumSchema(LINE_STYLES),
         vignette: { type: 'number', minimum: 0, maximum: 1 },
-      },
-    },
-
-    characters: {
-      type: 'array',
-      maxItems: 12,
-      items: {
-        type: 'object',
-        additionalProperties: false,
-        required: ['id'],
-        properties: {
-          id: { type: 'string', minLength: 1, maxLength: 40 },
-          preset: enumSchema(CHARACTER_PRESETS),
-          hair: enumSchema(HAIR_STYLES),
-          clothing: enumSchema(CLOTHING),
-          x: number_({ minimum: 0, maximum: 1 }),
-          y: number_({ minimum: 0, maximum: 1 }),
-        },
       },
     },
 
@@ -197,9 +168,6 @@ export const VIDEO_SPEC_SCHEMA: Record<string, unknown> = {
               color: { type: 'object', additionalProperties: false, properties: { exposure: { type: 'number' }, contrast: { type: 'number' }, saturation: { type: 'number' }, temperature: { type: 'number' }, vignette: { type: 'number' } } },
             },
           },
-          character: { type: 'string', maxLength: 40 },
-          action: enumSchema(ACTIONS),
-          emotion: enumSchema(EMOTIONS),
         },
       },
     },

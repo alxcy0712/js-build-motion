@@ -3,7 +3,7 @@
  * 背景、视差层、强调光与文字（drawRevealText）都取自当前风格；文字只在安全区内、按每屏字数预算排版。
  */
 import type { CanvasRenderingContext2D } from 'skia-canvas';
-import type { SceneRenderContext } from './rain-window.ts';
+import type { SceneRenderContext } from './registry.ts';
 import { DEFAULT_THEME } from '../../themes/ids.ts';
 import { getTheme } from '../../themes/registry.ts';
 import { drawRevealText } from '../../themes/text-reveal.ts';

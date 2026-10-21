@@ -72,7 +72,7 @@ test('自定义绘制交由实际画面检查，elements 空数组按绘制入�
   const fixture = createFixtureProject();
   try {
     const spec = JSON.parse(readFileSync(fixture.specPath, 'utf8'));
-    const composition = { backdrop: 'studio', motif: 'none', title: '测试', bpm: 96, actors: [], elements: [] };
+    const composition = { backdrop: 'studio', motif: 'none', title: '测试', bpm: 96, elements: [] };
     spec.scenes = [0, 1, 2].map(i => ({ ...spec.scenes[0], start: i * 8 / 3, end: (i + 1) * 8 / 3, composition, environment: 'motion_stage' }));
     assert.ok(inspectQuality(spec).issues.some(i => i.code === 'TEMPLATE_ONLY_FILM'));
     assert.ok(!inspectQuality(spec, { customDrawing: true }).issues.some(i => i.code === 'TEMPLATE_ONLY_FILM'));

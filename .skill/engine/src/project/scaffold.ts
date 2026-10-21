@@ -34,20 +34,16 @@ function minimalSpec(): Record<string, unknown> {
   return {
     version: '0.1',
     video: { width: 1080, height: 1920, fps: 24, duration: 3, seed: 20260101 },
-    style: { preset: 'watercolor_storybook', palette: 'warm_night', paper: 'rough', line: 'soft_ink' },
-    characters: [{ id: 'narrator', preset: 'female_young', hair: 'long_dark', clothing: 'beige_coat' }],
+    style: { palette: 'warm_night' },
     scenes: [
       {
         id: 'scene_01',
         start: 0,
         end: 3,
-        environment: 'rain_window',
+        environment: 'theme_stage',
         camera: 'medium_close',
         cameraMove: 'slow_push',
         transition: 'fade',
-        character: 'narrator',
-        action: 'look_outside',
-        emotion: 'calm',
       },
     ],
     audio: {

@@ -14,7 +14,6 @@ import { PROJECT_ROOT } from '../utils/env.ts';
 import { SkiaRenderer } from '../renderer/skia/skia-renderer.ts';
 import type { Renderer, FrameContext } from '../renderer/renderer.ts';
 import type {
-  CharacterDefinition,
   Environment,
   ResolvedScene,
   ResolvedVideoSpec,
@@ -27,7 +26,7 @@ import {
   IMPLEMENTED_ENVIRONMENTS,
   getSceneRenderer,
   type SceneRenderContext,
-} from '../drawing/scenes/rain-window.ts';
+} from '../drawing/scenes/registry.ts';
 import { getPalette } from '../drawing/styles/palette.ts';
 import { buildCaptionTrack, type CaptionCue, type MeasuredNarration } from '../captions/track.ts';
 import { drawCaptions } from '../captions/render.ts';
@@ -87,15 +86,6 @@ export function resolveScene(
   return { scene: active, localTime: Math.max(0, time - active.start) };
 }
 
-/** 找出场景引用的人物定义；引用失效时返回 undefined（repair 层已就此事告警过） */
-export function resolveCharacter(
-  spec: ResolvedVideoSpec,
-  scene: ResolvedScene,
-): CharacterDefinition | undefined {
-  if (!scene.character) return undefined;
-  return spec.characters.find((c) => c.id === scene.character);
-}
-
 /**
  * 构造一个由 VideoSpec 驱动的渲染器。
  *
@@ -110,7 +100,7 @@ export function createSpecRenderer(options: SpecRendererOptions): Renderer & { t
   const baseTheme = getTheme(spec.style.theme);
   const theme = spec.style.vignette === undefined ? baseTheme
     : { ...baseTheme, treatments: { ...baseTheme.treatments, vignette: spec.style.vignette } };
-  // 旧环境（rain_window / motion_stage）保持原有绘制与回归基线；风格质感作用于 theme_stage 镜头。
+  // 风格质感作用于 theme_stage 镜头。
   const themedScene = (shot: ResolvedScene): boolean => shot.environment === 'theme_stage';
   const themed = spec.scenes.some(themedScene);
   const themeFonts = registerThemeFonts(theme, FontLibrary, join(PROJECT_ROOT, 'assets', 'fonts'));
@@ -185,8 +175,8 @@ export function createSpecRenderer(options: SpecRendererOptions): Renderer & { t
         const footage = footageSources.get(shot);
         const sceneCtx: SceneRenderContext = {
           ctx: context, width, height, palette, scene: shot,
-          character: resolveCharacter(spec, shot), time: t, sceneTime: shotTime,
-          progress, seed: spec.video.seed, stylePreset: spec.style.preset, theme,
+          time: t, sceneTime: shotTime,
+          progress, seed: spec.video.seed, theme,
           textHold: isThemeTransition(spec.scenes[spec.scenes.indexOf(shot) + 1]?.transition ?? 'cut'),
           textCarriedIn: spec.scenes.indexOf(shot) > 0 && isThemeTransition(shot.transition),
           firstShot: spec.scenes.indexOf(shot) === 0,

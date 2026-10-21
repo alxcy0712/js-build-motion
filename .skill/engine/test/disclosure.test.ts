@@ -52,18 +52,14 @@ function minimalSpec(duration = 3): Record<string, unknown> {
   return {
     version: '0.1',
     video: { width: 1080, height: 1920, fps: 24, duration, seed: 20260101 },
-    style: { preset: 'watercolor_storybook', palette: 'warm_night', paper: 'rough', line: 'soft_ink' },
-    characters: [{ id: 'narrator', preset: 'female_young', hair: 'long_dark', clothing: 'beige_coat' }],
+    style: { palette: 'warm_night' },
     scenes: [
       {
         id: 'scene_01',
         start: 0,
         end: duration,
-        environment: 'rain_window',
+        environment: 'theme_stage',
         camera: 'medium_close',
-        character: 'narrator',
-        action: 'look_outside',
-        emotion: 'calm',
       },
     ],
     audio: { narration: [{ start: 0.6, voice: 'female_calm', text: '测试旁白。' }] },

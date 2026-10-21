@@ -16,8 +16,7 @@ function fixture(fps = 24): ProductionBundle {
   bundle.script!.sourceHash = scriptSourceHash(bundle);
   bundle.shots!.sourceHash = shotsSourceHash(bundle);
   const visible = Math.ceil(49000 * fps / 48000);
-  const visual = (eventId: string) => ({ backdrop: 'studio' as const, motif: 'none' as const, title: 'Walk', bpm: 96, actors: [],
-    elements: [{ id: eventId, kind: 'rect' as const, x: 0.5, y: 0.4, width: 0.2, height: 0.2, fill: '#448c88' }] });
+  const visual = (eventId: string) => ({ backdrop: 'studio' as const, motif: 'none' as const, title: 'Walk', bpm: 96, elements: [{ id: eventId, kind: 'rect' as const, x: 0.5, y: 0.4, width: 0.2, height: 0.2, fill: '#448c88' }] });
   bundle.timeline = { version: '0.1', sourceHash: timelineSourceHash(bundle), durationFrames: 8 * fps,
     shots: [{ shotId: 'shot-open', startFrame: 0, endFrame: 4 * fps, composition: visual('event-arrive'), camera: 'medium', cameraMove: 'static', transition: 'cut' },
       { shotId: 'shot-detail', startFrame: 4 * fps, endFrame: 8 * fps, composition: visual('event-shadow'), camera: 'close', cameraMove: 'static', transition: 'cut' }],

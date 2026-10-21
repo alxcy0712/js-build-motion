@@ -327,7 +327,7 @@ async function cmdValidate(argv: string[]): Promise<number> {
   process.stdout.write(
     [
       `可渲染  ${width}x${height} @${fps}fps  ${duration}s (${frames} 帧)  seed=${seed}`,
-      `        ${spec.scenes.length} 个场景  ${spec.characters.length} 个人物  ` +
+      `        ${spec.scenes.length} 个场景  ` +
         `${spec.audio.narration.length} 条旁白  ${spec.audio.sfx.length} 个音效`,
       `        风格 ${spec.style.preset} / ${spec.style.palette} / ${spec.style.paper} / ${spec.style.line}`,
       `        字幕 ${spec.captions.enabled ? `开（${spec.captions.style}, ${spec.captions.mode}）` : '关'}`,

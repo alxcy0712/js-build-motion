@@ -27,8 +27,7 @@ async function fixture() {
   b.requirements = planned.bundle.requirements; b.script = planned.bundle.script; b.shots = planned.bundle.shots;
   b.timeline = { version: '0.1', sourceHash: timelineSourceHash(b), durationFrames: 900,
     shots: b.shots!.items.map((s, i) => ({ shotId: s.shotId, startFrame: i * 450, endFrame: (i + 1) * 450,
-      camera: 'wide', cameraMove: 'static', transition: 'cut', composition: { backdrop: 'studio', motif: 'none', title: 'Walking', bpm: 96, actors: [],
-      elements: [{ id: s.events[0]!.eventId, kind: 'rect', x: .5, y: .4, width: .2, height: .2, fill: '#448c88' }] } })),
+      camera: 'wide', cameraMove: 'static', transition: 'cut', composition: { backdrop: 'studio', motif: 'none', title: 'Walking', bpm: 96, elements: [{ id: s.events[0]!.eventId, kind: 'rect', x: .5, y: .4, width: .2, height: .2, fill: '#448c88' }] } })),
     clips: [], takes: [], placements: [], readingGroups: [], captionCues: [],
     events: b.shots!.items.map((s, i) => ({ eventId: s.events[0]!.eventId, shotId: s.shotId, prepareFrame: i * 450,
       visibleFrame: i * 450 + 3, peakFrame: i * 450 + 6, completeFrame: i * 450 + 9, readingEndFrame: (i + 1) * 450 - 1, anchor: null })) };

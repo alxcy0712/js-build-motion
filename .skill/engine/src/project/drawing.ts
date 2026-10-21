@@ -2,7 +2,7 @@ import { existsSync, lstatSync, readdirSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import type { FrameContext } from '../renderer/renderer.ts';
-import type { SceneRenderContext } from '../drawing/scenes/rain-window.ts';
+import type { SceneRenderContext } from '../drawing/scenes/registry.ts';
 import { EngineError, ERROR_CODES } from '../utils/errors.ts';
 import { sha256File } from '../utils/hash.ts';
 import { assertContained } from './paths.ts';

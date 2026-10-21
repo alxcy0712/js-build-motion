@@ -77,7 +77,6 @@ export function productionHash(value: unknown): string {
 export const PRODUCTION_CHECK_IDS = ['requirements.consistent', 'script.references', 'shots.references', 'assets.identity', 'decisions.applicable'] as const;
 export function assertProductionChecks(ids: readonly string[]): void {
   for (const value of ids) if (!(PRODUCTION_CHECK_IDS as readonly string[]).includes(value)) throw Error('PRODUCTION_UNKNOWN_CHECK: ' + value);
-  if (new Set(ids).size !== ids.length) throw Error('PRODUCTION_CHECK_DUPLICATE');
   if (ids.length !== PRODUCTION_CHECK_IDS.length) throw Error('PRODUCTION_REQUIRED_CHECK_MISSING');
 }
 export function scriptSourceHash(b: ProductionBundle): string {

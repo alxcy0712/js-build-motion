@@ -21,7 +21,7 @@ import { makeFrameContext } from '../src/renderer/renderer.ts';
 import { SkiaRenderer } from '../src/renderer/skia/skia-renderer.ts';
 import { PROJECT_ROOT } from '../src/utils/env.ts';
 import { frameCount, frameToSeconds, normalizedProgress, sceneProgress, secondsToFrame } from '../src/timeline/frame.ts';
-import { CANONICAL_HEIGHT, CANONICAL_WIDTH, drawCanonicalPaper, drawCanonicalScene } from './fixtures/canonical-scene.ts';
+import { CANONICAL_HEIGHT, CANONICAL_WIDTH, drawCanonicalBackdrop, drawCanonicalScene } from './fixtures/canonical-scene.ts';
 
 const FPS = 24;
 const TOTAL_FRAMES = 288;
@@ -31,11 +31,11 @@ function hashOf(buf: Buffer): string {
   return createHash('sha256').update(buf).digest('hex');
 }
 
-function renderFrameHash(frameIndex: number, opts: { seed?: number; paperOnly?: boolean } = {}): string {
+function renderFrameHash(frameIndex: number, opts: { seed?: number; backdropOnly?: boolean } = {}): string {
   const renderer = new SkiaRenderer({
     width: CANONICAL_WIDTH,
     height: CANONICAL_HEIGHT,
-    draw: opts.paperOnly ? drawCanonicalPaper : drawCanonicalScene,
+    draw: opts.backdropOnly ? drawCanonicalBackdrop : drawCanonicalScene,
   });
   try {
     const rc = makeFrameContext({
@@ -154,13 +154,13 @@ test('不同 seed 产出不同画面（seed 确实在起作用）', () => {
 
 // ------------------------------------------------------------- 纹理稳定
 
-test('纸纹逐帧稳定：相邻帧的纸纹层逐像素完全一致（不闪烁）', () => {
-  const hashes = [9, 10, 11, 12].map((i) => renderFrameHash(i, { paperOnly: true }));
-  assert.equal(new Set(hashes).size, 1, `纸纹层在相邻帧之间必须完全一致，实际得到 ${hashes.length} 种结果`);
+test('固定背景逐帧稳定：相邻帧的固定背景层逐像素完全一致（不闪烁）', () => {
+  const hashes = [9, 10, 11, 12].map((i) => renderFrameHash(i, { backdropOnly: true }));
+  assert.equal(new Set(hashes).size, 1, `固定背景层在相邻帧之间必须完全一致，实际得到 ${hashes.length} 种结果`);
 });
 
 test('纹理随时间的变化是连续的，不是逐帧重随机', () => {
-  // 纸纹的 breatheTime 走 noise2D 采样（速度 0.08/秒）。
+  // 固定背景的 breatheTime 走 noise2D 采样（速度 0.08/秒）。
   // 这里直接用更激进的采样步长检验「变化连续」这一性质本身：
   // 若用 Math.random() 逐帧重随机，相邻采样的差值会均匀分布在 [0,1)，
   // 而噪声的相邻采样差值应当显著更小。

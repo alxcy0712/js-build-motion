@@ -60,7 +60,7 @@ test('源码哈希跟随局部修改，软链接及硬链接阻止加载', () =>
 
 test('本片画法接入镜头转场，同帧乱序保持一致，Promise 返回拒绝渲染', () => {
   const spec = compileDirector({ version: '0.1', title: 'test', idea: 'test', aspect: '16:9', look: 'graphic', bpm: 120,
-    shots: [0, 1].map(i => ({ purpose: '测试本片入口', visualIntent: '方块移动', beats: 2, title: `test-${i}`, actors: [], backdrop: 'studio', motif: 'none', transition: i ? 'dissolve' : 'cut' })),
+    shots: [0, 1].map(i => ({ purpose: '测试本片入口', visualIntent: '方块移动', beats: 2, title: `test-${i}`, backdrop: 'studio', motif: 'none', transition: i ? 'dissolve' : 'cut' })),
   }).spec;
   const rc = (frameIndex: number) => makeFrameContext({ frameIndex, totalFrames: 48, fps: 24, width: 160, height: 90, seed: spec.video.seed });
   const make = (transition = true) => {

@@ -31,41 +31,6 @@ export async function prepareDrawing({ assets }) {
 
 连续动作可在初始化时选择 `--components camera,spring,random`，组件与依赖复制到本片。`springTrack` 的连续目标见[动效设计](motion-design.md)；`applyCameraPose` 的焦点、分层和固定字幕见[电影化运镜](cinematography.md)。本片绘制按逻辑画幅排布，先缩放到实际编码尺寸；多画幅交付时分别重新构图并验证阅读区。
 
-## 区域材料配方
-
-初始化可选择 `--components paper,region-paint`，自动复制 random、noise、rough 与 watercolor 的独立源码副本。现有 PaperTexture 铺纸面，watercolorWash 铺柔和底色，roughPolyline 保留轮廓；新增 paintRegion 在自己的 Path2D 内铺方向笔触，pressureStroke 控制单笔起点、中段和终点的宽度。种子和采样保持在对象局部坐标中，移动或旋转整个对象；时间直接决定对象的变换与动作阶段。
-
-```js
-import { Path2D } from '../.engine/node_modules/skia-canvas/lib/index.js';
-import { paintRegion } from './components/region-paint.ts';
-import { roughPolyline } from './components/rough.ts';
-
-const region = new Path2D();
-region.rect(0, 0, 180, 70);
-region.rect(72, 22, 36, 26); // 独立设计的留白孔，even-odd 保留纸面
-// drawScene 内：主体位移由 frame.time 求值，局部材料种子保持固定
-ctx.save();
-ctx.translate(40 + 30 * progress, 80);
-paintRegion(ctx, region, { x: 0, y: 0, w: 180, h: 70 }, {
-  seed: 41, color: '#447b78', angle: -0.2, spacing: 9, width: 14,
-  wetness: 0.35, coverage: 0.85, alpha: 0.4,
-});
-roughPolyline(ctx, [[0, 0], [180, 0], [180, 70], [0, 70]], {
-  seed: 41, close: true, color: '#234943', width: 2, wobble: 0.5,
-});
-ctx.restore();
-```
-
-| 区域用途 | 起始配方与表达依据 |
-|---|---|
-| 背景 | 大 spacing/width、低 alpha，方向沿空间层次；纸面与留白给主体提供分离 |
-| 道具 | 用材料方向说明受力或加工方向，适中 wetness，边界沿用自己的精确路径 |
-| 主体 | 更小 spacing/width，沿用同一色系和笔压规则；孔、五官、刻度等关键细节在材料之后精确绘制 |
-
-wetness 在 0–1 之间调整柔和底 wash 与干笔间隙，coverage 控制保留的整笔比例，pressure 的三个值表示相对笔宽。参数表达绘制配方；湿度的物理扩散需要独立实现与验证。区域采用 even-odd 裁剪，轮廓由调用方最后绘制；文字、计量与最小特征分别用精确几何表达。
-
-先以原尺寸固定种子验证冷启动、热缓存、顺序与乱序同帧一致，再核对留白孔、边界、最细特征和上下文状态恢复。短样片覆盖主体运动、材料叠层与落定，当前编码复核纸纹稳定、方向、压缩后细节和 360px 宽阅读。静态材料可由本片预绘到离屏 Canvas；相同局部材料随对象运动，避免逐帧换种子。原尺寸性能由本片样片实测；采用范围按[维护流程](maintenance.md)记录。
-
 ## 三维渲染与空间镜头
 
 当前共享运行时使用Canvas 2D。需要三维几何、环绕、空间推拉、爆炸分层或透视遮挡时，评估capabilities中登记的三维候选工具并验证本片路径；普通二维图形按已有绘制路径实现。

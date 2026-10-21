@@ -14,16 +14,15 @@ const prop = new Path2D(); prop.rect(-32, -30, 64, 60);
 /** Fictional marked band: compression changes its extent while three identity marks stay attached. */
 export function drawMaterialScene(ctx: CanvasRenderingContext2D, frame: number, seed = 41): void {
   ctx.fillStyle = '#f6f0e3'; ctx.fillRect(0, 0, MATERIAL_WIDTH, MATERIAL_HEIGHT);
-  PaperTexture.get({ seed, tileSize: 256, tint: null, grain: 0.25, density: 12, fiber: 0.2 }).draw(ctx, MATERIAL_WIDTH, MATERIAL_HEIGHT, { alpha: 0.5 });
-  paintRegion(ctx, table, { x: 24, y: 100, w: 592, h: 220 }, { seed, color: '#628b80', angle: -0.06, spacing: 38, width: 54, wetness: 0.65, alpha: 0.065 });
+  ctx.fillStyle = '#628b80'; ctx.fill(table);
   ctx.save(); ctx.translate(88, 237);
-  paintRegion(ctx, prop, { x: -32, y: -30, w: 64, h: 60 }, { seed: seed + 3, color: '#b88956', angle: -0.25, spacing: 7, width: 11, wetness: 0.2, alpha: 0.35 });
-  roughPolyline(ctx, [[-32, -30], [32, -30], [32, 30], [-32, 30]], { seed, close: true, color: '#725c3b', width: 2, wobble: 0.35 });
+  ctx.fillStyle = '#628b80'; ctx.fill(prop);
+  ctx.strokeStyle='#244f50';ctx.lineWidth=2;ctx.beginPath();[[-32, -30], [32, -30], [32, 30], [-32, 30]].forEach(([x,y],i)=>i?ctx.lineTo(x!,y!):ctx.moveTo(x!,y!));ctx.closePath();ctx.stroke();
   ctx.restore();
   const t = Math.max(0, Math.min(1, (frame - 24) / 48)), eased = t * t * (3 - 2 * t);
   ctx.save(); ctx.translate(325 + eased * 30, 194); ctx.scale(1 - 0.35 * eased, 1);
-  paintRegion(ctx, band, { x: -130, y: -36, w: 260, h: 72 }, { seed, color: '#347d7a', angle: -0.18, spacing: 9, width: 14, wetness: 0.35, alpha: 0.42 });
-  roughPolyline(ctx, [[-130, -36], [130, -36], [130, 36], [-130, 36]], { seed, close: true, color: '#244f50', width: 3, wobble: 0.45 });
+  ctx.fillStyle = '#628b80'; ctx.fill(band);
+  ctx.strokeStyle='#244f50';ctx.lineWidth=2;ctx.beginPath();[[-130, -36], [130, -36], [130, 36], [-130, 36]].forEach(([x,y],i)=>i?ctx.lineTo(x!,y!):ctx.moveTo(x!,y!));ctx.closePath();ctx.stroke();
   ctx.strokeStyle = '#244f50'; ctx.lineWidth = 2; ctx.strokeRect(-16, -10, 32, 20);
   for (const x of [-80, 0, 80]) { ctx.fillStyle = '#bf794d'; ctx.beginPath(); ctx.arc(x, 23, 4, 0, Math.PI * 2); ctx.fill(); }
   ctx.fillStyle = '#244f50'; ctx.fillRect(76, -24, 4, 12);

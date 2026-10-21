@@ -170,7 +170,7 @@ export async function checkAssetsNative({ scratch, skill, run, check }) {
   await check('素材连续两镜头与 dissolve 全成片像素、partial/unknown 回执、披露和 artifact 闭合 tuple', () => {
     writeFileSync(join(project, 'project.json'), encoded({ ...json(join(project, 'project.json')), drawing: 'src/native-assets.mjs' })); writeFileSync(join(project, 'src/native-assets.mjs'), drawingProgram);
     writeFileSync(join(project, 'director.json'), encoded({ version: '0.1', title: '虚构连续素材', idea: '独立原件视觉证明', aspect: '16:9', look: 'graphic', fps: 24, bpm: 120, bgmPreset: 'playful',
-      shots: [0, 1].map(i => ({ purpose: '虚构连续片段', beats: 2, title: '片段', backdrop: 'studio', motif: 'none', actors: [], cameraMove: 'static', transition: i ? 'dissolve' : 'cut', sfx: [] })) }));
+      shots: [0, 1].map(i => ({ purpose: '虚构连续片段', beats: 2, title: '片段', backdrop: 'studio', motif: 'none', cameraMove: 'static', transition: i ? 'dissolve' : 'cut', sfx: [] })) }));
     const brief = json(join(project, 'brief.json')); brief.claims.pureCode = false; brief.claims.zeroExternalAssets = false;
     brief.assets = [[picture, 'image'], [clip, 'video']].map(([asset, kind]) => ({ path: asset.source.fixedPath, kind, license: 'self-created fictional fixture', sha256: asset.source.sha256 }));
     writeFileSync(join(project, 'brief.json'), encoded(brief)); film(['direct', 'compile']); film(renderArgs); current = readFileSync(join(project, 'run.json'));

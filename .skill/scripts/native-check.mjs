@@ -60,11 +60,11 @@ export async function checkNative() {
         const idea = i ? '制作角色节奏短片' : '  制作太阳能原理讲解。\n保留 `literal`、$(literal) 与原始换行。\n';
         const ideaFile = join(scratch, 'original-prompt.txt');
         if (!i) writeFileSync(ideaFile, idea);
-        const result = JSON.parse(control(['start', '--theme', 'minimal', slug, ...(i ? ['--idea', idea] : ['--idea-file', ideaFile]), '--components', i ? 'particle-assembly' : 'camera,spring,random,contour,visual-check,image-fit,particle-assembly,region-paint,paper,text-bounds']));
+        const result = JSON.parse(control(['start', '--theme', 'minimal', slug, ...(i ? ['--idea', idea] : ['--idea-file', ideaFile]), '--components', i ? 'particle-assembly' : 'camera,spring,random,contour,visual-check,image-fit,particle-assembly,text-bounds']));
         assert.equal(result.project, [a, b][i]);
         assert.equal(result.status, 'needs-intake');
         assert.equal(result.packageId, original.packageId);
-        assert.deepEqual(result.components, i ? ['easing', 'particle-assembly', 'random'] : ['camera', 'contour', 'easing', 'image-fit', 'noise', 'paper', 'particle-assembly', 'random', 'region-paint', 'rough', 'spring', 'text-bounds', 'visual-check', 'watercolor']);
+        assert.deepEqual(result.components, i ? ['easing', 'particle-assembly', 'random'] : ['camera', 'contour', 'easing', 'image-fit', 'particle-assembly', 'random', 'spring', 'text-bounds', 'visual-check']);
         const history = readFileSync(join(result.project, 'prompt-history.jsonl'), 'utf8').trim().split('\n').map(line => JSON.parse(line));
         assert.equal(history[0].kind, 'prompt');
         assert.equal(history[0].text, idea);
@@ -111,8 +111,6 @@ export async function checkNative() {
       execNode(a, "import('./src/components/spring.ts').then(m => { const keys=[[0,0],[.2,100],[.3,40]], at=m.springTrack(.3,keys); if(Math.abs(m.springTrack(10,keys)-40)>1e-9 || m.springTrack(.3,keys)!==at) process.exit(1); })");
       execNode(a, "import('./src/components/contour.ts').then(m => { const p=m.prepareMorph([[0,0],[10,0],[10,10],[0,10]],[[10,10],[10,0],[0,0],[0,10]],16); if(JSON.stringify(m.morphContour(p,.5))!==JSON.stringify(p.from)) process.exit(1); })");
       execNode(a, "import('./src/components/visual-check.ts').then(m => { if(typeof m.compareMasks !== 'function' || typeof m.colorCoverage !== 'function') process.exit(1); })");
-      execNode(a, "Promise.all([import('./src/components/region-paint.ts'),import('./src/components/paper.ts'),import('./src/components/text-bounds.ts'),import('./.engine/node_modules/skia-canvas/lib/index.js')]).then(([paint,paper,text,{Canvas,Path2D}])=>{const c=new Canvas(80,60),ctx=c.getContext('2d'),path=new Path2D();path.rect(10,10,60,40);paper.PaperTexture.get({seed:7,tileSize:64,density:2}).draw(ctx,80,60);paint.paintRegion(ctx,path,{x:10,y:10,w:60,h:40},{seed:7,color:'#347d7a'});const tracked=text.trackTextBounds(ctx);ctx.font='12px sans-serif';ctx.fillText('local',15,35);if(tracked.draws.length!==1 || ctx.getImageData(20,20,1,1).data[3]!==255)process.exit(1);})");
-      assert.match(readFileSync(join(a, 'src/components/region-paint.ts'), 'utf8'), /from '\.\/watercolor\.ts'/);
       execNode(a, "import('./src/components/image-fit.ts').then(m => { const r=m.fitImage({x:0,y:0,width:100,height:100},{x:0,y:0,width:150,height:200},'cover'); if(Math.abs(r.destination.width/r.source.width-r.destination.height/r.source.height)>1e-9) process.exit(1); })");
       execNode(b, "import('./src/components/particle-assembly.ts').then(m => { const a=m.prepareParticleAssembly({bounds:{x:0,y:0,width:10,height:10},contains:()=>true,source:{x:-20,y:20,width:10,height:10},bend:[-10,0],approach:[-2,3],count:8,seed:'symbol',duration:1}), before=m.particleAssemblyAt(a,.5);m.particleAssemblyAt(a,2);if(JSON.stringify(before)!==JSON.stringify(m.particleAssemblyAt(a,.5)) || m.particleAssemblyAt(a,2).some((p,i)=>p.x!==a.particles[i].to[0] || p.y!==a.particles[i].to[1])) process.exit(1); })");
     });
@@ -314,7 +312,7 @@ export async function checkNative() {
     await check('本片源码、计划编译、输入审计与分镜', () => {
       for (const project of [a, b]) {
         writeJson(join(project, 'project.json'), { ...json(join(project, 'project.json')), drawing: 'src/draw.mjs' });
-        writeJson(join(project, 'director.json'), { version: '0.1', idea: json(join(project, 'director.json')).idea, title: '核心验证', aspect: '16:9', look: 'graphic', bpm: 120, captionLayout: { fontScale: 0.04, translationScale: 0.625, maxWidth: 0.78, bottomInset: 0.11 }, shots: [{ purpose: '验证本片代码', visualIntent: '方块水平移动', beats: 2, title: '测试', backdrop: 'studio', motif: 'none', actors: [], cameraMove: 'static', transition: 'cut' }] });
+        writeJson(join(project, 'director.json'), { version: '0.1', idea: json(join(project, 'director.json')).idea, title: '核心验证', aspect: '16:9', look: 'graphic', bpm: 120, captionLayout: { fontScale: 0.04, translationScale: 0.625, maxWidth: 0.78, bottomInset: 0.11 }, shots: [{ purpose: '验证本片代码', visualIntent: '方块水平移动', beats: 2, title: '测试', backdrop: 'studio', motif: 'none', cameraMove: 'static', transition: 'cut' }] });
         writeFileSync(join(project, 'src/components/easing.ts'), readFileSync(join(project, 'src/components/easing.ts'), 'utf8') + '\nexport const testOffset = 0;\n');
         const bitmap = project === a ? "import { loadImage } from '../.engine/node_modules/skia-canvas/lib/index.js';\nconst image = await loadImage(new URL('../assets/reference.png', import.meta.url).pathname);\n" : '';
         writeFileSync(join(project, 'src/draw.mjs'), "import { testOffset } from './components/easing.ts';\n" + bitmap + "export function drawScene({ctx,width,height,progress}) { ctx.fillStyle='#112233';ctx.fillRect(0,0,width,height);" + (bitmap ? "ctx.drawImage(image,80,30,32,32);" : '') + "ctx.fillStyle='#ee7744';ctx.fillRect(20+60*progress+testOffset,20,25,25); }\n");

@@ -14,7 +14,7 @@ export interface DirectorPlan {
   idea: string;
   title: string;
   aspect: '16:9' | '9:16' | '1:1';
-  look: 'storybook' | 'graphic';
+  look: 'graphic';
   bpm: number;
   /**
    * 程序化 BGM 的情绪预设。省略时为 playful（旧计划的既有行为，保持编译结果不变）。
@@ -36,7 +36,6 @@ export interface DirectorPlan {
     subtitle?: string;
     backdrop: Composition['backdrop'];
     motif: Composition['motif'];
-    actors: Composition['actors'];
     elements?: Composition['elements'];
     visualIntent?: string;
     cameraMove?: CameraMove;
@@ -62,7 +61,7 @@ export const DIRECTOR_SCHEMA = {
   properties: {
     version: { const: '0.1' }, idea: { type: 'string', minLength: 1, maxLength: 5000 },
     title: { type: 'string', minLength: 1, maxLength: 120 },
-    aspect: { enum: ['16:9', '9:16', '1:1'] }, look: { enum: ['storybook', 'graphic'] },
+    aspect: { enum: ['16:9', '9:16', '1:1'] }, look: { enum: ['graphic'] },
     bpm: COMPOSITION_SCHEMA.properties.bpm,
     bgmPreset: { enum: [...BGM_PRESETS] },
     fps: { enum: [...SUPPORTED_FPS] },
@@ -71,7 +70,7 @@ export const DIRECTOR_SCHEMA = {
     narrationRate: NARRATION_RATE_SCHEMA,
     shots: { type: 'array', minItems: 1, maxItems: 120, items: {
       type: 'object', additionalProperties: false,
-      required: ['purpose', 'beats', 'title', 'backdrop', 'motif', 'actors'],
+      required: ['purpose', 'beats', 'title', 'backdrop', 'motif'],
       properties: {
         ...shotVisuals,
         purpose: { type: 'string', minLength: 1, maxLength: 300 },
@@ -105,10 +104,8 @@ export function compileDirector(raw: unknown): { plan: DirectorPlan; spec: Resol
     const start = Math.round(beat * framesPerBeat) / fps;
     beat += shot.beats;
     const end = Math.round(beat * framesPerBeat) / fps;
-    const ids = shot.actors.map(a => a.id);
     const visualErrors = graphicIssues(shot.elements ?? []);
     if (visualErrors.length) throw new EngineError(ERROR_CODES.SPEC_INVALID, `shots[${i}]: ${visualErrors.join('; ')}`);
-    if (new Set(ids).size !== ids.length) throw new EngineError(ERROR_CODES.SPEC_INVALID, `shots[${i}].actors 的 id 重复`);
     if (shot.narrationOffset !== undefined && !shot.narration) throw new EngineError(ERROR_CODES.SPEC_INVALID, `shots[${i}].narrationOffset 需要旁白文本`);
     if (shot.narration) {
       const offset = shot.narrationOffset ?? 0.2;
@@ -133,7 +130,7 @@ export function compileDirector(raw: unknown): { plan: DirectorPlan; spec: Resol
       cameraMove: shot.cameraMove ?? 'slow_push', transition: shot.transition ?? (i ? 'dissolve' : 'cut'),
       composition: {
         backdrop: shot.backdrop, motif: shot.motif, title: shot.title, bpm: plan.bpm,
-        ...(shot.subtitle ? { subtitle: shot.subtitle } : {}), actors: shot.actors,
+        ...(shot.subtitle ? { subtitle: shot.subtitle } : {}),
         ...(shot.elements ? { elements: shot.elements } : {}),
       },
     };
@@ -143,8 +140,8 @@ export function compileDirector(raw: unknown): { plan: DirectorPlan; spec: Resol
   const [width, height] = plan.aspect === '16:9' ? [1920, 1080] : plan.aspect === '9:16' ? [1080, 1920] : [1080, 1080];
   const result = validateSpec({
     version: '0.1', video: { width, height, fps, duration, seed: hashString(plan.idea) },
-    style: { preset: plan.look === 'graphic' ? 'flat' : 'watercolor_storybook', palette: 'warm_night', paper: 'rough', line: 'soft_ink' },
-    characters: [], scenes,
+    style: { palette: 'warm_night' },
+    scenes,
     audio: { narration, bgm: { preset: plan.bgmPreset ?? 'playful', bpm: plan.bpm, volume: 0.2, fadeIn: 0.3, fadeOut: 0.8, duckUnderNarration: true },
       sfx },
     captions: { enabled: narration.length > 0, style: 'boxed', mode: 'sentence', ...plan.captionLayout },

@@ -49,7 +49,7 @@ export function initializeWorkspace({ slug, idea, title = slug, theme, component
   const backup = backupCore();
   const result = startDirectorProject({ slug, idea, title, projectsRoot: dirname(project) });
   const neutral = compileDirector({ version: '0.1', idea, title, aspect: '16:9', look: 'graphic', bpm: 96,
-    shots: [{ purpose: '等待本片导演计划', beats: 2, title, backdrop: 'studio', motif: 'none', actors: [], cameraMove: 'static', transition: 'cut' }] });
+    shots: [{ purpose: '等待本片导演计划', beats: 2, title, backdrop: 'studio', motif: 'none', cameraMove: 'static', transition: 'cut' }] });
   // 占位 spec 跟着本片选择，避免后续每次校验都触发 BRAND_THEME_LOCKED
   neutral.spec.style.theme = filmTheme;
   writeJson(join(project, 'spec/main.json'), neutral.spec);

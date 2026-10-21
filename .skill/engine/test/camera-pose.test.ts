@@ -65,7 +65,7 @@ test('splitting a continuous world into two shots preserves the absolute clock a
   const renderers = [false, true].map(split => createSpecRenderer({
     spec: validateSpec({ video: { width: 1080, height: 1920, duration: 2, fps: 30, seed: 1 },
       captions: { enabled: false }, scenes: (split ? [[0, 1], [1, 2]] : [[0, 2]]).map(([start, end], i) =>
-        ({ id: `shot${i}`, start, end, environment: 'rain_window', cameraMove: 'static', transition: 'cut' })) }).spec!,
+        ({ id: `shot${i}`, start, end, environment: 'theme_stage', cameraMove: 'static', transition: 'cut' })) }).spec!,
     width: 160, height: 90,
     drawScene: ({ ctx, time }) => {
       ctx.fillStyle = '#000'; ctx.fillRect(0, 0, 160, 90);

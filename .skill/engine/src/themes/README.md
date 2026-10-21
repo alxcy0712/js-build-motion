@@ -18,7 +18,7 @@ themes/
 
 ## 选用
 spec 里写 `"style": { "theme": "minimal" }`，或简写 `"style": "minimal"`（repair 自动展开）。省略 theme 时沿用本片 brand.json 的生效主题；新片账号默认为 `minimal`，初始化时可显式选择 `kinetic`。选择依据与变更流程见制作规范中的“账号默认与每片风格选择”。
-原有 `preset/palette/paper/line` 保持不变，继续驱动旧环境（rain_window / motion_stage）的水彩场景绘制；风格层只作用于 `theme_stage` 镜头。可选风格只有 `minimal` 与 `kinetic`。
+`theme_stage` 使用主题样式；`motion_stage` 保留 palette 与原创 elements。主题为 `minimal`、`kinetic`。
 
 ## 规则
 - 文字一律走 `drawRevealText`：opacity 用 bezier，位移/缩放用闭式弹簧，二者解耦；纯 seek(t)。

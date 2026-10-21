@@ -9,23 +9,9 @@
   },
   "noise": {
     "source": "src/animation/noise.ts",
-    "dependencies": ["random"]
-  },
-  "rough": {
-    "source": "src/drawing/art/rough.ts",
-    "dependencies": ["random", "noise"]
-  },
-  "paper": {
-    "source": "src/drawing/art/paper.ts",
-    "dependencies": ["random", "noise"]
-  },
-  "watercolor": {
-    "source": "src/drawing/art/watercolor.ts",
-    "dependencies": ["random", "noise", "rough"]
-  },
-  "region-paint": {
-    "source": "src/drawing/art/region-paint.ts",
-    "dependencies": ["random", "noise", "watercolor"]
+    "dependencies": [
+      "random"
+    ]
   },
   "spring": {
     "source": "src/animation/spring.ts",
@@ -48,7 +34,9 @@
   },
   "text-bounds": {
     "source": "src/drawing/primitives/text-bounds.ts",
-    "dependencies": ["visual-check"]
+    "dependencies": [
+      "visual-check"
+    ]
   },
   "image-fit": {
     "source": "src/drawing/primitives/image-fit.ts",

@@ -33,7 +33,7 @@ test('创建保存原文，问答与修改按顺序追加，编译保留历史�
   assert.ok(readFileSync(path, 'utf8').startsWith(initial));
   const before = readFileSync(path, 'utf8');
   const plan = { version: '0.1', idea: original, title: '解释', aspect: '9:16', look: 'graphic', bpm: 96,
-    shots: [{ purpose: '呈现结论', visualIntent: '固定视点，公式出现后停稳', beats: 4, title: '结论', backdrop: 'studio', motif: 'none', actors: [], cameraMove: 'static', transition: 'cut' }] };
+    shots: [{ purpose: '呈现结论', visualIntent: '固定视点，公式出现后停稳', beats: 4, title: '结论', backdrop: 'studio', motif: 'none', cameraMove: 'static', transition: 'cut' }] };
   writeFileSync(join(project, 'director.json'), JSON.stringify(plan));
   const result = spawnSync(process.execPath, [join(PROJECT_ROOT, 'src/cli/index.ts'), 'direct', 'compile', project], { encoding: 'utf8' });
   assert.equal(result.status, 0, result.stderr);

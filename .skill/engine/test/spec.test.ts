@@ -35,18 +35,14 @@ function baseSpec(): Record<string, unknown> {
   return {
     version: '0.1',
     video: { width: 1080, height: 1920, fps: 24, duration: 8, seed: 1 },
-    style: { preset: 'watercolor_storybook', palette: 'warm_night', paper: 'rough', line: 'soft_ink' },
-    characters: [{ id: 'girl', preset: 'female_young', hair: 'long_dark', clothing: 'beige_coat' }],
+    style: { palette: 'warm_night' },
     scenes: [
       {
         id: 's1',
         start: 0,
         end: 8,
-        environment: 'rain_window',
+        environment: 'theme_stage',
         camera: 'medium_close',
-        character: 'girl',
-        action: 'look_outside',
-        emotion: 'nostalgic',
       },
     ],
     audio: { narration: [{ start: 1, voice: 'female_calm', text: '窗外的一场雨。' }] },
@@ -124,8 +120,6 @@ test('示例 spec 的枚举取值全部来自封闭词汇表', () => {
   assert.ok(s);
   assert.ok((CAMERAS as readonly string[]).includes(s.camera));
   assert.ok((SPEC_VOCABULARY.environment as readonly string[]).includes(s.environment));
-  assert.ok((SPEC_VOCABULARY.action as readonly string[]).includes(s.action));
-  assert.ok((SPEC_VOCABULARY.emotion as readonly string[]).includes(s.emotion));
 });
 
 // ------------------------------------------------------- SAFE_REPAIR 类
@@ -222,30 +216,6 @@ test('数字字段写成字符串 → SAFE_REPAIR 回退默认值', () => {
 });
 
 // ------------------------------------------------ 语义相关：只警告不偷改
-
-test('引用不存在的人物 → WARNING 且不擅自换人', () => {
-  const raw = baseSpec();
-  (raw['scenes'] as Record<string, unknown>[])[0]!['character'] = 'nobody';
-  const { spec, issues } = validateSpec(raw);
-  assert.equal(spec?.scenes[0]?.character, undefined, '不能凭空安排另一个角色出场');
-  const issue = findIssue(issues, 'UNKNOWN_CHARACTER');
-  assert.equal(issue?.severity, 'WARNING', '这是语义变化，必须是 WARNING 而不是静默修复');
-  assert.deepEqual(issue?.allowed, ['girl'], '应告知可用的人物 id');
-});
-
-test('人物 id 重复 → WARNING 并保留先出现的定义', () => {
-  const raw = baseSpec();
-  (raw['characters'] as Record<string, unknown>[]).push({
-    id: 'girl',
-    preset: 'male_average',
-    hair: 'short_dark',
-    clothing: 'dark_coat',
-  });
-  const { spec, issues } = validateSpec(raw);
-  assert.equal(spec?.characters.length, 1);
-  assert.equal(spec?.characters[0]?.preset, 'female_young');
-  assert.equal(findIssue(issues, 'DUPLICATE_CHARACTER_ID')?.severity, 'WARNING');
-});
 
 test('场景时间重叠 → WARNING 并说明渲染语义', () => {
   const raw = baseSpec();
@@ -384,10 +354,8 @@ test('修复结果必然通过 schema 校验（逐条复核脏输入）', () => 
 test('确定性模糊测试：任意变异要么明确 FATAL，要么修复为 schema 合法且可渲染', () => {
   const rng = new SeededRandom(20260926);
   const enumFields: ReadonlyArray<readonly [string, string, string]> = [
-    ['style', 'preset', 'STYLE'],
+    ['style', 'theme', 'THEME'],
     ['style', 'palette', 'PALETTE'],
-    ['style', 'paper', 'PAPER'],
-    ['style', 'line', 'LINE'],
   ];
   let fatal = 0;
   let repaired = 0;
@@ -417,7 +385,7 @@ test('确定性模糊测试：任意变异要么明确 FATAL，要么修复为 s
           }
           break;
         }
-        case 6: scene['character'] = rng.pick(['ghost', '', 5, 'girl']); break;
+        case 6: scene['environment'] = rng.pick(['unregistered', '', 5, 'theme_stage']); break;
         default:
           (raw as Record<string, unknown>)[rng.pick(['bogus', 'spec', 'skiaMethod'])] = rng.pick([1, 'x', null]);
           break;
@@ -469,7 +437,7 @@ test('同一输入重复校验结果完全一致（确定性）', () => {
 test('summarizeIssues 给出人类可读摘要', () => {
   assert.equal(summarizeIssues([]), '无问题');
   const raw = baseSpec();
-  (raw['scenes'] as Record<string, unknown>[])[0]!['character'] = 'nobody';
+  (raw['scenes'] as Record<string, unknown>[])[0]!['start'] = 1;
   (raw['video'] as Record<string, unknown>)['fps'] = 23;
   const s = summarizeIssues(validateSpec(raw).issues);
   assert.match(s, /自动修复/);

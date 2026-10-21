@@ -76,7 +76,8 @@ test('风格转场：中段与两端都不同，且每个已登记转场都能�
 });
 test('推荐外的已登记转场告警并实际绘制所选效果', () => {
   const warnings: string[] = [];
-  const s = specFor('minimal', 'whipPan', 'rain_window', 'static');
+  const s = specFor('minimal', 'whipPan', 'theme_stage', 'static');
+  for (const scene of s.scenes) scene.environment = 'motion_stage';
   const paint = (ctx: any, incoming: boolean) => { ctx.fillStyle = incoming ? '#0000ff' : '#ff0000'; ctx.fillRect(0, 0, W, H); };
   const renderer = createSpecRenderer({ spec: s, width: W, height: H, onWarning: (m) => warnings.push(m),
     drawScene: ({ ctx, scene }) => paint(ctx, scene.id === 'b') });
@@ -176,11 +177,6 @@ test('深色暗角的中性噪声逐像素可复现，且在颗粒关闭时仍�
     if (Math.abs(pixels[i]! - pixels[i + 4]!) === 2) changes++;
   }
   assert.ok(changes > 8, `${changes} 次局部噪声变化`);
-});
-test('旧环境（rain_window）不受风格层影响，保持原外观', () => {
-  const [a] = frames(specFor('minimal', 'cut', 'rain_window'), [10]);
-  const [b] = frames(specFor('kinetic', 'cut', 'rain_window'), [10]);
-  assert.ok(a!.equals(b!));
 });
 test('品牌锁在管线中生效：spec 请求 kinetic 但锁 minimal', () => {
   const out = validateSpec({ video: { width: 1080, height: 1920, duration: 2 }, style: 'kinetic', scenes: [{ start: 0, end: 2, environment: 'theme_stage', headline: ['x'] }] }, { brand: brand('minimal') });

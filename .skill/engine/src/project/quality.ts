@@ -1,5 +1,5 @@
 import type { ResolvedVideoSpec } from '../spec/types.ts';
-import { IMPLEMENTED_ENVIRONMENTS } from '../drawing/scenes/rain-window.ts';
+import { IMPLEMENTED_ENVIRONMENTS } from '../drawing/scenes/registry.ts';
 import { graphicIssues } from '../spec/graphic.ts';
 import { buildCaptionTrack, captionUnitLimit, type MeasuredNarration, type CaptionCue } from '../captions/track.ts';
 import { captionUnits } from '../captions/segment.ts';
@@ -27,21 +27,11 @@ export function inspectQuality(spec: ResolvedVideoSpec, options: { measuredNarra
     if (s.composition) {
       const comp = s.composition;
       for (const message of graphicIssues(comp.elements ?? [])) add('GRAPHIC_INVALID', path, 'error', message);
-      if (comp.actors.length) add('GENERIC_VISUAL', path, 'warning', '使用了固定吉祥物；仅在用户指定该预设时采用，依据写入本片 NOTES.md；默认用 actors: [] 与原创 elements');
       if (spec.audio.bgm.volume > 0 && comp.bpm !== spec.audio.bgm.bpm) add('BEAT_MISMATCH', path, 'error', '画面与 BGM 的 BPM 必须一致');
       if (comp.title.length > 28) add('DENSE_TITLE', path, 'warning', '标题偏长，请在接触表确认可读性');
       if (comp.subtitle && spec.captions.enabled) add('TEXT_COLLISION', path, 'warning', '副标题和旁白字幕同占底部区域，审查重叠');
       if (prev?.composition && JSON.stringify(comp) === JSON.stringify(prev.composition)) add('REPEATED_SHOT', path, 'warning', '相邻镜头的视觉内容相同');
-      if (spec.captions.enabled && s.environment === 'motion_stage') {
-        // 字幕底板贴安全区下沿向上生长：双语两行时板顶约在 0.55h。
-        // 实测（.research/out/occlusion-probe.mjs）：脚位 y>0.52 时角色下半身会被底板盖住。
-        const lowest = comp.actors.reduce((m, a) => Math.max(m, a.y), 0);
-        if (lowest > 0.52) add('ACTOR_UNDER_CAPTIONS', path, 'warning', `角色脚位 y=${lowest.toFixed(2)} 太低，字幕底板会遮住下半身；建议 y ≤ 0.5`);
-      }
-      for (let a = 0; a < comp.actors.length; a++) for (let b = a + 1; b < comp.actors.length; b++) {
-        const one = comp.actors[a]!, two = comp.actors[b]!;
-        if (Math.abs(one.x - two.x) < 0.14 && Math.abs(one.y - two.y) < 0.15) add('ACTOR_OVERLAP', path, 'warning', '角色距离很近，审查轮廓遮挡');
-      }
+
     }
   });
   const stageShots = spec.scenes.filter(s => s.composition);

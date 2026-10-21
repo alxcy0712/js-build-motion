@@ -29,7 +29,6 @@ const validateComposition = new Ajv({ allErrors: true }).compile(COMPOSITION_SCH
 
 import { EngineError, ERROR_CODES } from '../utils/errors.ts';
 import {
-  ACTIONS,
   BGM_KEYS,
   BGM_PRESETS,
   CAMERAS,
@@ -37,24 +36,15 @@ import {
   CAPTION_MODES,
   CAPTION_STYLES,
   CAPTION_LAYOUT_DEFAULTS,
-  CHARACTER_PRESETS,
-  CLOTHING,
-  DEFAULT_CHARACTER,
-  EMOTIONS,
   ENVIRONMENTS,
-  HAIR_STYLES,
-  LINE_STYLES,
   PALETTES,
-  PAPER_KINDS,
   SFX_PRESETS,
   SPEC_DEFAULTS,
-  STYLE_PRESETS,
   TRANSITIONS,
   TTS_VOICES,
   type BgmSettings,
   type CaptionSettings,
   type CaptionLayoutSettings,
-  type CharacterDefinition,
   type NarrationLine,
   type ResolvedScene,
   type ResolvedVideoSpec,
@@ -207,7 +197,7 @@ export function repairSpec(input: unknown, options: RepairOptions = {}): RepairR
     throw fatalFrom(r);
   }
 
-  r.stripUnknown(input, ['version', 'video', 'style', 'characters', 'scenes', 'audio', 'captions'], '');
+  r.stripUnknown(input, ['version', 'video', 'style', 'scenes', 'audio', 'captions'], '');
 
   const version = typeof input['version'] === 'string' ? (input['version'] as string) : SPEC_DEFAULTS.version;
   const video = repairVideo(input['video'], r);
@@ -223,8 +213,7 @@ export function repairSpec(input: unknown, options: RepairOptions = {}): RepairR
     r.add({ severity: 'WARNING', code: 'BRAND_THEME_LOCKED', path: 'style.theme', message: `本片风格为 ${decision.theme}，已覆盖本片请求的 ${decision.violation.requested}`, from: decision.violation.requested, to: decision.theme });
   }
   const style = { ...repairedStyle, theme: decision.theme };
-  const characters = repairCharacters(input['characters'], r);
-  const scenes = repairScenes(input['scenes'], characters, video, r);
+  const scenes = repairScenes(input['scenes'], video, r);
   const theme = getTheme(style.theme);
   for (const [index, scene] of scenes.entries()) {
     if (isThemeTransition(scene.transition) && !theme.transitions.includes(scene.transition)) {
@@ -236,7 +225,7 @@ export function repairSpec(input: unknown, options: RepairOptions = {}): RepairR
   const captions = repairCaptions(input['captions'], r);
   const audio = repairAudio(input['audio'], video, scenes, r);
 
-  const spec: ResolvedVideoSpec = { version, video, style, characters, scenes, audio, captions };
+  const spec: ResolvedVideoSpec = { version, video, style, scenes, audio, captions };
 
   if (r.issues.some((i) => i.severity === 'FATAL')) throw fatalFrom(r);
   return { spec, issues: r.issues };
@@ -401,76 +390,19 @@ function repairStyle(raw: unknown, r: Repairer): VideoSpec['style'] {
     r.add({ severity: 'SAFE_REPAIR', code: 'NOT_AN_OBJECT', path: 'style', message: '应为对象，已使用默认值', from: raw });
   }
   const o = isPlainObject(raw) ? raw : {};
-  r.stripUnknown(o, ['theme', 'preset', 'palette', 'paper', 'line', 'vignette'], 'style');
+  r.stripUnknown(o, ['theme', 'palette', 'vignette'], 'style');
   const theme = r.enumValue(o['theme'], THEME_IDS, d.theme, 'style.theme');
 
   // 缺整个 style 不记为问题——它本来就有默认值（§11：残缺也要能出片）
   return {
     theme,
-    preset: r.enumValue(o['preset'], STYLE_PRESETS, d.preset, 'style.preset'),
     palette: r.enumValue(o['palette'], PALETTES, d.palette, 'style.palette'),
-    paper: r.enumValue(o['paper'], PAPER_KINDS, d.paper, 'style.paper'),
-    line: r.enumValue(o['line'], LINE_STYLES, d.line, 'style.line'),
     ...(o['vignette'] !== undefined ? { vignette: r.numberValue(o['vignette'], 0, 1, getTheme(theme).treatments.vignette, 'style.vignette') } : {}),
   };
 }
 
-// ----------------------------------------------------------- characters
-
-function repairCharacters(raw: unknown, r: Repairer): CharacterDefinition[] {
-  if (raw === undefined) return [];
-  if (!Array.isArray(raw)) {
-    r.add({ severity: 'SAFE_REPAIR', code: 'NOT_AN_ARRAY', path: 'characters', message: '应为数组，已忽略', from: raw });
-    return [];
-  }
-
-  const out: CharacterDefinition[] = [];
-  const seen = new Set<string>();
-
-  raw.forEach((item, i) => {
-    const path = `characters[${i}]`;
-    if (!isPlainObject(item)) {
-      r.add({ severity: 'SAFE_REPAIR', code: 'NOT_AN_OBJECT', path, message: '元素应为对象，已丢弃', from: item });
-      return;
-    }
-    r.stripUnknown(item, ['id', 'preset', 'hair', 'clothing', 'x', 'y'], path);
-
-    const rawId = item['id'];
-    const id = typeof rawId === 'string' && rawId.length > 0 ? rawId : `char_${i}`;
-    if (typeof rawId !== 'string' || rawId.length === 0) {
-      r.add({ severity: 'SAFE_REPAIR', code: 'MISSING_ID', path: `${path}.id`, message: `缺少 id，已生成 ${id}`, to: id });
-    }
-    if (seen.has(id)) {
-      r.warn({
-        code: 'DUPLICATE_CHARACTER_ID',
-        path: `${path}.id`,
-        message: `人物 id 重复 (${id})，已丢弃后出现的定义`,
-        from: id,
-        hint: '每个人物应有唯一 id，场景通过 id 引用它',
-      });
-      return;
-    }
-    seen.add(id);
-
-    const def: CharacterDefinition = {
-      id,
-      preset: r.enumValue(item['preset'], CHARACTER_PRESETS, DEFAULT_CHARACTER.preset, `${path}.preset`),
-      hair: r.enumValue(item['hair'], HAIR_STYLES, DEFAULT_CHARACTER.hair, `${path}.hair`),
-      clothing: r.enumValue(item['clothing'], CLOTHING, DEFAULT_CHARACTER.clothing, `${path}.clothing`),
-    };
-    if (item['x'] !== undefined) def.x = r.numberValue(item['x'], 0, 1, 0.5, `${path}.x`);
-    if (item['y'] !== undefined) def.y = r.numberValue(item['y'], 0, 1, 0.7, `${path}.y`);
-    out.push(def);
-  });
-
-  return out;
-}
-
-// ---------------------------------------------------------------- scenes
-
 function repairScenes(
   raw: unknown,
-  characters: CharacterDefinition[],
   video: VideoSpec['video'],
   r: Repairer,
 ): ResolvedScene[] {
@@ -479,7 +411,7 @@ function repairScenes(
       'NO_SCENES',
       'scenes',
       '没有任何场景，无法渲染',
-      '至少提供一个场景，例如 { "id":"s1","start":0,"end":8,"environment":"rain_window" }',
+      '至少提供一个场景，例如 { "id":"s1","start":0,"end":8,"environment":"theme_stage" }',
     );
     return [];
   }
@@ -488,7 +420,6 @@ function repairScenes(
     return [];
   }
 
-  const knownIds = new Set(characters.map((c) => c.id));
   const out: ResolvedScene[] = [];
 
   raw.forEach((item, i) => {
@@ -499,7 +430,7 @@ function repairScenes(
     }
     r.stripUnknown(
       item,
-      ['id', 'start', 'end', 'environment', 'camera', 'cameraMove', 'transition', 'character', 'action', 'emotion', 'composition', 'headline', 'kicker', 'ip', 'ipExpression', 'cameraPath', 'focus', 'footage'],
+      ['id', 'start', 'end', 'environment', 'camera', 'cameraMove', 'transition', 'composition', 'headline', 'kicker', 'ip', 'ipExpression', 'cameraPath', 'focus', 'footage'],
       path,
     );
 
@@ -560,26 +491,6 @@ function repairScenes(
       end = video.duration;
     }
 
-    // 人物引用
-    let character: string | undefined;
-    const rawChar = item['character'];
-    if (rawChar !== undefined) {
-      if (typeof rawChar === 'string' && knownIds.has(rawChar)) {
-        character = rawChar;
-      } else {
-        // 不能静默换人：凭空造一个人物会改变剧情。丢掉引用并明确告警。
-        r.warn({
-          code: 'UNKNOWN_CHARACTER',
-          path: `${path}.character`,
-          message: `引用了不存在的人物 "${String(rawChar)}"，该场景将不出现人物`,
-          allowed: characters.length ? characters.map((c) => c.id) : ['(未定义任何人物)'],
-          from: rawChar,
-          hint: '在 characters 中定义该 id，或改用已有 id',
-        });
-        character = undefined;
-      }
-    }
-
     let composition: Composition | undefined;
     if (item['composition'] !== undefined) {
       if (!validateComposition(item['composition'])) {
@@ -600,13 +511,10 @@ function repairScenes(
       id,
       start,
       end,
-      environment: r.enumValue(item['environment'], ENVIRONMENTS, 'rain_window', `${path}.environment`),
+      environment: r.enumValue(item['environment'], ENVIRONMENTS, 'theme_stage', `${path}.environment`),
       camera: r.enumValue(item['camera'], CAMERAS, SPEC_DEFAULTS.scene.camera, `${path}.camera`),
       cameraMove: r.enumValue(item['cameraMove'], CAMERA_MOVES, SPEC_DEFAULTS.scene.cameraMove, `${path}.cameraMove`),
       transition: r.enumValue(item['transition'], TRANSITIONS, SPEC_DEFAULTS.scene.transition, `${path}.transition`),
-      action: r.enumValue(item['action'], ACTIONS, SPEC_DEFAULTS.scene.action, `${path}.action`),
-      emotion: r.enumValue(item['emotion'], EMOTIONS, SPEC_DEFAULTS.scene.emotion, `${path}.emotion`),
-      character,
       ...repairHeadline(item, path, r, video.width, video.height),
       ...repairShotMotion(item, path, r, end - start),
     });
@@ -841,15 +749,7 @@ export const SPEC_VOCABULARY = {
   environment: ENVIRONMENTS,
   cameraMove: CAMERA_MOVES,
   transition: TRANSITIONS,
-  action: ACTIONS,
-  emotion: EMOTIONS,
-  stylePreset: STYLE_PRESETS,
   palette: PALETTES,
-  paper: PAPER_KINDS,
-  line: LINE_STYLES,
-  characterPreset: CHARACTER_PRESETS,
-  hair: HAIR_STYLES,
-  clothing: CLOTHING,
   ttsVoice: TTS_VOICES,
   bgmPreset: BGM_PRESETS,
   bgmKey: BGM_KEYS,

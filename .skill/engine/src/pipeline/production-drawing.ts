@@ -1,7 +1,7 @@
 import type { AssetPort, PreparedAssetImage, PreparedAssetVideo } from '../ports/assets.ts';
 import type { CompiledProductionTimeline } from '../project/production-timeline.ts';
 import type { ProjectSceneDrawer } from '../project/drawing.ts';
-import { getSceneRenderer } from '../drawing/scenes/rain-window.ts';
+import { getSceneRenderer } from '../drawing/scenes/registry.ts';
 import { drawGraphics } from '../drawing/scenes/graphics.ts';
 
 /** Prepare fixed media once; integer frame access remains synchronous and order independent. */

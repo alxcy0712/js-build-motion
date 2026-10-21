@@ -85,7 +85,7 @@ test('tracked offscreen text retains source cropping and drawImage destination t
 });
 test('pipeline incoming text and captions are observed, opt-in tracing preserves frame pixels', () => {
   const spec = compileDirector({ version: '0.1', idea: 'testing', title: 'test', aspect: '16:9', look: 'graphic', bpm: 120,
-    shots: [0, 1].map(i => ({ purpose: 'check text', title: 'test', beats: 2, backdrop: 'studio', motif: 'none', actors: [], cameraMove: 'static', transition: i ? 'zoom' : 'cut' })),
+    shots: [0, 1].map(i => ({ purpose: 'check text', title: 'test', beats: 2, backdrop: 'studio', motif: 'none', cameraMove: 'static', transition: i ? 'zoom' : 'cut' })),
   }).spec;
   spec.audio.narration = [{ start: 0, voice: 'female_calm', text: '中文标记。' }]; spec.captions.enabled = true;
   const drawScene = ({ ctx, scene }: any) => { ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, 240, 135); ctx.font = '18px sans-serif'; ctx.fillStyle = '#123'; ctx.fillText(scene.id === spec.scenes[0]!.id ? 'old' : 'incoming', 80, 40); };
@@ -101,7 +101,7 @@ test('diagnose binds continuous encoded frames, labels evidence, honors hold pur
   const fixture = createFixtureProject();
   try {
     const spec = compileDirector({ version: '0.1', idea: 'a fictional moving tile', title: 'tile', aspect: '16:9', look: 'graphic', bpm: 120,
-      shots: [{ purpose: 'check a tile', title: 'tile', beats: 4, actors: [], backdrop: 'studio', motif: 'none', cameraMove: 'static', transition: 'cut' }],
+      shots: [{ purpose: 'check a tile', title: 'tile', beats: 4, backdrop: 'studio', motif: 'none', cameraMove: 'static', transition: 'cut' }],
     }).spec;
     spec.audio.narration = []; spec.audio.bgm.volume = 0; spec.audio.sfx = []; spec.captions.enabled = false;
     const brief = JSON.parse(readFileSync(fixture.briefPath!, 'utf8'));

@@ -22,19 +22,7 @@ import { DOUBAO_VOICES, type DoubaoVoiceId } from '../audio/tts/doubao-voices.ts
 export const CAMERAS = ['wide', 'medium', 'medium_close', 'close', 'extreme_close'] as const;
 export type Camera = (typeof CAMERAS)[number];
 
-export const ENVIRONMENTS = [
-  'rain_window',
-  'motion_stage',
-  'theme_stage',
-  'footage',
-  'office_night',
-  'bedroom',
-  'city_street',
-  'forest',
-  'mountain',
-  'ocean',
-  'coffee_shop',
-] as const;
+export const ENVIRONMENTS = ['motion_stage', 'theme_stage', 'footage'] as const;
 export type Environment = (typeof ENVIRONMENTS)[number];
 
 export const CAMERA_MOVES = ['static', 'slow_push', 'slow_pull', 'pan_left', 'pan_right', 'tilt_up', 'tilt_down'] as const;
@@ -47,57 +35,8 @@ export const TRANSITIONS = [
 ] as const;
 export type Transition = (typeof TRANSITIONS)[number];
 
-export const STYLE_PRESETS = ['watercolor_storybook', 'ink', 'pencil', 'paper_cut', 'flat'] as const;
-export type StylePreset = (typeof STYLE_PRESETS)[number];
-
 export const PALETTES = ['warm_night', 'dusk', 'dawn', 'cool_blue', 'sepia', 'mono'] as const;
 export type Palette = (typeof PALETTES)[number];
-
-export const PAPER_KINDS = ['smooth', 'rough', 'watercolor', 'kraft'] as const;
-export type PaperKind = (typeof PAPER_KINDS)[number];
-
-export const LINE_STYLES = ['none', 'soft_ink', 'ink', 'pencil'] as const;
-export type LineStyle = (typeof LINE_STYLES)[number];
-
-export const CHARACTER_PRESETS = [
-  'female_young',
-  'female_average',
-  'male_young',
-  'male_average',
-  'child',
-  'elder',
-] as const;
-export type CharacterPreset = (typeof CHARACTER_PRESETS)[number];
-
-export const HAIR_STYLES = ['long_dark', 'long_light', 'short_dark', 'short_light', 'bun', 'ponytail'] as const;
-export type HairStyle = (typeof HAIR_STYLES)[number];
-
-export const CLOTHING = [
-  'beige_coat',
-  'dark_coat',
-  'white_shirt',
-  'sweater',
-  'dress',
-  'school_uniform',
-] as const;
-export type Clothing = (typeof CLOTHING)[number];
-
-export const ACTIONS = [
-  'stand',
-  'sit',
-  'walk',
-  'write',
-  'read',
-  'look_outside',
-  'drink',
-  'turn_head',
-  'smile',
-  'sleep',
-] as const;
-export type Action = (typeof ACTIONS)[number];
-
-export const EMOTIONS = ['neutral', 'nostalgic', 'happy', 'sad', 'anxious', 'calm', 'hopeful'] as const;
-export type Emotion = (typeof EMOTIONS)[number];
 
 export const ABSTRACT_TTS_VOICES = ['female_calm', 'female_lively', 'male_calm', 'male_lively'] as const;
 export type AbstractTtsVoice = (typeof ABSTRACT_TTS_VOICES)[number];
@@ -144,24 +83,9 @@ export interface VideoSettings {
 export interface StyleSettings {
   /** 风格层（themes/）：决定字体、色板、字号、时长、弹簧、缓动、转场与质感。场景色仍由 palette 决定。 */
   theme: ThemeId;
-  preset: StylePreset;
   palette: Palette;
-  paper: PaperKind;
-  line: LineStyle;
   /** 暗角强度 [0,1]；0 关闭，省略时使用主题默认值。 */
   vignette?: number;
-}
-
-export interface CharacterDefinition {
-  /** 场景通过这个 id 引用人物 */
-  id: string;
-  preset: CharacterPreset;
-  hair: HairStyle;
-  clothing: Clothing;
-  /** 可选：人物在画面中的默认横向位置 [0,1] */
-  x?: number;
-  /** 可选：人物在画面中的默认纵向位置 [0,1]（脚底） */
-  y?: number;
 }
 
 export const IP_ROLES = ['identity', 'actor'] as const;
@@ -192,10 +116,6 @@ export interface Scene {
   camera: Camera;
   cameraMove?: CameraMove;
   transition?: Transition;
-  /** 引用 CharacterDefinition.id；缺省表示无人物 */
-  character?: string;
-  action?: Action;
-  emotion?: Emotion;
   /** theme_stage 的屏上文字，每行一项（≤3 行，每屏字数受风格预算约束） */
   headline?: string[];
   /** theme_stage 的小标题（强调色） */
@@ -276,7 +196,6 @@ export interface VideoSpec {
   version: string;
   video: VideoSettings;
   style: StyleSettings;
-  characters: CharacterDefinition[];
   scenes: Scene[];
   audio?: AudioSettings;
   captions?: CaptionSettings;
@@ -301,10 +220,7 @@ export const SPEC_DEFAULTS = {
   },
   style: {
     theme: DEFAULT_THEME,
-    preset: 'watercolor_storybook',
     palette: 'warm_night',
-    paper: 'rough',
-    line: 'soft_ink',
   },
   captions: {
     enabled: true,
@@ -323,20 +239,10 @@ export const SPEC_DEFAULTS = {
     camera: 'medium',
     cameraMove: 'static',
     transition: 'cut',
-    action: 'stand',
-    emotion: 'neutral',
   },
   loudness: -14,
   narrationRate: 8,
 } as const satisfies Record<string, unknown>;
-
-/** 默认人物：当场景引用了不存在的人物时用于兜底（并记为 WARNING） */
-export const DEFAULT_CHARACTER: CharacterDefinition = {
-  id: 'default',
-  preset: 'female_young',
-  hair: 'long_dark',
-  clothing: 'beige_coat',
-};
 
 // ------------------------------------------------- 渲染期的「已解析」形态
 
@@ -345,8 +251,7 @@ export const DEFAULT_CHARACTER: CharacterDefinition = {
  * 渲染器只接受 `ResolvedVideoSpec`，从而不可能遇到 undefined 分支。
  */
 export interface ResolvedStyleSettings extends StyleSettings {}
-export interface ResolvedScene extends Required<Omit<Scene, 'character' | 'composition' | 'headline' | 'kicker' | 'ip' | 'ipExpression' | 'cameraPath' | 'focus' | 'footage'>> {
-  character: string | undefined;
+export interface ResolvedScene extends Required<Omit<Scene, 'composition' | 'headline' | 'kicker' | 'ip' | 'ipExpression' | 'cameraPath' | 'focus' | 'footage'>> {
   composition?: Composition;
   headline?: string[];
   kicker?: string;
@@ -366,7 +271,6 @@ export interface ResolvedVideoSpec {
   version: string;
   video: VideoSettings;
   style: ResolvedStyleSettings;
-  characters: CharacterDefinition[];
   scenes: ResolvedScene[];
   audio: ResolvedAudioSettings;
   captions: CaptionSettings;

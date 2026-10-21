@@ -373,14 +373,12 @@ test('双语字幕：非法译文被丢弃并告警，不阻断编译', () => {
   const raw = {
     version: '0.1',
     video: { width: 1920, height: 1080, fps: 24, duration: 6, seed: 3 },
-    style: { preset: 'flat', palette: 'warm_night', paper: 'rough', line: 'soft_ink' },
-    characters: [],
+    style: { palette: 'warm_night' },
     scenes: [{
       id: 's1', start: 0, end: 6, environment: 'motion_stage', camera: 'medium',
       composition: {
         backdrop: 'studio', motif: 'none', title: '标题', bpm: 96,
-        actors: [{ id: 'lead', x: 0.5, y: 0.7, scale: 1, gesture: 'idle', mood: 'curious' }],
-      },
+        },
     }],
     audio: { narration: [
       { start: 0.2, voice: 'female_calm', text: '第一句。', translation: '   ' },

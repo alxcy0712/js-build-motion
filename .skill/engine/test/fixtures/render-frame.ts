@@ -19,7 +19,7 @@ import { SkiaRenderer } from '../../src/renderer/skia/skia-renderer.ts';
 import {
   CANONICAL_HEIGHT,
   CANONICAL_WIDTH,
-  drawCanonicalPaper,
+  drawCanonicalBackdrop,
   drawCanonicalScene,
 } from './canonical-scene.ts';
 
@@ -36,7 +36,7 @@ if (!Number.isFinite(seed) || !Number.isFinite(frameIndex) || !Number.isFinite(t
 const renderer = new SkiaRenderer({
   width: CANONICAL_WIDTH,
   height: CANONICAL_HEIGHT,
-  draw: layer === 'paper' ? drawCanonicalPaper : drawCanonicalScene,
+  draw: layer === 'backdrop' ? drawCanonicalBackdrop : drawCanonicalScene,
 });
 
 const rc = makeFrameContext({

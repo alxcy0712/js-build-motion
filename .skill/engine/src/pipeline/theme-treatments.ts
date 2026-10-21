@@ -1,6 +1,6 @@
 /**
  * 风格质感：可选镜头微运动、扫光、暗角、颗粒。静镜相机由管线约束。
- * 只作用于 theme_stage 镜头；旧环境（rain_window / motion_stage）不经过这里，保持原水彩外观。
+ * 只作用于 theme_stage 镜头；motion_stage 独立绘制图解背景与图元。
  */
 import { Canvas, type CanvasRenderingContext2D } from 'skia-canvas';
 import { microMotionAt } from '../themes/liveness.ts';
