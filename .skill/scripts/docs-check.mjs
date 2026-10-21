@@ -1,3 +1,4 @@
+import { GUIDE_FILES } from './guide-files.mjs';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { dirname, join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -55,7 +56,7 @@ export function checkDocs() {
   const source = new Map(files.map(path => [path, readFileSync(path, 'utf8')]));
   const sources = inspectLinks(source, { allowed: path => !relative(root, path).startsWith('projects' + sep) });
   const project = join(root, '.research/out/document-projection');
-  const guides = markdown(join(root, '.skill/references')).map(path => [join(project, 'guide', relative(join(root, '.skill/references'), path)), readFileSync(path, 'utf8')]);
+  const guides = GUIDE_FILES.map(name => join(root, '.skill/references', name)).map(path => [join(project, 'guide', relative(join(root, '.skill/references'), path)), readFileSync(path, 'utf8')]);
   const templates = markdown(template).map(path => [join(project, relative(template, path)), readFileSync(path, 'utf8')]);
   const snapshot = inspectLinks(new Map([...guides, ...templates]), { exists: () => false,
     allowed: path => path.startsWith(project + sep) });

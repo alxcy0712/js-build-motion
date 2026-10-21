@@ -5,10 +5,10 @@
 ## 阅读顺序
 
 1. [README.md](README.md) 和 [AGENTS.md](AGENTS.md)：使用入口、授权边界和项目约定。
-2. [.skill/SKILL.md](.skill/SKILL.md)、[创作主线](.skill/references/motion-language.md#创作主线)、[个人包装](.skill/references/visual-identity.md)、[创作问答](.skill/references/intake.md)、[导演计划](.skill/references/direction.md)：一句话输入如何成为风格、叙事与镜头选择。
+2. [.skill/SKILL.md](.skill/SKILL.md)、[创作主线](.skill/references/motion.md#创作主线)、[个人包装](.skill/references/style-and-identity.md)、[创作问答](.skill/references/workflow.md)、[导演计划](.skill/references/direction.md)：一句话输入如何成为风格、叙事与镜头选择。
 3. [入口脚本](.skill/scripts/video.mjs)、[核心封装](.skill/scripts/core.mjs)、[工作区与系统隔离](.skill/engine/workspace.mjs)：初始化、备份、版本固定与进程边界。
 4. [导演计划](.skill/engine/src/project/director.ts)、[逐帧绘制与转场](.skill/engine/src/pipeline/spec-renderer.ts)、[渲染管线](.skill/engine/src/pipeline/render-video.ts)：计划到编码的实际实现。
-5. [质量规范](.skill/references/quality.md)、[电影化运镜](.skill/references/cinematography.md)、[动效设计](.skill/references/motion-design.md)、[产品与体验叙事](.skill/references/product-film-language.md)，随后阅读 `.skill/engine/test/` 与 `.skill/scripts/native-check.mjs`。
+5. [质量规范](.skill/references/layout-and-quality.md)、[电影化运镜](.skill/references/direction.md)、[动效设计](.skill/references/drawing.md)、[产品与体验叙事](.skill/references/motion.md)，随后阅读 `.skill/engine/test/` 与 `.skill/scripts/native-check.mjs`。
 
 ## 审查目标
 

@@ -8,6 +8,7 @@ import { digest, importSourceArguments, json, spawnWithSignalRelay, writeJson } 
 import { startDirectorProject } from '../engine/src/cli/director.ts';
 import { compileDirector } from '../engine/src/project/director.ts';
 import { parseBrand } from '../engine/src/themes/brand.ts';
+import { copyGuides } from './guide-files.mjs';
 import { THEME_IDS } from '../engine/src/themes/ids.ts';
 
 function projectPath(slug) {
@@ -56,7 +57,7 @@ export function initializeWorkspace({ slug, idea, title = slug, theme, component
   cpSync(engine, join(project, '.engine'), { recursive: true, dereference: true, filter: path => path !== join(engine, 'test') });
   writeJson(join(project, 'brand.json'), brandSnapshot);
   writeJson(join(project, '.engine/engine-manifest.json'), manifest);
-  cpSync(join(skill, 'references'), join(project, 'guide'), { recursive: true });
+  copyGuides(skill, project);
   cpSync(join(skill, 'assets/project'), project, { recursive: true });
   mkdirSync(join(project, 'src/components'), { recursive: true });
   const sources = new Map([...selected].map(name => [resolve(engine, catalog[name].source), name]));
@@ -74,7 +75,7 @@ export function initializeWorkspace({ slug, idea, title = slug, theme, component
   writeJson(join(project, '.engine/isolation.json'), isolation);
   writeJson(join(project, 'workspace.json'), { version: '0.2', packageId: manifest.packageId, isolationSha256: digest(JSON.stringify(isolation)), components: [...selected].sort(),
     brand: { theme: filmTheme, defaultTheme: account.theme, sha256: digest(readFileSync(join(project, 'brand.json'))) } });
-  return { project: result.dir, status: 'needs-intake', next: '主题已写入 brand.json；按 guide/intake.md 补齐沟通原文与尚待决定的创作选择，按 guide/motion-language.md 落实创作主线；已有选择与委托持续沿用，完成问答后制定导演计划与素材方案', packageId: manifest.packageId, components: [...selected].sort(), backup };
+  return { project: result.dir, status: 'needs-intake', next: '主题已写入 brand.json；按 guide/workflow.md 补齐沟通原文与尚待决定的创作选择，按 guide/motion.md 落实创作主线；已有选择与委托持续沿用，完成问答后制定导演计划与素材方案', packageId: manifest.packageId, components: [...selected].sort(), backup };
 }
 
 export function invokeProject(slug, args) {

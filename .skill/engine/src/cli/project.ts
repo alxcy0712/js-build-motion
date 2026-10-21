@@ -164,7 +164,7 @@ function cmdProjectInit(argv: string[]): number {
     `\n下一步：\n` +
       `  隔离：只读 projects/${slug}/ 内的文件——其它项目的 spec / out/ / run.json 一律不打开；\n` +
       `        本项目的产物与证据也只写回这个目录（仓库根不放任何项目文件）。\n` +
-      `        这是模型对比的前提（细则 .skill/references/workspace.md §7）；自查：node .skill/engine/src/cli/index.ts project audit ${slug}\n` +
+      `        这是模型对比的前提（细则 .skill/references/workflow.md「生成区的外部依赖约束」）；自查：node .skill/engine/src/cli/index.ts project audit ${slug}\n` +
       `  1. 把提示词原文粘进 ${slug}/NOTES.md，结构化声明写进 ${slug}/brief.json\n` +
       `  2. 改 ${slug}/spec/main.json（骨架是 3 秒单场景，先渲出画面再扩内容）\n` +
       `  3. node .skill/engine/src/cli/index.ts validate ${slug} && node .skill/engine/src/cli/index.ts brief validate ${slug}\n` +
@@ -319,7 +319,7 @@ function cmdProjectAudit(argv: string[]): number {
 
   process.stdout.write(
     `\n审计只看 brief.json / spec 里写下的路径，不能证明模型没有读过别的项目。\n` +
-      `模型对比请从空目录开始、同一提示词各做一支，规则见 .skill/references/workspace.md §7。\n`,
+      `模型对比请从空目录开始、同一提示词各做一支，规则见 .skill/references/workflow.md「生成区的外部依赖约束」。\n`,
   );
   return ok ? 0 : 1;
 }

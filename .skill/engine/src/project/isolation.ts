@@ -11,7 +11,7 @@ import { physicalPath, assertOutputTree } from './paths.ts';
  * 所以本模块的结论必须这样表述：
  *   ✅ 「这个项目的输入全部落在自己目录内」
  *   ❌ 「这个项目没有读过别的项目」——后者要靠流程约束（独立目录 + 干净的起始状态），
- *      见 .skill/references/workspace.md §7。
+ *      见 .skill/references/workflow.md「生成区的外部依赖约束」。
  *
  * 三条规则（对应 AGENTS.md 硬性规则 7）：
  *   1. 不得引用其它项目目录（`projects/<other>/...`，含 `../<other>/...` 这类相对写法）
@@ -408,7 +408,7 @@ export function assertProjectIsolation(report: ProjectIsolationReport): void {
       hint:
         `项目输入必须自包含：素材复制进 projects/${report.slug}/assets/，` +
         '不要在 brief.json / spec 里引用其它项目或本项目 out/ 里的文件。' +
-        '细则见 .skill/references/workspace.md §7',
+        '细则见 .skill/references/workflow.md「生成区的外部依赖约束」',
     },
   );
 }

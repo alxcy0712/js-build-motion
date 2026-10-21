@@ -2,7 +2,7 @@
  * 生成角色片段的合成：变速贴槽、帧混合、尺寸上限、底部渐隐、低强度轮廓光。
  *
  * 分层约定：生成片段只承担角色动作（平涂底、空白屏幕、无文字），抠像后作为透明层由代码合成；
- * 文字、标签、屏幕内容全部由代码绘制。抠像见 key.ts，规则见 references/assets.md「生成视频分层合成」。
+ * 文字、标签、屏幕内容全部由代码绘制。抠像见 key.ts，规则见 references/workflow.md「生成视频分层合成」。
  *
  * 纯函数部分（planRetime / retimeAt / blendIndex / mixRgba / fadeBottom / capScale）不依赖 skia，可直接单测。
  */

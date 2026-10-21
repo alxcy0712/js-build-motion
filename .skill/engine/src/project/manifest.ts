@@ -142,7 +142,7 @@ export function readProjectManifest(dir: string): ProjectManifest {
   if (errors.length > 0) {
     throw new EngineError(ERROR_CODES.PROJECT_INVALID, `${PROJECT_MANIFEST_FILE} 未通过 schema 校验`, {
       details: { path: manifestPath, errors: errors.join(' ; ') },
-      hint: '按 .skill/references/workspace.md 的 manifest 规范修正字段',
+      hint: '按 .skill/references/workflow.md 的 manifest 规范修正字段',
     });
   }
 

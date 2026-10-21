@@ -29,19 +29,8 @@ after(fixture.cleanup);
 const archetypes = listArchetypes();
 const ids = archetypes.map((a) => a.id);
 
-test('原型库至少包含 playbook 的七类原型', () => {
-  const expected = [
-    'code-animation-no-assets',
-    'education-explainer',
-    'product-launch-from-repo',
-    'three-d-scene',
-    'director-plus-video-model',
-    'footage-restyle',
-    'existing-skill-trigger',
-  ];
-  for (const id of expected) {
-    assert.ok(ids.includes(id), `缺少原型 ${id}；现有：${ids.join(', ')}`);
-  }
+test('最小原型保留可查询的 brief 示例', () => {
+  assert.deepEqual(ids, ['code-animation-no-assets']);
 });
 
 test('每个原型模板都通过 brief 校验（可作为项目 brief 直接使用）', () => {

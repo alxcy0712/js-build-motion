@@ -24,4 +24,4 @@ spec 里写 `"style": { "theme": "minimal" }`，或简写 `"style": "minimal"`�
 - 文字一律走 `drawRevealText`：opacity 用 bezier，位移/缩放用闭式弹簧，二者解耦；纯 seek(t)。
 - `textReveal.allowOvershoot=false` 的风格，弹簧进度被钳制在 [0,1]，校验器也要求解析过冲 < 0.1%。
 - 禁止线性缓动；不动画 letter-spacing；中文 tracking 恒为 0。
-- 新增风格：写 `styles/<id>.ts` → 加入 `ids.ts` 与 `registry.ts` → `node --test test/themes.test.ts` → 在 `references/styles.md` 补一段。
+- 新增风格：写 `styles/<id>.ts` → 加入 `ids.ts` 与 `registry.ts` → `node --test test/themes.test.ts` → 在 `references/style-and-identity.md` 补一段。
