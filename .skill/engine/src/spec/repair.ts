@@ -1,3 +1,4 @@
+import { layoutPlanIssues, type LayoutPlan } from '../layout/plan.ts';
 import { parseCameraPath, type CameraPath } from '../motion/camera-path.ts';
 import { parseFocus, type FocusRect } from '../motion/focus.ts';
 import { minShotSeconds } from '../motion/shot-timing.ts';
@@ -197,7 +198,7 @@ export function repairSpec(input: unknown, options: RepairOptions = {}): RepairR
     throw fatalFrom(r);
   }
 
-  r.stripUnknown(input, ['version', 'video', 'style', 'scenes', 'audio', 'captions'], '');
+  r.stripUnknown(input, ['version', 'video', 'style', 'scenes', 'audio', 'captions', 'layout'], '');
 
   const version = typeof input['version'] === 'string' ? (input['version'] as string) : SPEC_DEFAULTS.version;
   const video = repairVideo(input['video'], r);
@@ -225,7 +226,8 @@ export function repairSpec(input: unknown, options: RepairOptions = {}): RepairR
   const captions = repairCaptions(input['captions'], r);
   const audio = repairAudio(input['audio'], video, scenes, r);
 
-  const spec: ResolvedVideoSpec = { version, video, style, scenes, audio, captions };
+  if (input['layout'] !== undefined) for (const issue of layoutPlanIssues(input['layout'], scenes)) r.fatal('LAYOUT_INVALID', 'layout', issue);
+  const spec: ResolvedVideoSpec = { version, video, style, scenes, audio, captions, ...(input['layout'] !== undefined ? { layout: input['layout'] as LayoutPlan } : {}) };
 
   if (r.issues.some((i) => i.severity === 'FATAL')) throw fatalFrom(r);
   return { spec, issues: r.issues };

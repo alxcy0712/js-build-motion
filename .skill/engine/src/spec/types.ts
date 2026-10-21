@@ -1,3 +1,4 @@
+import type { LayoutPlan } from '../layout/plan.ts';
 import type { CameraPath } from '../motion/camera-path.ts';
 import type { FocusRect } from '../motion/focus.ts';
 import type { FootageClip } from '../footage/spec.ts';
@@ -189,6 +190,7 @@ export interface CaptionSettings extends CaptionLayoutSettings {
 }
 
 export interface VideoSpec {
+  layout?: LayoutPlan;
   version: string;
   video: VideoSettings;
   style: StyleSettings;
@@ -264,6 +266,7 @@ export interface ResolvedAudioSettings {
   loudness: number;
 }
 export interface ResolvedVideoSpec {
+  layout?: LayoutPlan;
   version: string;
   video: VideoSettings;
   style: ResolvedStyleSettings;

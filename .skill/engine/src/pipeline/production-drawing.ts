@@ -1,3 +1,4 @@
+import { withLayout } from '../layout/trace.ts';
 import type { AssetPort, PreparedAssetImage, PreparedAssetVideo } from '../ports/assets.ts';
 import type { CompiledProductionTimeline } from '../project/production-timeline.ts';
 import type { ProjectSceneDrawer } from '../project/drawing.ts';
@@ -25,8 +26,10 @@ export async function createProductionDrawing(compiled: CompiledProductionTimeli
     const target = { x: 0, y: 0, width: context.width, height: context.height };
     for (const clip of active) {
       const prepared = media.get(clip.useId)!;
-      if (clip.kind === 'video') (prepared as PreparedAssetVideo).draw(context.ctx, clip.sourceStartFrame + index - clip.startFrame, target);
-      else (prepared as PreparedAssetImage).draw(context.ctx, target);
+      withLayout(context.ctx, { id: clip.placementId, role: 'media', space: 'source' }, () => {
+        if (clip.kind === 'video') (prepared as PreparedAssetVideo).draw(context.ctx, clip.sourceStartFrame + index - clip.startFrame, target);
+        else (prepared as PreparedAssetImage).draw(context.ctx, target);
+      });
     }
     drawGraphics(context.ctx, context.scene.composition?.elements ?? [], context.progress, context.width, context.height);
   };

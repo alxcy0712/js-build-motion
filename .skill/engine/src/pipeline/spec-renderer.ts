@@ -1,9 +1,10 @@
+import { trackLayout, layoutScope, withLayout, type LayoutTrace } from '../layout/trace.ts';
 import { EngineError, ERROR_CODES } from '../utils/errors.ts';
 import { Canvas, FontLibrary, type CanvasRenderingContext2D } from 'skia-canvas';
 import { join } from 'node:path';
 import { getTheme } from '../themes/registry.ts';
 import { registerThemeFonts, trackFontUsage, type FontUsage } from '../themes/fonts.ts';
-import { drawTransition, drawTransitionFade, isThemeTransition, transitionDuration, isBlendedTransition } from './theme-transitions.ts';
+import { drawTransition, drawTransitionFade, fadeOpacity, FADE_DURATION, isThemeTransition, transitionDuration, isBlendedTransition } from './theme-transitions.ts';
 import { applyMicroMotion, drawTreatments } from './theme-treatments.ts';
 import { PROJECT_ROOT } from '../utils/env.ts';
 /**
@@ -52,6 +53,7 @@ export interface SpecRendererOptions {
   readonly drawScene?: (context: SceneRenderContext, frame: FrameContext) => void;
   /** Opt-in glyph bounds for source-frame diagnostics. */
   readonly trackText?: boolean;
+  readonly trackLayout?: boolean;
   /** 素材片段（environment = footage）的根目录；src 只能指向其内部。默认 process.cwd() */
   readonly assetRoot?: string;
   /** 视频素材抽帧缓存目录；默认本片输出区的 .cache/footage */
@@ -84,7 +86,7 @@ export function resolveScene(
  *
  * 返回的 Renderer 可以直接交给 `renderVideo()` 走 rawvideo → FFmpeg 管道。
  */
-export function createSpecRenderer(options: SpecRendererOptions): Renderer & { toPng(): Buffer; textBounds(): readonly TextDraw[]; fontUsage(): FontUsage } {
+export function createSpecRenderer(options: SpecRendererOptions): Renderer & { toPng(): Buffer; textBounds(): readonly TextDraw[]; layoutTrace(): LayoutTrace | undefined; fontUsage(): FontUsage } {
   const { spec, onWarning } = options;
   const width = options.width ?? spec.video.width;
   const height = options.height ?? spec.video.height;
@@ -150,6 +152,8 @@ export function createSpecRenderer(options: SpecRendererOptions): Renderer & { t
   const incomingContext = incoming.getContext('2d');
   const incomingText = options.trackText ? trackTextBounds(incomingContext) : undefined;
   let mainText: ReturnType<typeof trackTextBounds> | undefined;
+  let mainLayout: LayoutTrace | undefined;
+  const offscreenLayouts = options.trackLayout ? [incoming, outgoing, incomingBase].map(c => trackLayout(c.getContext('2d'))) : [];
   const renderer = new SkiaRenderer({
     width,
     height,
@@ -157,6 +161,7 @@ export function createSpecRenderer(options: SpecRendererOptions): Renderer & { t
       trackFonts(ctx);
       if (options.trackText) { mainText ??= trackTextBounds(ctx); mainText.reset(); }
       const t = rc.time;
+      if (options.trackLayout) { mainLayout ??= trackLayout(ctx); mainLayout.reset(t, spec.layout); offscreenLayouts.forEach(s => s.reset(t, spec.layout)); }
       const { scene, localTime } = resolveScene(spec.scenes, t);
       const drawScene = (context: CanvasRenderingContext2D, shot: ResolvedScene, noText = false): void => {
         trackFonts(context);
@@ -170,6 +175,8 @@ export function createSpecRenderer(options: SpecRendererOptions): Renderer & { t
           ctx: context, width, height, palette, scene: shot,
           time: t, sceneTime: shotTime,
           progress, seed: spec.video.seed, theme,
+          transitionPhase: noText ? 'handoff' : shot !== scene ? 'leaving' : shot.transition === 'fade' && shot.end - t < FADE_DURATION ? 'leaving' : (shot.transition === 'fade' && shotTime < FADE_DURATION) || (previous && blending && mix < 1) ? 'entering' : 'stable',
+          transitionProgress: shot.transition === 'fade' ? (shot.end - t < FADE_DURATION ? fadeOpacity(shotTime, shot.end - t) : 1 - fadeOpacity(shotTime, shot.end - t)) : previous && blending && mix < 1 ? mix : 1,
           textHold: isThemeTransition(spec.scenes[spec.scenes.indexOf(shot) + 1]?.transition ?? 'cut'),
           textCarriedIn: spec.scenes.indexOf(shot) > 0 && isThemeTransition(shot.transition),
           firstShot: spec.scenes.indexOf(shot) === 0,
@@ -181,11 +188,11 @@ export function createSpecRenderer(options: SpecRendererOptions): Renderer & { t
         else applyCamera(context, shot.composition ? { ...camera, offsetX: camera.offsetX * width / 1080, offsetY: camera.offsetY * height / 1920 } : camera, width, height);
         if (themedScene(shot) && shot.cameraMove !== 'static' && !shot.cameraPath) applyMicroMotion(context, theme, shotTime, width, height);
         if (options.drawScene) {
-          const result = options.drawScene(sceneCtx, rc) as unknown;
+          const result = layoutScope(context, { scene: shot.id, phase: sceneCtx.transitionPhase }, () => options.drawScene!(sceneCtx, rc)) as unknown;
           if (result && typeof (result as Promise<unknown>).then === 'function') {
             throw new EngineError(ERROR_CODES.RENDER_FAILED, '本片 drawScene 必须同步返回');
           }
-        } else getSceneRenderer(shot.environment)(sceneCtx);
+        } else layoutScope(context, { scene: shot.id, phase: sceneCtx.transitionPhase }, () => getSceneRenderer(shot.environment)(sceneCtx));
         context.restore();
       };
       const index = spec.scenes.indexOf(scene);
@@ -213,11 +220,11 @@ export function createSpecRenderer(options: SpecRendererOptions): Renderer & { t
       const themedFrame = themedScene(scene) || (previous && themedScene(previous) &&
         (blending && mix < 1));
       if (themedFrame) {
-        drawTreatments(ctx, theme, t, localTime, width, height, spec.video.seed);
+        layoutScope(ctx, { skip: true }, () => drawTreatments(ctx, theme, t, localTime, width, height, spec.video.seed));
       }
       // 字幕：画在场景之后、淡出之前。
       if (captionsEnabled && cueTrack.length > 0) {
-        drawCaptions({
+        withLayout(ctx, { id: 'pipeline-caption', role: 'caption', space: 'screen', required: true, boundary: 'canvas' }, () => drawCaptions({
           ctx,
           cues: cueTrack,
           time: t,
@@ -230,15 +237,20 @@ export function createSpecRenderer(options: SpecRendererOptions): Renderer & { t
           fontFamily: captionFont,
           seed: spec.video.seed,
           ...(themed ? { themeColors: { text: theme.palette.text, active: theme.palette.accent, plate: theme.palette.surface, secondary: theme.palette.textSecondary } } : {}),
-        });
+        }));
       }
 
-      if (scene.transition === 'fade') drawTransitionFade(ctx, width, height, localTime, scene.end - t);
+      if (scene.transition === 'fade') {
+        layoutScope(ctx, { skip: true }, () => drawTransitionFade(ctx, width, height, localTime, scene.end - t));
+        const visibility = 1 - fadeOpacity(localTime, scene.end - t);
+        mainLayout?.draws.forEach(d => { d.alpha *= visibility; });
+      }
     },
   });
 
   return Object.assign(renderer, {
     textBounds: (): readonly TextDraw[] => mainText?.draws ?? [],
+    layoutTrace: () => mainLayout,
     fontUsage: (): FontUsage => ({
       registered: [...themeFonts.filter((font) => font.file).map((font) => ({ family: font.family, absPath: font.file!, registered: font.registered })),
         { family: fontState.family, absPath: fontState.filePath, registered: fontState.registered }],

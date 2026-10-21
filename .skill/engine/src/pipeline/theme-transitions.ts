@@ -297,13 +297,13 @@ if (id === 'zoom') {
 }
 }
 
+export const FADE_DURATION = 0.6;
+export function fadeOpacity(localTime: number, untilEnd: number): number {
+  return Math.min(1, Math.max(0, 1 - localTime / FADE_DURATION, 1 - untilEnd / FADE_DURATION));
+}
+
 export function drawTransitionFade(ctx: CanvasRenderingContext2D, width: number, height: number, localTime: number, untilEnd: number): void {
-const sinceStart = localTime;
-const fadeDur = 0.6;
-const fade = Math.max(
-  sinceStart < fadeDur ? 1 - sinceStart / fadeDur : 0,
-  untilEnd < fadeDur ? 1 - untilEnd / fadeDur : 0,
-);
+const fade = fadeOpacity(localTime, untilEnd);
 if (fade > 0) {
   ctx.save();
   ctx.globalAlpha = Math.min(1, Math.max(0, fade));

@@ -1,3 +1,4 @@
+import { LAYOUT_PLAN_SCHEMA } from '../layout/plan.ts';
 import { THEME_IDS } from '../themes/ids.ts';
 import { COMPOSITION_SCHEMA } from './motion.ts';
 /**
@@ -87,6 +88,7 @@ export const VIDEO_SPEC_SCHEMA: Record<string, unknown> = {
   required: ['video', 'scenes'],
   properties: {
     version: { type: 'string' },
+    layout: LAYOUT_PLAN_SCHEMA,
 
     video: {
       type: 'object',

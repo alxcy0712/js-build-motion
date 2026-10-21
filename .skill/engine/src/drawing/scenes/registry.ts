@@ -22,6 +22,9 @@ export interface SceneRenderContext {
   readonly theme?: import('../../themes/types.ts').ThemeTokens;
   /** 下一镜头带风格转场：本镜头文字不退场，由转场带走 */
   readonly textHold?: boolean;
+  /** Current pass: handoff is the noText base; entering/leaving are composited scene layers. */
+  readonly transitionPhase?: 'entering' | 'stable' | 'leaving' | 'handoff';
+  readonly transitionProgress?: number;
   /** 本镜头由风格转场带入：文字从第一帧即在位，随转场一起进入 */
   readonly textCarriedIn?: boolean;
   /** 是否为整片第一个镜头 */
