@@ -1,7 +1,4 @@
 import { Path2D, type CanvasRenderingContext2D } from 'skia-canvas';
-import { PaperTexture } from '../../src/drawing/art/paper.ts';
-import { paintRegion } from '../../src/drawing/art/region-paint.ts';
-import { roughPolyline } from '../../src/drawing/art/rough.ts';
 import { resolveFontFamily, registerProjectFonts } from '../../src/utils/env.ts';
 
 export const MATERIAL_WIDTH = 640, MATERIAL_HEIGHT = 360, MATERIAL_FPS = 24, MATERIAL_FRAMES = 120;
