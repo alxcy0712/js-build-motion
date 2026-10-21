@@ -83,6 +83,12 @@ start 要求显式传入 `--theme`；缺失时报 `THEME_REQUIRED`，在创建�
 
 单片 spec 写了与 `theme` 不同的 `style.theme`：`enforcement: "override"` 时强制改回并给出 `BRAND_THEME_LOCKED` 警告，`"reject"` 时直接失败。更换**账号默认**时才改 `.skill/brand.json` 的 `theme`/`defaultTheme` 并在 `changes` 末尾追加记录（品牌级变更，只影响之后的新片）；已有影片保持各自的固定快照。version 1 的旧配置（`lockedTheme`）继续可读，按生效风格归一化。
 
+## 可选动作编排
+
+初始化选择 `motion-tokens` 时可调用 `enter(theme,'soft'|'snap'|'pop',seconds,role)`、`emphasis(theme,'pulse'|'underline'|'scalePunch',progress,role)`、`exit(theme,seconds)`。返回透明度、位移、缩放或揭示量，由本片显式应用。`stagger(index,'tight'|'normal'|'loose')` 分别使用 0.04／0.08／0.14s；`beats(start,reveal,emphasis,settle)` 返回三段绝对时间。沿用主题 bezier 与 spring 参数，新增 accent 弹簧限制过冲 ≤3%，minimal 阅读 token 保持零过冲；`validateMotionToken` 核对显式参数。既有默认 token、字体、主题和 IP 保持原值。
+
+连续目标使用 `springTrack`，相机轨迹使用可选 `camera-path`，编排与落定按[电影化运镜](direction.md)和[布局 QA](layout-and-quality.md#渲染期布局-qa)复核。暗角与 ±1 噪声保持像素语义；不透明主管线使用每渲染器有界遮罩缓存，并在独立帧边界清除 Skia 绘制记录。透明中间面的公开 helper 保留原有 alpha 行为。
+
 ## 防死帧
 稳定阅读、主体信息变化与氛围运动分别检查。静止指标定位候选区间，阅读与情绪停留按用途验收；微运动的参数检查覆盖所选轨迹，信息推进按对象和关系的实际变化验证。
 
@@ -91,7 +97,7 @@ start 要求显式传入 `--theme`；缺失时报 `THEME_REQUIRED`，在创建�
 - **信息/代码镜头**：按口播关键词分拍显现、点亮、拆解或对照，推进强度服从内容；阅读、观察或情绪停留登记明确用途。空档先检查叙事和读时，主体动作承担需要发生的信息变化。细则见[信息卡与清单分拍](drawing.md#信息卡与清单分拍)。
 - **稳定阅读**：`motion_stage` 与 `theme_stage` 均可采用 `cameraMove: "static"` 并省略 `cameraPath`；存在 `cameraPath` 时管线优先采用该路径。本片绘制保持页面、证据和标注的共同坐标，按语义安排进场、划线和重点切换。阅读停留、结果展示、反应和片尾身份可保持静止，记录起止时间与用途。静止候选通过读时与信息用途验收，循环漂移按明确的内容需要采用。
 - 生成片段按内容选择变速和镜长，见[生成视频分层合成](workflow.md#素材选择与生成视频)。正反往复仅用于已验证可逆的循环动作；受力过程、口型和操作演示保持事件方向。代码管线里实拍慢放建议不低于约 0.6×；时长不足时优先换未用区间、补充素材或调整镜长。
-- 审片：`node .skill/scripts/video.mjs <slug> exec node .engine/scripts/dead-frame-qa.ts out/final.mp4 [--json]`，比较相隔 0.5s 的帧（灰度、块平均、扣除颗粒噪声底），报告无可见变化的候选区间；有候选时退出码 2。连续静止 >1s 的区间写入本片 NOTES，标明阅读、结果、观察或情绪用途；其余停滞按事件设计修正。
+- 审片：`node .skill/scripts/video.mjs <slug> exec node .engine/scripts/dead-frame-qa.ts out/final.mp4 [--json]`，比较相隔 0.5s 的帧（灰度、块平均、扣除颗粒噪声底），报告无可见变化的候选区间；候选诊断退出码 0，工具运行失败使用非零码；`--holds evidence/holds.json` 接收带用途与理由的时间区间数组。连续静止 >1s 的区间写入本片 NOTES，标明阅读、结果、观察或情绪用途；其余停滞按事件设计修正。
 
 ## 个人 IP 使用规则
 - IP 是小幅美术，**不当主视觉放大**。生成视频里的角色同样不放大超过源像素，见[生成视频分层合成](workflow.md#素材选择与生成视频)。显示边长 ≤ 源尺寸 512px（rig 头/身部件），推荐 256–384；超过即 `IP_UPSCALE` 校验失败（按实际输出像素换算，4K 输出同样受限）。

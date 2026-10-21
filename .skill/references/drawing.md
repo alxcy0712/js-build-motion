@@ -8,6 +8,8 @@
 
 `context.noText` 为 true 时只绘制场景底层与主体，文字在其余调用中绘制；`riseFade` 等转场使用这份无字画面承接两层文字的进退。
 
+`transitionPhase` 表示本次求值的 `entering`、`stable`、`leaving` 或 `handoff`，`transitionProgress` 为当前转场的 0–1 进度。交接底层调用同时带 `noText: true`；现有 `textHold`、`textCarriedIn` 表示主题转场的文字承接。普通 fade 按实际淡黑区间给出进入／离开阶段。旧层退出与新层进入由本片安排；同位标题在两层均可读时进入重叠检查。
+
 帧由seed、规格、帧号和登记输入确定；随机数使用固定种子，乱序求值同帧一致。素材和字体使用本片文件。构图、材质、动作与特效由本片需求决定。
 
 绘制入口接管镜头内容，统一管线处理相机、转场、字幕、音频和编码。复杂需求可在本片实现并用实际帧与动作预览验证。
@@ -30,6 +32,39 @@ export async function prepareDrawing({ assets }) {
 生产 0.2 视频句柄读取交付 RGBA 的单帧，预览代理保留自己的尺寸与身份。原声沿同一选段和 clip placement 进入音频时间线；明确静音、原件无声和保留原声各自记录。资源预算不足时根据实际所需数量分段准备当前镜头素材，保留原件与已成功结果。
 
 连续动作可在初始化时选择 `--components camera,spring,random`，组件与依赖复制到本片。`springTrack` 的连续目标见[动效设计](drawing.md)；`applyCameraPose` 的焦点、分层和固定字幕见[电影化运镜](direction.md)。本片绘制按逻辑画幅排布，先缩放到实际编码尺寸；多画幅交付时分别重新构图并验证阅读区。
+
+## 可选布局与追踪
+
+初始化可选 `--components layout,layout-trace,motion-tokens,camera-path`；默认组件集合沿用 easing、random。布局 helper 返回坐标，字体、颜色与既有默认画面沿用主题。`frame(w,h)` 提供 canvas、safe、contentBox 和画布 center；竖屏阅读区与画布中心各有坐标。`stack`／`row` 顺序排布，`grid(box,6,1,8)` 提供可选六列与 8px 间隙；`anchor(box,edge,gap)` 返回锚点，`slot(name,contentBox)` 提供 title、visual、body、source、footer 的试排区域。全画幅背景使用 canvas，关键文字按适用 safe 或 parent 检查。
+
+```js
+import { frame, stack, follow } from './components/layout.ts';
+import { withLayout, matrixOf } from './components/layout-trace.ts';
+
+export function drawScene({ ctx, width, height, noText, transitionPhase }) {
+  const [body, source] = stack(frame(width, height).contentBox, [80, 32], 16);
+  if (noText || transitionPhase === 'leaving') return;
+  ctx.font = '32px sans-serif'; ctx.fillStyle = '#ffffff';
+  withLayout(ctx, { id: 'body', role: 'text', required: true, boundary: 'safe' },
+    () => ctx.fillText('观察对象的变化', body.x, body.y + 40));
+  ctx.font = '20px sans-serif';
+  withLayout(ctx, { id: 'source', role: 'source', required: true, boundary: 'safe' },
+    () => ctx.fillText('来源：本片实测', source.x, source.y + 24));
+  // 世界层绘制时保存 matrixOf(ctx)，还原屏幕变换后使用 follow(锚点, 矩阵)。
+}
+```
+
+`withLayout(ctx, declaration, draw)` 为单次绘制登记 id、role、parent、required、space、scene、interval、boundary、slot、reading。role 支持 text、shape、caption、source、media、decoration、background；parent 指向先绘制的容器。也可将声明放入 `VideoSpec.layout.elements`，使用 `withLayout(ctx, 'id', draw)`。interval 使用整片秒数 `[start,end)`，声明描述可见时段；绘制函数负责实际启闭。overlay 指定 intent（emphasis／annotation／transition）、target、最终输出 region 和 interval；与目标无关的泛化声明进入复核。
+
+QA 自动追踪主管线画布。自建离屏画布初始化调用 `trackLayout(ctx)`，每次重绘前 `trace.reset(time, plan)`；通过 `layoutScope(ctx,{scene:'shot'},draw)` 指定镜头。保留缓存画布的 trace，合成 drawImage 会传递字形、图形、裁切、变换与透明度。复制组件与固定引擎共享同进程的追踪表。普通 render 省略追踪，声明包装只执行绘制回调。
+
+原视频保护区放 `layout.protections`，关联唯一 scene、target 元素 id、来源 source、可信状态 confirmed／unverified、有效 interval、坐标 space，以及 rect 或有序 keyframes。source 表示原图像素，world 经过当前 Canvas 变换，screen 表示当前合成面坐标，output 固定在最终输出坐标；转场合成继续映射前三种。关键帧在相邻时间线性插值，首尾保持最近值。切镜后为新镜头重新登记附着关系。
+
+```json
+{"protections":[{"id":"button","kind":"target","target":"screen-video","scene":"demo","space":"source","source":"人工核对原片按钮区域","status":"confirmed","interval":{"start":0,"end":2},"keyframes":[{"at":0,"rect":{"x":120,"y":80,"width":100,"height":40}},{"at":2,"rect":{"x":150,"y":80,"width":100,"height":40}}]}],"requirements":[{"scene":"demo","kinds":["target","cursor"]}]}
+```
+
+以 `withLayout(ctx,{id:'screen-video',role:'media'},()=>ctx.drawImage(...))` 包装素材的实际绘制，保护区自动经过源裁框、目标缩放、相机与 clip。人工世界坐标可调用 `protectLayout(ctx, region)`；source 手动登记需显式传入 `multiply(matrixOf(ctx),sourceMapping(source,destination))`。确认依据、关键帧和动态核验保存在本片 evidence。保护区检查范围见[布局 QA](layout-and-quality.md#渲染期布局-qa)。
 
 ## 三维渲染与空间镜头
 

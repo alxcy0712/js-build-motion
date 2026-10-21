@@ -102,3 +102,9 @@
 
 ### 补录口播后的分镜回填
 只改少数句子、其余句子不重录时：新时间戳出来后，从第一句改动的镜头起整段重算切点与镜长，改动之前的镜不动；屏幕大字、信息卡上的单位与数字与新口播一致（中国常见单位写法见[抖音发布](workflow.md#口播发布与锁定)）。分镜表附一张「素材使用对照」：每个 B-roll 文件列出使用镜号与源出入点，优先采用新区间；再次使用按[引用与复用](workflow.md#素材选择与生成视频)登记新增分析或必要持续用途。
+
+## 剪点建议
+
+`qa --cuts evidence/cuts.json` 读取人工复核的词级样本区间与输出时间映射。证据包含 fps、sampleRate、mapping（verified／unknown）、cuts（id、frame、previousStartFrame、nextEndFrame）、words（text、startSample、endSample、status、source）。所有 sample 坐标使用当前输出音轨；已有源词表可用 `qa/cuts.ts` 的 `mapCutWords` 按选段起点、输出起点、源／输出采样率转换；跨越选段边界的词保留 clippedStart／clippedEnd，边界上的残词继续检查。
+
+可靠 observed 词区间及 verified 映射确认切点落在词内时返回 error；估算、未知映射及缺少试听依据的空档标 pending。候选列出原／建议帧与样本、变化量、附近词和停顿、前后片段长度及声音同步影响。检查保持文件与剪辑原样，`applied=false`。用户确认具体候选后修改项目，重验词、声音尾部、镜长、字幕和操作锚点；估算词表按待复核证据使用。
