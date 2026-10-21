@@ -1,5 +1,5 @@
 {
-  "packageId": "bb2a47fc25b8942c6164431431d60d503805193e6c987a273a12b8a4a11331cd",
+  "packageId": "0271c068b0ce02f6f83538ef44a3bb417539b6976767173fb645785c23a27451",
   "version": "0.2",
   "engineVersion": "0.1.0",
   "platform": "darwin",
@@ -17,39 +17,36 @@
     "json-schema-traverse@1.0.0",
     "ms@2.1.3",
     "parenthesis@3.1.8",
-    "pdfjs-dist@6.4.299",
     "pend@1.2.0",
     "require-from-string@2.0.2",
-    "saxes@6.0.0",
     "skia-canvas@3.0.8",
     "string-split-by@1.0.0",
-    "xmlchars@2.2.0",
     "yauzl@3.4.0"
   ],
   "skillFiles": [
     {
       "path": "SKILL.md",
-      "sha256": "41169d3f0da2e6bc7306bdd062e938d758f97e65c1e09655b3f2f409afcf8b6c"
+      "sha256": "88fbe4608220e4bb435a8cefdc9b57c7d24ae0fabb75d4f25435607774d9f127"
     },
     {
       "path": "assets/components.json",
-      "sha256": "427fd865d18cbb8c451a537578a77d7bba66840f4c266a4ae35a67f22c94ac4f"
+      "sha256": "6a397f2c58b728d687f668f6871bc17e4af18a742fffdec499c15dd36d3845e5"
     },
     {
       "path": "assets/project/AGENTS.md",
-      "sha256": "599e93684dbabd20b4e505c54f2a36b5f756ddf76007e15cf13cf8d0a28ff444"
+      "sha256": "87f76392de0b06fe7196aacbb699003d2be5b9d7b33ab76f3615c22ee1f688bc"
     },
     {
       "path": "assets/project/evidence/events.md",
-      "sha256": "fbe1dd58f5a710edaef3fdb5faeb44c7793b1da618dd248c841f18183665a584"
+      "sha256": "cfb2eac30211e8675f0cab009168813cbab36d0d4dc60858607d78e6bf60e11a"
     },
     {
       "path": "assets/project/evidence/reference-study.md",
-      "sha256": "6ddc360da234fe2092d491778d71e41bbed8fb05dbd8c3bb001e51052afacfad"
+      "sha256": "e44c9612e02813f5790bd83a4395194a086bae3aa9748bfd272640f56a7ff6be"
     },
     {
       "path": "assets/project/evidence/review.md",
-      "sha256": "e825423322e1bed8041935c77ed68273ec44e6c7de0154890c0339211e9712a5"
+      "sha256": "bd3be6cf29739e707137eae098313cb9cd8e9ae33af1a4b64d8a962f8e474697"
     },
     {
       "path": "assets/project/exec.mjs",
@@ -68,112 +65,52 @@
       "sha256": "470d41c33e8a0c97fc21da5a1add83f866675fdf12b29d192221c8a5f94dec5b"
     },
     {
-      "path": "references/assets.md",
-      "sha256": "91aebe3f22fe6d9d5b0f3f8d1e5b0d8dbddb9c7657f1dfe219aa5af087d66cf0"
-    },
-    {
-      "path": "references/captions-and-shots.md",
-      "sha256": "eabb00a0f95456f7e3b039344cf49b3ea68c1de82aaa9a78b90e3c63a8934620"
-    },
-    {
-      "path": "references/cinematography.md",
-      "sha256": "e264b4ee2386e5f8f2a40d69b8325029434f1271a2d637659a8d83c8938b9131"
-    },
-    {
-      "path": "references/design-learning.md",
-      "sha256": "320ce5a761e1d0824f4ed0778e140db1b25b9f50563403babcfeeb2aca277f11"
+      "path": "references/captions.md",
+      "sha256": "cf817d73ddf8e183db6268d272be2a08aa256515c8568eb11bdb5b26c5c5e026"
     },
     {
       "path": "references/direction.md",
-      "sha256": "942b38bdc66c56c709401794f19ecfa7b3a35139a27d0d58d9cf6b4a34392177"
-    },
-    {
-      "path": "references/douyin-publishing.md",
-      "sha256": "fa1ff29fcb3002046125fd0d0855c66adc7fd02af121da7449913f148290688f"
+      "sha256": "1d96a17df5ab18fd970046a809fe220f8854cbce3d7091e7c988f0915d94a563"
     },
     {
       "path": "references/drawing.md",
-      "sha256": "0eca112084cf3126b00de75bfb7035a9aa6c46cf14f065ccf5301fc6abb2a862"
+      "sha256": "75d946f7eb15c3cc5dd514258eab547e68d80cf20dcd55c93699e841d14be515"
     },
     {
-      "path": "references/editing-element-catalogue.md",
-      "sha256": "3444979cab0abe9a91568c4216ad70903abeaedb692768472995646fde5e09b1"
-    },
-    {
-      "path": "references/execution.md",
-      "sha256": "38299d14b72c7b2b9203303fc5b09a0f298e746ae39135a3b5e3283de36e2d85"
-    },
-    {
-      "path": "references/intake.md",
-      "sha256": "57733871da342d56c8c7875adc75b70627664cdb807c6ab5db93f649718e3b90"
+      "path": "references/layout-and-quality.md",
+      "sha256": "7fd410f26cde2bcb545d0fb79ff6fea61ddad14641345459dcceea6eb85c160e"
     },
     {
       "path": "references/maintenance.md",
-      "sha256": "ffaff92fdbce4c15d5668eff6fadd92a597ea2a49a4638bd8bcaf4aef5e82a7f"
+      "sha256": "276fae7c5d4af137197071e7a22f1549dfea90d853be03d7acc433c441415b2a"
     },
     {
-      "path": "references/motion-breakdown.md",
-      "sha256": "ee5792f73d2efc686beb254f3a60229709019eb37afa979d3e1063255922fb95"
+      "path": "references/motion.md",
+      "sha256": "8831233e94f739798e29dcc13fae033283f1da3e6a166976cf2976ede6e5c915"
     },
     {
-      "path": "references/motion-design.md",
-      "sha256": "1654c44f0eb097d62a4d46a627c742b110263dd8bc73b77d9383cda872c0bdac"
+      "path": "references/style-and-identity.md",
+      "sha256": "2467a5a7180cf004ee586eeddb932189a2b14a4b839b5cfc1d1bf426d5c4d98f"
     },
     {
-      "path": "references/motion-language.md",
-      "sha256": "3db2373f30acf11224c23f4399353410e30135a453fb2fb69ff737858a9c9c7d"
-    },
-    {
-      "path": "references/product-film-language.md",
-      "sha256": "bdd2ec79bcc1d8c2404764f4f02d36cb662eb94d41e862cb2138547364e2643a"
-    },
-    {
-      "path": "references/production.md",
-      "sha256": "78a10ef33600792b9eab9cc5a3d04f232396dd3f3eec27a8096106a055bd318f"
-    },
-    {
-      "path": "references/quality.md",
-      "sha256": "d61691b4b479993eea98ef2ced10470ba5fac3e89b10ffdff3fd831bab7ad321"
-    },
-    {
-      "path": "references/reference-geometry.md",
-      "sha256": "7bcfee4dc1eda0fa36a0376b722d9178e486c950ca74fec798edea9e13b2a121"
-    },
-    {
-      "path": "references/story-mechanisms.md",
-      "sha256": "754a1948c43737bbcf73e7b6ab584cfcf254c118801147efd37e5ff0d437a9da"
-    },
-    {
-      "path": "references/styles.md",
-      "sha256": "6d474d2726b8ebe1fdf8665c4cd87a6ec399c505dc0e4f18669dca40b731d910"
-    },
-    {
-      "path": "references/vertical-framing.md",
-      "sha256": "2104d5f23bc624fd95c32c185b18fdd4cf4baa794a7624323a322b2583084956"
-    },
-    {
-      "path": "references/visual-identity.md",
-      "sha256": "576b5ec8c60b6267fa6b2b2e3510c147cceace6925dc90db167783d6b9991b4c"
-    },
-    {
-      "path": "references/workspace.md",
-      "sha256": "6b91a289e46edcdf8988e0110c649834eddf5c2f8a4b0c8443f9d9cb6d801f57"
+      "path": "references/workflow.md",
+      "sha256": "149dca5628e2e74d1b7d6d8158c5f8cab42064bb51a5772ce2af2b64b993359e"
     },
     {
       "path": "scripts/alignment-native-check.mjs",
-      "sha256": "425b581c8887f0528968e16095ee24c0ed9084b3fa8b0bfb010a698380d53678"
+      "sha256": "06381771b5f36fa56a87b0dbb5eaf7699a2c0921c634563cae87a2752f991b24"
     },
     {
       "path": "scripts/asr-native-check.mjs",
-      "sha256": "e1d76d208b98877d1d15aeaec434928ba08f3982c6178f21604b061a366a6370"
+      "sha256": "2d310779cf091dc72c7070501a7808e4066f13d631bafc1056efa0bd4201ac3a"
     },
     {
       "path": "scripts/assets-native-check.mjs",
-      "sha256": "df4f6a05872339232a775f37b0811c3132619eccbd8d0071beca9d0c08982804"
+      "sha256": "fa691b6c05e24d70ade8b70444099364dec390a0c0ffa2d364d9a53dd63b80a2"
     },
     {
       "path": "scripts/audio-input-native-check.mjs",
-      "sha256": "2d7178e2eec0c191fe5917807e4edbfbdeca33a0de3a0bfcfbf4b951d7d0c431"
+      "sha256": "13dc509e5ce208614c729e8f08f54b151af222d18da63aba0876b4762296b86b"
     },
     {
       "path": "scripts/catalog-native-check.mjs",
@@ -185,35 +122,35 @@
     },
     {
       "path": "scripts/core.mjs",
-      "sha256": "0578f5fab60ffcf693b03a05eb94810f5eefccfc4107ffb3e660ede2b031cb61"
+      "sha256": "87089556e4662d9c7f5dd856dc17419a3af9f558374b636e4add3971cb39e290"
     },
     {
       "path": "scripts/docs-check.mjs",
-      "sha256": "374f4edc3b7fa9041b63b0c46784f0ad8f77d9824f0b9e87eed2635fc98b81c6"
+      "sha256": "80bc0453db4b93b063a56ead4a3d8ac45af56e00dfd3a9aed348f07cd72e9e5e"
     },
     {
-      "path": "scripts/document-native-check.mjs",
-      "sha256": "6dd9933e5fd433ba2a7acc71f1026606a249e3431749218462a56a266e7433b9"
-    },
-    {
-      "path": "scripts/document-ocr-native-check.mjs",
-      "sha256": "ec24b5af0d99ef6e1d18b08faf03ce833c4531dcfe1680e89e2f45b8fbdd8dc5"
+      "path": "scripts/guide-files.mjs",
+      "sha256": "30090063baeec5e5b47d25f87068ea03628ccbe572e005a55d341c982eadfcc5"
     },
     {
       "path": "scripts/native-check.mjs",
-      "sha256": "81e9d2348f155cd0c06c112b257d99720256619ec51e017e6b50f15ef5f68741"
+      "sha256": "0b821f9624badcd70b5a1538c1ed14b7f5e13fa39fbdfba9e3a9853393dbc8c1"
+    },
+    {
+      "path": "scripts/native-runner.mjs",
+      "sha256": "2c8b8bedfdd09ad562f924c6cb3ea301fc1a77236794d121868e9d52c2b57189"
     },
     {
       "path": "scripts/ocr-native-check.mjs",
       "sha256": "074ef9b454c35591e26430764fe7ae2622c9993d8759e7d483c1d049bd20b97a"
     },
     {
-      "path": "scripts/office-native-check.mjs",
-      "sha256": "114dbb5d486866c382487cfb7625830e30afb0c189bea3f7f1bae9e54c6d0501"
-    },
-    {
       "path": "scripts/seal.mjs",
       "sha256": "8e727db90aff31d759fa070dac3d591cc24302d6cf1f02c70d5b172b7e119892"
+    },
+    {
+      "path": "scripts/start-linux.mjs",
+      "sha256": "ef25304b8afc9797228918bd4cd4c79b88d1123db7ee2e9ac3dca1f67fe2efd5"
     },
     {
       "path": "scripts/unpack-native-check.mjs",
@@ -221,7 +158,7 @@
     },
     {
       "path": "scripts/video.mjs",
-      "sha256": "85bcf469902a969fb10466eeaa6018e7ffffcacea7fddf0e66dae0b02f574d43"
+      "sha256": "0388a13f222e687be6aa04cba135a70f4e22f9902ad048def6b48c2585416574"
     }
   ],
   "files": [
@@ -310,8 +247,8 @@
       "sha256": "7d4322bd2a7749724879683fc3912cb542f19906c83bcc1a52132556427170b2"
     },
     {
-      "path": "document-dependencies.lock.json",
-      "sha256": "7c0dc125e97b0c769bd03515bd289dfe27a3d50fcf357a16965ae90800faa2c8"
+      "path": "node_modules/.package-lock.json",
+      "sha256": "9ac724fb101a1a92cb53b59eaa396040af70434bac9f014e7fffe6c9bbda10c1"
     },
     {
       "path": "node_modules/agent-base/LICENSE",
@@ -2658,2222 +2595,6 @@
       "sha256": "a524e1ab08dca8bd262772bc6c39171a14d3656a5abc8fb81e3bbebaa8907f6b"
     },
     {
-      "path": "node_modules/pdfjs-dist/CODE_OF_CONDUCT.md",
-      "sha256": "902d5357af363426631d907e641e220b3ec89039164743f8442b3f120479b7cf"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/LICENSE",
-      "sha256": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/README.md",
-      "sha256": "c53acbcd27bb9851954ac2bc244df531bad1d0769c8be3bfaeccd95eb650d31c"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/build/pdf.min.mjs",
-      "sha256": "57456c8e0c81e46be31174b499ef77f2b9f5ee46d04412ba627320a36755d4c2"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/build/pdf.mjs",
-      "sha256": "dd13af821c9c3e1778653340d6539a1ba07bc56cba40073a4c727864cf0c232a"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/build/pdf.mjs.map",
-      "sha256": "f6eb4b71d5c5cf67d136bd4398f37bda1834874fd167f254d0b13a587fbd1754"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/build/pdf.sandbox.min.mjs",
-      "sha256": "19cc05d44224f10dddafe76f5067ed94d5191c2e7cf440d46dbe5253cd35b72f"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/build/pdf.sandbox.mjs",
-      "sha256": "279b3cc4d0b78ecba09a53b3dbfcc16a86644927ac4479bef3d33b6a3cee92f2"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/build/pdf.sandbox.mjs.map",
-      "sha256": "2fe523d31d515a7727833e007312d9abdf981560a863ff157dd45636312d4fe0"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/build/pdf.worker.min.mjs",
-      "sha256": "9536359f1b8367850d485731ca1d5e45c159a7b7a0912325e539937aa21ceb18"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/build/pdf.worker.mjs",
-      "sha256": "07ceb740d746e5d9012fcf9f27d5c7dea09f7d2f5e74f5c8109e5787551a2333"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/build/pdf.worker.mjs.map",
-      "sha256": "74109e9ba30734f0cca2a1c880de30ac63d9b8d8405e234360d1518bd6ef3d0e"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/78-EUC-H.bcmap",
-      "sha256": "d92a261336dc18b8c03a46eb4d462382d33f4338fa195d303256b2031434c874"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/78-EUC-V.bcmap",
-      "sha256": "61670bebc4e4827b67230c054fd0d820d6e30c3584d02e386804e62bbedc032a"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/78-H.bcmap",
-      "sha256": "ece6415b853d61e1b2560165151407d35cf16e6556932b85a13ea75276b77402"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/78-RKSJ-H.bcmap",
-      "sha256": "696b1f973c97623496703809eaaa5f9b40696c77540057413f4b826a08edfa7b"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/78-RKSJ-V.bcmap",
-      "sha256": "53cb6d560ab377da48cf65d6dcacb0bdb31f13fab7066c580de38c12a73a7ff9"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/78-V.bcmap",
-      "sha256": "289000f02fd34872b6975503217f33abae6bee676e7d28f640473a67c8db1712"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/78ms-RKSJ-H.bcmap",
-      "sha256": "a2442595218f5f8bd8e1b42188e368587d876cfe0cc4cd87196f077c878f72e2"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/78ms-RKSJ-V.bcmap",
-      "sha256": "f8ddceba96bfd9d3740bd1789ee30d1f47c78371520a8084f71f7df58f19be0b"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/83pv-RKSJ-H.bcmap",
-      "sha256": "44040051ec818fe09b9703472bea72efd2759d5eeb5ff0d77c718d6bb5e6d1df"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/90ms-RKSJ-H.bcmap",
-      "sha256": "c13e043e85ff715b75bb03801e8fd0fb8f3a75e4a48496faa6baaf92b5b48ba1"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/90ms-RKSJ-V.bcmap",
-      "sha256": "499bb916ce1adbe4289b6e5811f4dc20eb238cdc2ffad20cf26ae56716885bab"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/90msp-RKSJ-H.bcmap",
-      "sha256": "7b8b3b8bbf821702e9a4df9f3596ce292380c8c1b0925dedadbb4e4b2d80498b"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/90msp-RKSJ-V.bcmap",
-      "sha256": "6296c2b5c07dca8128e96d5296d621a3268803d4fa0e5812a21e52fe2802aacb"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/90pv-RKSJ-H.bcmap",
-      "sha256": "fb5103f03d3a34547e18d316e52b6d9b26e485c662999222f84d2ba54c2e4fa8"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/90pv-RKSJ-V.bcmap",
-      "sha256": "7bcb5ad2ba55b9662ce379e16c2d9cc2b82d621a579807353741172e4af615c2"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/Add-H.bcmap",
-      "sha256": "a2ffab28b990998181bcca9b0e914bb2207820f100ae31d5c469444892e5ad8e"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/Add-RKSJ-H.bcmap",
-      "sha256": "b29f4b52e2465d0485856d5e69f1ba69927deb2848d8fd328c8035583b35bb7e"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/Add-RKSJ-V.bcmap",
-      "sha256": "2aa2232c283a3f5d0997c2834a36cead0b79ce2657944cfeed08140c293460ff"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/Add-V.bcmap",
-      "sha256": "25125d3b1be64e86b2df5b3344170b45a42bcaa0b46e43a34314ef73c166e542"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/Adobe-CNS1-0.bcmap",
-      "sha256": "8c65be9d51a9f269a547dc12460707aaf4031ab67ebe8a2900f4b4cc6b3e450e"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/Adobe-CNS1-1.bcmap",
-      "sha256": "73152bc1a59cc594b414ac6068be48e5512b96ae85920c40e32a99269fdb0c04"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/Adobe-CNS1-2.bcmap",
-      "sha256": "a1b8d353bdef9584c820464e8f1c9e2013d64ebf433cba0aa831dddf515818c2"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/Adobe-CNS1-3.bcmap",
-      "sha256": "2ffc0c75c79fafde506163d3c08c390d183251009f3fbf6ae50d1167d14b9570"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/Adobe-CNS1-4.bcmap",
-      "sha256": "98a1f470c878c6b9691a4d7aef776af8ac9b55f5587c9fafa00547f3bf655716"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/Adobe-CNS1-5.bcmap",
-      "sha256": "ddd6e29955eb8cb545f2ebd09c628c3bbda5023256eda1b728f743c75fb77829"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/Adobe-CNS1-6.bcmap",
-      "sha256": "317bb2db71e0e5b7b0c47b75de1da915c2e22f65f0c0861507f9ca7ba238f8a2"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/Adobe-CNS1-UCS2.bcmap",
-      "sha256": "e665837f2197c6bd08cd8955ad4d6932cee2398e2e328b25b00e6bfb3bd72af9"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/Adobe-GB1-0.bcmap",
-      "sha256": "8b81cce8a11d510e505704953cfa4e4ab080c1a0cab991145a3512ee433946b9"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/Adobe-GB1-1.bcmap",
-      "sha256": "0426983081788ec7202703e71f1efa4b860f75b936994236010b39d89251a81e"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/Adobe-GB1-2.bcmap",
-      "sha256": "e67b37a83b160ab3831306a71a605893b24454ee81ac9b6123bf2d3984d268d5"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/Adobe-GB1-3.bcmap",
-      "sha256": "aa299afc3e12a28726147305f191be28c7498078c8b182ece7886ac79cd99078"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/Adobe-GB1-4.bcmap",
-      "sha256": "8fbd7d74c2ddb1350c1cecce54a73fde3f5453093d4bed445283ec0033d2097f"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/Adobe-GB1-5.bcmap",
-      "sha256": "c22cb2fcff24112fa31dab2111bdc51957006576d31aad5a25e67793ac01428c"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/Adobe-GB1-UCS2.bcmap",
-      "sha256": "20507620260c0c935c35afc1e70e5888aa7125d5ec7ffc03cef1959feb2c1641"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/Adobe-Japan1-0.bcmap",
-      "sha256": "464f08905236f5703b1f5cf8358767c8b18e6bcc808840d081f1de2c7ab38134"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/Adobe-Japan1-1.bcmap",
-      "sha256": "4c823848722187d1ffe75ae3f5f9126ccd2d7895a05fad14c919fb119e037008"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/Adobe-Japan1-2.bcmap",
-      "sha256": "7810fb808e367e70429e90a9478fe6a3fdc3e214f25c7582ce9c2da6a242315c"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/Adobe-Japan1-3.bcmap",
-      "sha256": "84deb1828711ad3d390c9899c38abce1bf619d65ff7bf1a326ec95acc45f08f8"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/Adobe-Japan1-4.bcmap",
-      "sha256": "3f8a4f974919c2b8bae5d10175ffa2673be140481e00840542c85d48ef184067"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/Adobe-Japan1-5.bcmap",
-      "sha256": "1d3ce4ff28d977f8cf37a912ae4ec811f4175c3167b1ec0b2567feec3e79e1db"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/Adobe-Japan1-6.bcmap",
-      "sha256": "5609797b9401b30be72ef9645da62a87829f058c3be4b5c623383119f584b1d9"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/Adobe-Japan1-UCS2.bcmap",
-      "sha256": "66c5d0dc4964f4093e77b194023f3a0f689324028ec8330e1e1d0570bcba7c2f"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/Adobe-Korea1-0.bcmap",
-      "sha256": "dfb8c3874f0e5a8c3acf597d2c12d2b63e90bc5e4f0fce990ec4c56077d80b32"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/Adobe-Korea1-1.bcmap",
-      "sha256": "62f277b7b1c441c007797ae707d5c37258d029ce4661a2b911e2e1ee35e6adc1"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/Adobe-Korea1-2.bcmap",
-      "sha256": "1d77068af462f96d7ad28ad7e7d43eef6423c685b479d7dc25ff5df38db0380d"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/Adobe-Korea1-UCS2.bcmap",
-      "sha256": "857b723088be97255053562bfa41bd1075a7f7910d3bab59a0645c8bbc7060ff"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/B5-H.bcmap",
-      "sha256": "718ad0ffbef4c34f8f3f31292c462e519cd567a5511fc8b346c60010d64f4ef9"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/B5-V.bcmap",
-      "sha256": "b5c37383517477620ced927b6b4ffd4f4cc6230d8051b5b46a21d6768e07f7d8"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/B5pc-H.bcmap",
-      "sha256": "bab6028aead1d6149400e904ab10cfd319082d826473ed4c582c8eeed920f17e"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/B5pc-V.bcmap",
-      "sha256": "41543142b9767f3b76133899fc8453282b01ad3c653acaeea42d78c5a7d08c63"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/CNS-EUC-H.bcmap",
-      "sha256": "e8f89cd61e6486b948205da46499d659ed0aed949b7095fd3c8e95ffe2b0e7a9"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/CNS-EUC-V.bcmap",
-      "sha256": "cae422bec2ac6dbe86bf921cec942bacd2d0b733ffcca5f91b3ba14e917025a0"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/CNS1-H.bcmap",
-      "sha256": "e8487971ab20cd16f3de3e8ac56ec994b72b658ad113f2818239dfd5108f501a"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/CNS1-V.bcmap",
-      "sha256": "42df8076aaa7574505e7304af83a3323ec032c4177d64b1309db8c043d594a8a"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/CNS2-H.bcmap",
-      "sha256": "bc6024d274d440f0625c69e25f37036ef6cb6689432ceaa160d3432a2a716ca7"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/CNS2-V.bcmap",
-      "sha256": "2e4f70a8afd23a121030fc2e5b5f3816e903b11e7ba8b8c09654b31c80399c38"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/ETHK-B5-H.bcmap",
-      "sha256": "d2f10fa519336bc4efcc7b6deb9604b75429946b40d82e311cb3a97a1994c89a"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/ETHK-B5-V.bcmap",
-      "sha256": "1fea3fd0d9f0f679f80505800851ef2e4131d81127e18c006938ffa2f4c8b247"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/ETen-B5-H.bcmap",
-      "sha256": "87ee6b3f5bfda5fe26fa35431264c7d73070d10dbbf398a75185d63ae322c18d"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/ETen-B5-V.bcmap",
-      "sha256": "47dc0d2c21e3bde317947aec1675ceabc1d5460a60bf9c24334b8c407a17172c"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/ETenms-B5-H.bcmap",
-      "sha256": "d5f5a73da4173b7da9a3a20e16f26f9cd5d12deb1553409919e0cec6fd37fdee"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/ETenms-B5-V.bcmap",
-      "sha256": "18252fca90f472f479af1bddd60d6ab51c8e1b55dcf6845951426504934543e0"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/EUC-H.bcmap",
-      "sha256": "f9939cd57fccdc65c5d9f4c205fd497ebdbd283643308da5663801a8c1d9c595"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/EUC-V.bcmap",
-      "sha256": "1283a50a706507c4436da83ede9ad7a4440be25378f2e96f6c81a430081426a3"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/Ext-H.bcmap",
-      "sha256": "4000ed4e61a1c668ef453bbd0603cfa383defa793abd46a57ed870d7f527350b"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/Ext-RKSJ-H.bcmap",
-      "sha256": "e0d2f0df337660e73813238dd4a725f11f0621b90f3273857db253d0e7694caa"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/Ext-RKSJ-V.bcmap",
-      "sha256": "f617a22b6d67febb187990952006c91a9f5a4db21155d268c656252d0c21985d"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/Ext-V.bcmap",
-      "sha256": "c2087fb845a9e3acea0c2922cd40e6af67e11957bec74dcd597f1285edd490ce"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/GB-EUC-H.bcmap",
-      "sha256": "928bad06fd84a48f5ba7150d7716609119fb660f2aaa73eccad81ddab9b9d203"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/GB-EUC-V.bcmap",
-      "sha256": "a9ad88ac2479da529b16dc48abc5952332e27bc355335f91df5729a587533324"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/GB-H.bcmap",
-      "sha256": "1018c777a8910b5bb46d7d54a4aee9d51ca5cff8addb2b41c969d9101cb3fd1c"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/GB-V.bcmap",
-      "sha256": "0b96789143c0bbf9f1641ae7165b3456dccd14dabffcbb0bd654d5bf6f94f863"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/GBK-EUC-H.bcmap",
-      "sha256": "2103fed28650ede096a2281104a1a8a4304dae0db414342c636867522307123b"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/GBK-EUC-V.bcmap",
-      "sha256": "a7fd35dd14d9dbdb955f34e6c0630618b6620dfd09d4283b2f65a65ce77fcaea"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/GBK2K-H.bcmap",
-      "sha256": "3d919ae72af16c5cc6846ec87a4326a9f125e493c59d3628429d35c2c95fe8c4"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/GBK2K-V.bcmap",
-      "sha256": "b927fdfd595c07ce9158bf2ec13f4641b2e83b01c70989dadfabd6ed7c6ac2dc"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/GBKp-EUC-H.bcmap",
-      "sha256": "d15ebd8e81fb4fe8a244f1b1e877922e03500ac69eddf5001093e502430451d2"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/GBKp-EUC-V.bcmap",
-      "sha256": "fdc736d46e642625dccc8ad8c59f2c69fc7db7a13f2e799c6c6b779e707bb97a"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/GBT-EUC-H.bcmap",
-      "sha256": "dc5f44e48a39f3367ae28665027d8ab1d8cedb5a9dcc5068a900acd6709f60f9"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/GBT-EUC-V.bcmap",
-      "sha256": "a1ad24e63653b8aa388c18fa5e498f007564e43dde699a9f91ccb4645c999be8"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/GBT-H.bcmap",
-      "sha256": "8afda745a505763f3ff54c8126eeb48ef376ea9ed07d9f42ff9a22c5c547ec57"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/GBT-V.bcmap",
-      "sha256": "cdc2ec5c3c7c7033290c9a8894878202f08674eb9b1ae7d36218430326768771"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/GBTpc-EUC-H.bcmap",
-      "sha256": "7b23e2f7bfdb6c918f567b7324bf858f398bd8cd5f268d74ece19a3c91bf4f32"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/GBTpc-EUC-V.bcmap",
-      "sha256": "d7a1b13ead9ab511cf2cd01de6ce8b02aa8e8767e84895337d7a3b67f039f93b"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/GBpc-EUC-H.bcmap",
-      "sha256": "3c4a4eb82f05abe51f6650985c630e180438bfdd491318f5d20d2ec29236e1c3"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/GBpc-EUC-V.bcmap",
-      "sha256": "215bdfa2842705624b4cf4cd29b8e3c720f1e192365e0305c11030a424c84d7c"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/H.bcmap",
-      "sha256": "a0233e21047ec00b852125b243cbcf30abee511155b6d8159c24f944384bc9ee"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/HKdla-B5-H.bcmap",
-      "sha256": "5242bce18fb13ab4cc59b146a03eba36e4ce42667eeff09e10981a9d2aa4996b"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/HKdla-B5-V.bcmap",
-      "sha256": "2e0537f786c0791d41a925f72bad2d4e7268aa6cbf15a1400a722672cec38e2c"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/HKdlb-B5-H.bcmap",
-      "sha256": "fdc8159984bf5dbe475c0d5dfcb621ecee4dea07c38c668bd77f4c679e23b9b3"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/HKdlb-B5-V.bcmap",
-      "sha256": "b249eb9dcb915ab45057c5d4d7aa55ef88d0efbb092af6bae0b2d4705d139abf"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/HKgccs-B5-H.bcmap",
-      "sha256": "ab64c7fc5e9b2e97750cc4f269b0da14fd8649e49151b7598c8df86599bac591"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/HKgccs-B5-V.bcmap",
-      "sha256": "02ebdf7cdffb5395fb21091cd58a013a18ae5388922822f9dc6292ef16b98956"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/HKm314-B5-H.bcmap",
-      "sha256": "bfd8bbde6b36a9da4c1c902c74121a30d9807a7079a00eeea218be6adc223cef"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/HKm314-B5-V.bcmap",
-      "sha256": "2a64a815cfb6fdd480674a868762e3d161fda17543b20c9209978559f0667164"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/HKm471-B5-H.bcmap",
-      "sha256": "49d7c037758826b5b6c0fa329c35bbf25d3943197754e72ecd30c6fb04d745e6"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/HKm471-B5-V.bcmap",
-      "sha256": "be24c109e78aa4fe3c1f27d30aab3ed0741e783fa1b6b6c2719741072b54b132"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/HKscs-B5-H.bcmap",
-      "sha256": "08599378f41d96b40537adef6e6edcc4a787bc63f5accf47c026df4905a13914"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/HKscs-B5-V.bcmap",
-      "sha256": "d073542b7dad1c4cbf01c1af5f0cd13218d1281a491956e310c55702fc8705c4"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/Hankaku.bcmap",
-      "sha256": "b454701f7aecd7856769016dfd04ca64280a060f2c67a2466d50b4395d24974e"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/Hiragana.bcmap",
-      "sha256": "2ed669394756dd9458651cd9995ab29ab691ecb7686659003306cdf22767a414"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/KSC-EUC-H.bcmap",
-      "sha256": "6784e16dbc5861c036c23d3e55f0d4ba0975a3e464da0ee8e49bcfff0be070c4"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/KSC-EUC-V.bcmap",
-      "sha256": "fdb36bad85e9924823d49db374067988e024cf80fc894711f2c9178951cbbe95"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/KSC-H.bcmap",
-      "sha256": "c1f6d61f1d3304fd539a65ae72624fa567ecc3853bf52e283958a7a2515b3eee"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/KSC-Johab-H.bcmap",
-      "sha256": "939993d213f68db763bf156217c217ae23af082b91a0eacecf3d11eb4ff8ef8c"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/KSC-Johab-V.bcmap",
-      "sha256": "5d61967aac0e666def721e8b8d0fed8f95a879a14f2e76ce516c3d11c621e519"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/KSC-V.bcmap",
-      "sha256": "d7da5afd9f1fe74816d79c9325f0139a4efb6438664ebfdf9a7aa92f3034360f"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/KSCms-UHC-H.bcmap",
-      "sha256": "5b70d8f6a4fa9e2283dc649f0ff95d906d56efbee50a20e8d2faec3a8fed078e"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/KSCms-UHC-HW-H.bcmap",
-      "sha256": "a5e6ba22aceb02fdedee11bfb9ed138463d89e85b87810b9f075b469d936f8ec"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/KSCms-UHC-HW-V.bcmap",
-      "sha256": "890332a6a26880d463a12f2a6ff048bf9cf7e45077cfb1ca8815b89baa7bf411"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/KSCms-UHC-V.bcmap",
-      "sha256": "1631b531c9a40c8cbe24c2317dba107362e49fa6e18af620414d627c111d570c"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/KSCpc-EUC-H.bcmap",
-      "sha256": "709480682c55cedbb0124b9960d78e28febeee0df2e34607d61aac6601647ec7"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/KSCpc-EUC-V.bcmap",
-      "sha256": "031707887d6fc2378a36cdb6775334fd7a236c3f95048d8436abf43fe26fc49d"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/Katakana.bcmap",
-      "sha256": "3b6ca6642fbf8822da00d5e58a8aa275216d5c32dbf2bd73e934197fc9fc5c53"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/LICENSE",
-      "sha256": "aa92ab5a472974865a96fd4a4e9c13bb41bf6fe1b309cb6b8da48bc9e19839a2"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/NWP-H.bcmap",
-      "sha256": "286c6c9e335da330928a01edc3c97a3a623f1f7f3c42762b0a7dc2f651b1a78f"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/NWP-V.bcmap",
-      "sha256": "3a75fb7b59adfb172710758c425d8ac6c93fd5360a64dd4afd5dd04e60ab4b4d"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/RKSJ-H.bcmap",
-      "sha256": "a70de61a22a898f693f02cc011c3e3cff2e10aaa7cddb4661e456a21ae859f78"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/RKSJ-V.bcmap",
-      "sha256": "68c1a64506471a524ea5cfc3b3a9f8f70031989a6bd95427b1351f33ccf50b06"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/Roman.bcmap",
-      "sha256": "1c6b3ef9d9e5cb1aa329142ce9414b90f9b6d7f9182a2a9e927378dab8f0d43f"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/UniCNS-UCS2-H.bcmap",
-      "sha256": "779428116752f34e2490a1941d24e4634c71e3c22d053b811d2090ae2fb3c704"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/UniCNS-UCS2-V.bcmap",
-      "sha256": "1e5cc184b850ea44abc2df8ae5674279df668e8edf5e2a1a2ea2bd77adbd280f"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/UniCNS-UTF16-H.bcmap",
-      "sha256": "32ff139b3c7b91d6ad25f994701f3ce7b242906022c418fd73e6493fc228bfe5"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/UniCNS-UTF16-V.bcmap",
-      "sha256": "278eb1e68d1a236c60ef59472cf0176ee0d45f364285e76ca12419a08d46fb9a"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/UniCNS-UTF32-H.bcmap",
-      "sha256": "bf26eb67fe19ee5ba915799e80ca72408400aa8342fdf6a244a4f44de8f97336"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/UniCNS-UTF32-V.bcmap",
-      "sha256": "f7da3caf83ceb1cb37936fa10700d9ba6e9c3f72c5bc9724e3ac79bff0c0179e"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/UniCNS-UTF8-H.bcmap",
-      "sha256": "2f2a742bcd1a84a148a4a518b9eed51a8f9c6ca5ed3bc5e2e41fff97de5dc2d8"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/UniCNS-UTF8-V.bcmap",
-      "sha256": "b7c3f10780a8c62dd1c8ff6c30dc1e4e23b6cdc87c3a96fcd514cc98ffd3af9d"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/UniGB-UCS2-H.bcmap",
-      "sha256": "9201569b402e81ad8860650bd86350c4fa28e5dd5971f05fcacaf40f51de18ed"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/UniGB-UCS2-V.bcmap",
-      "sha256": "f10282335e4d64203bc2a653a3a47d745ec76c8ae04549f4d50180c1899be216"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/UniGB-UTF16-H.bcmap",
-      "sha256": "386fd39581245c034da016a92d23f3df1117d169f996100050b264fc09a84e35"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/UniGB-UTF16-V.bcmap",
-      "sha256": "0473cfbba612b92dd9918f0ff8aee9112897c48e0ffdc0eb82da3144ed8ea84a"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/UniGB-UTF32-H.bcmap",
-      "sha256": "f48a145dc4e3ed1dca1dde7111716a72306a2a4191ab05c6bae3a5c3a961cd2f"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/UniGB-UTF32-V.bcmap",
-      "sha256": "106acc49b7118bdef944e32107b4f348238f3929a0a15d3b7aab7b9101535993"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/UniGB-UTF8-H.bcmap",
-      "sha256": "f217b439c80ee5fa1bc2cf6d1defcc319f8d84483d166a00ee199e05a68588df"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/UniGB-UTF8-V.bcmap",
-      "sha256": "a64df947632878eacc532fa193c735c92a383b7d66e6f8374ac193af7c64fc63"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/UniJIS-UCS2-H.bcmap",
-      "sha256": "ad2352f40870880fbf7f8ee5abadff743fbd025fbf9830b8ada472d1c5e4da0b"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/UniJIS-UCS2-HW-H.bcmap",
-      "sha256": "16e87edca954177c0881c874859d6783220925d821b5cdfb8755b61ebd93f9ce"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/UniJIS-UCS2-HW-V.bcmap",
-      "sha256": "1973457e2c0192819947e56068625b34fb9a72ecc8a476ce6d7eaae5f73e2e5c"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/UniJIS-UCS2-V.bcmap",
-      "sha256": "42a133d8e2ce9dd6d2288018e01592d2bf2435b326d39b94ea0b6e6a44ac33d3"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/UniJIS-UTF16-H.bcmap",
-      "sha256": "f6a89c5688978548c83fcee990e205bc63c74274d5c69b49032a3bd4c49a05ee"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/UniJIS-UTF16-V.bcmap",
-      "sha256": "c67126fc7c73850855186bb0d6482ac0a365057e0b58778c4ab9f234683fef53"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/UniJIS-UTF32-H.bcmap",
-      "sha256": "96195950ce0fe24443d8eb426fa6b88534ec421d7bef9046f0b2362809cfba73"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/UniJIS-UTF32-V.bcmap",
-      "sha256": "ed4dafda402bdd19c4d5d8bf2ab41473c0f86f384552b4c7b963d6627daedeb1"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/UniJIS-UTF8-H.bcmap",
-      "sha256": "798fb0bf06ab0788d1f6a91c2db7de581612eef03c628f10e8f7ecd8f70ab448"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/UniJIS-UTF8-V.bcmap",
-      "sha256": "1021611424f913b2df0bfdbe94bd327c04e224ec89d8e821c6501ea3d21f4265"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/UniJIS2004-UTF16-H.bcmap",
-      "sha256": "710a32d7cb43fd6bd9dbf30da5971f8c941590f74441e208d852c2be0e74cc97"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/UniJIS2004-UTF16-V.bcmap",
-      "sha256": "3b149aff5c5707b57fb3215d1775852c8b1f413ec0f679ea628f25cf87fe098d"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/UniJIS2004-UTF32-H.bcmap",
-      "sha256": "8d2658e18741af7937d586a57c89729a6fec0d86121197c1f8518aa58b29cdfb"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/UniJIS2004-UTF32-V.bcmap",
-      "sha256": "6dd475782f2897648a683c48b2fa015a15b8f06856760bddc8a17a63f418bacb"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/UniJIS2004-UTF8-H.bcmap",
-      "sha256": "691c614ce432b3e62486efb54e5c84c6da5afe9b51b21253bde4758feb484183"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/UniJIS2004-UTF8-V.bcmap",
-      "sha256": "40a8c7ea2d46711c5f78fc9a878a7db68b1543ba5cd60ecf14f519a2deb829b7"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/UniJISPro-UCS2-HW-V.bcmap",
-      "sha256": "6826f94d789d7bf1960668c1c5819c34c9585c1b23152fbc19ee81c7df08524b"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/UniJISPro-UCS2-V.bcmap",
-      "sha256": "493de9fd1a08f7946065d8ab58f0c3c9fe489f5a0f109f2d05a3169b4bd5789f"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/UniJISPro-UTF8-V.bcmap",
-      "sha256": "6181d382cf736c5e09492e8be9f26f31fa25b7462253f23ab16646af432cad81"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/UniJISX0213-UTF32-H.bcmap",
-      "sha256": "692044e1fb33445668632bc9fe7386805c624864be1ddeb29d65bb0c99fc630c"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/UniJISX0213-UTF32-V.bcmap",
-      "sha256": "dd54e16ca7bffb3a886242549b2bf7d78a277087f7c60d2636f118c21a5b0646"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/UniJISX02132004-UTF32-H.bcmap",
-      "sha256": "f80ea5a989be30ccda5a8804baef6d3b4b044d2b339bf8b31c671b2466171cf6"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/UniJISX02132004-UTF32-V.bcmap",
-      "sha256": "94c22bd99e771c5fbe0dd8dc39850570d4db0075074aca13e272813edd7cc57f"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/UniKS-UCS2-H.bcmap",
-      "sha256": "a1081396ab4adb6f4a5b6c15f896963c244c1c9bcb65ce5616d06096a1b9811c"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/UniKS-UCS2-V.bcmap",
-      "sha256": "6cab547431958fbdc1d401d06ebd4dd61a73f5509a10f974df32bcbca11a2e43"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/UniKS-UTF16-H.bcmap",
-      "sha256": "42d35b396286499dfae1737a07adb3a64500df37b426580bfb1d3ea872938519"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/UniKS-UTF16-V.bcmap",
-      "sha256": "5bdb7390c80dcc136cb47d41dc7460082560969c17322ee739fe3020fb642410"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/UniKS-UTF32-H.bcmap",
-      "sha256": "3a01ec51ed1b828101351e337ffb8250abe11880032e5210f881170fed2588de"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/UniKS-UTF32-V.bcmap",
-      "sha256": "dfda895eceaed081af030dbbb962b49629eea817fc3c02bae15db93d0c68acd7"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/UniKS-UTF8-H.bcmap",
-      "sha256": "3fac9c65145f72d7d42157a3b9c5ed6904632184e6a0888f2b828699afd2002f"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/UniKS-UTF8-V.bcmap",
-      "sha256": "9ecc6cf30dd354b9778ddba163b6cc7302b087ce9f39d1ba73472d2b75ed13ca"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/V.bcmap",
-      "sha256": "b9ad1c0c09ff14bca52f9a28a9767eb857ad0e8946e64ba14c7387a7eb69866a"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/cmaps/WP-Symbol.bcmap",
-      "sha256": "543923bead225732aba30976690ee89095a19628277b5863efecc2c728d5d7bf"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/iccs/CGATS001Compat-v2-micro.icc",
-      "sha256": "73e1ba37d2bad5bab2a964f40a9eed96209666efc067c3322626214bbef234a0"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/iccs/LICENSE",
-      "sha256": "286e4fd7b447330b2c88e23890e3cd0a9d38cb398d4a59cb247f578ccbda3213"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/image_decoders/pdf.image_decoders.min.mjs",
-      "sha256": "2ce7c5e8028ff9015c95bd79f56f261e7519abd7a8831bd7a0c11a2e413006d5"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/image_decoders/pdf.image_decoders.mjs",
-      "sha256": "e834780a4924a54b7e4f0fc844987b3bd81d941db00c33dcc59b16a0d793eef7"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/image_decoders/pdf.image_decoders.mjs.map",
-      "sha256": "5a7b7ad7d4eb56a6478ca0edec59c11b2a07db74f247502ab4269cef57a43b85"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/build/pdf.d.mts",
-      "sha256": "dc11ac5030092409dd3183dbb24174beaf35739b9b5c90f268b3cf82b9453708"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/build/pdf.min.mjs",
-      "sha256": "bccc24ea711db8e44503629519904a5292d73b9daaa214bbe7cdcc282b0f4259"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/build/pdf.mjs",
-      "sha256": "bc51f4874a66e3853189cb5d50aba4b3096afa83ed433b885d293a3d94583cdc"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/build/pdf.mjs.map",
-      "sha256": "fc4626175932076624b69d37aa368922e4fbea9421621937c9840b5678df9566"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/build/pdf.sandbox.min.mjs",
-      "sha256": "a08ff6d71e7618e2f8c974da2aa24addb5108efc39bfe902625a1b257d846c7f"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/build/pdf.sandbox.mjs",
-      "sha256": "a2585f385c03ef63b7a9c787371a4d1011b6b452e31f959fd196b1bef5f57d2b"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/build/pdf.sandbox.mjs.map",
-      "sha256": "600e419faf8211d419a187af4c0824e38ab3d3c1eac401b7cf438306a514b5e9"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/build/pdf.worker.min.mjs",
-      "sha256": "145d2dd3ab0c86151011dba95acfa2d5336e2accd59388ea43dbee0efddaaec6"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/build/pdf.worker.mjs",
-      "sha256": "bb422f60804477de4a0b09091d8347a916a387755ed1cbad24ccaec1d09c78bf"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/build/pdf.worker.mjs.map",
-      "sha256": "9d039e6f6bfba644f7bee73f88cb6b055840883754ff5d9d66963e81a3284b3c"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/image_decoders/pdf.image_decoders.min.mjs",
-      "sha256": "3fa284b5c15ffd7b4690ecbf04c8a8224567aa9a878d37f03b17c04401676a0b"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/image_decoders/pdf.image_decoders.mjs",
-      "sha256": "b23b948733e6eea6d07e3450dfb3e51069165de4b384d6641779b02958fb3c6a"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/image_decoders/pdf.image_decoders.mjs.map",
-      "sha256": "8ae7dbbe3cc3a69a0654254111ce08801c92add1afd2f1a5294ca4832bd80051"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/web/images/altText_add.svg",
-      "sha256": "1a9591a23999e1924438b948a9f9671147f04e01e5be724391a3a8a2b58289d9"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/web/images/altText_disclaimer.svg",
-      "sha256": "5d19067a6b51e5bcc2d61325033a8450d301535505a97c50f4141f4cd9e2cf05"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/web/images/altText_done.svg",
-      "sha256": "5b40360d098d1a93227a0a5cdb110f6e5ff3a3eb4af97b61e856c49e17141621"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/web/images/altText_spinner.svg",
-      "sha256": "4089182e21627182ed1d4020978b597d984fb8de4cf547e9f4ac2aec9af13179"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/web/images/altText_warning.svg",
-      "sha256": "07264f4de78a45a4177ddefb48837217aa69b51462ef5b35d3fb9f90000c9ead"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/web/images/annotation-check.svg",
-      "sha256": "9a680f1212888ede7dcae6bfc8cafc447babf4ce531271c8d07277b0aedade96"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/web/images/annotation-comment.svg",
-      "sha256": "c58b385b4a0be6de822a3262b8191073d1730f6420368bd9c6d80db7312327ff"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/web/images/annotation-help.svg",
-      "sha256": "74d9bba0814d12f5ae2715189e1747b7edf5ff6d82c4ca75bae86d717319b6eb"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/web/images/annotation-insert.svg",
-      "sha256": "b2153e2c88c62179029ea9876d463216529ecf581b77d52c971a2cdf3d3166c6"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/web/images/annotation-key.svg",
-      "sha256": "5772b8dd158b0f02bb2be689bb680f4903d84e202cb29a3dc0560af53134c6ba"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/web/images/annotation-newparagraph.svg",
-      "sha256": "a583cca122263d94c3eebfefe83c965a1b305b9c84e5aa3c5ba10527941db7db"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/web/images/annotation-noicon.svg",
-      "sha256": "76399e70d311834d11ab2d6239118b36847d79a78d7655b1f839d51c811304cf"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/web/images/annotation-note.svg",
-      "sha256": "11a75c9f233dd3e5e3500edcdd733358394f28395337616e8b0430694bf0dba1"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/web/images/annotation-paperclip.svg",
-      "sha256": "0213c8baed4f8c497881ffed0e49abb309291d51725aaf1a0a757174b4999368"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/web/images/annotation-paragraph.svg",
-      "sha256": "efbcd2a6cfb4581dad74a1c09ad43cf2b8245611e5b19c966317da948f2bcb7c"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/web/images/annotation-pushpin.svg",
-      "sha256": "22197186d18445959e5fe5577d8e34440b31d87c811daf47318078310c0c5530"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/web/images/checkmark.svg",
-      "sha256": "424df6b8515df22424c9505a9e87d35d87d3fd59962d56692fcc4d17613f2165"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/web/images/comment-actionsButton.svg",
-      "sha256": "281b2348ed747ea3ee74763a01d56441d8c570b3e68f11556dc4084a14484d1f"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/web/images/comment-closeButton.svg",
-      "sha256": "fdb819984e10758952bc35b5be3220538b21a787656794b1071fecd3d2648930"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/web/images/comment-editButton.svg",
-      "sha256": "e79c41bf53a89ced9a3ad364a49943813189d06fd96174952e5fb2636938b70f"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/web/images/comment-popup-editButton.svg",
-      "sha256": "857c0198bc536885f2b486353d5719d0c1bb91d69325474f7d787ce5b43cfe1e"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/web/images/cursor-editorFreeHighlight.svg",
-      "sha256": "90b04428328a67e184fe1b1a1f28cb0d62bf6e298614ca241b6564fb24cb9e7e"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/web/images/cursor-editorFreeText.svg",
-      "sha256": "fedb05ee0dd510514ed9edb24b3b4da2707931279a0bf48e2a1deb3a1f4cf581"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/web/images/cursor-editorInk.svg",
-      "sha256": "0ae889debe01269b49b89d8845995281223b8ae289405758631076b763da3efe"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/web/images/cursor-editorTextHighlight.svg",
-      "sha256": "c6252b0edcb68dac87557a027180fcbdbd93466841aa34792530f7cce54cec5d"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/web/images/editor-toolbar-delete.svg",
-      "sha256": "f1f47a2cb479a87807f9bd61bd5813c1fe857dbbcb4fb35ae7a77ca39114f920"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/web/images/editor-toolbar-edit.svg",
-      "sha256": "c6eacc709e4dd30a57120b6531856c003a4c931c46656c3625e2fd5886cf4ce6"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/web/images/findbarButton-next.svg",
-      "sha256": "3029879b7e1060d54c4edcfe0c93c8c3b8c1756fb794e5d4add64028b5f99fab"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/web/images/findbarButton-previous.svg",
-      "sha256": "766d12bb08b9f13c753d289f3c029f5ca202eda3a8be52afc9e31697335f4a80"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/web/images/gv-toolbarButton-download.svg",
-      "sha256": "010d9d77a425e80eb666a196f500cdd8b15758af69a19ad7f11279b78c29e3f5"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/web/images/loading-icon.gif",
-      "sha256": "483c4a0396691993a641ec409c44b8b7e1daab0ae7e2b2944c4bc59520bb7655"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/web/images/loading.svg",
-      "sha256": "7d6e14cf6226c74c26e2141180eadc944ef4ce8565e9b6dd2670ec202417a764"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/web/images/messageBar_closingButton.svg",
-      "sha256": "7393c7791916243eca6bbdda8bf137d36600fffc76d7a55d33a77bd4e7778193"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/web/images/messageBar_info.svg",
-      "sha256": "050e838b982b1b3e993e06bd666f8693ea98e89fb568c39c4af32e128477aeef"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/web/images/messageBar_warning.svg",
-      "sha256": "888a4bf2ad5150028663dde01fe71599336c87ca12697180e51bd8a13b88084f"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/web/images/pages_closeButton.svg",
-      "sha256": "03577a1fc1fc16be0331c65d45accc4d57c269381999e00b2bec9005225a7643"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/web/images/pages_selected.svg",
-      "sha256": "a66ae84122fc40cc1282c68205909387e05a80061b9a7268a54b4bd0c9e7e2fc"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/web/images/pages_viewArrow.svg",
-      "sha256": "409d9a306df6e86bc433365f961be50c9b4256b7a89b741f2f858af5b456b2ce"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/web/images/pages_viewButton.svg",
-      "sha256": "f49c2ddd994c602dcaceb3c6b1445ef37bfd6ca8e2cb468d894741368c3344af"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/web/images/secondaryToolbarButton-documentProperties.svg",
-      "sha256": "735a4bc556610bc6dedaa40a36ccf444c31032be02ad20df5ac4c66ebaa5bbc3"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/web/images/secondaryToolbarButton-firstPage.svg",
-      "sha256": "d46a7b0760fbc043a98f9b328f6b4ee56df8de140a2a290f0e2a915ff772e287"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/web/images/secondaryToolbarButton-handTool.svg",
-      "sha256": "e968339ba921e68d4d83e6ec7a4321f1791c86f4eff552f28cf4c81c6f88155b"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/web/images/secondaryToolbarButton-lastPage.svg",
-      "sha256": "4cc4b92888b776ea3a09d5e86b17d7bb50a8f3e6d09854d4c2e3f050c34dc9f8"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/web/images/secondaryToolbarButton-rotateCcw.svg",
-      "sha256": "7eb24492df9f42c8ab053cbead5d985b0daaccced649392d1fbfde4931459451"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/web/images/secondaryToolbarButton-rotateCw.svg",
-      "sha256": "03d2e7bad2fc95895334e43edf34309a64223f32504304034eb1f6b163954898"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/web/images/secondaryToolbarButton-scrollHorizontal.svg",
-      "sha256": "c61fb184d5311255b627a9943c156bb1f00f835282d832241e01a7d82a22b678"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/web/images/secondaryToolbarButton-scrollPage.svg",
-      "sha256": "e60ae21987a2e6e5352ac3171363352cac9d2cae36bf828d1729cbfa286e085d"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/web/images/secondaryToolbarButton-scrollVertical.svg",
-      "sha256": "79871e2329cbb4dc2b6df94aae5f3074b3fdebffba46fe7d3ade9aff5726bfb0"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/web/images/secondaryToolbarButton-scrollWrapped.svg",
-      "sha256": "8734aa2747f6fff9e8fd09f6e9509db43ec1b63935c8f6b8291e9347bc7e2706"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/web/images/secondaryToolbarButton-selectTool.svg",
-      "sha256": "332e08979379ff2f8a7bfd336e8ca6348546c78ce2a6bf464cd31dc2c64004ac"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/web/images/secondaryToolbarButton-spreadEven.svg",
-      "sha256": "ac385199d448c0d5ae5d4c06d2c76db0a31bb5db54d0fbd727f3dc889e73271b"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/web/images/secondaryToolbarButton-spreadNone.svg",
-      "sha256": "649934c2f447d7a239d6ffce8f8e0804b50dfe1d9421a1d16e9543c0aee9b03e"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/web/images/secondaryToolbarButton-spreadOdd.svg",
-      "sha256": "43b6862d35f86dbe5fec6b16e2cb59ca22c490bdf0787e4590c1ceb494d05244"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/web/images/signature-properties-row-check.svg",
-      "sha256": "3fe9e7e5869e80c04e560ec79e8960ed0f3e918195b6de2b039bd33fb23ecf0f"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/web/images/toolbarButton-bookmark.svg",
-      "sha256": "f2a335bc963e95344d26d61157b1511f5f78d705b38579004971d51a3c62401c"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/web/images/toolbarButton-currentOutlineItem.svg",
-      "sha256": "5f6505f05dbc728301942b37de22d490f09276e6c9a6561b1894afa91f34439c"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/web/images/toolbarButton-download.svg",
-      "sha256": "afa286c8ea1941eaec589ed6a2103c5a845f3ff76a7423ba985f449465005163"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/web/images/toolbarButton-editorFreeText.svg",
-      "sha256": "9ec2202e18ba668ee1753179afead4e1786eac82da2cc82afc5a09584c242c43"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/web/images/toolbarButton-editorHighlight.svg",
-      "sha256": "df0aac50621777fb63da60b38c71c5bbbde746c4dd55c30dd141621cb30b7cc4"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/web/images/toolbarButton-editorInk.svg",
-      "sha256": "081bf99d3c2390036a2d9c7e9485316bcd049f90a74e982f1eebcfd4d9b178e3"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/web/images/toolbarButton-editorSignature.svg",
-      "sha256": "32e07998fd55a7ed40ec2b542fe324ec097d9023fc4c59d6debe33becdf215c2"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/web/images/toolbarButton-editorStamp.svg",
-      "sha256": "18294793f2399a8a44ee246d63b20cd46cb3cd38a1bb72f00b826e7f756c5f52"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/web/images/toolbarButton-menuArrow.svg",
-      "sha256": "2db41f97615a8c912f676a62c88b12e2b8715f4ed188df325737423501aa4a8a"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/web/images/toolbarButton-menuArrowNova.svg",
-      "sha256": "8677b09af730ba49dde7be6f16d08a0b4eb594ed3402f9693e298223d3e9efff"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/web/images/toolbarButton-openFile.svg",
-      "sha256": "7acb9e9964dd618bfcb657d8d18db2c55ef8f168c37f3873c06d72c63e1b11ec"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/web/images/toolbarButton-pageDown.svg",
-      "sha256": "09a14cbd902aad9fe40f2351db2ac5593ad897aed8810b9c6aeb0e56389ff100"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/web/images/toolbarButton-pageUp.svg",
-      "sha256": "bac79138cb730c6bfa63bef02d7e5906aee727bb54df15878823426822badaaa"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/web/images/toolbarButton-presentationMode.svg",
-      "sha256": "2a08e4277e39a9faef69520570744650bb017c2e90fe7c15224144d6b4abfbe7"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/web/images/toolbarButton-print.svg",
-      "sha256": "267745d6c176afe038630c3f7c0fcda78141fc7634f73898ffc6cbb1262c77ab"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/web/images/toolbarButton-search.svg",
-      "sha256": "32889acafd84edeec513db6131252fa97ffff00fee6272d05e35e2d95216e30f"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/web/images/toolbarButton-secondaryToolbarToggle.svg",
-      "sha256": "ff717321d89309f51bcccc28f347e6a888e73570527845d6560a84f5d70cb3a0"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/web/images/toolbarButton-signaturePropertiesError.svg",
-      "sha256": "957d6ce5e6c4a62f88ad0e79c50b6ccd94358524a7450d3b04eb318146a46351"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/web/images/toolbarButton-signaturePropertiesVerified.svg",
-      "sha256": "ae9f3a3e7e8e16900e6b2dbaa7acea0111763b72125246e55b572f4e9e66bc16"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/web/images/toolbarButton-viewAttachments.svg",
-      "sha256": "e07fbf17b3c7ca2cda9c4e54cdd66cb0aa63d368232cbb2c9aed5559720bf96c"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/web/images/toolbarButton-viewLayers.svg",
-      "sha256": "e0b8a59c272dc9a1d9a07d461363f96c3b3bd3df2db778f8f99743dfffd51d78"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/web/images/toolbarButton-viewOutline.svg",
-      "sha256": "eeb6cd0ce94dcfea6bd2aca222da7b1583d74800ea9c94640ff8fa06c13fb044"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/web/images/toolbarButton-viewThumbnail.svg",
-      "sha256": "5fa35769db66b33d6408f378e8aa68fa060331f0cc9dd6ad41fb7366082aad34"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/web/images/toolbarButton-viewsManagerToggle.svg",
-      "sha256": "88098d3e47fd921122c5263dce50ee67c662c9cb65908be0481891dfe521a6c5"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/web/images/toolbarButton-zoomIn.svg",
-      "sha256": "722dfe315686a5841d0a0d00f34df8f706d2c6e24551d46a5ebe971fe4af62d2"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/web/images/toolbarButton-zoomOut.svg",
-      "sha256": "366a40c3627e67f97164976d5ff38b5484716e834d08fefe252a6ea37feda895"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/web/images/treeitem-collapsed.svg",
-      "sha256": "37c96d0dc2f626c541303a76067184ac09614f2390a8430e973a84e5184e2646"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/web/images/treeitem-expanded.svg",
-      "sha256": "df4a149c4eaed4573620621087f7bab816f049e3e341574654fab598435db086"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/web/pdf_viewer.css",
-      "sha256": "1f3c7c3c692d4da2334d0386d2286ec040a37db8654e02b8704b11262bc9bf49"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/web/pdf_viewer.d.mts",
-      "sha256": "6f2878ba5118b5f3cc4f08d112ba64e3362921cda7bef7e23f1c64f811757e71"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/web/pdf_viewer.mjs",
-      "sha256": "94836afa5e6d3e5f9abea50dced92dac6083ac2a11548d3681c3414dd6d3425f"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/web/pdf_viewer.mjs.map",
-      "sha256": "330b75c07a79fe28a88698922a457bae19df6280e56a77b54f33ef0a66b73885"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/legacy/webpack.mjs",
-      "sha256": "eac3e389a6200bbfdd5006caaa71a59c26bb5df2a358f90eddbf5c63b67ea450"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/package.json",
-      "sha256": "8103b756525a79ec119558e9796062228290acfd5178a6b7fc93e6979511f604"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/standard_fonts/FoxitDingbats.pfb",
-      "sha256": "845c752392b6c914fb989c75a08b7792b88f542d2499042ef2889f8c814a16ed"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/standard_fonts/FoxitFixed.pfb",
-      "sha256": "b6c8fe53f134b8b6d4578cd2d544df4cee9624c4efa8d51a560fb40ea296101b"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/standard_fonts/FoxitFixedBold.pfb",
-      "sha256": "f1b7159702973f54fc86254ea38bcf3712b2a736eb3a0995751e9f4bb45ad603"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/standard_fonts/FoxitFixedBoldItalic.pfb",
-      "sha256": "8a000945843bd31add06aee63bf9fd41b7578b4f3242a4b7cd46349ad9d24d4d"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/standard_fonts/FoxitFixedItalic.pfb",
-      "sha256": "5007faf8320fa1fcc08b8894b356ad976f60b992ba29ee5272578bbdebaf3876"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/standard_fonts/FoxitSerif.pfb",
-      "sha256": "4f57d2b9d884af8f907bf22df6019b52d86cbf6214fdbd02b1ae05472a543f35"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/standard_fonts/FoxitSerifBold.pfb",
-      "sha256": "0bdf4b04e964139818d51eda03d566ba999fc3ba2421b1c6c51f9dc969022e80"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/standard_fonts/FoxitSerifBoldItalic.pfb",
-      "sha256": "a406cac82583bf98175cb62c87ed5e95c45fbb34eece63a10b0a13e793cb2e10"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/standard_fonts/FoxitSerifItalic.pfb",
-      "sha256": "610ae0687198045c4db5d1a6650fd5e92536631706382eb8b72e38df578d0ae9"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/standard_fonts/FoxitSymbol.pfb",
-      "sha256": "47967d055530e7357088a08403115425643ec2cdfd6201ba8af0fbd7116c1539"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/standard_fonts/LICENSE_FOXIT",
-      "sha256": "b578cdd2345840ada550bd12519533812320d5f1d21cf4c1c7e1b1b0a31c98b7"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/standard_fonts/LICENSE_LIBERATION",
-      "sha256": "d2c4d5b3e115a519cb58eb691aa64538397e2611f9ebe801392cf9667997e7dc"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/standard_fonts/LiberationSans-Bold.ttf",
-      "sha256": "361c61b82d575c5c35fd9157fda8b0194bcfcd0d88ea8521a4fb5dd53d33dddc"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/standard_fonts/LiberationSans-BoldItalic.ttf",
-      "sha256": "a224075ac17495ad0a3af3bc0a419ac0704a8b3fd1095456201fb9b095fc281d"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/standard_fonts/LiberationSans-Italic.ttf",
-      "sha256": "832b4406dbef23628800d3aaad21048534ac84d7e3ad955be83b8172ed8ef512"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/standard_fonts/LiberationSans-Regular.ttf",
-      "sha256": "f8ace1f892b2bd9dc1792ba7f097fa7588f84fed48321480e04de5390828221f"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/external/brotli/decode.d.ts",
-      "sha256": "11ab2f892f18c1e3393aac59a0493485fe51d71419bc5bfaf2497015d85b1949"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/external/jbig2/jbig2.d.ts",
-      "sha256": "46b469eb4b7f996277e92c9e58b8569868b8fc8276ba0012bcb3c3b70c206175"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/external/openjpeg/openjpeg.d.ts",
-      "sha256": "bf2530244283630564774c353b1971f5ad3d3fb87a04d6489e62b8c21d7c63f1"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/external/qcms/qcms.d.ts",
-      "sha256": "95c187fec62a4f0941bb17ff5da679b95febc544bea66e5a63eddb964bfe0ca0"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/external/qcms/qcms_utils.d.ts",
-      "sha256": "da6a2d40c7b624019071b6ee981f4a3d71ba1ef53b9f79fd4975f3b529ce2871"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/core/ascii_85_stream.d.ts",
-      "sha256": "3dbfbba1ee7fb7f453351aa392a9accafb5e08c752ed72a66e210ddd633d664a"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/core/ascii_hex_stream.d.ts",
-      "sha256": "7c30733074008ffe38635cce00fe41a6fc5f80b7d1344311e798f4e4ff73234a"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/core/base_stream.d.ts",
-      "sha256": "c778ae2e56db7fa3ce5e8e65a62433b0d812e130631abdf4724eb246048c0c76"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/core/brotli_stream.d.ts",
-      "sha256": "dcc4422c8bb66a14c64f878d2ecfe6b88ba1518156a8077216d17b07b057a038"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/core/calculate_md5.d.ts",
-      "sha256": "7ea7bebefce8494d51885d68f5b673e636419249576bbfa993358e633347a90b"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/core/calculate_sha256.d.ts",
-      "sha256": "861222a0e59b278fabd77e5fb1bc1aeb9ff319bec73ca83aeffbc7dd07cc86c4"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/core/calculate_sha_other.d.ts",
-      "sha256": "fd88e77b3cd07e882eabafc5e39e87783e2753710ddea4d10d2cb68488a50fda"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/core/catalog.d.ts",
-      "sha256": "e3435c037cd2287bacbfb1a38e70515834676d3e07c5bdc9aede9015bd8a989b"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/core/ccitt_stream.d.ts",
-      "sha256": "56a9149b57fe8750a2cdc382d4873b610967894fe19e300fadecd07cc3abd2e8"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/core/cleanup_helper.d.ts",
-      "sha256": "505248bebe39ea019495c8b102118bfb21591e8bf2353194db9c54a7e0c36f37"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/core/colorspace.d.ts",
-      "sha256": "5904732241e2159ba13f84b790dbf1b04eff56a95fd619f539e27b22d27a400c"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/core/colorspace_utils.d.ts",
-      "sha256": "d2b4f871c0172d950fb5ea55cbcfb7d7317d345bcf71348dc5fdfd3295baa75d"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/core/core_utils.d.ts",
-      "sha256": "3d0cfe675951abf2b19ec27a7a6a9da97c93f62f9fa0b22a8dfdb4e982daddaa"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/core/crypto.d.ts",
-      "sha256": "8a515666eda0e1e6c693b02ff7ad9e66f88f85841b8536a8c2ae3ff73ed50b24"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/core/decode_stream.d.ts",
-      "sha256": "7ffa230ceee805a9d44eb9d8d0259da9e09f9af13614ff472e026275e153e362"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/core/decrypt_stream.d.ts",
-      "sha256": "c0801f5564dee3351293510b61c9c2e38fe78872af10d4ffe73e0dc3f4829395"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/core/file_spec.d.ts",
-      "sha256": "cbd4c0541c573b4852e522c720485b8cf9941d5e8d984fd14629f7b9036911f3"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/core/flate_stream.d.ts",
-      "sha256": "ddd06f6f66a85608857a51d9060af7e5d494d18622595779ec3fe0e8a2a2a99d"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/core/icc_colorspace.d.ts",
-      "sha256": "7f61601eacbedde15311067ae20effa292942098227d3b4c3d9bc64105b16bbb"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/core/image_resizer.d.ts",
-      "sha256": "50fb9e0ef3d1c84d26060d3e13238b4fc9867650dfc16c7bfc3fec5fc976bf38"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/core/image_utils.d.ts",
-      "sha256": "d5bafda2bf053cab0e25175725774fc26d06801d2f5b28759f01b9ecbec1f8d7"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/core/jbig2_ccittFax.d.ts",
-      "sha256": "ac2c9402e514c91b2c11349ce0662436678f52d20c4ed6d4e892f75552969d09"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/core/jbig2_stream.d.ts",
-      "sha256": "0896e7c596cf1b557e48c0f378ba3331992959b05424f5ff6c8a8f5cdd0666c3"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/core/jpeg_stream.d.ts",
-      "sha256": "da6000ccdec04e0bc24edbd1b038bbac1ae0aa8f39815284ca887544fcda44ca"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/core/jpg.d.ts",
-      "sha256": "b20ead74eaa475d99b6047baa0474d3ecd5d35323b24dba88e978b2e71327b40"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/core/jpx.d.ts",
-      "sha256": "50d81dfe961586045272770733144c8d71266290c6e3648021095a4f4e5e7113"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/core/jpx_stream.d.ts",
-      "sha256": "877b529b1da4bf3751fb701c5422c8dccac020360a715e173b1ec6865b929a09"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/core/lzw_stream.d.ts",
-      "sha256": "fa2c37029c206d07873bd8cc26f3baf3ccf26bdd281f82d646193717754a1641"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/core/metadata_parser.d.ts",
-      "sha256": "c3fb0e111b538e19b37e073e25b54e9b518f62729f0f75a38740e7bb14524985"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/core/name_number_tree.d.ts",
-      "sha256": "c926815a8b2e5abc5fa6a2fe99c6a47346b1e3e889980c9b1e622a884aad9354"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/core/parser.d.ts",
-      "sha256": "3474e195e8a8f5fc668eb7415b6192767446806f7f5424c82208e347db05dbd4"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/core/pattern.d.ts",
-      "sha256": "9ab1696974334031e19cf316b12bf3008851e38e2fd3ea1ab87a49d303740a76"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/core/predictor_stream.d.ts",
-      "sha256": "955ac151e0dff450dd54387311b530199fddedc5f42596beeb4854f1791716b9"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/core/primitives.d.ts",
-      "sha256": "5158f8fa5220ae4a75246d554199f3d0bb40e250f40d2a76e64db93fb3b20926"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/core/run_length_stream.d.ts",
-      "sha256": "d162a5b3f7a0c01084166b9bdf8d9051d56f5fd6da5ccbe786577cfa214dc00f"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/core/sasl_prep.d.ts",
-      "sha256": "16f2d86fc7d2e976af8306dfea8e8fce8a3cd62e9312202d7014dcd597fa4c07"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/core/sound.d.ts",
-      "sha256": "9eeb02ec5956cf962a2705920d018a445ab89609d78dd12f1bc2ed57991d52de"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/core/stream.d.ts",
-      "sha256": "012290b89ae349c1955bebb2788232ee350924bcbedc550e2e5266c6704cd6ed"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/core/string_utils.d.ts",
-      "sha256": "5df9b6c87c31c54f23ace1ab74ba99e49040eccdf10fcce09636fafdad8b3f4d"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/core/struct_tree.d.ts",
-      "sha256": "05352bd5af40cf6c41f93df55979057004f1c9c823e78beccd334734f2f60711"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/core/unicode.d.ts",
-      "sha256": "0786bc904066405e00508d6eec3782746d3db020dfb63127ccf005880246f5d3"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/core/wasm_image.d.ts",
-      "sha256": "0d34368731ede533ae7f5c0c15315053dceb4bc8717a8c78d0cf87dc00c2e56a"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/core/xml_parser.d.ts",
-      "sha256": "64d5813b75d2ea75ca74fa48357df21c8e520f7062884c9a172c9b4db8b4af61"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/core/xref.d.ts",
-      "sha256": "533fa935b3bb1b1d94166132450ebc610eac0bd38fa1c6b1ec33dfef86f9c483"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/display/annotation_layer.d.ts",
-      "sha256": "f7d806fc8293d1c02a6d72962e2b424f5d7bb2f168157a7da8e7b1a6fee0e135"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/display/annotation_storage.d.ts",
-      "sha256": "930b3623228dfab48905a0ab440682f210dca435e64cf53afc30b72c95000c88"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/display/api.d.ts",
-      "sha256": "16cdbb9a8adc01c15b602db44e6a7e84885307f54148bffe22de075ee958c2b8"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/display/api_utils.d.ts",
-      "sha256": "bf2f7981c0568c3925827f14809273b12e17dad7c5de15b5246e14bb981f30a8"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/display/binary_data_factory.d.ts",
-      "sha256": "a69d6c49e7e17b43e0ca8fccc44bf9081388407980da68d6cd59917eff563d6e"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/display/canvas.d.ts",
-      "sha256": "b4e945806a5edbe61a8dbb0592773c3d600d96e7a3ff31407890914819801e64"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/display/canvas_dependency_tracker.d.ts",
-      "sha256": "118607b270cec5df60081776501cb55d543c13888b264627e80c6c1bfbc6e5c4"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/display/canvas_factory.d.ts",
-      "sha256": "87157026c728d377eed5e7e1f89f8ae7ffc791409b2908cd99bcf2e1e1244df1"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/display/content_disposition.d.ts",
-      "sha256": "6b37ccf5bd62d4ae35fb191f00ab7978205798fa8c69ecdae73a52c20e3a003a"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/display/display_utils.d.ts",
-      "sha256": "2e10d87ef648cd54f83b64bd3d455487ae0b7baa008ece279eb43566d2c9eac0"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/display/draw_layer.d.ts",
-      "sha256": "9dd2d11db4196fa4aee41e3e6d1515614f2c7da09fedacfde87168f1755321db"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/display/editor/alt_text.d.ts",
-      "sha256": "360124e5519ac8bce62c1b6882558942686bce3f90dd3ce5ec90fadb3a3f83c6"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/display/editor/annotation_editor_layer.d.ts",
-      "sha256": "ff619044aad82e56b7628e8ef78043c50a1d399405e53bd7bb0482967fd73905"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/display/editor/color_picker.d.ts",
-      "sha256": "f93252b7de8853289eb8b5601e8bd5901a30e74efb02be3c5538857fc2c843c3"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/display/editor/comment.d.ts",
-      "sha256": "54b9f78ad1f428e06c8d4d00cfc8d7544ad474d19a30fe47a2b8842ffdb2a516"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/display/editor/draw.d.ts",
-      "sha256": "7f62c36129a01836bde9fab47a70169ddef112d0f8de60d3106a6ae61d7addbc"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/display/editor/drawers/contour.d.ts",
-      "sha256": "d91760a87cfa14defc105b86c2d2b2f6fddc9636f3986a35fb6c01deef8165d8"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/display/editor/drawers/freedraw.d.ts",
-      "sha256": "5410316ebb6e6045838e78b287ce6ce65c36ad92b4e52e449ec149936b2d7351"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/display/editor/drawers/highlight.d.ts",
-      "sha256": "ef8fca7500be7a104a3e48a816d6b9835ce21c1c57f7705cac296873e005da27"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/display/editor/drawers/inkdraw.d.ts",
-      "sha256": "066e91b6c26c66af0a9697c66df2265aebe33ede658d8b8c0bd40bd11e5ebbb7"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/display/editor/drawers/outline.d.ts",
-      "sha256": "65f214624fdb7df66f12ed4b4174304bb40ee461e9ebe0aa84817cfc695fc9ba"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/display/editor/drawers/signaturedraw.d.ts",
-      "sha256": "2244d3a7dcb203968127e13d4d83d507fbe91529c434fc20426ae6c814e6e351"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/display/editor/editor.d.ts",
-      "sha256": "7bd14ceea540223d3f7a95c06c0a397aaed165388f7dece16e7ff2be85b05352"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/display/editor/freetext.d.ts",
-      "sha256": "0c2ab3df99dd84fdd05a8aff1deb6fe34e8a3ff4537faa69cc199339e3e3cc56"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/display/editor/highlight.d.ts",
-      "sha256": "6051306b2031c8bca5b8d40d40f6161131819910c4ea63e0a7da29e3373d28dc"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/display/editor/ink.d.ts",
-      "sha256": "51bd849812bd12c8598b8bcc0890c983c84359715aeff43f26b557d3d74d8710"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/display/editor/signature.d.ts",
-      "sha256": "d713078712400f84d8a7d4a2d1a1fd7eeb4879603ef87ee06580220ef12d1bc9"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/display/editor/stamp.d.ts",
-      "sha256": "c6d92ba3e9ca2097645bf4a350db64ce499b1e6c09acf8261336934f29d85d58"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/display/editor/toolbar.d.ts",
-      "sha256": "60217ee6f9bdcfd23ef32ffeee3fc08951b3c4d1ffbcf9ad4955b662a67335c5"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/display/editor/tools.d.ts",
-      "sha256": "631715c0cd1fb06f4e509c7518c27cbd6fedbd8d66b73db2d23ea8ad46182a8f"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/display/fetch_stream.d.ts",
-      "sha256": "c67667390812988a3caaa3bd44c2449c25e4e7114acbf9bef0b64c09ecbf29ee"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/display/filter_factory.d.ts",
-      "sha256": "8cd4d9eca72b7cf344cf9c63994e4ef7957982b230251e4e02ff704d5ec85c4f"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/display/font_loader.d.ts",
-      "sha256": "ee45cdeee3ae49b0526bfa1526821b7ba55bd3b26c8c1307265983caca5daedf"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/display/metadata.d.ts",
-      "sha256": "83e01ec16b5a8424ba35047471fe772e4fdeba7dfa7884d9ced04dd84c01a26c"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/display/network.d.ts",
-      "sha256": "0c85768d58e05618bfbee0e2de690e23df5f47a4f2bcf4cced9e69263b85f049"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/display/network_stream.d.ts",
-      "sha256": "6285a8eed1f0c6d3bc6c0fe7239d131e72a83a3bdbf2dae6cc723055eaf3eeea"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/display/network_utils.d.ts",
-      "sha256": "2c79d965c77bdfc6aa7f4392828a67b3ca48dd706b7f50aa163043e9690c0403"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/display/node_stream.d.ts",
-      "sha256": "a16e557eefc22f6fc73ed2512c5199e8e7bf1999dd8bd40bc0c9ca75d9d99219"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/display/node_utils.d.ts",
-      "sha256": "d1adeec90eda374b6e4d37e7c66175aa8d940cd6b69e502f788520e4c8d3cba4"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/display/obj_bin_transform_display.d.ts",
-      "sha256": "3acbb0ddb63b789001da8525b335270a41d7f3b763dee002f5b6dfa9da03f127"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/display/optional_content_config.d.ts",
-      "sha256": "c29404d7e2e3121580988dde115a606a2c6e61107a37f48fea250bbc1f9e2e43"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/display/page_viewport.d.ts",
-      "sha256": "42685ce1ac3e954632ec46acb8b5a04ac60d675a25d59c6195ad674c82ba4c10"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/display/pages_mapper.d.ts",
-      "sha256": "a0d3fcf64a3bad43bf08f239afab66aab5812dcda36882f3b1829a50a25f3cd2"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/display/pattern_helper.d.ts",
-      "sha256": "c5260ddf3504be054fa17bea0d6f18de8f16258acfed523ed133a5e042b96fac"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/display/pdf_objects.d.ts",
-      "sha256": "87e910be68ccbc0140cde26097f6b2e3666bdfaf5e77100c0d35e059403be02f"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/display/svg_factory.d.ts",
-      "sha256": "22759dfadc7f47badde31230a0a34ba6810f88b29ff314fb5e0ffd5fe91ba379"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/display/text_layer.d.ts",
-      "sha256": "271ee9f3165368b79f8b22738b2aa3e3651e3b563f5b3f4fc864f1225280af45"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/display/text_layer_images.d.ts",
-      "sha256": "a69008712ab6c633c5a735856a33f490cb74077fcd9c4cb1393f1ca036957e4b"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/display/touch_manager.d.ts",
-      "sha256": "eaabaec39200945796546dcdad5025127e9b1095d21bcb528d049881b7128ae0"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/display/transport_stream.d.ts",
-      "sha256": "616ec906cb980374c2fd2832d5288d26a916345029ed7e229521aa7673f2a6d2"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/display/webgpu.d.ts",
-      "sha256": "df892ace6527b98a6cd553c70bade6b8a2767339f0c090ba2f335218741c65dd"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/display/worker_options.d.ts",
-      "sha256": "da42d839e0acb2d3191ea6c872aaa09b6bb9ab5381cd6c0fcad8044adce03543"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/display/xfa_layer.d.ts",
-      "sha256": "7cabe8159e64a3bb53f61eb2102f1424a7a0d1437249e63d647ee2ae9cd4f2a2"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/display/xfa_text.d.ts",
-      "sha256": "97eeb7815e75c1d350dd55a52ba4000ff5ff5c1f6d609d91a111148e0e5a0588"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/pdf.d.ts",
-      "sha256": "f84ad720764c29f38d6a84e69343535f3d67e23ee1562f782d73e8f55985ffc8"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/shared/base_pdf_stream.d.ts",
-      "sha256": "37b640f33fb865d3d9196fc77a0c836f0fe58e5dc1fc2655f8e5730dcb432ad9"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/shared/css_utils.d.ts",
-      "sha256": "f0bed3268eb55523631b5c178b1f178d05cfd89024ad01321b71a842a789d832"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/shared/image_utils.d.ts",
-      "sha256": "c66b591e1faa8d6672aac5f9c45df8937e0c25539d8a02e641085e5ed4c2dc45"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/shared/internal_evt.d.ts",
-      "sha256": "0029d260739f482c55e703ffa42ba85fda782309b63ccfd2dd3375d8beb7a902"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/shared/math_clamp.d.ts",
-      "sha256": "d0d901c56e02004e6a31e49f51a08293f54ca7faa0fa1cff4d6a01cac24b2644"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/shared/message_handler.d.ts",
-      "sha256": "ea883ecccfc4a10851d2b148690398dca489f564b937c693b1cd4578b76b78bc"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/shared/murmurhash3.d.ts",
-      "sha256": "1418f74ab5cd9ad695ff51b17174667109acdaed54d2b20e93798cada918b354"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/shared/obj_bin_transform_utils.d.ts",
-      "sha256": "9dd51eabd9005d02b826ba6539287e304f565678dd01ac2d94e83fefb9867beb"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/shared/scripting_utils.d.ts",
-      "sha256": "c58fd6146bb0dcb60ae81370e3ea6e0eec94f67e52256a511659c7511f59ae1c"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/src/shared/util.d.ts",
-      "sha256": "a78f23fcaff6616c6fe9b2f54f688c06cb782273f89a959ede02b20f0860f27d"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/web/annotation_editor_layer_builder.d.ts",
-      "sha256": "65765b4eec23d896328fa82cceaa4a4781c46a6143824c96dc3e413b17a24939"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/web/annotation_layer_builder.d.ts",
-      "sha256": "deea8fe37dbaad0be688ed23afa8169e02439a89486b152a39ec96838bd8c85b"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/web/app_options.d.ts",
-      "sha256": "6b030ac3774f1591accb096f5f563dab8752dca3be09d7020991a48f512d1495"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/web/autolinker.d.ts",
-      "sha256": "55f096f8e3040eedd0dc8d22bd2411fbaa87ed941ca43e61fd8176b69c2373ca"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/web/base_download_manager.d.ts",
-      "sha256": "7354af961c75ecf99a1baa62657a9a9b04af1bb503c1d2bb8d6b4cae270c77e0"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/web/base_pdf_page_view.d.ts",
-      "sha256": "03c825b842ad07eca2a75565cb4324826072eada9753365a7dd183da7645ac64"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/web/comment_manager.d.ts",
-      "sha256": "31170205d4db6086561abc7ca5a80740b0fd4c33b925f14f470667dfc11e110d"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/web/download_manager.d.ts",
-      "sha256": "368e77d014cfcf98d10a5d744bb8c1a86cff7befbb51ba18004f01ce4bd65e93"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/web/draw_layer_builder.d.ts",
-      "sha256": "24fd34868f78ba9e7bbdb6875a353c7c8726cb34d92c6ee7021f4d2a91c3816a"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/web/event_utils.d.ts",
-      "sha256": "589e25d75ad4bfcde6e6058db0bc3264b95b1e7d1866c015042c6853de78edd4"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/web/generic_scripting.d.ts",
-      "sha256": "a1c7f498a9b1c9f39f96652c9682a69c0b1cff8df3fbe91b739ef798ea0f593e"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/web/genericl10n.d.ts",
-      "sha256": "eb2829cdafffaaa1549a287a583c98cecc2ced5749f4121a1bc7e1b3ea7e2c95"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/web/internal_evt.d.ts",
-      "sha256": "69f11323c859cfc110c3dba74eae301755faae88da0af500d869b7b84f90dd40"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/web/l10n.d.ts",
-      "sha256": "28628cfe6ec6d805c544f2ed16b471da84a98fd902b74155a44b4d1b86094dcb"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/web/menu.d.ts",
-      "sha256": "b72b670b0328ed6b3558386d6ba3fb711b66839575df422e2ba4c2ed0b49a64c"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/web/pdf_find_controller.d.ts",
-      "sha256": "832346d635783b595b6532d76b9bb35587f18bbfce41c77de7f45a890ee97ec8"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/web/pdf_find_utils.d.ts",
-      "sha256": "9c48e10d673a1bbaf0db30e7ce06b4acff2bb7969551dddb73c365fedc2a51c2"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/web/pdf_history.d.ts",
-      "sha256": "869da4c6dcc94eb7beb2e3120c56b552a34e751828d8f55188e542d70c16addf"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/web/pdf_link_service.d.ts",
-      "sha256": "fead4204ff7a4be81b5b7863948e0049a270743db2ad1538ac3df78e00b79305"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/web/pdf_page_detail_view.d.ts",
-      "sha256": "bd9679cbcd3d43aeda9a4c7b290fc605e7bfbdae775bdb52fcd6c23a9e6a2643"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/web/pdf_page_view.d.ts",
-      "sha256": "a3c4dafd22c781ea4ce7ccb22af5c5ba8a9be69280af020a29db099f5d110d07"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/web/pdf_rendering_queue.d.ts",
-      "sha256": "09f8c88d9b4ed209d25ce2dc731698972b91aed2fff1fec0a2445f1bbcc67185"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/web/pdf_scripting_manager.component.d.ts",
-      "sha256": "e68c0160c90b14d4b56de5a511770d86d0df85c482248840fa7972520b5291d6"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/web/pdf_scripting_manager.d.ts",
-      "sha256": "5a96a867e66d5d0572c915d09a36ba9cb3d67bf13df0388c3e1870322abb5301"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/web/pdf_single_page_viewer.d.ts",
-      "sha256": "670de16502dfdb66b259b73fb7fe3046128a5d15cd4ecc91d4a357fc9da21ee1"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/web/pdf_thumbnail_view.d.ts",
-      "sha256": "4d79b52b12f431c790cf67a2803413dc883b0b092bf86a704fdbb5edae4913dd"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/web/pdf_thumbnail_viewer.d.ts",
-      "sha256": "994c08620cd9df15b69ef8713c6dc3ad3d5af1e3d52d69ccbcfb6558dc553f51"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/web/pdf_viewer.component.d.ts",
-      "sha256": "73d6ea0095cac548d6e161e640c429ad1de26399ac45842497641dd89e85da8d"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/web/pdf_viewer.d.ts",
-      "sha256": "ab7c7c48f6a3d3f2db49332de9069ccccee35087120cc24dbe20da3a17abd6d2"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/web/renderable_view.d.ts",
-      "sha256": "ef4819bc5b8b12c843323ba3e618d10ca35f2d8b6a8e99d70ce7072940843311"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/web/sidebar.d.ts",
-      "sha256": "c20591639b21c3751f8210654ab1c88ea850565bb703aab707d7ee319c1f23be"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/web/struct_tree_layer_builder.d.ts",
-      "sha256": "796e95799fd64c99effb4d57f01eb834e9a8b6909d06851d521158de88e1b8e5"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/web/text_accessibility.d.ts",
-      "sha256": "937f87dae6d313bce5e4fe2ca59e22c2de544e4b700ba4f32c5df63aa66c63a5"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/web/text_highlighter.d.ts",
-      "sha256": "df180533f2f1ba79735d3d0547ad025b1646641ddeb31d0177ae74932843bf1d"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/web/text_layer_builder.d.ts",
-      "sha256": "afb7f4cb408a5f498dc11c7506e399167d8f001f386fd534e3cfbd229f55e92e"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/web/ui_utils.d.ts",
-      "sha256": "e4b1f02aed111c77546ffdd39c7d3383dfaf885a4ce5397fe718ee465edac669"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/types/web/xfa_layer_builder.d.ts",
-      "sha256": "326f4256b5c797bf4dee707f64ceb8b7953e55d8c9f6bccf7e669b138885d81a"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/wasm/LICENSE_JBIG2",
-      "sha256": "9e66b7f1b934a28b37f3bc4dac97915de1674271e79a0a88182a18ed9731b4d1"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/wasm/LICENSE_OPENJPEG",
-      "sha256": "a6af136f3e15038a666b61f376612a07d9a4e48cb7c01adbf3e33b3f14ab49b6"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/wasm/LICENSE_PDFJS_JBIG2",
-      "sha256": "aad3cce09842e00e9e11ad5e8fef8cc02fbc3a3768fe2f007443b9cee37aaee5"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/wasm/LICENSE_PDFJS_OPENJPEG",
-      "sha256": "717fc62da03292dbb4dd0c8280bd4ce7bb8550dcf31d772bc93455fb50313425"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/wasm/LICENSE_PDFJS_QCMS",
-      "sha256": "508a77d2e7b51d98adeed32648ad124b7b30241a8e70b2e72c99f92d8e5874d1"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/wasm/LICENSE_QCMS",
-      "sha256": "36d847ae882f6574ebc72f56a4f354e4f104fde4a584373496482e97d52d31bc"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/wasm/jbig2.wasm",
-      "sha256": "466f45c2a61a698152fb5400c27e56ff2ceb73dcb71fde3fc366a502308eaab0"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/wasm/jbig2_nowasm_fallback.js",
-      "sha256": "68686ced624a48c42f84cdaa482ec44b72b0de4dc84a0df903af1fb7b45b5d9a"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/wasm/openjpeg.wasm",
-      "sha256": "95e5002597af0824004aa57b1900fe019715db389e37640b1e58395e42f00cc5"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/wasm/openjpeg_nowasm_fallback.js",
-      "sha256": "9047b34b6bc142d85e4b0aa1b08b0b9baad4c6f8b7ac87641b9e8f90eb6fd23e"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/wasm/qcms_bg.wasm",
-      "sha256": "663d86126d5f5fcb1c61490f94353e2a8375660b8c5498ab3ebab5a34b08800e"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/wasm/quickjs-eval.js",
-      "sha256": "fe7930418e869791ce892567dbd0bc4698152b7e550b5cefa553992c56ddc325"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/wasm/quickjs-eval.wasm",
-      "sha256": "7bcacc9f22cacf7e9b23866d2a6d1639693d40c7f144e41b7c69ed37ba9cbe8f"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/web/images/altText_add.svg",
-      "sha256": "1a9591a23999e1924438b948a9f9671147f04e01e5be724391a3a8a2b58289d9"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/web/images/altText_disclaimer.svg",
-      "sha256": "5d19067a6b51e5bcc2d61325033a8450d301535505a97c50f4141f4cd9e2cf05"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/web/images/altText_done.svg",
-      "sha256": "5b40360d098d1a93227a0a5cdb110f6e5ff3a3eb4af97b61e856c49e17141621"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/web/images/altText_spinner.svg",
-      "sha256": "4089182e21627182ed1d4020978b597d984fb8de4cf547e9f4ac2aec9af13179"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/web/images/altText_warning.svg",
-      "sha256": "07264f4de78a45a4177ddefb48837217aa69b51462ef5b35d3fb9f90000c9ead"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/web/images/annotation-check.svg",
-      "sha256": "9a680f1212888ede7dcae6bfc8cafc447babf4ce531271c8d07277b0aedade96"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/web/images/annotation-comment.svg",
-      "sha256": "c58b385b4a0be6de822a3262b8191073d1730f6420368bd9c6d80db7312327ff"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/web/images/annotation-help.svg",
-      "sha256": "74d9bba0814d12f5ae2715189e1747b7edf5ff6d82c4ca75bae86d717319b6eb"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/web/images/annotation-insert.svg",
-      "sha256": "b2153e2c88c62179029ea9876d463216529ecf581b77d52c971a2cdf3d3166c6"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/web/images/annotation-key.svg",
-      "sha256": "5772b8dd158b0f02bb2be689bb680f4903d84e202cb29a3dc0560af53134c6ba"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/web/images/annotation-newparagraph.svg",
-      "sha256": "a583cca122263d94c3eebfefe83c965a1b305b9c84e5aa3c5ba10527941db7db"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/web/images/annotation-noicon.svg",
-      "sha256": "76399e70d311834d11ab2d6239118b36847d79a78d7655b1f839d51c811304cf"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/web/images/annotation-note.svg",
-      "sha256": "11a75c9f233dd3e5e3500edcdd733358394f28395337616e8b0430694bf0dba1"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/web/images/annotation-paperclip.svg",
-      "sha256": "0213c8baed4f8c497881ffed0e49abb309291d51725aaf1a0a757174b4999368"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/web/images/annotation-paragraph.svg",
-      "sha256": "efbcd2a6cfb4581dad74a1c09ad43cf2b8245611e5b19c966317da948f2bcb7c"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/web/images/annotation-pushpin.svg",
-      "sha256": "22197186d18445959e5fe5577d8e34440b31d87c811daf47318078310c0c5530"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/web/images/checkmark.svg",
-      "sha256": "424df6b8515df22424c9505a9e87d35d87d3fd59962d56692fcc4d17613f2165"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/web/images/comment-actionsButton.svg",
-      "sha256": "281b2348ed747ea3ee74763a01d56441d8c570b3e68f11556dc4084a14484d1f"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/web/images/comment-closeButton.svg",
-      "sha256": "fdb819984e10758952bc35b5be3220538b21a787656794b1071fecd3d2648930"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/web/images/comment-editButton.svg",
-      "sha256": "e79c41bf53a89ced9a3ad364a49943813189d06fd96174952e5fb2636938b70f"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/web/images/comment-popup-editButton.svg",
-      "sha256": "857c0198bc536885f2b486353d5719d0c1bb91d69325474f7d787ce5b43cfe1e"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/web/images/cursor-editorFreeHighlight.svg",
-      "sha256": "90b04428328a67e184fe1b1a1f28cb0d62bf6e298614ca241b6564fb24cb9e7e"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/web/images/cursor-editorFreeText.svg",
-      "sha256": "fedb05ee0dd510514ed9edb24b3b4da2707931279a0bf48e2a1deb3a1f4cf581"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/web/images/cursor-editorInk.svg",
-      "sha256": "0ae889debe01269b49b89d8845995281223b8ae289405758631076b763da3efe"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/web/images/cursor-editorTextHighlight.svg",
-      "sha256": "c6252b0edcb68dac87557a027180fcbdbd93466841aa34792530f7cce54cec5d"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/web/images/editor-toolbar-delete.svg",
-      "sha256": "f1f47a2cb479a87807f9bd61bd5813c1fe857dbbcb4fb35ae7a77ca39114f920"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/web/images/editor-toolbar-edit.svg",
-      "sha256": "c6eacc709e4dd30a57120b6531856c003a4c931c46656c3625e2fd5886cf4ce6"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/web/images/findbarButton-next.svg",
-      "sha256": "3029879b7e1060d54c4edcfe0c93c8c3b8c1756fb794e5d4add64028b5f99fab"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/web/images/findbarButton-previous.svg",
-      "sha256": "766d12bb08b9f13c753d289f3c029f5ca202eda3a8be52afc9e31697335f4a80"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/web/images/gv-toolbarButton-download.svg",
-      "sha256": "010d9d77a425e80eb666a196f500cdd8b15758af69a19ad7f11279b78c29e3f5"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/web/images/loading-icon.gif",
-      "sha256": "483c4a0396691993a641ec409c44b8b7e1daab0ae7e2b2944c4bc59520bb7655"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/web/images/loading.svg",
-      "sha256": "7d6e14cf6226c74c26e2141180eadc944ef4ce8565e9b6dd2670ec202417a764"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/web/images/messageBar_closingButton.svg",
-      "sha256": "7393c7791916243eca6bbdda8bf137d36600fffc76d7a55d33a77bd4e7778193"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/web/images/messageBar_info.svg",
-      "sha256": "050e838b982b1b3e993e06bd666f8693ea98e89fb568c39c4af32e128477aeef"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/web/images/messageBar_warning.svg",
-      "sha256": "888a4bf2ad5150028663dde01fe71599336c87ca12697180e51bd8a13b88084f"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/web/images/pages_closeButton.svg",
-      "sha256": "03577a1fc1fc16be0331c65d45accc4d57c269381999e00b2bec9005225a7643"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/web/images/pages_selected.svg",
-      "sha256": "a66ae84122fc40cc1282c68205909387e05a80061b9a7268a54b4bd0c9e7e2fc"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/web/images/pages_viewArrow.svg",
-      "sha256": "409d9a306df6e86bc433365f961be50c9b4256b7a89b741f2f858af5b456b2ce"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/web/images/pages_viewButton.svg",
-      "sha256": "f49c2ddd994c602dcaceb3c6b1445ef37bfd6ca8e2cb468d894741368c3344af"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/web/images/secondaryToolbarButton-documentProperties.svg",
-      "sha256": "735a4bc556610bc6dedaa40a36ccf444c31032be02ad20df5ac4c66ebaa5bbc3"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/web/images/secondaryToolbarButton-firstPage.svg",
-      "sha256": "d46a7b0760fbc043a98f9b328f6b4ee56df8de140a2a290f0e2a915ff772e287"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/web/images/secondaryToolbarButton-handTool.svg",
-      "sha256": "e968339ba921e68d4d83e6ec7a4321f1791c86f4eff552f28cf4c81c6f88155b"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/web/images/secondaryToolbarButton-lastPage.svg",
-      "sha256": "4cc4b92888b776ea3a09d5e86b17d7bb50a8f3e6d09854d4c2e3f050c34dc9f8"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/web/images/secondaryToolbarButton-rotateCcw.svg",
-      "sha256": "7eb24492df9f42c8ab053cbead5d985b0daaccced649392d1fbfde4931459451"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/web/images/secondaryToolbarButton-rotateCw.svg",
-      "sha256": "03d2e7bad2fc95895334e43edf34309a64223f32504304034eb1f6b163954898"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/web/images/secondaryToolbarButton-scrollHorizontal.svg",
-      "sha256": "c61fb184d5311255b627a9943c156bb1f00f835282d832241e01a7d82a22b678"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/web/images/secondaryToolbarButton-scrollPage.svg",
-      "sha256": "e60ae21987a2e6e5352ac3171363352cac9d2cae36bf828d1729cbfa286e085d"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/web/images/secondaryToolbarButton-scrollVertical.svg",
-      "sha256": "79871e2329cbb4dc2b6df94aae5f3074b3fdebffba46fe7d3ade9aff5726bfb0"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/web/images/secondaryToolbarButton-scrollWrapped.svg",
-      "sha256": "8734aa2747f6fff9e8fd09f6e9509db43ec1b63935c8f6b8291e9347bc7e2706"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/web/images/secondaryToolbarButton-selectTool.svg",
-      "sha256": "332e08979379ff2f8a7bfd336e8ca6348546c78ce2a6bf464cd31dc2c64004ac"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/web/images/secondaryToolbarButton-spreadEven.svg",
-      "sha256": "ac385199d448c0d5ae5d4c06d2c76db0a31bb5db54d0fbd727f3dc889e73271b"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/web/images/secondaryToolbarButton-spreadNone.svg",
-      "sha256": "649934c2f447d7a239d6ffce8f8e0804b50dfe1d9421a1d16e9543c0aee9b03e"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/web/images/secondaryToolbarButton-spreadOdd.svg",
-      "sha256": "43b6862d35f86dbe5fec6b16e2cb59ca22c490bdf0787e4590c1ceb494d05244"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/web/images/signature-properties-row-check.svg",
-      "sha256": "3fe9e7e5869e80c04e560ec79e8960ed0f3e918195b6de2b039bd33fb23ecf0f"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/web/images/toolbarButton-bookmark.svg",
-      "sha256": "f2a335bc963e95344d26d61157b1511f5f78d705b38579004971d51a3c62401c"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/web/images/toolbarButton-currentOutlineItem.svg",
-      "sha256": "5f6505f05dbc728301942b37de22d490f09276e6c9a6561b1894afa91f34439c"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/web/images/toolbarButton-download.svg",
-      "sha256": "afa286c8ea1941eaec589ed6a2103c5a845f3ff76a7423ba985f449465005163"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/web/images/toolbarButton-editorFreeText.svg",
-      "sha256": "9ec2202e18ba668ee1753179afead4e1786eac82da2cc82afc5a09584c242c43"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/web/images/toolbarButton-editorHighlight.svg",
-      "sha256": "df0aac50621777fb63da60b38c71c5bbbde746c4dd55c30dd141621cb30b7cc4"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/web/images/toolbarButton-editorInk.svg",
-      "sha256": "081bf99d3c2390036a2d9c7e9485316bcd049f90a74e982f1eebcfd4d9b178e3"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/web/images/toolbarButton-editorSignature.svg",
-      "sha256": "32e07998fd55a7ed40ec2b542fe324ec097d9023fc4c59d6debe33becdf215c2"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/web/images/toolbarButton-editorStamp.svg",
-      "sha256": "18294793f2399a8a44ee246d63b20cd46cb3cd38a1bb72f00b826e7f756c5f52"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/web/images/toolbarButton-menuArrow.svg",
-      "sha256": "2db41f97615a8c912f676a62c88b12e2b8715f4ed188df325737423501aa4a8a"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/web/images/toolbarButton-menuArrowNova.svg",
-      "sha256": "8677b09af730ba49dde7be6f16d08a0b4eb594ed3402f9693e298223d3e9efff"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/web/images/toolbarButton-openFile.svg",
-      "sha256": "7acb9e9964dd618bfcb657d8d18db2c55ef8f168c37f3873c06d72c63e1b11ec"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/web/images/toolbarButton-pageDown.svg",
-      "sha256": "09a14cbd902aad9fe40f2351db2ac5593ad897aed8810b9c6aeb0e56389ff100"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/web/images/toolbarButton-pageUp.svg",
-      "sha256": "bac79138cb730c6bfa63bef02d7e5906aee727bb54df15878823426822badaaa"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/web/images/toolbarButton-presentationMode.svg",
-      "sha256": "2a08e4277e39a9faef69520570744650bb017c2e90fe7c15224144d6b4abfbe7"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/web/images/toolbarButton-print.svg",
-      "sha256": "267745d6c176afe038630c3f7c0fcda78141fc7634f73898ffc6cbb1262c77ab"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/web/images/toolbarButton-search.svg",
-      "sha256": "32889acafd84edeec513db6131252fa97ffff00fee6272d05e35e2d95216e30f"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/web/images/toolbarButton-secondaryToolbarToggle.svg",
-      "sha256": "ff717321d89309f51bcccc28f347e6a888e73570527845d6560a84f5d70cb3a0"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/web/images/toolbarButton-signaturePropertiesError.svg",
-      "sha256": "957d6ce5e6c4a62f88ad0e79c50b6ccd94358524a7450d3b04eb318146a46351"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/web/images/toolbarButton-signaturePropertiesVerified.svg",
-      "sha256": "ae9f3a3e7e8e16900e6b2dbaa7acea0111763b72125246e55b572f4e9e66bc16"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/web/images/toolbarButton-viewAttachments.svg",
-      "sha256": "e07fbf17b3c7ca2cda9c4e54cdd66cb0aa63d368232cbb2c9aed5559720bf96c"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/web/images/toolbarButton-viewLayers.svg",
-      "sha256": "e0b8a59c272dc9a1d9a07d461363f96c3b3bd3df2db778f8f99743dfffd51d78"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/web/images/toolbarButton-viewOutline.svg",
-      "sha256": "eeb6cd0ce94dcfea6bd2aca222da7b1583d74800ea9c94640ff8fa06c13fb044"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/web/images/toolbarButton-viewThumbnail.svg",
-      "sha256": "5fa35769db66b33d6408f378e8aa68fa060331f0cc9dd6ad41fb7366082aad34"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/web/images/toolbarButton-viewsManagerToggle.svg",
-      "sha256": "88098d3e47fd921122c5263dce50ee67c662c9cb65908be0481891dfe521a6c5"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/web/images/toolbarButton-zoomIn.svg",
-      "sha256": "722dfe315686a5841d0a0d00f34df8f706d2c6e24551d46a5ebe971fe4af62d2"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/web/images/toolbarButton-zoomOut.svg",
-      "sha256": "366a40c3627e67f97164976d5ff38b5484716e834d08fefe252a6ea37feda895"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/web/images/treeitem-collapsed.svg",
-      "sha256": "37c96d0dc2f626c541303a76067184ac09614f2390a8430e973a84e5184e2646"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/web/images/treeitem-expanded.svg",
-      "sha256": "df4a149c4eaed4573620621087f7bab816f049e3e341574654fab598435db086"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/web/pdf_viewer.css",
-      "sha256": "1f3c7c3c692d4da2334d0386d2286ec040a37db8654e02b8704b11262bc9bf49"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/web/pdf_viewer.d.mts",
-      "sha256": "85ad88b315ef15eff4fa2311c4a1d29aa77e1db0355de822a14cb007c2b713b4"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/web/pdf_viewer.mjs",
-      "sha256": "2e112bf95cf962bcc9d3ace10d5bc74b3c5095245baa3eacd6bbbb9fc9a940a3"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/web/pdf_viewer.mjs.map",
-      "sha256": "75ce71f117128993de8d80d556daa118ec065270384eaa67b5e9e8d28e5da87a"
-    },
-    {
-      "path": "node_modules/pdfjs-dist/webpack.mjs",
-      "sha256": "eac3e389a6200bbfdd5006caaa71a59c26bb5df2a358f90eddbf5c63b67ea450"
-    },
-    {
       "path": "node_modules/pend/LICENSE",
       "sha256": "7e64acffcb0d20d33f5a86949ffd4a99ae045b10c7332a9c3a58635876c16880"
     },
@@ -4908,26 +2629,6 @@
     {
       "path": "node_modules/require-from-string/readme.md",
       "sha256": "969286b710026d911ed5e09e5bdca2dbf1c921662defa2ad3a1b3760a0bdb213"
-    },
-    {
-      "path": "node_modules/saxes/README.md",
-      "sha256": "ade6061f7c778cdd868d9b0f711530e4c1ec1f33767222ce33bb05e295bf6f0c"
-    },
-    {
-      "path": "node_modules/saxes/package.json",
-      "sha256": "32052572b41c2a890ed0854798c48454cc5991dcaafe5fb1718a4253046acfd3"
-    },
-    {
-      "path": "node_modules/saxes/saxes.d.ts",
-      "sha256": "a795d722f71f114bbb73ad6fbde87c11e3b64af808f91183e1db601ff456d37f"
-    },
-    {
-      "path": "node_modules/saxes/saxes.js",
-      "sha256": "d00e2ba27ed7d6ac961d03ff14d6b8c0eb5bf063ed2c996c22c6df06ac121423"
-    },
-    {
-      "path": "node_modules/saxes/saxes.js.map",
-      "sha256": "bf0ebc4bc6bec1a50bf91fab8b5460212e753becea10409082edac58fa8c7d6c"
     },
     {
       "path": "node_modules/skia-canvas/LICENSE",
@@ -5034,78 +2735,6 @@
       "sha256": "c032c2340f0b2e26f6c7abcaf1435b6d82ff7498c163f8c229622ae9e7cd7276"
     },
     {
-      "path": "node_modules/xmlchars/LICENSE",
-      "sha256": "45d196313c2647d313cc65ca9b093d2d6974b64d35ee7346f2c60c9d518dff2c"
-    },
-    {
-      "path": "node_modules/xmlchars/README.md",
-      "sha256": "eb05246b228f24bd82f40d1c80ac8d56afc6bc96731d188e013a41564e445bda"
-    },
-    {
-      "path": "node_modules/xmlchars/package.json",
-      "sha256": "a91c0b20003ff9399dde1de8c59681f1b6901c6fb1aac71780a3a876dc548583"
-    },
-    {
-      "path": "node_modules/xmlchars/xml/1.0/ed4.d.ts",
-      "sha256": "31a482a4cb8b5bfa0a0fa9cf21a405a2f510704c99fa9c492265facda534bca4"
-    },
-    {
-      "path": "node_modules/xmlchars/xml/1.0/ed4.js",
-      "sha256": "7ae981a2801658ff2eb92d418c000376381044a5caed40392fea9ad38c9d08c8"
-    },
-    {
-      "path": "node_modules/xmlchars/xml/1.0/ed4.js.map",
-      "sha256": "ae07b2d2592ddb2bad17126cfc6f40e11b5d085d4d51cdc796a626d9e3bf2c9e"
-    },
-    {
-      "path": "node_modules/xmlchars/xml/1.0/ed5.d.ts",
-      "sha256": "a8d1920a105bb364d37f471ac777e9d8972df98c5487bf9b0fab7043eb49e4d4"
-    },
-    {
-      "path": "node_modules/xmlchars/xml/1.0/ed5.js",
-      "sha256": "ea350479ab6f6553c0c3395c30ec440fb39821f6902081939831ddf1b5e8fd0f"
-    },
-    {
-      "path": "node_modules/xmlchars/xml/1.0/ed5.js.map",
-      "sha256": "458e372d99ae5c62cf95320f1df61ec4843a355bfd2e36f3bf8e67384ee5aa12"
-    },
-    {
-      "path": "node_modules/xmlchars/xml/1.1/ed2.d.ts",
-      "sha256": "764391775fc90a5904c833a9538f44012c83baf81116f2bb6c4cce2a182eca4d"
-    },
-    {
-      "path": "node_modules/xmlchars/xml/1.1/ed2.js",
-      "sha256": "461d5c71cc6076dc16aebbfd2d3c506481df5a74f43631d82372a6ffdc239d69"
-    },
-    {
-      "path": "node_modules/xmlchars/xml/1.1/ed2.js.map",
-      "sha256": "4dc036dc6f13bb07581fe268d6858f89074ed8ce971c38a1b630938100a6b19b"
-    },
-    {
-      "path": "node_modules/xmlchars/xmlchars.d.ts",
-      "sha256": "72dfe9bac2276537ab273ef47e017f3cd488d6df075ff7224903a80d37ba66f6"
-    },
-    {
-      "path": "node_modules/xmlchars/xmlchars.js",
-      "sha256": "d5024cfd86dc4624feda301419bb56f5f3bd2b63963c2bdf88aff7c6afb6bdf2"
-    },
-    {
-      "path": "node_modules/xmlchars/xmlchars.js.map",
-      "sha256": "7a1358ab44707d1d8a68d13453c01547ffe158a4929a56849bfc5f411ebed8cc"
-    },
-    {
-      "path": "node_modules/xmlchars/xmlns/1.0/ed3.d.ts",
-      "sha256": "8514561762de5684298a79453ea83e515af0d061710e64b2851ec89f3a4221d9"
-    },
-    {
-      "path": "node_modules/xmlchars/xmlns/1.0/ed3.js",
-      "sha256": "ff14ffa3a2cdfdd1b6077c4a8443dc949f53d5bb56de5ed89d4dbc5d9fdf08f7"
-    },
-    {
-      "path": "node_modules/xmlchars/xmlns/1.0/ed3.js.map",
-      "sha256": "2dabf94f8ae6eb305ed5c1b432f7a49dcd91f29b29cde05375d5c9f5dfa7e300"
-    },
-    {
       "path": "node_modules/yauzl/LICENSE",
       "sha256": "b303783d5eb7ca50b853ffa5f145e4e7998fab339831d848f507ca6cd970577a"
     },
@@ -5134,40 +2763,20 @@
       "sha256": "e25a8b82c2771af8446701009ad2a754e1eb615c45049eccfa7cddab75da39d7"
     },
     {
+      "path": "package-lock.json",
+      "sha256": "0a5dc7f22da359587731254f8d9c274303616df23583102fb2e7fd51104e95d8"
+    },
+    {
       "path": "package.json",
-      "sha256": "0356ae989c7a6352196f039755a7dd296e3379bc1b6e39242e9a3e01d57a2d68"
+      "sha256": "4dd05a0432f888426bf26055c33741b3feb36a90d3bfc08ae49984ea82ff66ae"
     },
     {
       "path": "prompts/README.md",
-      "sha256": "ce47f8ab713373a6fd3511c67383a0831348b196bbc52c7f379829cefcbda50d"
+      "sha256": "81fdd9d3bb5b0d8a0b1725e499d53cea2c6f1311eaff7d3e984ab8725aa80eb4"
     },
     {
       "path": "prompts/archetypes/code-animation-no-assets.brief.json",
       "sha256": "f39ff2779d5729b717fdcb219b2928acf2f545b1c52f0160b1f06c1aa1896596"
-    },
-    {
-      "path": "prompts/archetypes/director-plus-video-model.brief.json",
-      "sha256": "058d85aeb10afc177dc0436f361ebef2f6e85c6c8e45dad1e3e6b398d6bd50ce"
-    },
-    {
-      "path": "prompts/archetypes/education-explainer.brief.json",
-      "sha256": "fabc98c26b9755b177439ffe6b710c3c856655774da37dc62b7325861fe92828"
-    },
-    {
-      "path": "prompts/archetypes/existing-skill-trigger.brief.json",
-      "sha256": "1d4e204931eed66d228510f1f810bd4eee4ea428a1f8de8ed8c6630493fd3ef9"
-    },
-    {
-      "path": "prompts/archetypes/footage-restyle.brief.json",
-      "sha256": "9f0ed27f28f4027be48bebd2fc7689e0d5328e70c28b05d4c136f21655a3fa99"
-    },
-    {
-      "path": "prompts/archetypes/product-launch-from-repo.brief.json",
-      "sha256": "3407ac7be3d61afec62056c0c6ae7e6da8fdc04c42a4df619ccb3ce925d1c880"
-    },
-    {
-      "path": "prompts/archetypes/three-d-scene.brief.json",
-      "sha256": "314f155522df83aa2c1271bc09a5c9b7b4778188883ae123f8eaabe8319cf2e8"
     },
     {
       "path": "scripts/centering-qa.ts",
@@ -5230,38 +2839,6 @@
       "sha256": "5f014911759bf8ba3ca4984bf20a28f6f446393e7c4f0eccfb4df43082fa4cc9"
     },
     {
-      "path": "src/adapters/document-docx.ts",
-      "sha256": "08ba60643ff411d1d7f2746995a06fdd2f159fd6284816541d2b3ecd7ae4a4a5"
-    },
-    {
-      "path": "src/adapters/document-office.ts",
-      "sha256": "c07e204491b0fed0350ec0de1b1a9010d37ad7353681ff1a89bcd9c6922eacba"
-    },
-    {
-      "path": "src/adapters/document-pdf.ts",
-      "sha256": "8472d912905eb5cac9bf719e451779650e09590f0d65c78ca371cd4936642ac7"
-    },
-    {
-      "path": "src/adapters/document-raster-docx.ts",
-      "sha256": "8b533f33f8ae874211589e60a7cdaaaa98f5d286dce9467aa36d4f12189e44d6"
-    },
-    {
-      "path": "src/adapters/document-raster-pdf.ts",
-      "sha256": "d0dfebaddb7bdbaca443cea8267ea9e1bba261efc0c0f39002ec051cc3517b80"
-    },
-    {
-      "path": "src/adapters/document-raster-source.ts",
-      "sha256": "05050016eac4abed0ed9c3c8b3149a8475458d15e853b66c45dc99d7cfa95cdf"
-    },
-    {
-      "path": "src/adapters/document-raster-worker.ts",
-      "sha256": "f57130ae0727455c9c7c7a7321659976f0ee2f6ab79a6827e5988808de7c72e9"
-    },
-    {
-      "path": "src/adapters/document-worker.ts",
-      "sha256": "7c0235071f34713f583ecc5467592894218b584a38fc18f11f22369e4b329c13"
-    },
-    {
       "path": "src/adapters/import-files.ts",
       "sha256": "b3800081a51425842c56c3777599e5f963f350360693a3db23417f3d6455f37a"
     },
@@ -5274,20 +2851,12 @@
       "sha256": "e52518bbcdf3fc15ad00849b366c498fb09f2b43bb34125a3e52777dba72530a"
     },
     {
-      "path": "src/adapters/inspection-document-ocr.ts",
-      "sha256": "48d522b0c8e16db6aa206f9ec2e562586038a024fde46246dd1a70e196d78766"
-    },
-    {
-      "path": "src/adapters/inspection-document.ts",
-      "sha256": "1542a069a030c8e7a63d7a1ec3e25ae6c73dae199e6db9d680bc4596ef702799"
-    },
-    {
       "path": "src/adapters/inspection-ocr.ts",
       "sha256": "713fb934ead36dd7fafc4380bf2186a669234eb25cd3437dea2296185f2073ff"
     },
     {
       "path": "src/adapters/inspection.ts",
-      "sha256": "a7a510ee6dd5c51a31b897ad45b68ddf25ad2c13902352e79e2066904f456d18"
+      "sha256": "bc1db012c5f720adade47d0ebc594fed4a7385eac02dc643a09ea87e5bc9b26b"
     },
     {
       "path": "src/adapters/ocr-raster.ts",
@@ -5343,7 +2912,7 @@
     },
     {
       "path": "src/application/catalog.ts",
-      "sha256": "f3ebd2c3d2e862f88c41d88084177e0227ded09a2726c949d11d58a34e4bb624"
+      "sha256": "cf6fa9339ba250a1b372465b2f87fe240c6ac8a52e7d135e04e7f4e75a814363"
     },
     {
       "path": "src/application/delivery-context.ts",
@@ -5395,7 +2964,7 @@
     },
     {
       "path": "src/audio/lock.ts",
-      "sha256": "f4a7fe6e381ee5204002603e5d0e050b3de1e155c419e6b068f8918af35996ea"
+      "sha256": "381b2a21c47f37a8c5e580c079d7226161ad66011314a17b570a899fbc520add"
     },
     {
       "path": "src/audio/mixer.ts",
@@ -5463,11 +3032,19 @@
     },
     {
       "path": "src/cli/director.ts",
-      "sha256": "7fb9caaaf82f2f45028ea2d71a38a44f278eb07280fb10f8b468e32b03aa34e4"
+      "sha256": "64817e155005bb9ae383437810ab0d359d9ecde6cb14276fb0351bdd73273fc0"
+    },
+    {
+      "path": "src/cli/environment.ts",
+      "sha256": "6957dcc398299abce1adab498775961faede311ef13ed7845834e3a4b749e589"
     },
     {
       "path": "src/cli/index.ts",
-      "sha256": "5a5e0dc044de5f61a19d763f1936b664c07ff70a7546d897dc6283e442d30f8b"
+      "sha256": "7d09c5f1e32760d15c0f36f63b0f0fc478e3ab9c677180750c6c48e157150c56"
+    },
+    {
+      "path": "src/cli/media.ts",
+      "sha256": "79585bfb31fba6b32009efaa7efe4f166cd9fa40545a808cf03ab6a09ae6edcc"
     },
     {
       "path": "src/cli/postprocess.ts",
@@ -5478,32 +3055,20 @@
       "sha256": "57462dc85ef4ce6c2aa3236ef6427a16936ef8d6c764e53bff019c1f9d3c3512"
     },
     {
-      "path": "src/drawing/art/paper.ts",
-      "sha256": "9ab7f5408647be02bac3ce9b5b3a62e6d923087c109ebb0a50c5158e77a54801"
+      "path": "src/cli/project.ts",
+      "sha256": "410e8a91b610f5e3ce3457378db3a5881321d2b0a4dfc8e2799b74f45076e429"
     },
     {
-      "path": "src/drawing/art/region-paint.ts",
-      "sha256": "1b765f41e66cf72d751427b9a33d49c2469e1f3bfa0d914f1741cc8ce4938a9b"
+      "path": "src/cli/render.ts",
+      "sha256": "33cdd2ce4405a3cf2384bb7d70682daeb522f2f0ff2d4a017a724e053d33c2d1"
     },
     {
-      "path": "src/drawing/art/rough.ts",
-      "sha256": "e9a8ee0244c355e8f26db2df30e3ecf73978a96200de7e18502adcd35595ff24"
-    },
-    {
-      "path": "src/drawing/art/watercolor.ts",
-      "sha256": "b0c517eeaf00c5d536c908290514c133843a30523fd7f3c90cd7960e38422489"
-    },
-    {
-      "path": "src/drawing/characters/character.ts",
-      "sha256": "04827e512ef3953fdb2b96f20b5f631812ae262e1a34bf42bccaffa16c3ca294"
+      "path": "src/cli/shared.ts",
+      "sha256": "a07f3fc3382af05461f2901275298ea286fec392254c3e8ac1f95f7fc8d791d8"
     },
     {
       "path": "src/drawing/characters/personal-ip.ts",
       "sha256": "5b10d7d64c1c9e4e7ae148d545c9b6d84fa6208db9553c4884769bc9c50c0469"
-    },
-    {
-      "path": "src/drawing/objects/window.ts",
-      "sha256": "502b6665daa9ed5d4eb0a9fdc6112c147dab2bc06334246d7c671bc67785a0bb"
     },
     {
       "path": "src/drawing/primitives/camera.ts",
@@ -5535,23 +3100,19 @@
     },
     {
       "path": "src/drawing/scenes/motion-stage.ts",
-      "sha256": "a935a60c00c79f6c51b9b925869415daa3cc1df4bb12173f4f7cbd8b1a7e6086"
+      "sha256": "ac3256fb5aed82e2c6ace12554546db8250972bec601ba433dd101c494e19d18"
     },
     {
-      "path": "src/drawing/scenes/rain-window.ts",
-      "sha256": "7408697b5a840f81e3517d2d9364682903b1a8bb48de93b75c1b06e070d11cfe"
+      "path": "src/drawing/scenes/registry.ts",
+      "sha256": "b207ddf3c4148759e56a411d0cc4d02e55e243d2f97af0420a27eaad95b1f058"
     },
     {
       "path": "src/drawing/scenes/theme-stage.ts",
-      "sha256": "08d2aa0e79a7dc73c41d32aa76dddd2fedfdbc2af35e86126c228af5a4d3dc35"
+      "sha256": "e4cc9a3c479ff478acca8ef04b306b79843fa08417984b9eb9c4c7227e4937d8"
     },
     {
       "path": "src/drawing/styles/palette.ts",
       "sha256": "78c4a253e25c774996c47687e7a5bd3d33092471f881f6b5f45747851d9eb40e"
-    },
-    {
-      "path": "src/drawing/styles/watercolor-storybook.ts",
-      "sha256": "86da46377b50e85dfb7d5be1e53df1d780477f879dc32b6effff95e7ed2c844f"
     },
     {
       "path": "src/ffmpeg/capabilities.ts",
@@ -5567,7 +3128,7 @@
     },
     {
       "path": "src/footage/composite.ts",
-      "sha256": "eb7222dfb43096f9a8a0fd5137f37d3e66981a0a439c704d009228ff21bd20ff"
+      "sha256": "25a11dcf9762a926446a53ff920626d64ea67773f4e1d3785612c9a8f5af4132"
     },
     {
       "path": "src/footage/key.ts",
@@ -5595,7 +3156,7 @@
     },
     {
       "path": "src/pipeline/production-drawing.ts",
-      "sha256": "f357e087a19614acb5fb4d690bbfcd919252f1a5c156813bb00f3902e57f6359"
+      "sha256": "78e6e41a996612cb67480e678f83e36a1e9ca88689ced6a760b4d05639467bb6"
     },
     {
       "path": "src/pipeline/render-video.ts",
@@ -5603,15 +3164,15 @@
     },
     {
       "path": "src/pipeline/spec-renderer.ts",
-      "sha256": "082c5b01fc446e162e173f021c4142b60e85633dc976419155b89ec85fe6f0f8"
+      "sha256": "4897d1f144456951105cd5df342dc8deca38f0bbb22d6c55b722901c597f775b"
     },
     {
       "path": "src/pipeline/theme-transitions.ts",
-      "sha256": "f8d73745d6aabfdeb166a2c7a1fc13cee076caac434f59fec521bd633a48b1e5"
+      "sha256": "e08418d3b3f7d8a5f1bc8f564c12026eddb8db8e69debc2628df9cbaa5acf0fc"
     },
     {
       "path": "src/pipeline/theme-treatments.ts",
-      "sha256": "4deefe646e5a0f7f04d1197eb5db463c64bb10d8be446e65538dafa01788d75f"
+      "sha256": "1ed5932604fe687b784d3dd1e133699a73926a1fb5bb4ae64e23026a9e273c90"
     },
     {
       "path": "src/ports/assets.ts",
@@ -5650,8 +3211,12 @@
       "sha256": "9df5f26c8a7316eedfbf62701562e104b3042226dd633ba9275cffb9ca60e796"
     },
     {
+      "path": "src/project/catalog-legacy-policy.ts",
+      "sha256": "82d5ed7d2db3e39a2fe1fe7ccd6177f7c1b951c6a25bee73f0239ac43e657223"
+    },
+    {
       "path": "src/project/catalog.ts",
-      "sha256": "6a3df390d48f51dc073f86b7e979fa90047b6507e43c8458df30d1e87ecf4e14"
+      "sha256": "3a409e1967ac6f07151d6228b3f83a753a2a5c2461bffe4bd77927c2e04c50b0"
     },
     {
       "path": "src/project/delivery.ts",
@@ -5659,23 +3224,15 @@
     },
     {
       "path": "src/project/director.ts",
-      "sha256": "cefac16cc3dd64148f96193bd2e83928d3b1fbd7a5c5a88412dfe9e523676de7"
+      "sha256": "bb121a9b7ddde2a3c75e030be87ad00339532904b06fd6738fcdc87f914189ef"
     },
     {
       "path": "src/project/disclosure.ts",
       "sha256": "e92ce8c8d0922e1bb7527ab6504fc68c3e17e2a84bf0d790bff8038a13989807"
     },
     {
-      "path": "src/project/document-ocr.ts",
-      "sha256": "15f6c1f0ebe141d5f5e2ed25110c2920996a974b6abd85be931a270512ce6b05"
-    },
-    {
-      "path": "src/project/document.ts",
-      "sha256": "2a4f3b78e4a2a6f0da82aceb043ecadc93ece5f29ee000c9bc6f8bf6aa3b1fcb"
-    },
-    {
       "path": "src/project/drawing.ts",
-      "sha256": "037cc3f8d1715c5a4878d6f90aff409632650b266a736316b1a129f9fb5b116a"
+      "sha256": "f801db959ba2162fb83c52cdcdf77201f324afccf0c55376b3c332c457fa6376"
     },
     {
       "path": "src/project/import.ts",
@@ -5683,11 +3240,11 @@
     },
     {
       "path": "src/project/isolation.ts",
-      "sha256": "2554f1065b0276a64e48db176e9a36559e792fc0dad4cc1551d59ed49280ff3d"
+      "sha256": "56b0a4bb9c50ce25d4858fbe2dc41d834b3367ae3663b1b541430d27bba29eef"
     },
     {
       "path": "src/project/manifest.ts",
-      "sha256": "fe4b5b2a6012525705fc70261e281e259604ce0f7ccb56647235c8246bac3464"
+      "sha256": "f788a59f5d0f09ad9032b498107706bc4930838c0ee2749fa16d0452d1846ade"
     },
     {
       "path": "src/project/ocr.ts",
@@ -5711,7 +3268,7 @@
     },
     {
       "path": "src/project/production-timeline.ts",
-      "sha256": "9ee3a755119470f0279b3b50e394dfeed30b79d1c3f9543a896072ee2df8bf24"
+      "sha256": "96445a54ac98b7b8efd07c7feeab15c81020f1af6188350d44baa28d5055501a"
     },
     {
       "path": "src/project/production-view.ts",
@@ -5727,7 +3284,7 @@
     },
     {
       "path": "src/project/quality.ts",
-      "sha256": "3780b3b229c9d47fba32c564e9102b57e9cc59b4e5bc4b9e789423105e1fff32"
+      "sha256": "2b567abcdb9de3b495c0f6501d3f3e9d700b3f5c338c6025ba42b8b0ff121232"
     },
     {
       "path": "src/project/review-validation.ts",
@@ -5735,11 +3292,11 @@
     },
     {
       "path": "src/project/run-log.ts",
-      "sha256": "e6cb14f82708295cd9479c849bc679606ddb7015824379fc6e9c6acf060e79e6"
+      "sha256": "58b3e6eaa8a046060b7ffd8e2225517833fe38d760c72f34e34d3fd0d2e0903c"
     },
     {
       "path": "src/project/scaffold.ts",
-      "sha256": "a97d864a023df732922f1a546f4f5cdbbb06ce72a6120f2dcfbad4e066da30ed"
+      "sha256": "8f235ab859a58dc0febb7edc7c2ca80559ad70276c952629dedf57b6447e534b"
     },
     {
       "path": "src/project/schema.ts",
@@ -5779,19 +3336,19 @@
     },
     {
       "path": "src/spec/motion.ts",
-      "sha256": "4e63128bbb43a4291c43c916b8e829b83ae3052434e89f34391696423f36c0de"
+      "sha256": "254428ac6e9efa8b38c49eae6336ce66881186bce39514666a72a58014902601"
     },
     {
       "path": "src/spec/repair.ts",
-      "sha256": "ba667ed63c0af6f2dccbc6dbc7e0a87e47f5351c894adef8aa16bd0f0294b511"
+      "sha256": "ff8df719e8a039448cf8678c28ccd3916b995405ec28d9ea3106a986687fe6a8"
     },
     {
       "path": "src/spec/schema.ts",
-      "sha256": "6deda636b6d034c0463350a8bc703637d26f49cd7c0bd8b32fda1cff1adfd062"
+      "sha256": "b2b0c201ea71a211e57661a8152ae1fa80b97ccc301c37437fd5d9a0dc6ddf65"
     },
     {
       "path": "src/spec/types.ts",
-      "sha256": "d4e74453c56f107240b7c2b155fac4532617554b26d0ff69dffd1ee8bc63c562"
+      "sha256": "f5f1f7d11c306a460387cd257f4e6dc9250df962f9c4c6b8bdc4fd67c6abf622"
     },
     {
       "path": "src/spec/validate.ts",
@@ -5799,7 +3356,7 @@
     },
     {
       "path": "src/themes/README.md",
-      "sha256": "a0578a27e0f3e5ccecbbc7182b273c98f36a44fd374c232e9621d45486d9ba25"
+      "sha256": "58266aa47e87ef5795c9d42df3c35186d252f21a9cf756599c25582ef92c846b"
     },
     {
       "path": "src/themes/brand.ts",
@@ -5846,8 +3403,12 @@
       "sha256": "5bd5c7391c6b2b9e0d57c5795d1861ebcb7664e6414d5d5ff8971c60fe49ec04"
     },
     {
+      "path": "src/themes/transition-ids.ts",
+      "sha256": "aec21a0ea9930f3fb7bcfe8c15120460a7de9fecde32e6c3f20a76299696ef91"
+    },
+    {
       "path": "src/themes/types.ts",
-      "sha256": "b0ce87bdcb612c8bf745bb8a326195fe72d0fd7fad1d8663c95e067a27b0de95"
+      "sha256": "5b8defa40374eff8a7e5ccf893fad7519e32869e7302027fbfd36308e24b6ca3"
     },
     {
       "path": "src/themes/validate.ts",
@@ -5874,6 +3435,10 @@
       "sha256": "6185d15291b1a98b1bda163a55d140c5db4db15e62bbc78ce758c3b3c00751c0"
     },
     {
+      "path": "src/utils/json.ts",
+      "sha256": "511759ee42bab645e64ea70e3a56fa8d6d475798e6c5690ad41182d0268ead18"
+    },
+    {
       "path": "src/utils/output-dir.ts",
       "sha256": "9739da3fbd7e40e3a0b30580f1da3975cce3a1fc30ca7eab324610c88b822308"
     },
@@ -5883,7 +3448,7 @@
     },
     {
       "path": "workspace.mjs",
-      "sha256": "2428d8ee59d1ce22a981c0e9bc611dfa373df5d546853109c6837c0d236b6f88"
+      "sha256": "1b1edf7a9dd926a2b10a7e6748a93114a4fa54c746426161f51006a7978b434f"
     },
     {
       "path": "zip-dependencies.lock.json",
@@ -5917,7 +3482,7 @@
     },
     {
       "path": "archetypes.test.ts",
-      "sha256": "8f2c14a9dcaa573ab83eeef10eb75ccfddf09e7307dcd8abda7797c4d060126d"
+      "sha256": "b5fddc122f7f257e3e6f8a310ac036322799d9ddd9d491a6e1b550a8e142fcd8"
     },
     {
       "path": "artifact.test.ts",
@@ -5969,7 +3534,7 @@
     },
     {
       "path": "brand-workspace.test.ts",
-      "sha256": "aa211c29e84165df24b018b393caf6b6f2bfbb66b08c365dbb768940034531b1"
+      "sha256": "86aa7e64db3bcd97c56dcd8eacfd4d9b243db0747e3210a86d8897d305eab907"
     },
     {
       "path": "brief.test.ts",
@@ -5977,7 +3542,7 @@
     },
     {
       "path": "camera-pose.test.ts",
-      "sha256": "49d9e6bf7a6e4ad3fc4da5c5d4bee34ae73b9ba61aef68ea352b315980b1f73f"
+      "sha256": "83539310f1897bc75a2815861c427ce1003f5dbd5d9ff3ea48fda1e8c8982b6d"
     },
     {
       "path": "caption-feedback.test.ts",
@@ -5985,7 +3550,7 @@
     },
     {
       "path": "captions.test.ts",
-      "sha256": "06479001b0b5da6dfb662f25d35212e5a9ca75bca331deaa0b73006928645f0d"
+      "sha256": "1a1598ce70bf070b90477d0d823742290efdc41efa1942b05db22444eb3f3a3f"
     },
     {
       "path": "catalog-asr.test.ts",
@@ -5996,20 +3561,12 @@
       "sha256": "85148dd83918cebbe87615a1f0a2b2f37d318d6111a28cac7ca72a9f461fc977"
     },
     {
-      "path": "catalog-document-ocr.test.ts",
-      "sha256": "3abd109b5f041843fa5a8595646a44e620faa486dfdf80623f89daf9f1528ff1"
-    },
-    {
-      "path": "catalog-document.test.ts",
-      "sha256": "e63c0f3b690950a16b88878b3b4debb51a0f5961e8f392cac63e24ae877f5db3"
-    },
-    {
       "path": "catalog-ocr.test.ts",
-      "sha256": "347da1a58b9e54ddd80b73c2f021e2588d401f0beea0a38509c64e1b3516e0cb"
+      "sha256": "18779e64a3d39dfd41bb184b4e27c21debd01cbfe8c593c0131c60b552ce61eb"
     },
     {
       "path": "catalog.test.ts",
-      "sha256": "9f4839887602a070112ccf933ec2450604973b05f828ea83d63fa5d575cfbdf6"
+      "sha256": "c3ee53fe914476ef352854613467e7e5c389b6aabd060949b82bdc40225b0345"
     },
     {
       "path": "centering.test.ts",
@@ -6025,51 +3582,23 @@
     },
     {
       "path": "delivery.test.ts",
-      "sha256": "43292cb86a991c16a97cc3ffdafde84f2bdecaf791060862439aad38ca30c48f"
+      "sha256": "2fb65522dfe1c09e8179c42a6640bec264f62391760d1008646105cf30cdfc4f"
     },
     {
       "path": "determinism.test.ts",
-      "sha256": "62e6ef3879458d854bfbc07eab231c6bfe60c15ac8c308e1feb05914ba9c9f8e"
+      "sha256": "34fe84ae8f6d744195242525aea6d4adcaa8e2ddc45c6edc19b2fd30d1326a12"
     },
     {
       "path": "director.test.ts",
-      "sha256": "3acd4a3c69037e0d00418385fc2dac55510597bdde5a128da7ccf462795dd029"
+      "sha256": "463295c3da8e44ba1323783bf757b381c0697718dfcaa8d8cd519bd1d6c7e037"
     },
     {
       "path": "disclosure.test.ts",
-      "sha256": "b8abcc6b7a5fee2a44db482fb5c3409b670c09f0c272846180670221d59e4336"
+      "sha256": "7469c0ba31e19b39c0230b19f4ce73a5dc0d93313a9a5556c3fdeefeef307a3f"
     },
     {
       "path": "docs-check.test.ts",
       "sha256": "a2dc33ae46b77b355a8a83ad723cd02d1b3e04a7e7d84881758e4e2b5c64922b"
-    },
-    {
-      "path": "document-docx.test.ts",
-      "sha256": "6cbeead0d845cbfb1f6de7be6ff5c28962c01544b38dc22bb5680d1dd4f9cecf"
-    },
-    {
-      "path": "document-ocr-contract.test.ts",
-      "sha256": "94b57134ca7da37ee7fc5405398cc28373fae1276dc17cfa477e2096f9236d39"
-    },
-    {
-      "path": "document-ocr-security.test.ts",
-      "sha256": "dcca6402fd5559dce5989f2201cbf1f988160afe76ccbf438e44dd4cd75939f3"
-    },
-    {
-      "path": "document-office.test.ts",
-      "sha256": "6ce6b6424481ea220ae37da2abce894bb7b8d68051f4ab869de59bdee6798077"
-    },
-    {
-      "path": "document-pdf.test.ts",
-      "sha256": "366d25b418e049dc7990be70ad3ae2aa10b75d6ff46407fe7714bd45ae29cdda"
-    },
-    {
-      "path": "document-raster.test.ts",
-      "sha256": "b706051a273dc50be5ed6666c720e44f02035aa55096c7e22d270c8761582cec"
-    },
-    {
-      "path": "document-security.test.ts",
-      "sha256": "53e96741b29a88aeace3982cb16d21511a8cb701a58f967a202274584d94caf4"
     },
     {
       "path": "env.test.ts",
@@ -6081,15 +3610,11 @@
     },
     {
       "path": "fixtures/canonical-scene.ts",
-      "sha256": "d7bc3d8a7fddb91644cfce303c3b8eab927def1e5bc1a159b252be2d649f0e4a"
+      "sha256": "01873aa633116118b92125aed22e152899ffcf3dc4808cd4c6c0b3da6993d8ba"
     },
     {
       "path": "fixtures/material-scene.ts",
-      "sha256": "f3c290acaacb0f3f47d44b913c4f31ad63ea895a6a80c401a2ad750be883ed03"
-    },
-    {
-      "path": "fixtures/office.ts",
-      "sha256": "a5f55bfd0197346944387d2c821d8604218783a46f7236f84d13034c05b848dd"
+      "sha256": "0c51fc2dac248c4f6a94999bc3f0db020adf4244f98d589008c4933b256f2d4e"
     },
     {
       "path": "fixtures/production.ts",
@@ -6101,7 +3626,7 @@
     },
     {
       "path": "fixtures/render-frame.ts",
-      "sha256": "748a79d9dad5e14423018915885f38df2df9c365c3d7d659536122db4084b33f"
+      "sha256": "8a5841c61f454de090f53f4fc1ab8a8671feb59b9a6aedb8b522d522a88c99f7"
     },
     {
       "path": "fixtures/render-material.ts",
@@ -6113,11 +3638,15 @@
     },
     {
       "path": "frame-diagnostics.test.ts",
-      "sha256": "ef4af9d671a94fab0c160e86d6fa7c172adcccdc28eae4fc004fb45cb9c85594"
+      "sha256": "060ef235f7d8bec4ad8e1a9e2adc43ba6888b8f0b3106f76e1be82aa9e2bc085"
     },
     {
       "path": "generated-footage.test.ts",
       "sha256": "651990bc2ee0c16ef9249e00896e35239e5c6e098cbad1573d58d5a20d0312d9"
+    },
+    {
+      "path": "guide-files.test.ts",
+      "sha256": "c6003b2fb3766d54b01a6bfdc532e67453bf3723aa44a156a4bdf35559cf94c7"
     },
     {
       "path": "image-fit.test.ts",
@@ -6136,10 +3665,6 @@
       "sha256": "39d28347ce08837c25c6f82a09af7cdd8230296b4b0c10e8ad5ca9621ee944d8"
     },
     {
-      "path": "inspection-document-ocr.test.ts",
-      "sha256": "b5f8ec58354837af7f428317e1d9e0032db60e6b2a711a67a2fce8c9760fc31b"
-    },
-    {
       "path": "inspection-ocr.test.ts",
       "sha256": "ae06bba66a4da56c17cca143d16408285ab2bb4f99e242f4b12531f3f063484a"
     },
@@ -6156,6 +3681,10 @@
       "sha256": "20567f957a57d04b825c9a70735608f09cdbfc59d1118814fb2908c6891407b0"
     },
     {
+      "path": "native-runner.test.ts",
+      "sha256": "f59ed4b571341f17364c9aa7f0abd90678148efba9bca057dfc5a73b3d07bac6"
+    },
+    {
       "path": "ocr-raster.test.ts",
       "sha256": "1ce3e6a460e6a7b34cd8d79f2b45cd20ba02e0bf35e8949f9f597a7bca15df27"
     },
@@ -6169,7 +3698,7 @@
     },
     {
       "path": "p2-independent.test.ts",
-      "sha256": "adb4698dfd08abf1b44fa13058cdedfa5329ca5e492de2fbaba35a0ad2fbe3ec"
+      "sha256": "2f7dd67b36f6aedf54e5f81caf725c7b626b7c770d8fc6a29eabaf82cf86c774"
     },
     {
       "path": "particle-assembly.test.ts",
@@ -6189,7 +3718,7 @@
     },
     {
       "path": "production-compilation.test.ts",
-      "sha256": "84419fcf19ca075c494f7d6070d28342e09b2d3764894f7ca1f545503394cb50"
+      "sha256": "0d778f43ba90f7520a7eaf86e2e219b3a911f430531162673f756a1c6275f79a"
     },
     {
       "path": "production-domain.test.ts",
@@ -6205,7 +3734,7 @@
     },
     {
       "path": "production-timeline.test.ts",
-      "sha256": "544bd4c126cfd49c857c6d4dd78757f7f122f234804e62371ecf7de4506a69b1"
+      "sha256": "47dab78955e32fd50784d6708a77e90b8e4207462a9220fe3ace38de910886a2"
     },
     {
       "path": "production-view.test.ts",
@@ -6217,7 +3746,7 @@
     },
     {
       "path": "project-drawing.test.ts",
-      "sha256": "b0f9c266cf678c8fd1e46feb60722c8ef5737cbe4e1f41bab34b0fcc75e58835"
+      "sha256": "c7593d209decc98397298ac1823ab46ad09e6cc4e8b6bd37d5dddb4d52761e14"
     },
     {
       "path": "project.test.ts",
@@ -6225,19 +3754,11 @@
     },
     {
       "path": "prompt-history.test.ts",
-      "sha256": "016e30ee8e2f30b76a35bd0b75dfc74b2e616cddecabdf149a4a7eeb9c67f165"
+      "sha256": "737b3734c7a11f2fb309cb579b90a2ce6d5ae6d82f5cda662c359c9c9f8c8f64"
     },
     {
       "path": "quality.test.ts",
-      "sha256": "08c634b9034bd305d59b5b5468b8e76114f86a14729eed79d4329475726c7253"
-    },
-    {
-      "path": "region-paint.test.ts",
-      "sha256": "9bb1de8e3c7a5f693d68549672b6dd85a6e6d9f6a7c074c6e069c66b76231420"
-    },
-    {
-      "path": "renderer.test.ts",
-      "sha256": "cdc52deccc73891a6d2588fdd42adbb9fed899a1b2f6ba8627111bcdf76a7994"
+      "sha256": "0165c8fa5426fb267c7da2c52556c12bc7ad460c9d762fdd83c87966e7a12faa"
     },
     {
       "path": "review-validation.test.ts",
@@ -6249,7 +3770,7 @@
     },
     {
       "path": "spec.test.ts",
-      "sha256": "ab7715061c2e52170a8a4e1157ffe2fdab7ef4913840ab425a0ec2ccfb490a39"
+      "sha256": "2b9c0fe695d9ebb2cc8bb1a24b36a442d80e0a47f745b9088ccb00d6cd522976"
     },
     {
       "path": "spring.test.ts",
@@ -6257,7 +3778,7 @@
     },
     {
       "path": "theme-pipeline.test.ts",
-      "sha256": "c0e76bbd7c92bc9c89cf1c3c98b7f10eeec21ec46cf874fe30a43d6bc56e32c2"
+      "sha256": "f3e932122584959e29a670c82e786ade7084e58b79be764a0358ed493b4f3dc0"
     },
     {
       "path": "themes.test.ts",
