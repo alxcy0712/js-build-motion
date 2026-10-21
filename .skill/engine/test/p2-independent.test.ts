@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { DEFAULT_DOCUMENT_LIMITS, DEFAULT_OFFICE_LIMITS, assertDocument, documentArtifacts, newDocumentResult, validateDocumentMap, type DocumentParseRequest, type DocumentMap } from '../src/project/document.ts';
+import { DEFAULT_OFFICE_LIMITS } from '../src/project/catalog-legacy-policy.ts';
 import { DEFAULT_INSPECT_POLICY, INSPECT_POLICY_05, INSPECT_POLICY_06, INSPECT_POLICY_07, LEGACY_INSPECT_POLICY, adoptInspectPolicy, assertInspectPolicy } from '../src/project/catalog.ts';
 import { validateAssetPlan, validateAssetUsage, type AssetPlan, type AssetUsage, type AssetConsumptionReceipt } from '../src/project/asset-plan.ts';
 import { DEFAULT_VIDEO_PREPARATION_LIMITS, validatePreparedVideoMap, validateVideoPreparationRequest, videoFrameSourceIndices, type PreparedVideoMap } from '../src/project/video-preparation.ts';
@@ -29,15 +29,6 @@ function receipt(operation: AssetConsumptionReceipt['operation']): AssetConsumpt
     selected: { path: video ? `assets/derived/video/${uid}/frames.rgba` : 'assets/image.png', bytes: 32, sha256: hash },
     derivedMap: video ? clone(file) : null, operation, frame: video ? 0 : null, sourcePts: video ? '0' : null };
 }
-function officeMap(format: 'pptx' | 'xlsx'): { map: DocumentMap; text: Buffer } {
-  const request: DocumentParseRequest = { version: '0.2', format, sourcePath: 'fixture-package', sourceBytes: 1, sourceSha256: hash, limits: clone(DEFAULT_DOCUMENT_LIMITS), office: clone(DEFAULT_OFFICE_LIMITS) };
-  const result = newDocumentResult(request, 'saxes+yauzl', 'saxes@6.0.0/yauzl@3.4.0');
-  result.units = [{ id: 'unit-1', ordinal: 1, status: 'complete', reason: '', text: '正文', locator: format === 'pptx'
-    ? { kind: 'pptx', slide: 1, part: 'ppt/slides/slide1.xml', structurePath: '/p:sld[1]/p:cSld[1]/p:spTree[1]/p:sp[1]/p:txBody[1]/a:p[1]' }
-    : { kind: 'xlsx', sheet: 1, sheetName: 'Sheet A', part: 'xl/worksheets/sheet1.xml', cell: 'A1', range: null, structurePath: '/s:worksheet[1]/s:sheetData[1]/s:row[1]/s:c[1]' } }];
-  result.coverage.totalUnits = 1; result.coverage.completedUnits = 1;
-  return documentArtifacts(result, hash);
-}
 function videoMap(): PreparedVideoMap {
   const sourceFrames = [{ pts: '0', duration: '100', rgbaSha256: hash }, { pts: '100', duration: null, rgbaSha256: other }];
   const command = { executable: 'fixture-tool', version: 'fixture', argv: [], exitCode: 0, signal: null, stdout: '', stderr: '', stdoutBytes: 0, stderrBytes: 0, binaryBytes: 0, elapsedMs: 0, error: null };
@@ -61,35 +52,6 @@ test('P2 independent: historical policies keep their identities and Office adopt
   const custom = clone(INSPECT_POLICY_07); custom.office.maxSlides = 1; assert.deepEqual(adoptInspectPolicy(custom), custom);
   assert.throws(() => assertInspectPolicy({ ...custom, office: { ...custom.office, maxSlides: 201 } }), /INVALID/);
   assert.throws(() => assertInspectPolicy({ ...custom, office: { ...custom.office, externalReferences: true } }), /INVALID/);
-});
-
-test('P2 independent: Office worker requests bind format, version and finite quotas', () => {
-  const request = { version: '0.2', format: 'pptx', sourcePath: 'fixture-package', sourceBytes: 1, sourceSha256: hash, limits: clone(DEFAULT_DOCUMENT_LIMITS), office: clone(DEFAULT_OFFICE_LIMITS) };
-  assert.doesNotThrow(() => assertDocument('request', request));
-  for (const wrong of [{ ...request, version: '0.1' }, { ...request, format: 'pdf' }, { ...request, office: undefined }, { ...request, office: { ...request.office, maxWorksheets: 33 } }]) assert.throws(() => assertDocument('request', wrong), /INVALID/);
-});
-
-test('P2 independent: valid Office locators and UTF-8 units preserve precise bytes', () => {
-  for (const format of ['pptx', 'xlsx'] as const) { const { map, text } = officeMap(format); assert.equal(text.length, 6); validateDocumentMap(map, text, DEFAULT_DOCUMENT_LIMITS); }
-  const { map, text } = officeMap('xlsx'); map.units[0]!.byteEnd = 5; assert.throws(() => validateDocumentMap(map, text, DEFAULT_DOCUMENT_LIMITS), /BOUNDARY|RANGE|COVERAGE/);
-});
-
-test('P2 independent: Office part locators reject another format root and crossed part roots', () => {
-  for (const [format, wrong] of [
-    ['pptx', { structurePath: '/w:document[1]/w:body[1]' }],
-    ['pptx', { part: 'ppt/notesSlides/notesSlide1.xml' }],
-    ['xlsx', { part: 'xl/tables/table1.xml' }],
-  ] as const) {
-    const { map, text } = officeMap(format); Object.assign(map.units[0]!.locator, wrong);
-    assert.throws(() => validateDocumentMap(map, text, DEFAULT_DOCUMENT_LIMITS), /INVALID/);
-  }
-});
-
-test('P2 independent: XLSX locator coordinates and ranges respect finite worksheet bounds', () => {
-  for (const wrong of [{ cell: 'XFE1' }, { cell: 'A1048577' }, { range: 'Z2:A1' }, { range: 'A1:XFE2' }]) {
-    const { map, text } = officeMap('xlsx'); Object.assign(map.units[0]!.locator, wrong);
-    assert.throws(() => validateDocumentMap(map, text, DEFAULT_DOCUMENT_LIMITS), /INVALID/);
-  }
 });
 
 test('P2 independent: need/use identity, selectors and crops remain closed', () => {

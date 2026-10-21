@@ -14,7 +14,6 @@ import { assertCatalog, adoptInspectPolicy, DEFAULT_INSPECT_POLICY, INSPECT_POLI
 import { validateOcrMap } from '../src/project/ocr.ts';
 import { initProject } from '../src/project/scaffold.ts';
 import { PROJECT_ROOT } from '../src/utils/env.ts';
-import { makeZip } from './fixtures/zip.ts';
 
 const sha = (data: string | Buffer) => createHash('sha256').update(data).digest('hex');
 const json = (path: string) => JSON.parse(readFileSync(path, 'utf8'));
@@ -151,23 +150,17 @@ test('independent catalog OCR item quotas retain previews and global quotas pres
   } finally { f.cleanup(); }
 });
 
-function docx() {
-  const w = 'http://schemas.openxmlformats.org/wordprocessingml/2006/main';
-  return makeZip([{ name: '[Content_Types].xml', data: '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/></Types>' },
-    { name: '_rels/.rels', data: '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>' }, { name: 'word/document.xml', data: `<w:document xmlns:w="${w}"><w:body><w:p><w:r><w:t>Fictional old text</w:t></w:r></w:p></w:body></w:document>` }]);
-}
-for (const oldPolicy of [LEGACY_INSPECT_POLICY, INSPECT_POLICY_02]) test(`independent closed ${oldPolicy.version} catalogs retain adopted hashes and records in 0.3`, async () => {
+for (const oldPolicy of [LEGACY_INSPECT_POLICY, INSPECT_POLICY_02]) test(`independent closed ${oldPolicy.version} catalogs retain adopted hashes and records in 0.4`, async () => {
   const f = await fixture(); try {
-    unlinkSync(join(f.selected, 'renamed.data')); writeFileSync(join(f.selected, oldPolicy.version === '0.1' ? 'notes.txt' : 'body.docx'), oldPolicy.version === '0.1' ? 'Fictional old text' : docx());
+    unlinkSync(join(f.selected, 'renamed.data')); writeFileSync(join(f.selected, 'notes.txt'), 'Fictional old text');
     const source = JSON.stringify(oldPolicy, null, 2); writeFileSync(join(f.dir, 'inputs/inspect-policy.json'), source); const imported = await f.import(), r = await catalogAssets(f.dir, { importId: imported.importId });
     const m: any = json(join(f.dir, r.manifestPath!)), adoptedHash = sha(importJsonText(oldPolicy)); m.version = oldPolicy.version; m.policy = oldPolicy; m.policySha256 = adoptedHash;
     for (const a of m.assets) {
       a.inspection.policySha256 = adoptedHash;
-      if (a.technical.document) { const path = join(f.dir, evidence(a, 'document-map').path), map = json(path); map.policySha256 = adoptedHash; save(path, map); const e = evidence(a, 'document-map'); e.sha256 = sha(readFileSync(path)); e.bytes = readFileSync(path).length; }
     }
     save(join(f.dir, 'runs', r.attemptId, 'inspect-policy.adopted.json'), oldPolicy);
     const a = m.assets[0], text = evidence(a, 'text');
-    m.observations = oldPolicy.version === '0.1' ? [{ version: '0.1', id: `observation-${randomUUID()}`, assetId: a.assetId, assetVersion: a.assetVersion, byteSha256: a.source.sha256, method: 'historical text', locator: { kind: 'text', evidenceId: text.id, byteStart: 0, byteEnd: text.bytes, lineStart: 1, lineEnd: 1, x: null, y: null, width: null, height: null, streamIndex: null, timeBase: null, pts: null, sampleRate: null, sampleStart: null, sampleEnd: null }, coverage: 'full', statement: 'Old fixed text.', basis: 'observed', confidence: null, limitations: [], evidenceRefs: [text.id] }] : (() => { const mapEvidence = evidence(a, 'document-map'), unit = json(join(f.dir, mapEvidence.path)).units[0]; return [{ version: '0.2', id: `observation-${randomUUID()}`, assetId: a.assetId, assetVersion: a.assetVersion, byteSha256: a.source.sha256, method: 'historical native text', locator: { kind: 'document', evidenceId: text.id, mapEvidenceId: mapEvidence.id, unitId: unit.id, byteStart: unit.byteStart, byteEnd: unit.byteEnd }, coverage: 'full', coverageScope: 'unit-native-text', statement: 'Old fixed document unit.', basis: 'observed', confidence: null, limitations: [], evidenceRefs: [text.id, mapEvidence.id] }]; })();
+    m.observations = [{ version: '0.1', id: `observation-${randomUUID()}`, assetId: a.assetId, assetVersion: a.assetVersion, byteSha256: a.source.sha256, method: 'historical text', locator: { kind: 'text', evidenceId: text.id, byteStart: 0, byteEnd: text.bytes, lineStart: 1, lineEnd: 1, x: null, y: null, width: null, height: null, streamIndex: null, timeBase: null, pts: null, sampleRate: null, sampleStart: null, sampleEnd: null }, coverage: 'full', statement: 'Old fixed text.', basis: 'observed', confidence: null, limitations: [], evidenceRefs: [text.id] }];
     m.rights = [{ version: '0.1', id: `rights-${randomUUID()}`, revision: 1, assetId: a.assetId, assetVersion: a.assetVersion, byteSha256: a.source.sha256, status: 'unknown', sourceRefs: [], allowedUses: [], restrictions: [], attribution: null, affectedStreams: [], thirdPartyRightsStatus: 'unknown' }];
     assertCatalog('manifest', m); save(join(f.dir, r.manifestPath!), m); const idx = json(join(f.dir, 'assets/catalog.json')); idx.version = oldPolicy.version; idx.catalogs[0].manifestSha256 = sha(importJsonText(m)); save(join(f.dir, 'assets/catalog.json'), idx);
     const frozen = readFileSync(join(f.dir, r.manifestPath!)), old = await verifyCatalog(f.dir, r.catalogId); assert.deepEqual(adoptInspectPolicy(oldPolicy, oldPolicy.version), oldPolicy);

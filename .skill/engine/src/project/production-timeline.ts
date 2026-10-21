@@ -65,6 +65,7 @@ export function compileProductionTimeline(bundle: ProductionBundle, profile: 'ro
   const uses = new Map(bundle.shots.assetPlan.uses.map(use => [use.useId, use]));
   const events = new Map(timeline.events.map(event => [event.eventId, event]));
   const unique = (ids: string[], path: string) => {
+    if (new Set(ids).size !== ids.length) add('DUPLICATE_ID', path, 'Stable IDs must be unique.');
   };
   unique(timeline.shots.map(shot => shot.shotId), 'timeline.shots');
   unique(timeline.takes.map(take => take.takeId), 'timeline.takes');
@@ -192,7 +193,7 @@ export function compileProductionTimeline(bundle: ProductionBundle, profile: 'ro
       style: { palette: 'warm_night' },
       scenes: timeline.shots.map(shot => ({ id: shot.shotId, start: shot.startFrame / fps, end: shot.endFrame / fps,
         environment: 'motion_stage', camera: shot.camera, cameraMove: shot.cameraMove, transition: shot.transition,
-        action: 'stand', emotion: 'neutral', composition: shot.composition })),
+        composition: shot.composition })),
       audio: { narration, bgm: { preset: 'quiet_piano', key: 'C', bpm: timeline.shots[0]!.composition.bpm,
         volume: hasBgm ? 1 : 0, fadeIn: 0, fadeOut: 0, duckUnderNarration: voices.length > 0 }, sfx: [], loudness: -14 },
       captions: { enabled: voices.length > 0 || timeline.captionCues.length > 0, style: 'boxed', mode: 'sentence' } });
