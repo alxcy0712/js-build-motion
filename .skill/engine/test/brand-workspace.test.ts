@@ -36,6 +36,7 @@ test('账号默认 + 每片选择：快照记录本片风格，账号默认只�
   try {
     const temporary = [join(skill, 'engine/.research'), join(skill, 'engine/projects')];
     cpSync(skill, join(workspace, '.skill'), { recursive: true, dereference: true, filter: path => !temporary.includes(path) });
+    writeFileSync(join(workspace, '.skill/engine/node_modules/.package-lock.json'), '{"lockfileVersion":3}');
     const accountDefault = setAccountDefault('minimal', 'override');
 
     assert.match(run(['.skill/scripts/video.mjs', 'start', 'missing-theme', '--idea', '虚构未选主题。'], 1), /THEME_REQUIRED/);

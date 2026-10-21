@@ -12,7 +12,8 @@ export const backups = join(root, '.skill-backups');
 
 export function sealCore() {
   const pkg = json(join(engine, 'package.json'));
-  const dependencies = readdirSync(join(engine, 'node_modules')).sort().map(name => {
+  const dependencies = readdirSync(join(engine, 'node_modules'), { withFileTypes: true })
+    .filter(entry => entry.isDirectory() && !entry.name.startsWith('.')).map(entry => entry.name).sort().map(name => {
     const dependency = json(join(engine, 'node_modules', name, 'package.json'));
     return `${dependency.name}@${dependency.version}`;
   });
