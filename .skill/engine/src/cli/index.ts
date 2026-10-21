@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { cmdLayoutQA } from './layout.ts';
 import { capabilities, cmdDirect, cmdPrompt, cmdQuality } from './director.ts';
 import { cmdProduction } from './production.ts';
 import { cmdDelivery } from './delivery.ts';
@@ -73,6 +74,8 @@ const USAGE = `js-build-motion —— 模型无关的程序化视频引擎
   audio <slug>                   先制作配音与混音，检查逐句时长和信号完整性
   audio lock <slug>              制作并保存可复用的定稿声音包
   qa <slug>                     结构质量与导演计划新鲜度检查
+  qa <slug> --layout [--plan evidence/layout.json] [--all-frames] 实际源帧布局、保护区及候选建议
+  qa <slug> --cuts evidence/cuts.json  词内剪点与帧/样本建议（保持原时间线）
   diagnose <slug> --from 0 --to 2 连续编码帧、运动热图与源文字边界复核线索
   env                            检查运行环境（Node / FFmpeg / 字体 / 输出目录）
   validate <spec.json|项目>      校验 VideoSpec 并报告自动修复内容
@@ -146,7 +149,7 @@ export async function run(argv: string[]): Promise<number> {
     case 'production': return cmdProduction(rest);
     case 'review': case 'credits': case 'deliver': return cmdDelivery(cmd, rest);
     case 'align': return cmdAlign(rest);
-    case 'qa': return cmdQuality(requireTarget(rest, 'qa'));
+    case 'qa': return rest.includes('--layout') || rest.includes('--cuts') ? cmdLayoutQA(rest) : cmdQuality(requireTarget(rest, 'qa'));
     case 'diagnose': return cmdDiagnose(rest);
     case 'validate': return await cmdValidate(rest);
     case 'frame': return cmdFrame(rest);

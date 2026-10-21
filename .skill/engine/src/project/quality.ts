@@ -1,3 +1,4 @@
+import { slotSuggestions, motionLint } from '../qa/motion.ts';
 import type { ResolvedVideoSpec } from '../spec/types.ts';
 import { IMPLEMENTED_ENVIRONMENTS } from '../drawing/scenes/registry.ts';
 import { graphicIssues } from '../spec/graphic.ts';
@@ -13,7 +14,7 @@ export interface CaptionReadability {
   cues: number; maxCharacters: number; maxUnits: number; shortestSeconds: number; estimatedCues: number;
 }
 /** Structural preflight. A passing report still requires visual/audio review. */
-export function inspectQuality(spec: ResolvedVideoSpec, options: { measuredNarration?: ReadonlyMap<number, MeasuredNarration>; customDrawing?: boolean; captionCues?: readonly CaptionCue[] } = {}): { ok: boolean; issues: QualityIssue[]; reviewFrames: number[]; narrationPacing: NarrationPacing | null; captionReadability: CaptionReadability | null } {
+export function inspectQuality(spec: ResolvedVideoSpec, options: { measuredNarration?: ReadonlyMap<number, MeasuredNarration>; customDrawing?: boolean; captionCues?: readonly CaptionCue[] } = {}): { ok: boolean; issues: QualityIssue[]; reviewFrames: number[]; narrationPacing: NarrationPacing | null; captionReadability: CaptionReadability | null; layoutSuggestions: ReturnType<typeof slotSuggestions>; motionDiagnostics: ReturnType<typeof motionLint> } {
   const issues: QualityIssue[] = [], frames = new Set<number>();
   const fps = spec.video.fps, total = Math.ceil(spec.video.duration * fps);
   const add = (code: string, path: string, severity: QualityIssue['severity'], message: string): void => { issues.push({ code, path, severity, message }); };
@@ -86,5 +87,5 @@ export function inspectQuality(spec: ResolvedVideoSpec, options: { measuredNarra
     }
     for (const time of [cue.start,cue.end-1/fps]) frames.add(Math.max(0,Math.min(total-1,Math.round(time*fps))));
   }
-  return { ok: !issues.some(i => i.severity === 'error'), issues, reviewFrames: [...frames].sort((a, b) => a - b), narrationPacing, captionReadability };
+  return { ok: !issues.some(i => i.severity === 'error'), issues, reviewFrames: [...frames].sort((a, b) => a - b), narrationPacing, captionReadability, layoutSuggestions: slotSuggestions(spec.layout ?? {}), motionDiagnostics: motionLint(spec.layout ?? {}, spec.scenes) };
 }

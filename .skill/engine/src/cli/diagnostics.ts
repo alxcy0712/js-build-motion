@@ -1,3 +1,7 @@
+import { prepareQualityDrawing } from './layout.ts';
+import { inspectLayout, type LayoutIssue } from '../layout/check.ts';
+import { frame as layoutFrame } from '../layout/tools.ts';
+import { reviewStillness } from '../qa/motion.ts';
 import { spawn } from 'node:child_process';
 import { existsSync, mkdirSync, writeFileSync } from 'node:fs';
 import { join, relative } from 'node:path';
@@ -8,7 +12,6 @@ import { textOutside, type TextDraw } from '../drawing/primitives/text-bounds.ts
 import { inspectArtifact } from '../project/artifact.ts';
 import { loadProject, resolveInsideProject } from '../project/manifest.ts';
 import { assertContained, assertOutputTree } from '../project/paths.ts';
-import { loadProjectDrawing } from '../project/drawing.ts';
 import { createSpecRenderer } from '../pipeline/spec-renderer.ts';
 import { makeFrameContext } from '../renderer/renderer.ts';
 import { frameCount } from '../timeline/frame.ts';
@@ -70,7 +73,10 @@ export async function cmdDiagnose(argv: string[]): Promise<number> {
   const timingPath = join(project.outDir, 'audio/narration-timing.json');
   const measuredNarration = run.facts.providers.tts === '(none)' ? undefined : readNarrationTimings([timingPath], spec!);
   const timingHash = measuredNarration && existsSync(timingPath) ? sha256File(timingPath) : null;
-  const renderer = createSpecRenderer({ spec: spec!, width: video!.width, height: video!.height, drawScene: await loadProjectDrawing(project), measuredNarration, captions: run.facts.captions.insideFrame, trackText: true });
+  const prepared = await prepareQualityDrawing(project, spec!);
+  const renderer = createSpecRenderer({ spec: spec!, width: video!.width, height: video!.height, drawScene: prepared.drawScene, captionCues: prepared.captionCues, measuredNarration: prepared.measuredNarration ?? measuredNarration, captions: run.facts.captions.insideFrame, trackText: true, trackLayout: true });
+  const layoutIssues: LayoutIssue[] = [], layoutLimits = new Set<string>();
+  const layoutPendingFrames: number[] = [];
   const textIssues: { frame: number; time: number; draws: TextDraw[] }[] = [];
   let previous: Buffer | undefined, textDrawCount = 0;
   try {
@@ -79,14 +85,18 @@ export async function cmdDiagnose(argv: string[]): Promise<number> {
       if (previous) pairs.push({ from: frame - 1, to: frame, ...frameDifference({ width, height, data: previous }, { width, height, data }, thresholds.pixelThreshold, heat) });
       previous = Buffer.from(data);
       renderer.renderFrame(makeFrameContext({ frameIndex: frame, totalFrames: total, fps, width: video!.width, height: video!.height, seed: spec!.video.seed }));
+      const layout = inspectLayout(renderer.layoutTrace()!, { frame, fps, width: video!.width, height: video!.height, safe: layoutFrame(video!.width, video!.height).safe, plan: spec!.layout });
+      if (layout.status === 'pending') layoutPendingFrames.push(frame);
+      layoutIssues.push(...layout.issues); layout.limitations.forEach(l => layoutLimits.add(l));
       const draws = renderer.textBounds();
       textDrawCount += draws.length;
       const outside = draws.filter(draw => draw.sourceClipped || textOutside(draw.bounds, video!.width, video!.height));
       if (outside.length) textIssues.push({ frame, time: frame / fps, draws: [...outside] });
     });
-  } finally { renderer.dispose(); }
+    await prepared.verify();
+  } finally { renderer.dispose(); prepared.close(); }
   const summary = summarizeFramePairs(pairs, fps, thresholds);
-  const candidates = [...summary.jumps.flatMap(p => [p.from - 1, p.from, p.to, p.to + 1]), ...textIssues.flatMap(p => [p.frame - 1, p.frame, p.frame + 1])];
+  const candidates = [...summary.jumps.flatMap(p => [p.from - 1, p.from, p.to, p.to + 1]), ...textIssues.flatMap(p => [p.frame - 1, p.frame, p.frame + 1]), ...layoutIssues.map(i => i.frame)];
   const selected = [...new Set([first, Math.floor((first + last) / 2), last, ...candidates.filter(f => f >= first && f <= last)])].slice(0, 24).sort((a, b) => a - b);
   const cols = Math.min(4, selected.length), labelHeight = 22, stripWidth = Math.min(width, 360), stripHeight = Math.round(stripWidth * video!.height / video!.width);
   const strip = new Canvas(stripWidth * cols, (stripHeight + labelHeight) * Math.ceil(selected.length / cols)), stripCtx = strip.getContext('2d');
@@ -109,7 +119,8 @@ export async function cmdDiagnose(argv: string[]): Promise<number> {
   assertOutputTree(outDir); mkdirSync(outDir, { recursive: true });
   writeFileSync(join(outDir, 'frame-strip.png'), strip.toBufferSync('png'));
   writeFileSync(join(outDir, 'motion-heatmap.png'), heatmap.toBufferSync('png'));
-  const report = { ok: true, scope: 'review-candidates', artifact: identity.artifact, purpose,
+  const layoutOk = !layoutIssues.some(i => i.severity === 'error');
+  const report = { ok: layoutOk, layout: { ok: layoutOk, status: !layoutOk ? 'error' : layoutPendingFrames.length ? 'pending' : 'pass', pendingFrames: layoutPendingFrames, issues: layoutIssues, limitations: [...layoutLimits] }, stillness: reviewStillness(summary.holds.map(h => ({ start: h.start, end: h.end })), spec!.layout?.holds ?? (purpose === 'hold' || purpose === 'reading' ? [{start: from, end: to, purpose, reason: 'diagnose purpose'}] : [])), scope: 'review-candidates', artifact: identity.artifact, purpose,
     window: { requestedFrom: from, requestedTo: to, firstFrame: first, lastFrame: last, firstTime: first / fps, lastTime: last / fps, fps, sampledFrames: count, width, height, sourceWidth: video!.width, sourceHeight: video!.height },
     thresholds, summary, pairs, text: { scope: 'source-glyph-bounds', frames: count, drawCount: textDrawCount, issues: textIssues,
       captionsInsideFrame: run.facts.captions.insideFrame, timing: { scope: 'current-spec-cache', path: timingHash ? relative(project.dir, timingPath) : null, sha256: timingHash, measured: Boolean(measuredNarration) },
@@ -119,6 +130,6 @@ export async function cmdDiagnose(argv: string[]): Promise<number> {
     interpretation: 'Motion area includes subject, camera, captions and texture. Review holds by shot purpose; steps, cuts, intentional flashes and reading may explain jumps or stillness. Source text bounds and encoded pixels have separate scopes.',
   };
   writeFileSync(join(outDir, 'report.json'), JSON.stringify(report, null, 2) + '\n');
-  process.stdout.write(JSON.stringify({ ok: true, scope: report.scope, outDir: relative(project.dir, outDir), artifact: identity.artifact, window: report.window, summary, textIssueFrames: textIssues.length, evidence: report.evidence }, null, 2) + '\n');
-  return 0;
+  process.stdout.write(JSON.stringify({ ok: layoutOk, layoutIssueFrames: new Set(layoutIssues.map(i => i.frame)).size, scope: report.scope, outDir: relative(project.dir, outDir), artifact: identity.artifact, window: report.window, summary, textIssueFrames: textIssues.length, evidence: report.evidence }, null, 2) + '\n');
+  return layoutOk ? 0 : 1;
 }

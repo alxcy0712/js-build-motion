@@ -62,11 +62,11 @@ export async function checkNative() {
         const idea = i ? '制作角色节奏短片' : '  制作太阳能原理讲解。\n保留 `literal`、$(literal) 与原始换行。\n';
         const ideaFile = join(scratch, 'original-prompt.txt');
         if (!i) writeFileSync(ideaFile, idea);
-        const result = JSON.parse(control(['start', '--theme', 'minimal', slug, ...(i ? ['--idea', idea] : ['--idea-file', ideaFile]), '--components', i ? 'particle-assembly' : 'camera,spring,random,contour,visual-check,image-fit,particle-assembly,text-bounds']));
+        const result = JSON.parse(control(['start', '--theme', 'minimal', slug, ...(i ? ['--idea', idea] : ['--idea-file', ideaFile]), '--components', i ? 'particle-assembly' : 'camera,spring,random,contour,visual-check,image-fit,particle-assembly,text-bounds,layout,layout-trace,motion-tokens,camera-path']));
         assert.equal(result.project, [a, b][i]);
         assert.equal(result.status, 'needs-intake');
         assert.equal(result.packageId, original.packageId);
-        assert.deepEqual(result.components, i ? ['easing', 'particle-assembly', 'random'] : ['camera', 'contour', 'easing', 'image-fit', 'particle-assembly', 'random', 'spring', 'text-bounds', 'visual-check']);
+        assert.deepEqual(result.components, i ? ['easing', 'particle-assembly', 'random'] : ['camera', 'camera-path', 'contour', 'easing', 'image-fit', 'layout', 'layout-trace', 'motion-tokens', 'particle-assembly', 'random', 'spring', 'text-bounds', 'visual-check']);
         const history = readFileSync(join(result.project, 'prompt-history.jsonl'), 'utf8').trim().split('\n').map(line => JSON.parse(line));
         assert.equal(history[0].kind, 'prompt');
         assert.equal(history[0].text, idea);
@@ -115,6 +115,9 @@ export async function checkNative() {
       execNode(a, "import('./src/components/visual-check.ts').then(m => { if(typeof m.compareMasks !== 'function' || typeof m.colorCoverage !== 'function') process.exit(1); })");
       execNode(a, "import('./src/components/image-fit.ts').then(m => { const r=m.fitImage({x:0,y:0,width:100,height:100},{x:0,y:0,width:150,height:200},'cover'); if(Math.abs(r.destination.width/r.source.width-r.destination.height/r.source.height)>1e-9) process.exit(1); })");
       execNode(b, "import('./src/components/particle-assembly.ts').then(m => { const a=m.prepareParticleAssembly({bounds:{x:0,y:0,width:10,height:10},contains:()=>true,source:{x:-20,y:20,width:10,height:10},bend:[-10,0],approach:[-2,3],count:8,seed:'symbol',duration:1}), before=m.particleAssemblyAt(a,.5);m.particleAssemblyAt(a,2);if(JSON.stringify(before)!==JSON.stringify(m.particleAssemblyAt(a,.5)) || m.particleAssemblyAt(a,2).some((p,i)=>p.x!==a.particles[i].to[0] || p.y!==a.particles[i].to[1])) process.exit(1); })");
+    });
+    await check('复制的布局和动作组件接入固定引擎的追踪上下文', () => {
+      execNode(a, "Promise.all([import('./.engine/node_modules/skia-canvas/lib/index.js'),import('./.engine/src/layout/trace.ts'),import('./src/components/layout-trace.ts'),import('./src/components/layout.ts'),import('./src/components/motion-tokens.ts'),import('./src/components/camera-path.ts')]).then(([{Canvas},engine,component,layout,motion,camera])=>{const ctx=new Canvas(100,100).getContext('2d'),trace=engine.trackLayout(ctx);trace.reset(0);component.withLayout(ctx,{id:'copied',role:'shape'},()=>ctx.fillRect(1,2,3,4));if(trace.draws[0].id!=='copied'||layout.frame(100,100).center.x!==50||motion.stagger(2)!==.16||typeof camera.evaluateCameraPath!=='function')process.exit(1);})");
     });
     await check('系统沙箱内追加问答与修改，保留原始 prompt 与另一影片记录', () => {
       const originalHistory = readFileSync(join(a, 'prompt-history.jsonl'), 'utf8');

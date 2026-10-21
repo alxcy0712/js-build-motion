@@ -47,5 +47,25 @@
     "dependencies": [
       "easing"
     ]
+  },
+  "layout": {
+    "source": "src/layout/tools.ts",
+    "dependencies": []
+  },
+  "layout-trace": {
+    "source": "src/layout/trace.ts",
+    "dependencies": []
+  },
+  "motion-tokens": {
+    "source": "src/motion/tokens.ts",
+    "dependencies": [
+      "spring"
+    ]
+  },
+  "camera-path": {
+    "source": "src/motion/camera-path.ts",
+    "dependencies": [
+      "camera"
+    ]
   }
 }
