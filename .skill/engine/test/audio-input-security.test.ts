@@ -71,17 +71,30 @@ function command(argv: string[]) {
   assert.equal(r.status, 0, `${r.error?.message ?? ''}\n${r.stderr.toString()}`); return r.stdout;
 }
 let encoded: Record<string, { path: string; data: Buffer }> | undefined;
-function media() {
+function media(run = command) {
   if (encoded) return encoded;
-  encoded = {}; const source = join(scratch, 'known.wav'); fs.writeFileSync(source, wave());
+  const complete: NonNullable<typeof encoded> = {}, source = join(scratch, 'known.wav'); fs.writeFileSync(source, wave());
   for (const [name, encoder] of [['mp3', ['-c:a', 'libmp3lame', '-b:a', '128k']], ['flac', ['-c:a', 'flac']],
     ['m4a', ['-c:a', 'aac', '-profile:a', 'aac_low', '-b:a', '96k']]] as const) {
     const path = join(scratch, `known.${name}`);
-    command(['-nostdin', '-v', 'error', '-y', '-protocol_whitelist', 'file', '-f', 'wav', '-i', source, ...encoder, path]);
-    encoded[name] = { path, data: fs.readFileSync(path) };
+    run(['-nostdin', '-v', 'error', '-y', '-protocol_whitelist', 'file', '-f', 'wav', '-i', source, ...encoder, path]);
+    complete[name] = { path, data: fs.readFileSync(path) };
   }
-  encoded.wav = { path: source, data: fs.readFileSync(source) }; return encoded;
+  complete.wav = { path: source, data: fs.readFileSync(source) }; encoded = complete; return encoded;
 }
+test('media fixture retries the original failure and publishes only a complete cache', () => {
+  const previous = encoded, failure = Error('independent fixture encoder failure'); let calls = 0;
+  const encode = (argv: string[]) => { calls++; if (argv.at(-1)!.endsWith('.flac')) throw failure; fs.writeFileSync(argv.at(-1)!, 'fixture bytes'); return Buffer.alloc(0); };
+  try {
+    encoded = undefined;
+    assert.throws(() => media(encode), error => error === failure);
+    assert.throws(() => media(encode), error => error === failure);
+    assert.equal(calls, 4, 'both attempts must initialize again after the partial encode');
+    const complete = media(argv => { calls++; fs.writeFileSync(argv.at(-1)!, 'complete fixture'); return Buffer.alloc(0); });
+    assert.deepEqual(Object.keys(complete).sort(), ['flac', 'm4a', 'mp3', 'wav']);
+    assert.equal(calls, 7); assert.equal(media(() => { throw Error('cache must be complete'); }), complete);
+  } finally { encoded = previous; }
+});
 function reference(name: string, path: string, options: string[] = []) {
   return command(['-nostdin', '-v', 'error', '-xerror', '-protocol_whitelist', 'file', '-format_whitelist', name === 'm4a' ? 'mov' : name,
     '-f', name === 'm4a' ? 'mov' : name, ...options, '-i', path, '-map', '0:a:0', '-vn', '-sn', '-dn', '-ar', '44100', '-ac', '1',
