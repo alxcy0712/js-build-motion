@@ -57,7 +57,7 @@ test('rough frames verify their decoded source and proxy at the boundary and cle
     const first = video.frame(0), second = video.frame(1); await video.verify();
     assert.deepEqual(video.frame(0), first); assert.deepEqual(video.frame(1), second);
     const decoded = join(temporary, fs.readdirSync(temporary)[0]!, 'frames.rgba'), observed = fs.lstatSync(decoded, { bigint: true });
-    const frozen = (actual: fs.BigIntStats) => actual.ino === observed.ino && actual.dev === observed.dev
+    const frozen = (actual: fs.BigIntStats | undefined) => actual?.ino === observed.ino && actual.dev === observed.dev
       ? Object.assign(Object.create(Object.getPrototypeOf(actual)), actual, { mtimeNs: observed.mtimeNs, ctimeNs: observed.ctimeNs }) : actual;
     fs.lstatSync = ((...args: any[]) => frozen((lstat as any)(...args))) as typeof lstat;
     fs.fstatSync = ((...args: any[]) => frozen((fstat as any)(...args))) as typeof fstat; syncBuiltinESMExports();
@@ -132,13 +132,14 @@ test('production detects in-place modification, path replacement and added alias
 test('production verifies other-frame changes at the publication boundary with identical size and observed timestamps', async () => {
   const f = fixture(), path = join(f.dir, f.map.canonical.path), observed = fs.lstatSync(path, { bigint: true });
   const lstat = fs.lstatSync, fstat = fs.fstatSync;
-  const frozen = (actual: fs.BigIntStats) => actual.ino === observed.ino && actual.dev === observed.dev
+  const frozen = (actual: fs.BigIntStats | undefined) => actual?.ino === observed.ino && actual.dev === observed.dev
     ? Object.assign(Object.create(Object.getPrototypeOf(actual)), actual, { mtimeNs: observed.mtimeNs, ctimeNs: observed.ctimeNs }) : actual;
   let video: Awaited<ReturnType<typeof openPreparedVideoFrames>> | undefined;
   try {
     fs.lstatSync = ((...args: any[]) => frozen((lstat as any)(...args))) as typeof lstat;
     fs.fstatSync = ((...args: any[]) => frozen((fstat as any)(...args))) as typeof fstat;
     syncBuiltinESMExports(); video = await openPreparedVideoFrames(f.dir, production(f.map));
+    assert.equal(fs.lstatSync(join(f.dir, 'missing-stat-fixture'), { throwIfNoEntry: false }), undefined);
     const changed = Buffer.from(f.rgba); changed[0] ^= 1; fs.writeFileSync(path, changed);
     const after = fs.lstatSync(path, { bigint: true });
     assert.equal(after.size, observed.size); assert.equal(after.mtimeNs, observed.mtimeNs); assert.equal(after.ctimeNs, observed.ctimeNs);

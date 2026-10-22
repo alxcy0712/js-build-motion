@@ -454,7 +454,7 @@ export async function checkProductionAssetsNative({ scratch, skill, run, check }
       const drawingPath=join(project,'src/production-source.mjs'), drawingSource=readFileSync(drawingPath);
       const changeAfterDraw=`import fs from 'node:fs';import {syncBuiltinESMExports} from 'node:module';
 const path=new URL('../${mutedMap.canonical.path}',import.meta.url),before=fs.lstatSync(path,{bigint:true}),lstat=fs.lstatSync,fstat=fs.fstatSync;
-const frozen=s=>s.ino===before.ino&&s.dev===before.dev?Object.assign(Object.create(Object.getPrototypeOf(s)),s,{mtimeNs:before.mtimeNs,ctimeNs:before.ctimeNs}):s;
+const frozen=s=>s?.ino===before.ino&&s.dev===before.dev?Object.assign(Object.create(Object.getPrototypeOf(s)),s,{mtimeNs:before.mtimeNs,ctimeNs:before.ctimeNs}):s;
 fs.lstatSync=(...args)=>frozen(lstat(...args));fs.fstatSync=(...args)=>frozen(fstat(...args));syncBuiltinESMExports();
 export async function prepareDrawing({assets}){const clip=await assets.video('Source');return({ctx,width,height},frame)=>{clip.draw(ctx,frame.frameIndex,{x:0,y:0,width,height});if(frame.frameIndex===0){const fd=fs.openSync(path,'r+'),b=Buffer.alloc(1);try{fs.readSync(fd,b,0,1,0);b[0]^=1;fs.writeSync(fd,b,0,1,0);}finally{fs.closeSync(fd);}}};}\n`;
       try {
