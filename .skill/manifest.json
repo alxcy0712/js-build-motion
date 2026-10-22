@@ -1,5 +1,5 @@
 {
-  "packageId": "7322e86303d9022e0a20c9ab79a02825eed36106533b5a200d1ce06dcb08fdc0",
+  "packageId": "2df059a87f4c74680eb048fffb9014e2be3eaa24778ad7845496f41099e7d311",
   "version": "0.2",
   "engineVersion": "0.1.0",
   "platform": "darwin",
@@ -94,7 +94,7 @@
     },
     {
       "path": "references/workflow.md",
-      "sha256": "149dca5628e2e74d1b7d6d8158c5f8cab42064bb51a5772ce2af2b64b993359e"
+      "sha256": "35c2c003455d368e6b0179ee1d934d17359a1423afc7272b31f42f6da60c8929"
     },
     {
       "path": "scripts/alignment-native-check.mjs",
@@ -106,7 +106,7 @@
     },
     {
       "path": "scripts/assets-native-check.mjs",
-      "sha256": "fa691b6c05e24d70ade8b70444099364dec390a0c0ffa2d364d9a53dd63b80a2"
+      "sha256": "9339bae08975b738b5ef272262a356161461675a5a6d0cfdde9d3667a68f6a8b"
     },
     {
       "path": "scripts/audio-input-native-check.mjs",
@@ -117,8 +117,12 @@
       "sha256": "6536d4982aa050687759a54d17384af2d104236affa715e23a4b106bd493b46b"
     },
     {
+      "path": "scripts/check-fonts.mjs",
+      "sha256": "0b0dec1f008fff572c60fc2e87100fee6524c0e8256e45c8a140ca2185fd5aa0"
+    },
+    {
       "path": "scripts/check.mjs",
-      "sha256": "6d82b81f1899e9c14697c5c6c8d0ff8da233fe6e6d1fda9d84d94cd80aba4239"
+      "sha256": "5a9f7e6b1fd8b09611597be55f45d01fc2b84abb620e70d7b9c40bd64889ad5d"
     },
     {
       "path": "scripts/core.mjs",
@@ -2828,7 +2832,7 @@
     },
     {
       "path": "src/adapters/asset-port.ts",
-      "sha256": "27e71566d73fe64ea9cccc395fc72617138da6838b2d03e993b1de8f56926051"
+      "sha256": "f31d04376a9e61dfe1a20870fb03e30002fdd406f5a2fe413a7761870a73fdfd"
     },
     {
       "path": "src/adapters/asset-usage.ts",
@@ -2876,7 +2880,7 @@
     },
     {
       "path": "src/adapters/video-frames.ts",
-      "sha256": "9a758018e8f941b180eb224ffaa1c55f3d327671f93c5af1d0d43b85153b8581"
+      "sha256": "bd0c389a9b017cb83d0da7cacad3b5d032ca02114a0ef955907719b614371b63"
     },
     {
       "path": "src/adapters/video-prepare.ts",
@@ -3044,7 +3048,7 @@
     },
     {
       "path": "src/cli/layout.ts",
-      "sha256": "c03907d5ece3ebc3fadb4d3329b55d40e449877d37e5c26fcb314bb30a27666e"
+      "sha256": "74f74ace49f0a885058eba85e2880c6b6b696b7944dcc531018538496008d0ae"
     },
     {
       "path": "src/cli/media.ts",
@@ -3064,7 +3068,7 @@
     },
     {
       "path": "src/cli/render.ts",
-      "sha256": "33cdd2ce4405a3cf2384bb7d70682daeb522f2f0ff2d4a017a724e053d33c2d1"
+      "sha256": "bc557d1555114c91554df142cc5977572fc7ba30a1c9265ec7f43c7e97adaa7c"
     },
     {
       "path": "src/cli/shared.ts",
@@ -3550,7 +3554,7 @@
     },
     {
       "path": "audio-input-security.test.ts",
-      "sha256": "a8d7e97e3593477db7d1990ed35d4ddb5ca0377c1241fefbfd5608882fc2fe0a"
+      "sha256": "6669fab969b0900276c47e2f9e3221c447e3edd7cb73e3e49fe92b532282c858"
     },
     {
       "path": "audio-input.test.ts",
@@ -3586,7 +3590,7 @@
     },
     {
       "path": "captions.test.ts",
-      "sha256": "1a1598ce70bf070b90477d0d823742290efdc41efa1942b05db22444eb3f3a3f"
+      "sha256": "248d067abc0b818338e03a7d21c25e150eedac12bd74f8ea317022dea4af4472"
     },
     {
       "path": "catalog-asr.test.ts",
@@ -3594,7 +3598,7 @@
     },
     {
       "path": "catalog-audio.test.ts",
-      "sha256": "85148dd83918cebbe87615a1f0a2b2f37d318d6111a28cac7ca72a9f461fc977"
+      "sha256": "3528ac3d36a7897ca9e4faf0d7c820329efa30e59f386d2f1cbb85b41ca4813b"
     },
     {
       "path": "catalog-ocr.test.ts",
@@ -3602,11 +3606,15 @@
     },
     {
       "path": "catalog.test.ts",
-      "sha256": "c3ee53fe914476ef352854613467e7e5c389b6aabd060949b82bdc40225b0345"
+      "sha256": "bebf4e812ac0c4145df1da335948df867340b41d4fe359f540b5953fad033f37"
     },
     {
       "path": "centering.test.ts",
       "sha256": "48d3e6e6fdda02723f028689655c2ace705189c609f200c89f80e9d5dcc45409"
+    },
+    {
+      "path": "check-fonts.test.ts",
+      "sha256": "0069b4e8ffa6c954b8f9e3ef8c831eccb50795d5a147a1c0d505921fd49960d0"
     },
     {
       "path": "contour.test.ts",
@@ -3649,6 +3657,14 @@
       "sha256": "01873aa633116118b92125aed22e152899ffcf3dc4808cd4c6c0b3da6993d8ba"
     },
     {
+      "path": "fixtures/ffmpeg.ts",
+      "sha256": "41732d440b6164d57f51a5812c91ec1eff5b007c47956bbeca225066553eb389"
+    },
+    {
+      "path": "fixtures/font-glyphs.ts",
+      "sha256": "2174653286eae5895cae9a8b59d284a0eb85ca72e3f9b35cd2601c71665c70b5"
+    },
+    {
       "path": "fixtures/layout-scenes.ts",
       "sha256": "067c8ea923c74415305a0b383b16c8aba3a8a88165c091a0652158f7327e1795"
     },
@@ -3663,6 +3679,10 @@
     {
       "path": "fixtures/project.ts",
       "sha256": "e4f407b3a6e9689e0510c587cdf3bdb43cbe38703d832daa5da886808e08888c"
+    },
+    {
+      "path": "fixtures/pua-font.ts",
+      "sha256": "ec641eafb444d82826c50bd7e06c214a8dae6c00161f14352a6536d89333fa0c"
     },
     {
       "path": "fixtures/render-frame.ts",
@@ -3786,7 +3806,7 @@
     },
     {
       "path": "production.test.ts",
-      "sha256": "a77aa9155ad8c9d65ff27e67ace98055bdc149278b8f16706b0455a75fa70558"
+      "sha256": "635071d716ffed5fc06afa4be5c8a62e1da115dc272751307270d132de5d7f5a"
     },
     {
       "path": "project-drawing.test.ts",
@@ -3825,6 +3845,10 @@
       "sha256": "632a789ef1a5fd93fa1524026b1156b81bcbf4991425fc330cce70c5d28655e4"
     },
     {
+      "path": "test-tools.test.ts",
+      "sha256": "bbafd5e29ef97e05fa2c7c21dba8c1835b99e36ca02cbe9d05fafc3c92b2733f"
+    },
+    {
       "path": "theme-pipeline.test.ts",
       "sha256": "f3e932122584959e29a670c82e786ade7084e58b79be764a0358ed493b4f3dc0"
     },
@@ -3842,7 +3866,7 @@
     },
     {
       "path": "video-frames.test.ts",
-      "sha256": "23c6b78a1c662d948865080f5ea495b1105ebb749fc4e5af54d34b91bbc404eb"
+      "sha256": "3f9591473e5e1568b88b72f67004ffed299ef12354dab422583ecfe2ab485b30"
     },
     {
       "path": "video-prepare.test.ts",

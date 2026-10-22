@@ -43,6 +43,10 @@ Edge需Python/edge-tts≥7.3.1；豆包明确启用--tts-provider doubao，需we
 
 字体放`.skill/engine/assets/fonts/`，Linux本片放`.engine/assets/fonts/`。下列原件字节与SHA须一致，OFL文本随源码；完整封存/备份/新片包含二进制，Git克隆需恢复：
 
+`check.mjs --engine` 先按 manifest 中这五个字体文件的 SHA 检查实际字节，集中报告缺失或版本差异及本节恢复入口。预检仅读字体；源码维护完成后继续按检查→seal 顺序执行，seal 前确认字体与下表固定原件一致。
+
+catalog、catalog-audio、production 测试的 FFmpeg 夹具通过 `FFMPEG_PATH` 或 `PATH` 解析工具，并输出实际可执行文件和版本；缺少工具时报告前置条件。正式媒体入口继续核验固定工具身份和物理闭包。
+
 | 文件与固定来源 | 字节数 | SHA-256 | 许可 |
 |---|---|---|---|
 | [NotoSansCJKsc-VF.otf](https://raw.githubusercontent.com/notofonts/noto-cjk/523d033d6cb47f4a80c58a35753646f5c3608a78/Sans/Variable/OTF/NotoSansCJKsc-VF.otf)，Sans 2.004 | 30737452 | `2745e9681cb9d8a5c8901b62c9e1bd98c9c774365fc3b84dd467621013b51cd3` | [OFL-NotoSansCJK.txt](.skill/engine/assets/fonts/OFL-NotoSansCJK.txt) |
@@ -103,6 +107,7 @@ Tak（[@cherry_mx_reds](https://x.com/cherry_mx_reds)）的Art History Speedrun�
 - websockets：[websockets](https://websockets.readthedocs.io/)。
 - Python 文档：[venv 官方说明](https://docs.python.org/3/library/venv.html)。
 - LXGW（霞鹜）、FONTWORKS 与字体：[霞鹜文楷](https://github.com/lxgw/LxgwWenKai)。
+- Microsoft OpenType：[cmap 字符到字形索引规范](https://learn.microsoft.com/en-us/typography/opentype/spec/cmap)；FontTools：[FontBuilder](https://fonttools.readthedocs.io/en/stable/)，用于离线构造原创字形测试夹具。
 - Noto 与字体：[Noto Sans CJK](https://github.com/notofonts/noto-cjk/tree/Sans2.004)。
 - Josh Wolfe / yauzl（MIT）：ZIP解析及PKWARE结构依据；[yauzl](https://github.com/thejoshwolfe/yauzl)、[PKWARE ZIP 格式规范](https://pkware.cachefly.net/webdocs/casestudies/APPNOTE.TXT)。
 - FFmpeg文档：probe、时间戳、协议和格式准入；[FFprobe](https://ffmpeg.org/ffprobe.html)、[FFmpeg](https://ffmpeg.org/ffmpeg.html)、[协议文档](https://ffmpeg.org/ffmpeg-protocols.html)、[格式文档](https://ffmpeg.org/ffmpeg-formats.html)。
