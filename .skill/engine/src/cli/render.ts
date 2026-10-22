@@ -522,6 +522,7 @@ export async function cmdRender(argv: string[]): Promise<number> {
     }, null, 2) + '\n', { flag: 'wx' });
 
     // ---- 5. 写实测遥测 run.json ----
+    await assets?.verify();
     // 顺序：先渲染、再写遥测。反过来的话，run.json 会描述一支可能并不存在的成片。
     let runLogPath: string | null = null;
     if (attempt || !values['no-run-log']) {

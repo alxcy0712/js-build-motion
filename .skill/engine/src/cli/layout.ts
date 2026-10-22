@@ -30,7 +30,7 @@ export async function prepareQualityDrawing(project:ProjectHandle,spec:ResolvedV
     const production=existsSync(join(project.dir,'production/manifest.json'))?await assertProductionCurrent(project.dir,spec):null;
     const drawScene=production?await createProductionDrawing(production.compiled,assets.port,production.projection.profile):await loadProjectDrawing(project,assets.port);
     return {drawScene,captionCues:production?.compiled.captionCues,measuredNarration:production?.compiled.narrationTimings,
-      close:()=>assets.close(),verify:()=>plan?assertAssetPlanSnapshot(project.dir,plan):undefined};
+      close:()=>assets.close(),verify:async()=>{await assets.verify();if(plan)await assertAssetPlanSnapshot(project.dir,plan);}};
   } catch(error){assets.close();throw error;}
 }
 export async function cmdLayoutQA(argv:string[]):Promise<number> {

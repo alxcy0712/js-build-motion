@@ -360,6 +360,7 @@ try {
   }
   assert.ok(worstColorError <= 5, 'known source pixels exceed codec color tolerance: ' + worstColorError);
   for (const frame of [0, 12, 36, 47]) { provider.draw(ctx, frame, {x:0,y:0,width:960,height:540}, 'cover'); fs.readSync(descriptor, expected, 0, frameBytes, frame * frameBytes); assert.ok(canvas.toBufferSync('raw').equals(expected), 'delivery draw ' + frame); }
+  await provider.verify();
 } finally { provider.close(); fs.closeSync(descriptor); }
 const contrast=frame=>{let sum=0;for(let y=20;y<28;y++)for(let x=16;x<32;x+=2)sum+=Math.abs(frame[(y*960+x)*4]-frame[(y*960+x+1)*4]);return sum/64;};
 const sourceDescriptor=fs.openSync(independent,'r'),previewDescriptor=fs.openSync(preview,'r'), previewFrame=Buffer.alloc(frameBytes);fs.readSync(sourceDescriptor,expected,0,frameBytes,0);fs.readSync(previewDescriptor,previewFrame,0,frameBytes,0);fs.closeSync(sourceDescriptor);fs.closeSync(previewDescriptor);
@@ -450,6 +451,22 @@ export async function checkProductionAssetsNative({ scratch, skill, run, check }
       film(['disclosure','--json']);const artifact=JSON.parse(film(['artifact','--out','evidence/production-assets-artifact.json']));assert.equal(artifact.ok,true);assert.equal(JSON.parse(film(['artifact','--review','evidence/production-assets-artifact.json'])).ok,true);
       const artifactBytes=readFileSync(join(project,artifact.artifact.path)),unchanged=()=>{assert.deepEqual(readFileSync(join(project,'run.json')),current);assert.deepEqual(readFileSync(join(project,artifact.artifact.path)),artifactBytes);};
       writeFileSync(join(output,'delivery-selection.json'),encoded({map:muted.map.path,artifact:artifact.artifact.path}));writeFileSync(join(project,'production-delivery-oracle.mjs'),productionDeliveryProgram);film(['exec',process.execPath,'production-delivery-oracle.mjs','base']);
+      const drawingPath=join(project,'src/production-source.mjs'), drawingSource=readFileSync(drawingPath);
+      const changeAfterDraw=`import fs from 'node:fs';import {syncBuiltinESMExports} from 'node:module';
+const path=new URL('../${mutedMap.canonical.path}',import.meta.url),before=fs.lstatSync(path,{bigint:true}),lstat=fs.lstatSync,fstat=fs.fstatSync;
+const frozen=s=>s.ino===before.ino&&s.dev===before.dev?Object.assign(Object.create(Object.getPrototypeOf(s)),s,{mtimeNs:before.mtimeNs,ctimeNs:before.ctimeNs}):s;
+fs.lstatSync=(...args)=>frozen(lstat(...args));fs.fstatSync=(...args)=>frozen(fstat(...args));syncBuiltinESMExports();
+export async function prepareDrawing({assets}){const clip=await assets.video('Source');return({ctx,width,height},frame)=>{clip.draw(ctx,frame.frameIndex,{x:0,y:0,width,height});if(frame.frameIndex===0){const fd=fs.openSync(path,'r+'),b=Buffer.alloc(1);try{fs.readSync(fd,b,0,1,0);b[0]^=1;fs.writeSync(fd,b,0,1,0);}finally{fs.closeSync(fd);}}};}\n`;
+      try {
+        writeFileSync(drawingPath,changeAfterDraw);
+        for(const flags of [[],['--no-run-log']]) {
+          const known=new Set(readdirSync(join(project,'runs')));
+          assert.match(film([...render,...flags],1),/VIDEO_CANONICAL_CHANGED/);unchanged();
+          const added=readdirSync(join(project,'runs')).filter(name=>!known.has(name)&&/^[a-f0-9-]{36}$/.test(name));assert.equal(added.length,1);
+          const failed=json(join(project,'runs',added[0],'receipt.json'));assert.equal(failed.status,'failed');assert.match(failed.error,/VIDEO_CANONICAL_CHANGED/);
+          const usage=json(join(project,'runs',added[0],'asset-usage.json'));assert.equal(usage.receipts.filter(r=>r.operation==='video-draw').length,48,'all requested frames passed before the whole-file boundary rejected publication');
+        }
+      } finally {writeFileSync(drawingPath,drawingSource);}
       const limits={...map.limits,maxRgbaBytes:map.canonical.bytes-1};writeFileSync(join(project,'inputs/tight-video-policy.json'),encoded(limits));const bytes=readFileSync(join(project,selection.map)),rejected=JSON.parse(film(['video','--request','inputs/base-request.json','--limits','inputs/tight-video-policy.json'],1));
       assert.equal(rejected.status,'failed');assert.equal(rejected.map,null);assert.match(rejected.error,/VIDEO_RESOURCE_LIMIT.*selected RGBA.*(shorten|split)/);assert.deepEqual(rejected.limits,limits);assert.deepEqual(readFileSync(join(project,selection.map)),bytes);unchanged();
       use.selection.map=selection.prepared.map;use.mute=false;writeFileSync(join(project,'assets/asset-plan.json'),encoded({version:'0.2',kind:'asset-plan',needs:[need],uses:[use]}));film(['assets']);

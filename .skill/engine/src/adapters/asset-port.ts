@@ -10,6 +10,7 @@ import type { AssetPort, AssetDrawTarget, PreparedAssetImage, PreparedAssetVideo
 /** Fixed images and frame reads, with receipts emitted only after successful operations. */
 export function createAssetPort(projectDir: string, prepared: PreparedAssetPlan | null, execution: { attemptId: string; inputSnapshotSha256: string; runDir?: string }) {
   const receipts: AssetConsumptionReceipt[] = [], close: (() => void)[] = [];
+  const verify: (() => Promise<void>)[] = [];
   const images = new Map<string, PreparedAssetImage>(), videos = new Map<string, PreparedAssetVideo>();
   let retainedBytes = 0, closed = false;
   const binding = (useId: string): AssetBinding => {
@@ -85,7 +86,7 @@ export function createAssetPort(projectDir: string, prepared: PreparedAssetPlan 
       const opened = await openPreparedVideoFrames(projectDir, b.video, profile, run => {
         if (execution.runDir) writeFileSync(join(execution.runDir, `proxy-decode-${useId}.json`), JSON.stringify({ useId, profile,
           proxy: { path: b.video!.proxy.path, bytes: b.video!.proxy.bytes, sha256: b.video!.proxy.sha256 }, decodeRun: run }, null, 2) + '\n', { flag: 'wx', mode: 0o600 });
-      }); close.push(() => opened.close());
+      }); close.push(() => opened.close()); verify.push(() => opened.verify());
       const handle: PreparedAssetVideo = Object.freeze({ width, height,
         frames: b.video.canonical.frames, fps: b.video.canonical.fps,
         frame(index: number) { binding(useId); const data = opened.frame(index); record(b, 'frame-access', index, selected); return data; },
@@ -95,7 +96,8 @@ export function createAssetPort(projectDir: string, prepared: PreparedAssetPlan 
       videos.set(key, handle); record(b, 'prepared-read', null, selected); return handle;
     },
   };
-  return { port: Object.freeze(port), usage(completeBuiltin = false): AssetUsage { return validateAssetUsage({ version: '0.1', kind: 'asset-usage',
+  return { port: Object.freeze(port), async verify() { if (closed) throw Error('ASSET_PORT_CLOSED'); for (const check of verify) await check(); },
+    usage(completeBuiltin = false): AssetUsage { return validateAssetUsage({ version: '0.1', kind: 'asset-usage',
     attemptId: execution.attemptId, inputSnapshotSha256: execution.inputSnapshotSha256,
     plan: prepared ? { ...prepared.identity } : null, coverage: completeBuiltin && !prepared ? 'complete' : 'partial',
     scope: completeBuiltin && !prepared ? ['builtin-procedural-drawing-and-audio'] : ['asset-port-read', 'asset-port-image-draw', 'asset-port-frame-access', 'asset-port-video-draw'],

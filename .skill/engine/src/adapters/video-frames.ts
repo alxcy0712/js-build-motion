@@ -14,6 +14,7 @@ export async function openPreparedVideoFrames(projectDir: string, value: Prepare
   frame(index: number): Buffer;
   draw(ctx: CanvasRenderingContext2D, index: number, target: ImageRect, fit: 'contain' | 'cover', crop?: ImageRect | null): void;
   close(): void;
+  verify(): Promise<void>;
   decodeRun?: ToolRun;
 }> {
   const map = structuredClone(validatePreparedVideoMap(value)), files = new NodeImportFiles(projectDir);
@@ -41,11 +42,16 @@ export async function openPreparedVideoFrames(projectDir: string, value: Prepare
       const s = fitted.source, d = fitted.destination;
       ctx.drawImage(canvas, s.x, s.y, s.width, s.height, d.x, d.y, d.width, d.height);
     },
+    async verify() {
+      if (!rgba) throw Error('VIDEO_FRAMES_CLOSED');
+      const current = await readFixed(path, map.limits.maxRgbaBytes, undefined, undefined, false);
+      if (current.bytes !== map.canonical.bytes || current.sha256 !== map.canonical.sha256) throw Error('VIDEO_CANONICAL_CHANGED');
+    },
     close() { rgba = null; },
   };
 }
 
-/** One independent descriptor and one frame buffer; delivery pixels remain independent of the preview proxy. */
+/** One descriptor and one verified private frame; verify the whole source before publishing a render. */
 async function openProductionFrames(projectDir: string, map: Pick<ProductionPreparedVideoMap, 'canonical' | 'frames' | 'limits'>) {
   const files = new NodeImportFiles(projectDir), path = files.projectPath(join(projectDir, map.canonical.path));
   const identity = (s: BigIntStats) => [String(s.dev), String(s.ino), String(s.nlink), String(s.size), String(s.mtimeNs), String(s.ctimeNs)];
@@ -71,6 +77,15 @@ async function openProductionFrames(projectDir: string, map: Pick<ProductionPrep
   }
   return {
     frame: (index: number) => Buffer.from(source(index)),
+    async verify() {
+      if (closed || !data) throw Error('VIDEO_FRAMES_CLOSED');
+      unchanged(); const digest = createHash('sha256'); let offset = 0;
+      while (offset < map.canonical.bytes) {
+        const count = readSync(descriptor, data, 0, Math.min(data.length, map.canonical.bytes - offset), offset);
+        if (!count) throw Error('VIDEO_CANONICAL_CHANGED'); digest.update(data.subarray(0, count)); offset += count;
+      }
+      unchanged(); if (digest.digest('hex') !== map.canonical.sha256) throw Error('VIDEO_CANONICAL_CHANGED');
+    },
     draw(ctx: CanvasRenderingContext2D, index: number, target: ImageRect, mode: 'contain' | 'cover', crop?: ImageRect | null) {
       const frame = source(index), normalized = crop ?? { x: 0, y: 0, width: 1, height: 1 };
       if (![normalized.x, normalized.y, normalized.width, normalized.height].every(Number.isFinite) || normalized.x < 0 || normalized.y < 0 ||
@@ -103,13 +118,14 @@ async function openProxyFrames(projectDir: string, map: PreparedVideoMap, onDeco
     throw Error(`VIDEO_PROXY_RESOURCE_LIMIT: required=${bytes} bytes; available=${available} bytes; reserve=${reserve} bytes. Free disk space, prepare a shorter selected range, or render a smaller segment.`);
   }
   const path = join(temporary, 'frames.rgba'), descriptor = openSync(path, 'wx', 0o600);
-  const hashes: string[] = []; let length = 0, inFrame = 0, digest = createHash('sha256'), decodeRun: ToolRun | undefined;
+  const hashes: string[] = [], canonicalDigest = createHash('sha256'); let length = 0, inFrame = 0, digest = createHash('sha256'), decodeRun: ToolRun | undefined;
   try {
     const tool = map.runtime.tools.ffmpeg;
     const run = await runInspectionTool({ executable: tool.executable, version: tool.version,
       argv: ['-nostdin', '-v', 'error', '-xerror', '-i', proxy, '-map', '0:v:0', '-an', '-vsync', '0', '-threads', '1', '-pix_fmt', 'rgba', '-f', 'rawvideo', 'pipe:1'],
       cwd: temporary, policy: { ...LEGACY_INSPECT_POLICY, maxToolElapsedMs: map.limits.maxToolElapsedMs }, binaryLimit: bytes,
       binary: async chunk => {
+        canonicalDigest.update(chunk);
         let written = 0;
         while (written < chunk.length) { const count = writeSync(descriptor, chunk, written, chunk.length - written); if (!count) throw Error('VIDEO_PROXY_WRITE_FAILED'); written += count; }
         for (let offset = 0; offset < chunk.length;) {
@@ -124,10 +140,10 @@ async function openProxyFrames(projectDir: string, map: PreparedVideoMap, onDeco
   closeSync(descriptor);
   try {
     await checkProxy();
-    const fixed = await readFixed(path, bytes, undefined, undefined, false);
-    const opened = await openProductionFrames(projectDir, { canonical: { ...map.canonical, path: relative(projectDir, path).split('\\').join('/'), width, height, bytes, sha256: fixed.sha256 },
+    const opened = await openProductionFrames(projectDir, { canonical: { ...map.canonical, path: relative(projectDir, path).split('\\').join('/'), width, height, bytes, sha256: canonicalDigest.digest('hex') },
       frames: map.frames.map((frame, i) => ({ ...frame, rgbaSha256: hashes[i]! })),
       limits: map.limits as ProductionPreparedVideoMap['limits'] });
-    return { ...opened, decodeRun, close() { opened.close(); rmSync(temporary, { recursive: true, force: true }); } };
+    return { ...opened, decodeRun, async verify() { await opened.verify(); await checkProxy(); },
+      close() { opened.close(); rmSync(temporary, { recursive: true, force: true }); } };
   } catch (error) { rmSync(temporary, { recursive: true, force: true }); throw error; }
 }

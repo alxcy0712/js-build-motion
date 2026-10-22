@@ -163,6 +163,8 @@ node .skill/scripts/video.mjs <slug> assets --plan assets/asset-plan.json
 
 0.2 输出宽高同为null则保留源像素，也可同宽高比设交付尺寸；mute缺省false。固定块核验源身份，驻留容器元数据，选段解码所需前置保持帧及连续帧，RGBA逐帧落盘。map记录全源帧数/呈现域、选用帧/CFR映射、交付/预览尺寸、政策及真实调用；AssetPort按单帧读取核对哈希，rough用缩小proxy，final用交付canonical。
 
+帧读取保持私有单帧内存及 SHA 校验，打开时核验整文件；render 在写成功记录和提交产物前调用 AssetPort.verify 再核验整文件，布局/诊断入口在完成观察后复核。可观察的文件身份变化在读取时报告 CANONICAL_CHANGED，当前帧哈希变化报告 FRAME_CHANGED；同大小且时间戳相同的其他帧变化在 verify 边界报告 CANONICAL_CHANGED。直接使用 openPreparedVideoFrames 的调用方须在成功消费边界 await verify()，finally 中 close()。rough 同时复核已解码 RGBA 和选用 proxy，并在关闭或失败时清理解码临时目录；解码时累计整文件摘要，打开时只扫描一次临时 RGBA。final 通过单帧内存和已有独立句柄读取，新增磁盘写入为零。
+
 保留音轨时 source-audio.wav 为48k双声道PCM16，零点对应 sourceRange.startPts，样本数按区间有理长度取整，保存源音轨timeBase/startPts/durationPts。明确静音和无轨分别为muted/absent；同一clip placement驱动画面与原声截取/移动。尚未接入原声时间线的普通画面入口报告pending，明确mute=true可走画面入口。
 
 生产默认源/RGBA各8 GiB、proxy/原声各1 GiB、4000万源像素、预览边512、metadata/map各32 MiB、probe16 MiB、结构200万、驻留帧/磁盘余量各256 MiB、单工具300秒/准备900秒。`--limits inputs/video-resource-policy.json`显式采用政策；时长/帧数由资源预算准入，RIFF32原声按容量分段。不足时记录所需量/预算/磁盘与原因，缩短选段、分段或据实调整资源，保留原件/旧成果；RSS与工具内部IO单独记实测。
