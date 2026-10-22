@@ -3,11 +3,13 @@ import { join } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { engine, root, skill, verifyCore } from './core.mjs';
 import { digest, json, writeJson } from '../engine/workspace.mjs';
+import { checkFonts } from './check-fonts.mjs';
 
 function files(dir) {
   return readdirSync(dir, { withFileTypes: true }).flatMap(entry => entry.isDirectory() ? files(join(dir, entry.name)) : entry.name.endsWith('.test.ts') ? [join(dir, entry.name)] : []);
 }
 function checkEngine() {
+  process.stdout.write(JSON.stringify({ fontPreflight: checkFonts(skill) }) + '\n');
   const temporary = [join(engine, '.research'), join(engine, 'projects')];
   if (temporary.some(existsSync)) throw new Error('CHECK_TEMP_EXISTS: inspect existing engine probe files first');
   mkdirSync(join(engine, '.research/out'), { recursive: true });
