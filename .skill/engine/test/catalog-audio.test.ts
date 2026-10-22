@@ -1,3 +1,4 @@
+import { testFfmpeg } from './fixtures/ffmpeg.ts';
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { createHash, randomUUID } from 'node:crypto';
@@ -40,7 +41,7 @@ function fixture() {
 }
 function policy(dir: string, audioInput = {}, asr = {}, common = {}) { save(join(dir, 'inputs/inspect-policy.json'), { ...structuredClone(INSPECT_POLICY_05), ...common,
   audioInput: { ...INSPECT_POLICY_05.audioInput, ...audioInput }, asr: { ...INSPECT_POLICY_05.asr, ...asr } }); }
-function encode(args: string[]) { const run = childProcess.spawnSync('/opt/homebrew/bin/ffmpeg', ['-nostdin', '-v', 'error', '-y', ...args], { encoding: 'utf8' }); assert.equal(run.status, 0, run.stderr); }
+function encode(args: string[]) { const run = childProcess.spawnSync(testFfmpeg().executable, ['-nostdin', '-v', 'error', '-y', ...args], { encoding: 'utf8' }); assert.equal(run.status, 0, run.error?.message ?? run.stderr); }
 function providerJson(model: string, language: string, empty = false) {
   return { systeminfo: 'bounded synthetic provider', model: { type: 'base', multilingual: true, vocab: 51865, audio: { ctx: 1500, state: 512, head: 8, layer: 6 }, text: { ctx: 448, state: 512, head: 8, layer: 6 }, mels: 80, ftype: 1 },
     params: { model, language, translate: false }, result: { language }, transcription: empty ? [] : [

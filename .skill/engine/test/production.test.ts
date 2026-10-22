@@ -1,3 +1,4 @@
+import { testFfmpeg } from './fixtures/ffmpeg.ts';
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { createHash, randomUUID } from 'node:crypto';
@@ -165,9 +166,10 @@ test('production edited candidate, unlisted outputs, links and dead/live leases 
 test('production four scenarios bind actual imported files and committed catalog tuples', async () => {
   const f = fixture(); try {
     const selected = join(f.root, 'selected'); mkdirSync(selected);
-    const run = spawnSync('/opt/homebrew/bin/ffmpeg', ['-nostdin', '-v', 'error', '-f', 'lavfi', '-i', 'color=c=blue:s=16x16:r=2:d=1', '-c:v', 'libx264', '-pix_fmt', 'yuv420p', join(selected, 'clip.mp4')], { encoding: 'utf8' });
+    const ffmpeg = testFfmpeg().executable;
+    const run = spawnSync(ffmpeg, ['-nostdin', '-v', 'error', '-f', 'lavfi', '-i', 'color=c=blue:s=16x16:r=2:d=1', '-c:v', 'libx264', '-pix_fmt', 'yuv420p', join(selected, 'clip.mp4')], { encoding: 'utf8' });
     assert.equal(run.status, 0, run.stderr);
-    const imageRun = spawnSync('/opt/homebrew/bin/ffmpeg', ['-nostdin', '-v', 'error', '-i', join(selected, 'clip.mp4'), '-frames:v', '1', join(selected, 'photo.png')], { encoding: 'utf8' });
+    const imageRun = spawnSync(ffmpeg, ['-nostdin', '-v', 'error', '-i', join(selected, 'clip.mp4'), '-frames:v', '1', join(selected, 'photo.png')], { encoding: 'utf8' });
     assert.equal(imageRun.status, 0, imageRun.stderr);
     writeFileSync(join(f.dir, 'inputs/inspect-policy.json'), JSON.stringify({ ...DEFAULT_INSPECT_POLICY, ocr: { ...DEFAULT_INSPECT_POLICY.ocr, enabled: false } }));
     const imported = await importOriginals(f.dir, selected), catalogued = await catalogAssets(f.dir, { importId: imported.importId }), catalog = await verifyCatalog(f.dir, catalogued.catalogId);

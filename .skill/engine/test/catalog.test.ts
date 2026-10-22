@@ -1,3 +1,4 @@
+import { testFfmpeg } from './fixtures/ffmpeg.ts';
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { createHash, randomUUID } from 'node:crypto';
@@ -25,7 +26,7 @@ function fixture() {
 // These fixtures exercise the existing probe/preview contract; OCR has separate bounded fixtures.
 function policy(dir: string, overrides = {}) { const value = { ...DEFAULT_INSPECT_POLICY, ocr: { ...DEFAULT_INSPECT_POLICY.ocr, enabled: false }, ...overrides }; mkdirSync(join(dir, 'inputs'), { recursive: true }); writeFileSync(join(dir, 'inputs/inspect-policy.json'), JSON.stringify(value)); return value; }
 async function failure(dir: string, selection: any, options?: any) { let error; try { await catalogAssets(dir, selection, options); } catch (e) { error = e; } assert.ok(error instanceof CatalogFailure, String(error)); assert.equal(error.receipt.indexCommitted, false); assertCatalog('receipt', error.receipt); assert.deepEqual(json(error.receiptPath!), error.receipt); return error.receipt; }
-function ffmpeg(args: string[]) { const run = spawnSync('/opt/homebrew/bin/ffmpeg', ['-nostdin', '-v', 'error', '-y', ...args], { encoding: 'utf8' }); assert.equal(run.status, 0, run.stderr); }
+function ffmpeg(args: string[]) { const run = spawnSync(testFfmpeg().executable, ['-nostdin', '-v', 'error', '-y', ...args], { encoding: 'utf8' }); assert.equal(run.status, 0, run.error?.message ?? run.stderr); }
 const locator = () => ({ kind: 'text', evidenceId: '', byteStart: null, byteEnd: null, lineStart: null, lineEnd: null, x: null, y: null, width: null, height: null, streamIndex: null, timeBase: null, pts: null, sampleRate: null, sampleStart: null, sampleEnd: null });
 
 test('catalog lineage, stable identities, replacement, UTF8/BOM/CRLF/empty/hidden and unsupported data', async () => {
