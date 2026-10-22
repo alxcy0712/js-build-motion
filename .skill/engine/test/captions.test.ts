@@ -4,13 +4,18 @@ import { createFixtureProject } from './fixtures/project.ts';
  *
  * 契约要求里最容易被敷衍的两条，这里都用**可失败的断言**覆盖：
  *   - 「安全区内不溢出」：断行结果必须逐行不超过给定宽度，且字号会自动缩小
- *   - 「无豆腐块」：用 U+E000 作为 .notdef 参照，逐字比对渲染位图
+ *   - 「无豆腐块」：核验固定字体的 Unicode cmap 字形索引，并检查实际墨迹
  */
 
 import assert from 'node:assert/strict';
 import { after, test } from 'node:test';
 
-import { Canvas } from 'skia-canvas';
+import { Canvas, FontLibrary } from 'skia-canvas';
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { tmpdir } from 'node:os';
+import { assertFontGlyphs, fontGlyphIndex } from './fixtures/font-glyphs.ts';
+import { puaFont } from './fixtures/pua-font.ts';
 
 import { formatSrtTime, formatVttTime, toSrt, toVtt } from '../src/captions/export.ts';
 import {
@@ -534,9 +539,8 @@ test('双语字幕：两行都很长时自动缩小字号，仍不溢出安全�
 // ---------------------------------------------------------------- 字体
 
 /**
- * 豆腐块检测：把单字渲染到黑底，与「必定缺失」的 U+E000 位图比对。
- * 检测方法在本文件用阳性对照验证
- * （U+E000 与 U+10FFFD 位图逐字节相同，确认为 .notdef）。
+ * 位图仅核验墨迹与受控回退反例；缺字由字体 cmap 的 glyph 0 判定。
+ * 系统回退可为私用区提供字形，缺字参照由固定字体自身的映射确定。
  */
 function glyphHash(font: string, ch: string): { ink: number; hash: string } {
   const size = 96;
@@ -545,7 +549,7 @@ function glyphHash(font: string, ch: string): { ink: number; hash: string } {
   ctx.fillStyle = '#000';
   ctx.fillRect(0, 0, size, size);
   ctx.fillStyle = '#fff';
-  ctx.font = `400 64px "${font}"`;
+  ctx.font = `400 64px ${font}`;
   ctx.textBaseline = 'top';
   ctx.fillText(ch, 8, 8);
   const d = ctx.getImageData(0, 0, size, size).data;
@@ -572,22 +576,29 @@ test('字幕字体：项目字体已注册，且字幕用字全部有字形（�
   for (const line of spec.audio.narration) for (const ch of line.text) chars.add(ch);
   for (const ch of '，。！？：；、“”（）—…、《》0123456789ABCabc') chars.add(ch);
 
-  const tofu = glyphHash(PROJECT_FONT_FAMILY, '\uE000');
-  const missing: string[] = [];
+  const glyph = fontGlyphIndex(readFileSync(state.filePath));
+  assertFontGlyphs([...chars].join(''), [glyph]);
   for (const ch of chars) {
     if (/\s/.test(ch)) continue;
-    const bm = glyphHash(PROJECT_FONT_FAMILY, ch);
-    if (bm.ink === 0 || bm.hash === tofu.hash) missing.push(ch);
+    assert.ok(glyphHash(`"${PROJECT_FONT_FAMILY}"`, ch).ink > 0, `字形应有墨迹: ${ch}`);
   }
-  assert.deepEqual(missing, [], `以下字符在项目字体里缺字形（会显示豆腐块）: ${missing.join(' ')}`);
 });
 
-test('豆腐块检测器自身有效（阳性对照）', () => {
-  const tofu = glyphHash(PROJECT_FONT_FAMILY, '\uE000');
-  assert.ok(tofu.ink > 0, '.notdef 应当有墨迹（是个方框）');
-  // 另一个未分配码位应得到完全相同的位图
-  // 注意必须用 \u{...} 形式：'\u10FFFD' 会被解析成 U+10FF 加字面量 "FD"
-  assert.equal(glyphHash(PROJECT_FONT_FAMILY, '\u{10FFFD}').hash, tofu.hash, '未分配码位应渲染为同一个 .notdef');
-  // 真实汉字必须不同
-  assert.notEqual(glyphHash(PROJECT_FONT_FAMILY, '画').hash, tofu.hash, '汉字应有真实字形');
+test('glyph detector rejects proven missing characters with a real U+E000 fallback present', () => {
+  const primary = fontGlyphIndex(readFileSync(registerProjectFonts().filePath)), fallback = fontGlyphIndex(puaFont);
+  assert.ok(primary('画') > 0); assert.equal(primary('\uE000'), 0); assert.equal(primary('\u{10FFFD}'), 0);
+  assert.equal(fallback('\uE000'), 1); assert.equal(fallback('\u{20000}'), 2); assert.equal(fallback('\u{10FFFD}'), 0);
+  assertFontGlyphs('真实中文，标点。mixed ABC 123', [primary]);
+  assert.throws(() => assertFontGlyphs('画\u{10FFFD}', [primary, fallback]), /FONT_GLYPHS_MISSING: U\+10FFFD/);
+  assert.throws(() => assertFontGlyphs('\uE000', [primary]), /FONT_GLYPHS_MISSING: U\+E000/);
+  assertFontGlyphs('画\uE000\u{20000}', [primary, fallback]);
+  const dir = mkdtempSync(join(tmpdir(), 'glyph-fallback-')), path = join(dir, 'pua.ttf'), family = 'Fixture PUA Coverage';
+  try {
+    writeFileSync(path, puaFont); FontLibrary.use(family, [path]);
+    const stack = `"${PROJECT_FONT_FAMILY}", "${family}"`, ctx = new Canvas(96, 96).getContext('2d'); ctx.font = `64px ${stack}`;
+    assert.equal(ctx.measureText('\uE000').lines[0]!.runs[0]!.family, family, 'explicit fallback must actually supply U+E000');
+    const pua = glyphHash(stack, '\uE000'), missing = glyphHash(stack, '\u{10FFFD}');
+    assert.ok(pua.ink > 0); assert.notEqual(pua.hash, missing.hash, 'the old U+E000 bitmap reference misses this proven missing character');
+    assert.throws(() => assertFontGlyphs('\u{10FFFD}', [primary, fallback]), /FONT_GLYPHS_MISSING/);
+  } finally { rmSync(dir, { recursive: true, force: true }); }
 });
