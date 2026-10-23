@@ -30,7 +30,7 @@ export async function cmdDelivery(command: 'review' | 'credits' | 'deliver', arg
       const document = command === 'review' ? validateStructuredReview(value, context) : validateCredits(value, context);
       const review = document as { checks: { verdict: string }[]; references: { method: string }[] };
       const ready = command === 'credits' || review.checks.every(check => ['pass', 'not_applicable'].includes(check.verdict)) &&
-        review.references.some(reference => reference.method === 'normal-speed-playback');
+        (!review.references.length || review.references.some(reference => ['normal-speed-playback', 'provided-observations'].includes(reference.method)));
       result = { ok: true, ready, scope: command === 'review' ? 'structured-review' : 'local-delivery-rights', subject: context.subject, document };
     }
   } else throw Error('DELIVERY_USAGE: unexpected operation');

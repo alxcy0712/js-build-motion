@@ -33,6 +33,13 @@ export interface SceneRenderContext {
   readonly noText?: boolean;
   /** environment = footage 时由渲染器预先打开的帧序列 */
   readonly footage?: FrameSource;
+  /** Production supplies timing constraints; project code owns animation curves. */
+  readonly production?: {
+    readonly frame: number;
+    readonly sceneFrame: number;
+    readonly events: readonly import('../../project/production-timeline.ts').CompiledEvent[];
+    readonly clips: readonly { placementId: string; useId: string; sourceFrame: number }[];
+  };
 }
 
 export type SceneRenderer = (rc: SceneRenderContext) => void;

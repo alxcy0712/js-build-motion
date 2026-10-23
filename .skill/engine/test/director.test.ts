@@ -25,6 +25,19 @@ const plan = (): DirectorPlan => ({
   ],
 });
 
+test('long creative input survives and explicit intent receives neutral technical defaults', () => {
+  const p = plan(); p.idea = '完整原文与独特叙事。'.repeat(800);
+  p.shots.forEach((shot, i) => { shot.id = 'stable-' + i; shot.visualIntent = '角色穿过数字后落在台阶，回弹并接续下一镜。'.repeat(80); delete shot.transition; });
+  const result = compileDirector(p);
+  assert.equal(result.plan.idea, p.idea);
+  assert.equal(result.plan.shots[0]!.visualIntent, p.shots[0]!.visualIntent);
+  assert.equal(result.spec.scenes[0]!.id, 'stable-0');
+  assert.equal(result.spec.scenes[1]!.transition, 'cut');
+  assert.equal(result.spec.scenes[0]!.cameraMove, 'static');
+  assert.equal(result.spec.audio.bgm.volume, 0); assert.deepEqual(result.spec.audio.sfx, []);
+  p.shots[1]!.id = 'stable-0'; assert.throws(() => compileDirector(p), /ID/);
+});
+
 test('原创图元能独立构图，关键帧可随机访问且编译保留所有视觉参数', () => {
   const p = plan();
   p.shots[0]!.elements = [{ id: 'node', kind: 'ellipse', x: 0.3, y: 0.5, width: 0.12, height: 0.2, fill: '#44aacc', keyframes: [{ at: 0, x: 0.2, reveal: 0 }, { at: 1, x: 0.8, reveal: 1 }] }];

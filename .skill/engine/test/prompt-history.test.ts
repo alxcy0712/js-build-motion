@@ -35,6 +35,12 @@ test('创建保存原文，问答与修改按顺序追加，编译保留历史�
   const plan = { version: '0.1', idea: original, title: '解释', aspect: '9:16', look: 'graphic', bpm: 96,
     shots: [{ purpose: '呈现结论', visualIntent: '固定视点，公式出现后停稳', beats: 4, title: '结论', backdrop: 'studio', motif: 'none', cameraMove: 'static', transition: 'cut' }] };
   writeFileSync(join(project, 'director.json'), JSON.stringify(plan));
+  const rejected = spawnSync(process.execPath, [join(PROJECT_ROOT, 'src/cli/index.ts'), 'direct', 'compile', project], { encoding: 'utf8' });
+  assert.notEqual(rejected.status, 0); assert.match(rejected.stderr, /VISUAL_INTENT_IMPLEMENTATION_REQUIRED/);
+  const manifest = JSON.parse(readFileSync(join(project, 'project.json'), 'utf8'));
+  mkdirSync(join(project, 'src'), { recursive: true });
+  writeFileSync(join(project, 'src/draw.mjs'), 'export function drawScene({ctx,width,height}) { ctx.fillStyle="#203E36"; ctx.font="48px sans-serif"; ctx.fillText("πr²",width*.35,height*.4); }');
+  writeFileSync(join(project, 'project.json'), JSON.stringify({ ...manifest, drawing: 'src/draw.mjs' }));
   const result = spawnSync(process.execPath, [join(PROJECT_ROOT, 'src/cli/index.ts'), 'direct', 'compile', project], { encoding: 'utf8' });
   assert.equal(result.status, 0, result.stderr);
   assert.equal(readFileSync(path, 'utf8'), before);

@@ -48,7 +48,7 @@ export function validateStructuredReview(value: unknown, context: DeliveryContex
   const shots = new Set(context.bundle.shots?.items.map(s => s.shotId) ?? []);
   for (const r of review.references) {
     if (!text(r.title) || r.url === null && r.file === null || r.url !== null && !text(r.url) || r.endSeconds <= r.startSeconds ||
-        !['normal-speed-playback', 'frame-inspection'].includes(r.method) || r.mechanisms.some(m => !text(m)) ||
+        !['normal-speed-playback', 'frame-inspection', 'provided-observations'].includes(r.method) || r.mechanisms.some(m => !text(m)) ||
         new Set(r.appliedShots).size !== r.appliedShots.length || r.appliedShots.some(id => !shots.has(id))) throw Error('DELIVERY_REFERENCE_INVALID');
   }
   return review;
@@ -88,7 +88,8 @@ export function assertDeliverable(request: DeliveryRequest, review: unknown, cre
   applicableDecisions(approved);
   const checked = { review: validateStructuredReview(review, context), credits: validateCredits(credits, context) };
   for (const check of checked.review.checks) if (!['pass', 'not_applicable'].includes(check.verdict)) throw Error('DELIVERY_REVIEW_INCOMPLETE: ' + check.checkId);
-  if (!checked.review.references.some(r => r.method === 'normal-speed-playback')) throw Error('DELIVERY_REFERENCE_PLAYBACK_REQUIRED');
+  // External references are optional; supplied research keeps its actual observation method.
+  if (checked.review.references.length && !checked.review.references.some(r => ['normal-speed-playback', 'provided-observations'].includes(r.method))) throw Error('DELIVERY_REFERENCE_PLAYBACK_REQUIRED');
   if (context.consumptionCoverage !== 'partial' || !context.consumptionLimitations.length ||
       context.consumptionLimitations.some(l => !text(l) || !request.knownLimitations.includes(l))) throw Error('DELIVERY_CONSUMPTION_LIMITATIONS_REQUIRED');
   for (const target of ['final', 'delivery'] as const) if (context.bundle.requirements.requested.approvalTasks.includes(target) &&

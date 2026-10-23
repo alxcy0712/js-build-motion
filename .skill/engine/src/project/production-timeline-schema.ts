@@ -25,10 +25,11 @@ const take = object({ takeId: id, kind: choices('voice', 'bgm', 'sfx'), lineId: 
   words: array(word), beats: array(beat) });
 const placement = object({ placementId: id, takeId: id, startSample: integer, inSample: integer,
   outSample: positive, gain, mute: { type: 'boolean' } });
-const event = object({ eventId: id, shotId: id, prepareFrame: integer, visibleFrame: integer, peakFrame: integer,
+const eventBase = object({ eventId: id, shotId: id, prepareFrame: integer, visibleFrame: integer, peakFrame: integer,
   completeFrame: integer, readingEndFrame: integer, anchor: nullable(object({ kind: choices('word', 'beat'),
     placementId: id, pointId: id, phase: choices('visible', 'peak'),
     offsetSamples: { ...integer, minimum: -Number.MAX_SAFE_INTEGER }, precision: choices('hard', 'soft') })) });
+const event = { ...eventBase, properties: { ...eventBase.properties, animation: choices('schedule', 'emphasis') } } as const;
 const readingGroup = object({ groupId: id, eventIds: { ...array(id), minItems: 1, uniqueItems: true },
   minFrames: integer, endFrame: integer });
 const caption = object({ lineId: id, startFrame: integer, endFrame: positive });
@@ -42,8 +43,9 @@ type Data<S> = S extends { const: infer C } ? C : S extends { enum: readonly (in
   S extends { type: 'object', properties: infer P } ? { [K in keyof P]: Data<P[K]> } :
   S extends { type: 'array', items: infer I } ? Data<I>[] : S extends { type: 'string' } ? string :
   S extends { type: 'integer' | 'number' } ? number : S extends { type: 'boolean' } ? boolean : unknown;
-export type ProductionTimeline = Omit<Data<typeof PRODUCTION_TIMELINE_SCHEMA>, 'shots'> & {
+export type ProductionTimeline = Omit<Data<typeof PRODUCTION_TIMELINE_SCHEMA>, 'shots' | 'events'> & {
   shots: (Omit<Data<typeof shot>, 'composition'> & { composition: Composition })[];
+  events: (Data<typeof eventBase> & { animation?: 'schedule' | 'emphasis' })[];
 };
 const check = new Ajv({ allErrors: true, strict: true, strictRequired: false }).compile(PRODUCTION_TIMELINE_SCHEMA);
 export function validateProductionTimeline(value: unknown): ProductionTimeline {

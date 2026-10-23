@@ -85,7 +85,11 @@ export async function productionMediaPaths(projectDir: string, current: Producti
       else throw Error('PRODUCTION_SNAPSHOT_NODE_INVALID: ' + child);
     }
   };
-  for (const path of ['inputs', 'assets']) await tree(path);
+  for (const path of ['inputs', 'assets']) {
+    try { await files.inspect(join(projectDir, path)); }
+    catch (error) { if ((error as NodeJS.ErrnoException).code === 'ENOENT') continue; throw error; }
+    await tree(path);
+  }
   for (const name of await files.children(join(projectDir, 'runs'))) if (/^(import|unpack|catalog|align|alignment|video)-attempt-[a-f0-9-]{36}$/.test(name)) await tree('runs/' + name);
   for (const take of current.bundle.timeline?.takes ?? []) paths.add(take.file.path);
   return [...paths].sort();

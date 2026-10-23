@@ -165,14 +165,14 @@ test('reference range, actual viewing method, identity and current shot relation
   for (const change of changes) { const f = fixture(); change(f.review); assert.throws(() => validateStructuredReview(f.review, f.context), /DELIVERY_REFERENCE_/); }
 });
 
-test('a pending reference can remain empty in a draft and still blocks formal delivery', () => {
+test('original work allows no external reference while incomplete viewing still blocks delivery', () => {
   const f = fixture(); f.review.references = [];
   f.review.checks.find(c => c.checkId === 'narrative')!.verdict = 'blocked';
   assert.doesNotThrow(() => validateStructuredReview(f.review, f.context));
   assert.throws(() => assertDeliverable(f.request, f.review, f.credits, f.context), /DELIVERY_REVIEW_INCOMPLETE/);
   f.review.checks.find(c => c.checkId === 'narrative')!.verdict = 'pass';
   assert.doesNotThrow(() => validateStructuredReview(f.review, f.context));
-  assert.throws(() => assertDeliverable(f.request, f.review, f.credits, f.context), /DELIVERY_REFERENCE_PLAYBACK_REQUIRED/);
+  assert.doesNotThrow(() => assertDeliverable(f.request, f.review, f.credits, f.context));
 });
 
 test('frame-only reference inspection can be recorded and remains inadmissible for delivery', () => {

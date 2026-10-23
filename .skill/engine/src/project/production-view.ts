@@ -4,6 +4,18 @@ import { applicableDecisions, productionStages } from './production-policy.ts';
 export function renderProductionView(bundle: ProductionBundle, revision: number): string {
   if (!Number.isSafeInteger(revision) || revision < 1) throw Error('PRODUCTION_VIEW_REVISION_INVALID');
   const applied = new Set(applicableDecisions(bundle).map(d => d.decisionId));
+  const cell = (value: string) => value.replace(/\|/g, '&#124;').replace(/\r?\n/g, '<br>');
+  const storyboard = '# 分镜主表（由当前 bundle 生成）\n\n| 镜头 / 时段 | 表达与情绪 | visualIntent | 与下一镜的关系 | 必要声画锚点 |\n|---|---|---|---|---|\n' +
+    (bundle.shots?.items ?? []).map(shot => {
+      const timing = bundle.timeline?.shots.find(item => item.shotId === shot.shotId), fps = bundle.requirements.effective.fps;
+      const span = timing ? `${timing.startFrame / fps}–${timing.endFrame / fps}s` : `${shot.durationRange.minSeconds}–${shot.durationRange.maxSeconds}s（计划）`;
+      const anchors = shot.events.map(event => {
+        const anchor = bundle.timeline?.events.find(item => item.eventId === event.eventId)?.anchor;
+        return `${event.eventId}: ${anchor ? anchor.placementId + '/' + anchor.pointId : event.action}`;
+      });
+      return '| ' + [shot.shotId + ' / ' + span, shot.purpose, shot.visualIntent ?? shot.composition,
+        shot.nextRelation ?? shot.transition, anchors.join('；') || '按动作与停留编排'].map(cell).join(' | ') + ' |';
+    }).join('\n') + '\n';
   const section = (title: string, value: unknown) => {
     const json = JSON.stringify(value, null, 2), fence = '`'.repeat(Math.max(3, ...[...json.matchAll(/`+/g)].map(m => m[0].length + 1)));
     return `## ${title}\n\n${fence}json\n${json}\n${fence}\n`;
@@ -11,7 +23,7 @@ export function renderProductionView(bundle: ProductionBundle, revision: number)
   return `<!-- production revision=${revision} sourceHash=${productionHash(bundle)} -->\n# 创作计划\n\n` +
     section('阶段状态', productionStages(bundle)) + '\n' + section('Requested · 用户原文与硬目标', bundle.requirements.requested) + '\n' +
     section('Effective · 当前创作与预览／交付配置', bundle.requirements.effective) + '\n' + section('脚本与来源引用', bundle.script) + '\n' +
-    section('分镜与素材选择', bundle.shots) + '\n' + (Object.hasOwn(bundle, 'timeline') ? section('固定音源与帧／样本时间线', bundle.timeline) + '\n' : '') + section('作用域决策记录', bundle.decisions.map(d => ({ ...d, applicability: applied.has(d.decisionId) ? 'applicable' : 'superseded' }))) + '\n' +
+    storyboard + '\n' + section('素材选择 · assetPlan', bundle.shots?.assetPlan ?? null) + '\n' + (Object.hasOwn(bundle, 'timeline') ? section('固定音源与帧／样本时间线', bundle.timeline) + '\n' : '') + section('作用域决策记录', bundle.decisions.map(d => ({ ...d, applicability: applied.has(d.decisionId) ? 'applicable' : 'superseded' }))) + '\n' +
     section('当前失效原因', bundle.invalidations);
 }
 

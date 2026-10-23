@@ -31,8 +31,10 @@ const profile = obj({ width: positive, height: positive });
 const effective = obj({ goal: str, audience: str, style: str, durationSeconds: number, aspect: choices('16:9', '9:16', '1:1'),
   fps: { enum: [12, 15, 24, 25, 30, 60] }, originalAudio: choices('preserve', 'mute'), preview: profile, delivery: profile, videoLimits: nullable(file) });
 const script = obj({ scriptId: id, sourceHash: hash, sourceRefs: { ...arr(id), minItems: 1 }, lines: { ...arr(obj({ lineId: id, text: { type: 'string' }, screenText: { type: 'string' }, sourceRefs: { ...arr(id), minItems: 1 } })), minItems: 1 } });
-const shots = obj({ sourceHash: hash, items: { ...arr(obj({ shotId: id, purpose: str, lineRefs: { ...arr(id), minItems: 1 }, composition: str, camera: str, transition: str,
-  durationRange: obj({ minSeconds: number, maxSeconds: number }), events: arr(obj({ eventId: id, action: str, lineRef: nullable(id) })) })), minItems: 1 }, assetPlan: ASSET_PLAN_SCHEMAS.plan });
+const shotBase = obj({ shotId: id, purpose: str, lineRefs: { ...arr(id), minItems: 1 }, composition: str, camera: str, transition: str,
+  durationRange: obj({ minSeconds: number, maxSeconds: number }), events: arr(obj({ eventId: id, action: str, lineRef: nullable(id) })) });
+const shot = { ...shotBase, properties: { ...shotBase.properties, visualIntent: str, nextRelation: str } } as const;
+const shots = obj({ sourceHash: hash, items: { ...arr(shot), minItems: 1 }, assetPlan: ASSET_PLAN_SCHEMAS.plan });
 const invalidation = obj({ key: str, reason: str });
 const bundleBase = obj({ version: { const: '0.1' }, requirements: obj({ requested, effective }), script: nullable(script), shots: nullable(shots),
   decisions: arr(decision), invalidations: arr(invalidation) });
@@ -56,7 +58,8 @@ type Data<S> = S extends { const: infer C } ? C : S extends { enum: readonly (in
 export type ProductionInput = Data<typeof input>;
 export type ProductionDecision = Data<typeof decision>;
 export type ProductionScript = Data<typeof script>;
-export type ProductionShots = Omit<Data<typeof shots>, 'assetPlan'> & { assetPlan: AssetPlan };
+export type ProductionShots = Omit<Data<typeof shots>, 'assetPlan' | 'items'> & { assetPlan: AssetPlan;
+  items: (Data<typeof shotBase> & { visualIntent?: string; nextRelation?: string })[] };
 export type ProductionBundle = Omit<Data<typeof bundle>, 'shots' | 'timeline'> & { shots: ProductionShots | null; timeline?: ProductionTimeline | null };
 export type ProductionInit = Data<typeof init>;
 export type ProductionProposal = Omit<Data<typeof proposal>, 'changes'> & { changes: { effective: Data<typeof effective> | null; script: ProductionScript | null; shots: ProductionShots | null; timeline?: ProductionTimeline | null } };

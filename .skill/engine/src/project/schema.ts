@@ -124,7 +124,7 @@ export const BRIEF_SCHEMA: Schema = {
     /** 采用的提示词原型 id（prompts/archetypes/<id>.brief.json） */
     archetype: { type: 'string', pattern: '^[a-z0-9][a-z0-9-]{1,47}$' },
     /** 提示词的原始意图，保留原文。 */
-    intent: { type: 'string', minLength: 8, maxLength: 600 },
+    intent: { type: 'string', minLength: 8 },
     audience: { type: 'string', minLength: 1, maxLength: 200 },
 
     /** 交付规格：必须与 spec 的 video 段对得上，否则对账阶段会失败 */

@@ -6,6 +6,7 @@ import { parseArgs } from 'node:util';
 import { fileURLToPath } from 'node:url';
 
 import { validateAsrLock } from './src/project/asr.ts';
+import { linuxMediaRuntimeIdentity } from './native-media.mjs';
 
 export const digest = value => createHash('sha256').update(value).digest('hex');
 export const json = path => JSON.parse(readFileSync(path, 'utf8'));
@@ -90,7 +91,9 @@ export function asrRuntimeIdentity({ toolsOnly = false } = {}) {
   return toolsOnly ? { id: 'bounded-audio-input', version: '0.1', lockSha256: identity.sha256, platform: lock.platform, arch: lock.arch, tools: lock.tools } :
     { ...lock, id: 'whisper-cpp-input-asr', lockSha256: identity.sha256 };
 }
-export function audioInputRuntimeIdentity() { return asrRuntimeIdentity({ toolsOnly: true }); }
+export function audioInputRuntimeIdentity() {
+  return process.platform === 'linux' ? linuxMediaRuntimeIdentity(dirname(fileURLToPath(import.meta.url))) : asrRuntimeIdentity({ toolsOnly: true });
+}
 
 /** Hash only independent files, in path order. Used by packaging and execution. */
 export function fileHashes(root, excluded = []) {
@@ -112,10 +115,14 @@ export function verifyRuntime(project) {
   const engine = join(project, '.engine');
   const { packageId, ...content } = json(join(engine, 'engine-manifest.json'));
   const lock = json(join(project, 'workspace.json'));
-  if (lock.packageId !== packageId || lock.isolationSha256 !== digest(JSON.stringify(json(join(engine, 'isolation.json'))))) throw new Error('RUNTIME_LOCK_CHANGED: keep the initialized release and isolation policy');
+  const manualLinux = lock.mode === 'manual-linux';
+  if (lock.packageId !== packageId || (manualLinux
+    ? content.version !== 'manual-0.2' || content.platform !== 'linux' || content.sourcePackageId !== lock.sourcePackageId || content.sandbox !== 'host-managed-unverified' || lock.sandbox !== content.sandbox
+    : lock.isolationSha256 !== digest(JSON.stringify(json(join(engine, 'isolation.json')))))) throw new Error('RUNTIME_LOCK_CHANGED: keep the initialized release and isolation policy');
   if (digest(JSON.stringify(content)) !== packageId) throw new Error('RUNTIME_MANIFEST_CHANGED');
   const actual = fileHashes(engine, ['engine-manifest.json', 'isolation.json']);
   if (JSON.stringify(actual) !== JSON.stringify(content.files)) throw new Error('RUNTIME_CHANGED: use the pinned release');
+  if (manualLinux && lock.engineSha256 !== digest(JSON.stringify(actual))) throw new Error('RUNTIME_ENGINE_CHANGED');
   // 本片风格选择：start 记录显式参数，workspace.json 固定快照哈希与生效风格。
   const brandPath = join(project, 'brand.json');
   const brandRecord = lock.brand;
@@ -314,6 +321,19 @@ export function runBoundCommand(projectArg, command, options = {}) {
   if (realpathSync(project) !== project) throw new Error('WORKSPACE_LINK: project root');
   assertIndependentTree(project);
   const runtime = verifyRuntime(project);
+  if (runtime.platform === 'linux' && runtime.version === 'manual-0.2') {
+    if (!command.length) throw new Error('COMMAND_REQUIRED');
+    const native = linuxMediaRuntimeIdentity(join(project, '.engine'));
+    const environment = { ...process.env, PATH: `${dirname(process.execPath)}:${dirname(native.tools.ffmpeg.executable)}:${dirname(native.tools.ffprobe.executable)}:/usr/local/bin:/usr/bin:/bin`,
+      JBM_RUNTIME_ID: runtime.packageId, JBM_ISOLATION: 'host-managed-unverified', TMPDIR: join(project, 'out/.tmp'), PYTHONDONTWRITEBYTECODE: '1' };
+    delete environment.LD_PRELOAD; delete environment.LD_LIBRARY_PATH;
+    mkdirSync(environment.TMPDIR, { recursive: true });
+    return spawnWithSignalRelay(command[0], command.slice(1), { cwd: project, stdio: 'inherit', env: environment }).then(result => {
+      verifyRuntime(project); linuxMediaRuntimeIdentity(join(project, '.engine'));
+      if (result.status === null) throw new Error('LINUX_EXECUTION_FAILED: ' + result.signal);
+      return result.status;
+    });
+  }
   if (process.platform !== 'darwin' || !existsSync('/usr/bin/sandbox-exec')) throw new Error('SANDBOX_UNAVAILABLE: macOS sandbox-exec is required');
   if (!command.length) throw new Error('COMMAND_REQUIRED');
   const policy = json(join(project, '.engine/isolation.json'));

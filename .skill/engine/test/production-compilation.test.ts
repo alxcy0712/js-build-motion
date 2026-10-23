@@ -16,7 +16,6 @@ async function fixture() {
   const out = resolve(PROJECT_ROOT, '../..', '.research/out'); mkdirSync(out, { recursive: true });
   const root = realpathSync(mkdtempSync(join(out, 'production-compile-')));
   const dir = initProject({ slug: 'fictional-timeline', projectsRoot: join(root, 'projects') }).dir;
-  mkdirSync(join(dir, 'inputs'), { recursive: true });
   writeFileSync(join(dir, 'workspace.json'), JSON.stringify({ version: '0.2', packageId: process.env.JBM_RUNTIME_ID ?? 'a'.repeat(64) }));
   writeFileSync(join(dir, 'prompt-history.jsonl'), JSON.stringify(fixturePrompt) + '\n');
   const init = productionInitFixture(), policy = Buffer.from('{}\n');

@@ -173,7 +173,7 @@ node .skill/scripts/video.mjs <slug> diagnose --from 1 --to 3 --purpose motion -
 
 Production 正式编码可用 `review --subject` 读取当前审片对象，`review --schema review` 查询填写契约。对象固定成片路径、字节数与 SHA-256、run、运行时、输入快照、生产版本包、final 投影、渲染证据、实际声音源和 master，以及目录原件与实际字体。审片记录 reviewer、时间、工具、方法、帧区间及本片证据文件身份；参考另记实际观察时间区间、来源、提炼机制和采用镜头。
 
-九项检查为 technical、narrative、camera、rhythm、captions、audibility、sync、quality 和 rights。完整视觉结论依据正常速度观看范围，声音可听性依据实际试听范围，同步结论依据声画一起观看范围。静帧、信号分析和文件检查保存各自观察事实。必需结论为 pass；无声成片的 audibility、sync 可附理由填 not_applicable。其余 revise、blocked 或范围缺口保存为待审稿，交付门禁据此保留待审状态。参考实际观看区间待确认时，草稿 references 保持空数组；正式交付要求具体参考片的正常速度观看证据。
+九项检查为 technical、narrative、camera、rhythm、captions、audibility、sync、quality 和 rights。完整视觉结论依据正常速度观看范围，声音可听性依据实际试听范围，同步结论依据声画一起观看范围。静帧、信号分析和文件检查保存各自观察事实。必需结论为 pass；无声成片的 audibility、sync 可附理由填 not_applicable。其余 revise、blocked 或范围缺口保存为待审稿，交付门禁据此保留待审状态。原创方案的 references 可为空；采用参考时记录实际观看或用户提供的研究，尚待完成的参考动态观察在对应检查中保留 blocked。
 
 `credits --schema credits` 的逐源权利与署名覆盖当前对象中的目录原件、实际声音 take 和字体；记录原始与第三方权利状态、local-delivery 用途、限制评估、必要署名和依据。目录权利与已提交版本逐值核对，必要署名完整进入 attributionLines。动态 IO 和最终像素可见性的 partial 覆盖原句进入交付 knownLimitations。
 
@@ -190,3 +190,5 @@ node .skill/scripts/video.mjs <slug> deliver --verify current
 已有 approvalTasks 中的 final 审批采用 `deliveryApprovalHash(request, 'final')`，即 `productionHash(subject)`；delivery 审批采用 `deliveryApprovalHash(request, 'delivery')`，即请求中除 approvals 数组外全部内容的摘要。当前权威决策与请求审批共同核对适用性和撤销，内容变化后按当前摘要核对。交付范围为本地保存，其他外部操作各自核对已有授权。
 
 交付在生产租约内复查全部当前来源与证据，复制独立文件并核验哈希，再保存版本清单和成功回执，最后原子切换 current。清单记录成片、生产版本、声音、审片、权利署名、复制文件和已知边界；复查同时核对原始文件与交付副本。失败保留有效旧 current 与失败回执；当前文件改变后，原审片和交付适用性回到待审。
+
+参考记录按实际来源使用 normal-speed-playback、frame-inspection 或 provided-observations（用户提供的已完成研究）。提供观察时附原文与来源并注明本轮观看范围。原创方案可留空外部参考；当前成片的全片动态观看、听音和各项审片要求继续独立验收。

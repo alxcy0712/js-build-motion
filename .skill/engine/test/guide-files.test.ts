@@ -3,6 +3,7 @@ import { test } from 'node:test';
 import { copyFileSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { spawnSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import { GUIDE_FILES, copyGuides } from '../../scripts/guide-files.mjs';
 import { PROJECT_ROOT } from '../src/utils/env.ts';
 
@@ -16,8 +17,10 @@ test('macOS guide selection and Linux bootstrap produce the same independent req
     for (const name of ['easing', 'random']) writeFileSync(join(skill, 'engine/src', name + '.ts'), 'export const fixture = 1;');
     writeFileSync(join(skill, 'assets/components.json'), JSON.stringify(Object.fromEntries(['easing', 'random'].map(name => [name, { source: 'src/' + name + '.ts' }]))));
     writeFileSync(join(skill, 'assets/project/AGENTS.md'), 'Read guide/workflow.md');
+    for (const name of ['video.mjs', 'exec.mjs']) writeFileSync(join(skill, 'assets/project', name), '// fixture entry');
     copyFileSync(resolve(PROJECT_ROOT, '../brand.json'), join(skill, 'brand.json'));
-    writeFileSync(join(skill, 'manifest.json'), JSON.stringify({ packageId: 'fixture', dependencies: [] }));
+    const source = { dependencies: [] }, packageId = createHash('sha256').update(JSON.stringify(source)).digest('hex');
+    writeFileSync(join(skill, 'manifest.json'), JSON.stringify({ packageId, ...source }));
     const prompt = join(root, 'idea.txt'); writeFileSync(prompt, '独立初始化原文\n第二行');
     copyGuides(skill, join(root, 'mac-project'));
     const child = spawnSync(process.execPath, [resolve(PROJECT_ROOT, '../scripts/start-linux.mjs')], {
@@ -36,6 +39,9 @@ test('macOS guide selection and Linux bootstrap produce the same independent req
     const workspace = JSON.parse(readFileSync(join(project, 'workspace.json'), 'utf8'));
     assert.equal(workspace.mode, 'manual-linux'); assert.equal(workspace.engineSha256, null);
     assert.equal(workspace.sandbox, 'host-managed-unverified');
+    assert.equal(workspace.sourcePackageId, packageId); assert.equal(workspace.packageId, undefined);
+    assert.deepEqual(readFileSync(join(project, '.engine/source-manifest.json')), readFileSync(join(skill, 'manifest.json')));
+    for (const name of ['video.mjs', 'exec.mjs']) assert.deepEqual(readFileSync(join(project, name)), readFileSync(join(skill, 'assets/project', name)));
     assert.equal(JSON.parse(readFileSync(join(project, 'prompt-history.jsonl'), 'utf8')).text, readFileSync(prompt, 'utf8'));
   } finally { rmSync(root, { recursive: true, force: true }); }
 });

@@ -40,7 +40,7 @@ export interface CaptionCue {
   /** 原旁白下标；一段旁白可对应多条字幕。 */
   readonly narrationIndex?: number;
   /** 分句时间的依据；估算时间需要在实际配音中复核。 */
-  readonly timingSource?: 'words' | 'estimated';
+  readonly timingSource?: 'words' | 'estimated' | 'authored';
 }
 
 /**

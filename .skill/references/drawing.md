@@ -14,6 +14,14 @@
 
 绘制入口接管镜头内容，统一管线处理相机、转场、字幕、音频和编码。复杂需求可在本片实现并用实际帧与动作预览验证。
 
+## Production 本片画面
+
+Production 正式渲染从本次输入快照加载 `project.json.drawing`，同样支持 `prepareDrawing({assets})` 返回同步 `drawScene`。合成顺序为：已安排的媒体底层 → 本片绘制 → 主管线转场与主题处理 → 字幕。本片可通过受控素材接口再绘制需要前景叠放的图像或视频，消费进入同一回执。提供本片入口时，内置舞台由本片主动调用；省略入口才采用内置场景与图元。
+
+`context.time` / `frame.time` 为全片秒数；`sceneTime` 是限制在镜长范围的局部秒数；`progress` 是镜内进度。Production 的 `context.production.frame` 为本次镜头求值帧（转场旧镜保持末帧），`sceneFrame` 为局部帧，`events` 为本镜事件时间约束，`clips[].sourceFrame` 为准备后素材的帧号。源帧 = sourceStartFrame + 全片帧 − clip.startFrame；原片 PTS 由准备 map 保留。所有区间采用半开边界。
+
+主管线相机作用于媒体与本片世界层。需要本片相机时，将 timeline 镜头 `cameraMove` 设为 `static`，在本片统一变换世界对象，字幕保持主管线屏幕坐标。事件默认仅排时点；`animation: "emphasis"` 显式采用图元 opacity/scale 便利曲线并检查通道冲突。自定义跳跃、接触、回弹及形变直接按事件帧求值。
+
 ## 受控素材准备
 
 配置 AssetPlan 后，绘制模块可导出 `async prepareDrawing({ assets })`，返回同步绘制函数。准备阶段通过 useId 调用 `assets.read`、`assets.image` 或 `assets.video`；绘制阶段使用准备好的图片/视频句柄。render 在实际输入快照中完成准备，帧函数返回 Promise 时明确拒绝。

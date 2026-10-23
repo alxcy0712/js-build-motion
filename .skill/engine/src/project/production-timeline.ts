@@ -148,7 +148,8 @@ export function compileProductionTimeline(bundle: ProductionBundle, profile: 'ro
     }
     const element = shot?.composition.elements?.find(element => element.id === event.eventId);
     let drivesGraphic = false;
-    if (!element) add('EVENT_GRAPHIC_UNBOUND', path, 'No composition element matches eventId; this event remains a schedule record.', 'soft');
+    if (event.animation !== 'emphasis') { /* Schedule-only events leave all drawing channels intact. */ }
+    else if (!element) add('EVENT_GRAPHIC_UNBOUND', path, 'The selected emphasis preset needs a composition element matching eventId.', 'soft');
     else if (element.keyframes?.some(key => key.opacity !== undefined || key.scale !== undefined)) add('EVENT_KEYFRAME_CONFLICT', path, 'Event opacity/scale would overwrite an existing keyframe channel.');
     else if (shot && !conflicts.some(conflict => conflict.path === path && conflict.severity === 'hard')) {
       const keys = new Map<number, GraphicKeyframe>();
@@ -215,7 +216,7 @@ export function compileProductionTimeline(bundle: ProductionBundle, profile: 'ro
       if (!line || !(line.screenText || line.text)) add('CAPTION_LINE_REFERENCE', path, 'Caption must reference a nonempty script text.');
       if (cue.endFrame <= cue.startFrame || cue.endFrame > timeline.durationFrames) add('CAPTION_RANGE', path, 'Explicit caption frames must fit the video.');
       result.captionCues.push({ ...cue, index: 0, text: line?.screenText || line?.text || '', start: cue.startFrame / fps, end: cue.endFrame / fps,
-        startSample: frameSample(cue.startFrame, path), endSample: frameSample(cue.endFrame, path), timingSource: 'estimated' });
+        startSample: frameSample(cue.startFrame, path), endSample: frameSample(cue.endFrame, path), timingSource: 'authored' });
     });
     result.captionCues.sort((a, b) => a.startSample - b.startSample);
     result.captionCues.forEach((cue, index) => {

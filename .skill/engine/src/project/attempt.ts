@@ -90,7 +90,7 @@ function collectInputs(project: ProjectHandle, mediaPaths: readonly string[]): A
   for (const file of treeHashes(project.dir, join(project.dir, 'src'))) paths.set(file.path, 'source');
   for (const name of mediaPaths) {
     const path = resolveInsideProject(project.dir, name, 'attempt media');
-    if (inside(project.outDir, path) || inside(join(project.dir, 'runs'), path) && !(/^runs\/video-attempt-[a-f0-9-]{36}\/receipt\.json$/.test(name) || existsSync(join(project.dir, 'production/manifest.json')) && /^runs\/(import|unpack|catalog|align|alignment|video)-attempt-[a-f0-9-]{36}\//.test(name)) || inside(join(project.dir, '.engine'), path)) throw new Error('ATTEMPT_MEDIA_INPUT: use project assets or a fixed video publication receipt');
+    if (inside(project.outDir, path) || inside(join(project.dir, 'runs'), path) && !(/^runs\/video-attempt-[a-f0-9-]{36}\/receipt\.json$/.test(name) || existsSync(join(project.dir, 'production/manifest.json')) && (/^runs\/(import|unpack|catalog|align|alignment|video)-attempt-[a-f0-9-]{36}\//.test(name) || /^runs\/production-attempt-[a-f0-9-]{36}\/receipt\.json$/.test(name))) || inside(join(project.dir, '.engine'), path)) throw new Error('ATTEMPT_MEDIA_INPUT: use project assets or a fixed publication receipt');
     independentFile(project.dir, path);
     const normalized = relativePath(project.dir, path);
     if (!paths.has(normalized)) paths.set(normalized, 'media');

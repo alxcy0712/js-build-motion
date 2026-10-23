@@ -14,7 +14,7 @@ node .skill/scripts/seal.mjs
 node .skill/scripts/check.mjs --native
 ```
 
-Skia安装提示须以实际模块加载/出帧验证。Linux按[手建入口](.skill/references/workflow.md#linux-手建入口)装本机依赖并登记摘要，宿主隔离自行验证，原生受限媒体/Production入口待Linux适配。
+Skia安装提示须以实际模块加载/出帧验证。Linux按[手建入口](.skill/references/workflow.md#linux-手建入口)装本机依赖并登记摘要，宿主隔离自行验证，新工作区封存Linux媒体工具闭包后，通过本片 video.mjs 运行 Production 与审片交付；宿主隔离及实际运行单独验证。
 
 用户确认主题及逐片片尾选择后制作：
 
@@ -63,6 +63,7 @@ ASR用whisper.cpp d1be6fde11ac6e0407606b4e42fe72d34add8037和multilingual base�
 
 感谢以下作者和维护者。方法独立整理到motion/direction/drawing及风格规范；作品归原作者，实际素材使用另核许可。上游页面保留完整制作名单，观察、作者陈述、推断和实测分别记录。
 
+- Chris（@chris62771610）：[角色与内容空间接力参考](https://x.com/chris62771610/status/2113138124167733285/video/1)。采用用户提供的可见运动观察；作者工具链待核。
 - 0xMovez：[动效流程](https://x.com/0xMovez/status/2104216919033192746)。
 - Pluvio9yte：[动作/受力](https://x.com/Pluvio9yte/status/2105533742907605209?s=20)。
 - OpenDesign：[Motion 发布片](https://x.com/OpenDesignHQ/status/2111023212129829086)、[界面演示](https://x.com/OpenDesignHQ/status/2111029430080725196)。

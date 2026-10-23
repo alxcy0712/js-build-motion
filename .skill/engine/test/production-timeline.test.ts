@@ -25,10 +25,10 @@ function fixture(fps = 24): ProductionBundle {
       words: [{ pointId: 'word-open', text: '走进公园', startSample: 1000, endSample: 120000, basis: 'observed' },
         { pointId: 'word-conclusion', text: '让脚步慢一点', startSample: 130000, endSample: 240000, basis: 'observed' }], beats: [] }],
     placements: [{ placementId: 'place-voice', takeId: 'take-voice', startSample: 48000, inSample: 0, outSample: 240000, gain: 1, mute: false }],
-    events: [{ eventId: 'event-arrive', shotId: 'shot-open', prepareFrame: 1, visibleFrame: visible, peakFrame: visible + 3,
+    events: [{ eventId: 'event-arrive', shotId: 'shot-open', animation: 'emphasis', prepareFrame: 1, visibleFrame: visible, peakFrame: visible + 3,
       completeFrame: visible + 6, readingEndFrame: 4 * fps - 1,
       anchor: { kind: 'word', placementId: 'place-voice', pointId: 'word-open', phase: 'visible', offsetSamples: 0, precision: 'hard' } },
-    { eventId: 'event-shadow', shotId: 'shot-detail', prepareFrame: 4 * fps, visibleFrame: 4 * fps + 3, peakFrame: 4 * fps + 6,
+    { eventId: 'event-shadow', shotId: 'shot-detail', animation: 'emphasis', prepareFrame: 4 * fps, visibleFrame: 4 * fps + 3, peakFrame: 4 * fps + 6,
       completeFrame: 4 * fps + 9, readingEndFrame: 8 * fps - 1, anchor: null }], readingGroups: [], captionCues: [] };
   return bundle;
 }
@@ -81,6 +81,19 @@ test('event stages drive graphic keyframes and retain unrelated animation channe
   assert.equal(at(event.readingEndFrame).scale, 1);
   assert.equal(element.keyframes!.find(key => key.at === 0)!.x, 0.2);
   assert.equal(element.keyframes!.find(key => key.at === 1)!.x, 0.8);
+});
+
+test('schedule events preserve authored curves and support project-only implementations', () => {
+  const bundle = fixture(), shot = bundle.timeline!.shots[0]!, event = bundle.timeline!.events[0]!;
+  delete event.animation;
+  shot.composition.elements![0]!.keyframes = [{ at: 0, scale: 0.5, opacity: 0.7 }, { at: 1, scale: 2, opacity: 1 }];
+  const result = compileProductionTimeline(bundle);
+  assert.ok(result.spec);
+  assert.equal(result.events[0]!.drivesGraphic, false);
+  assert.deepEqual(result.spec.scenes[0]!.composition!.elements, shot.composition.elements);
+  shot.composition.elements = [];
+  assert.ok(compileProductionTimeline(bundle).spec);
+  assert.equal(compileProductionTimeline(bundle).conflicts.some(c => c.code === 'EVENT_GRAPHIC_UNBOUND'), false);
 });
 
 test('music point maps from a nonzero source trim and placement without inventing a beat phase', () => {

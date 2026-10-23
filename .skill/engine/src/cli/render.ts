@@ -35,6 +35,20 @@ import { audioArtifactHashes, buildFacts, buildMeasured, buildRunLog, repoRelati
 import { outputPath, baseOutDir, requireTarget } from './shared.ts';
 import { run } from './index.ts';
 
+/** Previews consume the same authority, media and project drawing as encoded renders. */
+async function preparePreview(project: ProjectHandle | null, spec: ResolvedVideoSpec) {
+  const production = project && existsSync(join(project.dir, 'production/manifest.json'))
+    ? await assertProductionCurrent(project.dir, spec) : null;
+  if (project && !production) assertDirectorCurrent(project, spec);
+  const plan = project && existsSync(join(project.dir, DEFAULT_ASSET_PLAN_PATH)) ? await prepareAssetPlan(project.dir) : null;
+  const assets = project ? createAssetPort(project.dir, plan, { attemptId: 'preview', inputSnapshotSha256: sha256File(project.specPath) }) : undefined;
+  try {
+    const drawing = await loadProjectDrawing(project, assets?.port);
+    return { drawScene: production ? await createProductionDrawing(production.compiled, assets!.port, production.projection.profile, drawing) : drawing,
+      captionCues: production?.compiled.captionCues, assets };
+  } catch (error) { assets?.close(); throw error; }
+}
+
 export async function cmdFrame(argv: string[]): Promise<number> {
   const { values, positionals } = parseArgs({
     args: argv,
@@ -80,12 +94,14 @@ export async function cmdFrame(argv: string[]): Promise<number> {
   const height = values.height !== undefined ? Number(values.height) : spec.video.height;
 
   const warnings: string[] = [];
-  const drawScene = await loadProjectDrawing(target.project);
+  const preview = await preparePreview(target.project, spec);
+  const drawScene = preview.drawScene;
   const renderer = createSpecRenderer({
     spec,
     width,
     height,
     ...(drawScene ? { drawScene } : {}),
+    ...(preview.captionCues ? { captionCues: preview.captionCues } : {}),
     onWarning: (m) => warnings.push(m),
   });
 
@@ -102,6 +118,7 @@ export async function cmdFrame(argv: string[]): Promise<number> {
     renderer.renderFrame(rc);
     const drawMs = performance.now() - t0;
     const png = renderer.toPng();
+    await preview.assets?.verify();
 
     const outPath = values.out ?? join(baseOutDir(target), `frame-${frameIndex}.png`);
     outputPath(target, outPath);
@@ -139,6 +156,7 @@ export async function cmdFrame(argv: string[]): Promise<number> {
     return 0;
   } finally {
     renderer.dispose();
+    preview.assets?.close();
   }
 }
 export async function cmdStoryboard(argv: string[]): Promise<number> {
@@ -181,12 +199,14 @@ export async function cmdStoryboard(argv: string[]): Promise<number> {
     outputPath(target, join(baseOutDir(target), target.project ? 'audio/narration-timing.json' : `audio-${target.label}/narration-timing.json`)),
   ], spec);
   if (spec.audio.narration.length && !measuredNarration) warnings.push('字幕时间为估算：先运行 audio 获取当前 spec 的实测配音时间');
-  const drawScene = await loadProjectDrawing(target.project);
+  const preview = await preparePreview(target.project, spec);
+  const drawScene = preview.drawScene;
   const renderer = createSpecRenderer({
     spec,
     width,
     height,
     ...(drawScene ? { drawScene } : {}),
+    ...(preview.captionCues ? { captionCues: preview.captionCues } : {}),
     ...(measuredNarration ? { measuredNarration } : {}),
     onWarning: (m) => warnings.push(m),
   });
@@ -214,8 +234,10 @@ export async function cmdStoryboard(argv: string[]): Promise<number> {
         bytes: png.length,
       });
     }
+    await preview.assets?.verify();
   } finally {
     renderer.dispose();
+    preview.assets?.close();
   }
   const elapsedMs = performance.now() - started;
 
@@ -345,7 +367,7 @@ export async function cmdRender(argv: string[]): Promise<number> {
   if (values.profile !== undefined && !['rough', 'final'].includes(values.profile)) throw Error('PRODUCTION_PROFILE_INVALID');
   let production = project && existsSync(join(project.dir, 'production/manifest.json'))
     ? await assertProductionCurrent(project.dir, spec, values.profile as 'rough' | 'final' | undefined) : null;
-  if (production && (values['no-audio'] || values['audio-lock'] || values['tts-provider'] || values['asset-plan'])) throw Error('PRODUCTION_TIMELINE_CONTROLS_REQUIRED');
+  if (production && (values['no-audio'] || values['audio-lock'] || values['tts-provider'] || values['asset-plan'] || values['no-captions'])) throw Error('PRODUCTION_TIMELINE_CONTROLS_REQUIRED');
   if (project && !production) assertDirectorCurrent(project, spec);
   let promptHistory = project ? promptHistorySnapshot(project.dir) : undefined;
   const outDir = baseOutDir(target);
@@ -454,8 +476,9 @@ export async function cmdRender(argv: string[]): Promise<number> {
 
     // ---- 2. 渲染视频（raw RGBA → ffmpeg 管道，音频在同一次调用里封装） ----
     const drawingSources = project?.manifest.drawing ? (attempt?.drawingSources ?? projectSourceHashes(project.dir)) : undefined;
-    const drawScene = production ? await createProductionDrawing(production.compiled, assets!.port, production.projection.profile)
-      : attempt ? await loadAttemptDrawing(attempt, assets?.port) : await loadProjectDrawing(project);
+    const projectDrawing = attempt ? await loadAttemptDrawing(attempt, assets?.port) : await loadProjectDrawing(project, assets?.port);
+    const drawScene = production ? await createProductionDrawing(production.compiled, assets!.port, production.projection.profile, projectDrawing)
+      : projectDrawing;
     renderer = createSpecRenderer({
       spec,
       width,

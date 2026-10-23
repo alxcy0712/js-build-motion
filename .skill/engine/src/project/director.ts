@@ -30,6 +30,7 @@ export interface DirectorPlan {
   voice?: TtsVoice;
   narrationRate?: number;
   shots: Array<{
+    id?: string;
     purpose: string;
     beats: number;
     title: string;
@@ -59,7 +60,7 @@ export const DIRECTOR_SCHEMA = {
   type: 'object', additionalProperties: false,
   required: ['version', 'idea', 'title', 'aspect', 'look', 'bpm', 'shots'],
   properties: {
-    version: { const: '0.1' }, idea: { type: 'string', minLength: 1, maxLength: 5000 },
+    version: { const: '0.1' }, idea: { type: 'string', minLength: 1 },
     title: { type: 'string', minLength: 1, maxLength: 120 },
     aspect: { enum: ['16:9', '9:16', '1:1'] }, look: { enum: ['graphic'] },
     bpm: COMPOSITION_SCHEMA.properties.bpm,
@@ -73,8 +74,9 @@ export const DIRECTOR_SCHEMA = {
       required: ['purpose', 'beats', 'title', 'backdrop', 'motif'],
       properties: {
         ...shotVisuals,
-        purpose: { type: 'string', minLength: 1, maxLength: 300 },
-        visualIntent: { type: 'string', minLength: 1, maxLength: 500 },
+        id: { type: 'string', pattern: '^[A-Za-z][A-Za-z0-9_-]{0,127}$' },
+        purpose: { type: 'string', minLength: 1 },
+        visualIntent: { type: 'string', minLength: 1 },
         beats: { type: 'number', minimum: 1, maximum: 32 },
         cameraMove: { enum: [...CAMERA_MOVES] }, transition: { enum: [...TRANSITIONS] },
         narration: { type: 'string', minLength: 1, maxLength: 120 },
@@ -95,6 +97,8 @@ export function compileDirector(raw: unknown): { plan: DirectorPlan; spec: Resol
     details: { errors }, hint: '运行 node .skill/engine/src/cli/index.ts capabilities --schema，按路径修正计划',
   });
   const plan = structuredClone(raw) as DirectorPlan;
+  const ids = plan.shots.map((shot, i) => shot.id ?? `shot_${String(i + 1).padStart(3, '0')}`);
+  if (new Set(ids).size !== ids.length) throw new EngineError(ERROR_CODES.SPEC_INVALID, '镜头 ID 必须唯一');
   const fps = plan.fps ?? 24;
   const framesPerBeat = 60 * fps / plan.bpm;
   let beat = 0;
@@ -119,15 +123,15 @@ export function compileDirector(raw: unknown): { plan: DirectorPlan; spec: Resol
       });
     }
     if (shot.sfx === undefined) {
-      if (i) sfx.push({ start, preset: 'whoosh', volume: 0.08 });
+      if (i && !shot.visualIntent) sfx.push({ start, preset: 'whoosh', volume: 0.08 });
     } else for (const cue of shot.sfx) {
       if (cue.offset >= end - start) throw new EngineError(ERROR_CODES.SPEC_INVALID, `shots[${i}].sfx.offset 必须落在本镜头内`);
       sfx.push({ start: start + cue.offset, preset: cue.preset, volume: cue.volume ?? 0.08 });
     }
     return {
-      id: `shot_${String(i + 1).padStart(3, '0')}`, start, end,
+      id: ids[i], start, end,
       environment: 'motion_stage', camera: 'medium',
-      cameraMove: shot.cameraMove ?? 'slow_push', transition: shot.transition ?? (i ? 'dissolve' : 'cut'),
+      cameraMove: shot.cameraMove ?? (shot.visualIntent ? 'static' : 'slow_push'), transition: shot.transition ?? (i && !shot.visualIntent ? 'dissolve' : 'cut'),
       composition: {
         backdrop: shot.backdrop, motif: shot.motif, title: shot.title, bpm: plan.bpm,
         ...(shot.subtitle ? { subtitle: shot.subtitle } : {}),
@@ -142,7 +146,7 @@ export function compileDirector(raw: unknown): { plan: DirectorPlan; spec: Resol
     version: '0.1', video: { width, height, fps, duration, seed: hashString(plan.idea) },
     style: { palette: 'warm_night' },
     scenes,
-    audio: { narration, bgm: { preset: plan.bgmPreset ?? 'playful', bpm: plan.bpm, volume: 0.2, fadeIn: 0.3, fadeOut: 0.8, duckUnderNarration: true },
+    audio: { narration, bgm: { preset: plan.bgmPreset ?? 'playful', bpm: plan.bpm, volume: plan.bgmPreset || !plan.shots.some(shot => shot.visualIntent) ? 0.2 : 0, fadeIn: 0.3, fadeOut: 0.8, duckUnderNarration: true },
       sfx },
     captions: { enabled: narration.length > 0, style: 'boxed', mode: 'sentence', ...plan.captionLayout },
   });

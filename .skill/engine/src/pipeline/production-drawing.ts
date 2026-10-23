@@ -7,7 +7,7 @@ import { drawGraphics } from '../drawing/scenes/graphics.ts';
 
 /** Prepare fixed media once; integer frame access remains synchronous and order independent. */
 export async function createProductionDrawing(compiled: CompiledProductionTimeline, assets: AssetPort,
-  profile: 'rough' | 'final' = compiled.profile): Promise<ProjectSceneDrawer> {
+  profile: 'rough' | 'final' = compiled.profile, projectDrawing?: ProjectSceneDrawer): Promise<ProjectSceneDrawer> {
   if (!compiled.spec || compiled.conflicts.some(c => c.severity === 'hard')) throw Error('PRODUCTION_DRAWING_TIMELINE_INVALID');
   const media = new Map<string, PreparedAssetImage | PreparedAssetVideo>();
   for (const clip of compiled.clips) {
@@ -22,7 +22,6 @@ export async function createProductionDrawing(compiled: CompiledProductionTimeli
     const start = Math.round(context.scene.start * frame.fps), end = Math.round(context.scene.end * frame.fps);
     const index = Math.max(start, Math.min(end - 1, frame.frameIndex));
     const active = compiled.clips.filter(clip => clip.startFrame <= index && index < clip.endFrame);
-    if (!active.length) { getSceneRenderer(context.scene.environment)(context); return; }
     const target = { x: 0, y: 0, width: context.width, height: context.height };
     for (const clip of active) {
       const prepared = media.get(clip.useId)!;
@@ -31,6 +30,14 @@ export async function createProductionDrawing(compiled: CompiledProductionTimeli
         else (prepared as PreparedAssetImage).draw(context.ctx, target);
       });
     }
-    drawGraphics(context.ctx, context.scene.composition?.elements ?? [], context.progress, context.width, context.height);
+    // Media is the base, project drawing owns the scene, renderer owns transitions/captions.
+    if (projectDrawing) projectDrawing({ ...context, production: {
+      frame: index, sceneFrame: index - start,
+      events: compiled.events.filter(event => event.shotId === context.scene.id),
+      clips: active.map(clip => ({ placementId: clip.placementId, useId: clip.useId,
+        sourceFrame: clip.sourceStartFrame + index - clip.startFrame })),
+    } }, frame);
+    else if (!active.length) getSceneRenderer(context.scene.environment)(context);
+    else drawGraphics(context.ctx, context.scene.composition?.elements ?? [], context.progress, context.width, context.height);
   };
 }

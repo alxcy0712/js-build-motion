@@ -30,7 +30,7 @@
 | 工具事实、记录、恢复、隔离、原文 | project/tool-registry.ts、run-log.ts、attempt.ts、isolation.ts、prompt-history.ts |
 | 原编码/后期/披露 | project/artifact.ts、postprocess.ts、disclosure.ts |
 | 审片/权利/本地交付 | project/delivery.ts、review-validation.ts、application/delivery-context.ts、delivery.ts |
-| 固定运行时与媒体工具身份 | .skill/engine/workspace.mjs及assets下的依赖锁 |
+| 固定运行时与媒体工具身份 | .skill/engine/workspace.mjs、native-media.mjs、scripts/seal-linux.mjs及依赖锁 |
 | 初始化/guide选择/组件 | .skill/scripts/video.mjs、start-linux.mjs、guide-files.mjs、.skill/assets/components.json |
 | 核心备份/封存/检查 | .skill/scripts/core.mjs、seal.mjs、check.mjs、docs-check.mjs、native-runner.mjs |
 | 模板/回归/依赖 | .skill/assets/project、.skill/engine/test、assets、node_modules、scripts |

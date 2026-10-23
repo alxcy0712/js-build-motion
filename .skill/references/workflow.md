@@ -4,7 +4,7 @@
 
 先读[创作主线](motion.md#创作主线)。从当前对话提取主题、受众、目标、事实、时长、平台、语言、参考及约束，分清用户原话、模型推断与重要缺口。已有选择和明确委托持续沿用；可逆细节按项目惯例决定并记录。型号、性能、历史、科学因果通过可靠资料核对，附件按其来源身份提供候选方法。
 
-方向待定时提出 2–3 个有实质差异的方案，比较核心证明、主体、叙事、色彩材料、运镜、节奏、声音和可实现性。用 2–4 句说明推荐的观看效果；首轮通常问 1–3 个影响范围、正确性或交付的问题，每题提供推荐项及具体取舍，支持自由回答。用户已有选择或明确“按推荐执行”时落实；必要答案待定期间可核对输入与工具，依赖步骤等待答复。
+简单输入由模型补足叙事、隐喻、场景、镜头、时长与声音，选定有特点的方向推进；详细输入完整保留独特创意。表达空间与事实缺口分别处理。只有无法合理推断且影响范围、正确性或授权的重要缺口才追问；存在真正互斥的重要选择时，给出具体候选与取舍。用户已有选择或明确“按推荐执行”时落实；必要答案待定期间可核对输入与工具，依赖步骤等待答复。
 
 主题按[账号默认与每片风格选择](style-and-identity.md#账号默认与每片风格选择)取得本片选择或明确委托，再初始化。每片询问是否采用头像与「澄记 / 用计算机思维想现实」片尾；原文已明确时直接记录。采用时以「我是澄记，用计算机思维想现实。」收尾，前一句承接内容，片尾卡与实测口播同步；不采用时结束于正片结论。答复进入原文记录，NOTES 写明采用状态；恢复本片沿用该答复。
 
@@ -157,7 +157,7 @@ node .skill/scripts/video.mjs <slug> assets --schema plan
 node .skill/scripts/video.mjs <slug> assets --plan assets/asset-plan.json
 ```
 
-请求绑定 catalog/manifest/asset/version/原件哈希、streamIndex、原 timeBase、整数 PTS 半开区间和 fps。支持自包含 MP4/MOV、单H.264/yuv420p/SDR、零旋转及可选AAC；完整 atom/sample/chunk/PTS/mdat/data-reference 先检查再解码。工具身份沿 workspace.audioInputRuntimeIdentity → asrRuntimeIdentity({toolsOnly:true}) → asr-dependencies.lock 的 FFmpeg/ffprobe 闭包核验。目录探测、识别与正式选段分别采用政策。
+请求绑定 catalog/manifest/asset/version/原件哈希、streamIndex、原 timeBase、整数 PTS 半开区间和 fps。支持自包含 MP4/MOV、单H.264/yuv420p/SDR、零旋转及可选AAC；完整 atom/sample/chunk/PTS/mdat/data-reference 先检查再解码。工具身份通过 workspace.audioInputRuntimeIdentity 核验：macOS 使用 asr-dependencies.lock，Linux 使用 media-dependencies.lock 的 FFmpeg/ffprobe 闭包。目录探测、识别与正式选段分别采用政策。
 
 历史0.1解码完整受限源帧，保存整数PTS和独立RGBA哈希；按区间起点有理时间前帧保持，未知末帧时长为null，区间上界按已知呈现域准入。输出 map/frames.rgba/proxy.mp4/publication.json；verify 重建RGBA、静音代理并完整解码逐字节比较。冻结限额：源64 MiB/600帧/8294400像素/10秒，代理边512/600帧，RGBA256 MiB、代理32 MiB、probe/map各8 MiB、结构50000、单工具30秒/准备120秒。
 
@@ -195,11 +195,13 @@ production/manifest标权威模式，state原子指向不可变revisions/<id>/bu
 
 决策记录decisionId/actor/sourcePrompt/rawText/scope/subjectHash/supersedes。用户授权来自保存的prompt/answer原文；作用域分别核对action/target/assetIds/provider/maxCost，本地plan/project委托覆盖本地规划，外部调用/收费/发布/访问沿明确授权。approve绑定准确任务和当前内容摘要，变化后重算适用性；新决策追加，撤销/替代引用旧ID，问题只影响对应任务。
 
-apply --proposal携带expectedRevision/expectedSourceHash/rawText，在租约内CAS；修改可读视图时expectedViewHash绑定当前字节，视图头仍核验revision/包摘要。冲突保留旧state。invalidate使用expected-revision/source-hash/key/reason，key支持requested/effective/input:/line:/shot:，按实际消费者传播；完整重建清标，部分重建仍stale，未消费对象保持有效。
+apply --proposal携带expectedRevision/expectedSourceHash/rawText，在租约内CAS；修改可读视图时expectedViewHash绑定当前字节，视图头仍核验revision/包摘要。冲突保留旧state。invalidate使用expected-revision/source-hash/key/reason，key支持requested/effective/input:/line:/shot:/timeline，按实际消费者传播；完整重建清标，部分重建仍stale，未消费对象保持有效。
 
 next按固定必需检查、有效输出、来源、硬指标、授权/审批和失效计算complete/ready/pending/stale/waiting_user。空/遗漏/重复/未知检查拒绝。apply先prepared→版本目录→不可变成功receipt→state；resume在租约内核对已停止owner和来源，缺成功receipt为interrupted，完整成功记录收敛一次提交。计划阶段完成范围为requirements/script/shots，时间线/编码/审片/交付各自验收。
 
 timeline使用整数帧/48k样本，sourceHash消费effective/script/shots。take固定文件身份、实测样本与词/拍点依据，placements排固定声音，clip的start/end/sourceStartFrame同步驱动画面与原声。gain/mute逐原声/旁白/音乐/SFX设置，静音决策action=mute,target=timeline。
+
+声音准备位于时间线采用之前：本片 exec 脚本调用已有 audio/tts、audio/bgm、audio/sfx provider，或使用已入库录音；文件保存 assets/generated 或 assets/derived，probeAudio 完整解码取得48k样本数，计算文件字节和SHA，保留服务返回的 words/sentences 与实际音色参数。模型把测量结果换算为 takes 的样本时点，再经 proposal 采用 placements/字幕/锚点。未提供词时的录音保持未知，可用实际对齐结果；音乐自编拍点标 authored，测量拍点标 observed。Production 的 audio 命令混合当前固定 takes，render 复用同一时间线；普通 Director 的 audio lock 继续服务旧片。更换源声音时重新提交 take 身份和相关排程。
 
 ```bash
 node .skill/scripts/video.mjs <slug> production next
@@ -211,7 +213,22 @@ node .skill/scripts/video.mjs <slug> render --profile final --json
 node .skill/scripts/video.mjs <slug> production resume
 ```
 
-compile保存完整冲突、锚点/量化误差、字幕/读时，硬冲突阻断投影；通过后派生spec/asset-plan/production-spec。guard核对权威版本、运行时和派生身份。硬锚需observed词时或observed/authored拍点，estimated/unknown作为软建议；event与同镜图元ID绑定准备/可见/峰/完成/阅读关键帧，已有通道冲突明确阻断。清单共读从末项完成算。rough/final使用同一固定声音/样本排布，分别消费proxy/canonical。production-render保存原件/原声剪接/轨道/字幕/事件/编码帧数/声音检查；完整创作审片需实际全片声画。
+compile保存完整冲突、锚点/量化误差、字幕/读时，硬冲突阻断投影；通过后派生spec/asset-plan/production-spec。guard核对权威版本、运行时和派生身份。硬锚需observed词时或observed/authored拍点，estimated/unknown作为软建议；event默认提供准备/可见/峰/完成/阅读时点，供本片代码采用自定义曲线；显式 animation=emphasis 才按同镜图元ID注入opacity/scale，已有通道冲突明确阻断。清单共读从末项完成算。rough/final使用同一固定声音/样本排布，分别消费proxy/canonical。production-render保存原件/原声剪接/轨道/字幕/事件/编码帧数/声音检查；完整创作审片需实际全片声画。
+
+### 各份数据的权威关系
+
+| 数据 | 职责与下游 |
+|---|---|
+| prompt-history | 完整原文、真实问答与授权来源 |
+| brief | 本片目标、约束与可观察验收条件 |
+| director.json / 导演分镜 | 模型的创作输入；采用后由 Production 管理执行，变更再次提交 proposal |
+| production/state → bundle | 当前有效镜头、素材、音源、帧与样本安排，执行唯一依据 |
+| production/plan.md | 当前 bundle 单向生成的五列分镜视图，编辑经 CAS proposal 采用 |
+| VideoSpec / asset-plan / production-spec | compile 可重建的渲染投影及版本绑定 |
+| src/ | 将 visualIntent 变成具体画面、动作与组合 |
+| runs / review / credits / deliver | 冻结输入、真实消费、实际成片观察、权利与交付身份 |
+
+原意图、稳定 shot/event ID、本片函数和当前编码观察形成轻量对应。普通 Director 固定运行时沿用既有路径；Production 采用完整分镜后，修改当前 bundle 并重编译。每次声音、镜长、选段或素材变更检查字幕、锚点、投影、编码、审片和交付的新鲜度。过时回执保留历史身份，当前交付重新读取有效版本。
 
 ## 配音、音乐与声音锁
 
@@ -249,7 +266,7 @@ disclosure读取后期记录，§1指最终视频并标原中间渲染，§4/§5
 
 ## Linux 手建入口
 
-适用Node24、FFmpeg/ffprobe、Linux Skia与实际字体齐备的团队宿主，用于文字稿/代码画面/本片已保存素材。系统隔离由宿主管理，记录host-managed-unverified；bwrap配置由宿主验证。macOS的发行宿主匹配、自动备份、verifyRuntime发行校验、sandbox-exec、native/standalone宿主门禁由本节手动流程替代。OCR/ASR、受限入库/视频准备、Production和结构化交付留待Linux适配；创作/来源/权利/原文/用户发布审批和真实音视频验收继续执行。
+适用Node24、FFmpeg/ffprobe、Linux Skia与实际字体齐备的团队宿主，用于文字稿/代码画面/本片已保存素材。系统隔离由宿主管理，记录host-managed-unverified；bwrap配置由宿主验证。本片 video.mjs / exec.mjs 在 Linux 校验本机封存包和媒体工具闭包，复用 Production、入库、视频准备、音频导入、混音、渲染与结构化交付。macOS自动备份、sandbox-exec、native/standalone宿主门禁由本节备份及宿主验证替代。OCR和离线ASR属可选能力，使用时需独立核验对应Linux程序与模型；可关闭这些可选检查，保留素材结构、身份和实际解码校验。创作/来源/权利/原文/用户发布审批和真实音视频验收继续执行。
 
 初始化前在同终端切Node24并核对`node --version`，后续沿用。根仓库执行：
 
@@ -266,29 +283,27 @@ export TMPDIR="$PWD/out/.tmp/"
 脚本在写入前检查Node24、slug、theme和原文，创建独立引擎源码、七篇guide、easing/random组件、品牌快照、manual-0.1工作区和3秒无声占位，依赖采用来源manifest版本。Linux字体及许可按根README恢复到.engine/assets/fonts，尤其LXGWWenKai；安装完成保留本片package-lock并登记实际运行时：
 
 ```bash
-node --input-type=module <<'JS'
-import { readFileSync, writeFileSync } from 'node:fs';
-import { digest, fileHashes } from './.engine/workspace.mjs';
-const w = JSON.parse(readFileSync('workspace.json', 'utf8')), files = fileHashes('.engine');
-w.engineSha256 = digest(JSON.stringify(files));
-writeFileSync('evidence/runtime-files.json', JSON.stringify(files, null, 2) + '\n');
-writeFileSync('workspace.json', JSON.stringify(w, null, 2) + '\n');
-JS
+node .engine/scripts/seal-linux.mjs .
+node video.mjs env --json
+node video.mjs production --schema init
 ```
 
-brand.theme为已选主题，defaultTheme为当时账号推荐，changes记录初始化；选择依据另保存原文。每次恢复/执行/交付前核验，变化先明确迁移范围并留旧证据：
+`sourcePackageId` 是上游来源 manifest 的内容身份；封存核对其摘要以及所复制的源码。`engineSha256` 对本片引擎完整文件清单求摘要；`workspace.packageId` 对本机运行时 manifest 求摘要，包含Linux依赖、平台与上游身份，Production runtimeId 沿用它。FFmpeg/ffprobe 与 ldd 报告的传递依赖和路径别名单独锁定到 media-dependencies.lock.json，每次执行前后复核。封存只用于新工作区，已有 packageId 保持固定。来源身份、字节完整性、宿主隔离与实际制片验证分别报告。
+
+brand.theme为已选主题，defaultTheme为当时账号推荐；选择依据保存原文。初始化后使用同一 CLI：
 
 ```bash
-node --input-type=module <<'JS'
-import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
-import { assertIndependentTree, digest, fileHashes } from './.engine/workspace.mjs';
-const w = JSON.parse(readFileSync('workspace.json', 'utf8'));
-assert.equal(w.mode, 'manual-linux'); assertIndependentTree('.');
-assert.equal(digest(JSON.stringify(fileHashes('.engine'))), w.engineSha256);
-assert.equal(digest(readFileSync('brand.json')), w.brand.sha256);
-JS
+node video.mjs production init --request evidence/production-init.json
+node video.mjs production apply --proposal evidence/proposal.json
+node video.mjs production compile --profile final
+node video.mjs render --profile final
+node video.mjs review --subject
+node video.mjs credits --request evidence/credits.json
+node video.mjs deliver --request evidence/delivery-request.json
+node video.mjs deliver --verify current
 ```
+
+全片CPU渲染使用libx264；视频通过磁盘帧读取，assets接口限制驻留缓存。按可用内存控制片段长度、输出尺寸与并发；同一片命令顺序执行。Linux宿主回传Node/FFmpeg版本、封存身份、命令退出码、实际MP4、消费回执、审片范围与交付验证结果。通用契约测试和宿主端运行分别登记。
 
 修改前等待本片命令结束，在项目根归档完整项目到独立备份目录：
 
@@ -308,4 +323,4 @@ printf '%s\n' "$JBM_SNAPSHOT_DIR/project.tar.gz"
 )
 ```
 
-恢复解压到空目录再核验。执行前缀为`node .engine/src/cli/index.ts <command> "$PWD"`，prompt追加原文，env --out-dir out --json、validate、brief validate、project audit、frame --at 1逐项运行；初始占位以render --no-audio --no-network试片。普通render需配置旁白/BGM/SFX，有意无声继续--no-audio。更新spec/brief/源码后跑qa、render、artifact --out evidence/artifact.json、disclosure，输出与日志都留本片，NOTES记录Asia/Shanghai渲染时间。辅助脚本为node .engine/scripts/<脚本>，自定义validateSpec显式传入loadBrand(本片brand路径)。
+恢复解压到空目录再核验。制作前缀为`node video.mjs <command>`，prompt追加原文，env --json、validate、brief validate、project audit、frame --at 1逐项运行；初始化占位可用render --no-audio --no-network试片。Production 的音轨启闭写入时间线，compile 后使用 render --profile rough/final。更新权威数据或源码后跑qa、render、artifact --out evidence/artifact.json、disclosure及结构化review/credits/deliver，输出与日志都留本片，NOTES记录Asia/Shanghai渲染时间。辅助脚本经 node exec.mjs node .engine/scripts/<脚本>；封存脚本在首次封存前直接运行。

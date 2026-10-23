@@ -39,7 +39,7 @@ const writeJson = (path: string, value: unknown): void => writeFileSync(path, JS
 /** 初始化独立发行包工作区时显式传入 projectsRoot。 */
 export function startDirectorProject(options: InitOptions & { readonly idea: string }): InitResult {
   const { slug, idea } = options;
-  if (!idea.trim() || idea.length > 5000) throw new EngineError(ERROR_CODES.CLI_USAGE, '--idea 需要 1–5000 个字符');
+  if (!idea.trim()) throw new EngineError(ERROR_CODES.CLI_USAGE, '--idea 需要完整非空原文');
   const title = options.title ?? slug;
   const result = initProject(options);
   appendPromptHistory(result.dir, 'prompt', idea);
@@ -60,7 +60,7 @@ export function cmdDirect(argv: string[]): number {
   if (!slug || !['start', 'compile'].includes(command ?? '')) throw new EngineError(ERROR_CODES.CLI_USAGE, '用法: direct start <slug> --idea "想法" 或 direct compile <slug>');
   if (command === 'start') {
     const idea = values.idea;
-    if (!idea?.trim() || idea.length > 5000) throw new EngineError(ERROR_CODES.CLI_USAGE, '--idea 需要 1–5000 个字符');
+    if (!idea?.trim()) throw new EngineError(ERROR_CODES.CLI_USAGE, '--idea 需要完整非空原文');
     startDirectorProject({ slug, idea, title: values.title ?? slug });
     process.stdout.write(JSON.stringify({ ok: true, status: 'needs-intake', project: slug, plan: 'director.json', next: 'Agent用模型解析一句话需求，推荐风格、叙事与记忆点，集中提出关键问题；重要选择有回答或明确委托后规划素材、运镜与shots，direct compile、完整动态粗剪、重点样片、qa、render、disclosure与创作验收' }, null, 2) + '\n');
     return 0;
@@ -69,6 +69,9 @@ export function cmdDirect(argv: string[]): number {
   assertLegacyAuthority(project);
   if (!project.manifest.director) throw new EngineError(ERROR_CODES.PROJECT_INVALID, 'project.json 需要 director 路径');
   const { plan, spec } = compileDirector(JSON.parse(readFileSync(resolveInsideProject(project.dir, project.manifest.director, 'director'), 'utf8')));
+  if (!project.manifest.drawing && plan.shots.some(shot => shot.visualIntent && !shot.elements?.length)) {
+    throw new EngineError(ERROR_CODES.PROJECT_INVALID, 'VISUAL_INTENT_IMPLEMENTATION_REQUIRED: 在本片 src/ 实现 visualIntent 并配置 project.json.drawing，或用 elements 实现画面');
+  }
   const quality = inspectQuality(spec);
   if (!quality.ok) throw new EngineError(ERROR_CODES.SPEC_INVALID, '导演计划质量检查失败', { details: { issues: quality.issues } });
   if (!project.briefPath) throw new EngineError(ERROR_CODES.PROJECT_INVALID, '导演项目需要 brief.json');

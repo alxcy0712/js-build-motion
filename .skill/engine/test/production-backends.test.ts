@@ -225,3 +225,26 @@ test('production drawing maps cuts, moves, reuse and reverse queries to exact fi
     await assert.rejects(createProductionDrawing(c, assets, 'final'), /CLIP_FRAME_RANGE_INVALID/);
   } finally { f.cleanup(); }
 });
+
+test('project drawing composes over Production media and receives stable event/source clocks', async () => {
+  const f = createFixtureProject();
+  try {
+    const c = compiled(f), seen: unknown[] = [];
+    c.clips = [{ placementId: 'Clip', useId: 'Video', kind: 'video', startFrame: 24, endFrame: 48, sourceStartFrame: 17,
+      startSample: 48000, endSample: 96000, sourceStartSample: 34000, sourceEndSample: 82000, gain: 1, mute: false }];
+    const assets = { video: async () => ({ frames: 100, fps: 24, draw(ctx: ReturnType<Canvas['getContext']>) {
+      ctx.fillStyle = '#ff0000'; ctx.fillRect(0, 0, 4, 4);
+    } }) } as unknown as AssetPort;
+    const draw = await createProductionDrawing(c, assets, 'final', (context) => {
+      seen.push(context.production); context.ctx.fillStyle = '#00ff00'; context.ctx.fillRect(1, 1, 2, 2);
+    });
+    const canvas = new Canvas(4, 4), ctx = canvas.getContext('2d');
+    const context = { ctx, width: 4, height: 4, scene: { id: 'Shot', start: 1, end: 2 } } as Parameters<typeof draw>[0];
+    draw(context, { frameIndex: 26, fps: 24 } as Parameters<typeof draw>[1]);
+    const pixels = canvas.toBufferSync('raw');
+    assert.equal(pixels[0], 255); assert.equal(pixels[(2 * 4 + 2) * 4 + 1], 255);
+    assert.deepEqual(seen[0], { frame: 26, sceneFrame: 2, events: [], clips: [{ placementId: 'Clip', useId: 'Video', sourceFrame: 19 }] });
+    draw(context, { frameIndex: 49, fps: 24 } as Parameters<typeof draw>[1]);
+    assert.equal((seen[1] as {frame: number}).frame, 47, 'outgoing transition clamps to its final source frame');
+  } finally { f.cleanup(); }
+});

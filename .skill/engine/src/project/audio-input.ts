@@ -18,7 +18,7 @@ export interface AudioInputFacts { version: '0.1'; kind: 'audio-input-facts'; fo
   gapless: { delaySamples: number; paddingSamples: number } | null;
   edit: { mediaTime: number; segmentDuration: number; movieTimescale: number } | null }
 export interface AudioInputRuntimeIdentity { id: 'bounded-audio-input'; version: '0.1'; lockSha256: string;
-  platform: 'darwin'; arch: 'arm64'; tools: { ffmpeg: NativeToolIdentity; ffprobe: NativeToolIdentity } }
+  platform: 'darwin' | 'linux'; arch: 'arm64' | 'x64'; tools: { ffmpeg: NativeToolIdentity; ffprobe: NativeToolIdentity } }
 export interface AudioInputEvidenceIdentity { evidenceId: string; bytes: number; sha256: string }
 export interface AudioInputMap { version: '0.1'; kind: 'audio-input-map'; mapperVersion: 'audio-input@0.1';
   policySha256: string; source: { bytes: number; sha256: string }; input: AudioInputFacts; runtime: AudioInputRuntimeIdentity;
@@ -39,7 +39,7 @@ const nativeFile = object({ path: nonempty, bytes: positive, sha256: hash });
 const nativeTool = object({ executable: nonempty, version: nonempty, files: { ...array(nativeFile), minItems: 1, maxItems: 256 },
   aliases: { ...array(object({ path: nonempty, realpath: nonempty })), minItems: 1, maxItems: 512 } });
 const runtime = object({ id: { const: 'bounded-audio-input' }, version: { const: '0.1' }, lockSha256: hash,
-  platform: { const: 'darwin' }, arch: { const: 'arm64' }, tools: object({ ffmpeg: nativeTool, ffprobe: nativeTool }) });
+  platform: { enum: ['darwin', 'linux'] }, arch: { enum: ['arm64', 'x64'] }, tools: object({ ffmpeg: nativeTool, ffprobe: nativeTool }) });
 export const AUDIO_INPUT_POLICY_SCHEMA = object(Object.fromEntries(Object.entries(DEFAULT_AUDIO_INPUT_LIMITS).map(([key, maximum]) =>
   [key, key === 'minSamples' || key === 'concurrency' ? { const: maximum } : { ...positive, maximum }])));
 const facts = object({ version: { const: '0.1' }, kind: { const: 'audio-input-facts' }, format: { enum: ['wav', 'mp3', 'flac', 'm4a'] },
