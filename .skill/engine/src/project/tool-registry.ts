@@ -61,7 +61,7 @@ export const TOOL_REGISTRY: readonly ToolEntry[] = [
   { id: 'html-canvas', label: 'HTML/CSS/SVG/Canvas（浏览器内绘制）', kind: 'renderer', status: 'candidate', network: false, byteReproducible: false },
   { id: 'remotion', label: 'Remotion', kind: 'renderer', status: 'candidate', network: false, byteReproducible: false },
   { id: 'p5js', label: 'p5.js', kind: 'renderer', status: 'candidate', network: false, byteReproducible: false },
-  { id: 'threejs', label: 'Three.js / WebGL', kind: 'renderer', status: 'candidate', network: false, byteReproducible: false },
+  { id: 'threejs', label: 'Three.js / WebGL（本地 Chrome 预渲染）', kind: 'renderer', status: 'adopted', execution: 'agent', network: false, byteReproducible: false },
   { id: 'blender', label: 'Blender Python', kind: 'renderer', status: 'candidate', network: false, byteReproducible: true },
   { id: 'manim', label: 'Manim', kind: 'renderer', status: 'candidate', network: false, byteReproducible: true },
   { id: 'motion-canvas', label: 'Motion Canvas', kind: 'renderer', status: 'candidate', network: false, byteReproducible: false },

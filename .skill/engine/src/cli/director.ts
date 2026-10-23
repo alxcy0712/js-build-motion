@@ -27,12 +27,13 @@ export function capabilities(schema = false): unknown {
     tts: { providers: ['edge', 'doubao', 'file', 'mock'], defaultProvider: 'edge', voicesCommand: 'voices', doubaoVoiceCount: DOUBAO_VOICES.length,
       selection: '默认 edge-tts；用户明确声明使用豆包后，audio/render 显式传入 --tts-provider doubao，voice 匹配对应资源版本与流式接口', apiKeyEnvironment: 'DOUBAO_API_KEY' },
     drawing: { entry: 'project.json.drawing → src/*.mjs|js|ts', export: '同步 drawScene(context, frame)', components: '本片 src/components/ 可编辑副本；easing/random 默认，camera/camera-path/spring/motion-tokens/layout/layout-trace/contour/image-fit/visual-check/text-bounds/particle-assembly 按需选择', guide: process.env.JBM_RUNTIME_ID ? 'guide/workflow.md' : '.skill/references/workflow.md' },
+    three: { entry: 'exec node .engine/src/three/render.mjs --scene src/three-scene.mjs --out assets/three/shot-01', scene: 'async createScene(context) → { update(frame), dispose? }；update 按绝对时间同步求值', theme: '读取本片 brand.json，传入同一主题色板与字体；中性灯光、哑光材质及信息平面作为可调起点', output: 'PNG 帧序列与 receipt.json；--alpha 支持透明背景，交由既有合成入口消费', prerequisite: '本机 Chrome / WebGL 2、回环服务与浏览器执行权限；--browser 或 JBM_CHROME_PATH 可指定程序', guide: process.env.JBM_RUNTIME_ID ? 'guide/drawing.md' : '.skill/references/drawing.md' },
     layout: { command: 'qa <项目> --layout [--plan evidence/layout.json] [--all-frames]', declarations: 'VideoSpec.layout; withLayout(ctx, declarationOrId, draw)', tokens: 'motion-tokens: enter/emphasis/exit/stagger/beats; spring and camera-path are optional components', suggestions: 'qa --cuts evidence/cuts.json; slot suggestions preserve timing and require confirmation' },
     diagnostics: { command: 'diagnose <项目> --from 0 --to 2 --purpose motion', scope: '当前编码的连续帧差、运动区域、静止帧对比例、跳变候选、帧条与热图；当前源码求值的文字边界', limit: '机器指标提供复核线索；布局严格错误与待复核项分别报告；位图内部对象需要确认保护区，正常速度声画继续复核' },
     assets: { preparation: 'agent在素材准备阶段核验并调用imagegen；渲染读取本片已保存文件', guide: process.env.JBM_RUNTIME_ID ? 'guide/workflow.md' : '.skill/references/workflow.md' },
     graphics: { kinds: GRAPHIC_KINDS, keyframes: GRAPHIC_KEYFRAME_CHANNELS, easings: GRAPHIC_EASINGS, time: 'at 为镜头内 0–1 进度', guide: process.env.JBM_RUNTIME_ID ? 'guide/drawing.md' : '.skill/references/drawing.md' },
     creationPolicy: '新片按 guide/workflow.md 由模型自主解析一句话需求，推导风格、叙事主轴与记忆点，呈现推荐组合并集中提出关键问题；重要选择有回答或明确委托后制定导演计划。按 guide/direction.md 编排状态与镜头，完整动态粗剪检查全片节奏，正式素材样片验证主体、运镜和转场。技术验收与创作验收分别记录。每片独立设计与记录参考用途；指定角色保留辨识依据。全部生成素材、代码、证据与临时文件保存于本片；通用核心保持固定。不同模型与题材使用相同契约。',
-    limits: ['共享渲染器使用Canvas 2D；二维与三维候选路径按工具注册表核对，本片使用时先验证依赖和导帧', 'imagegen的当前接口可用性由agent核验，CLI渲染读取固定素材', '音乐为程序化合成', '复杂骨骼、物理仿真、视频生成模型尚未接入'],
+    limits: ['Canvas 2D 承担最终合成；Three.js 经本机 Chrome 预渲染，浏览器升级后重新验证出帧，其他路径按工具注册表核验', 'imagegen的当前接口可用性由agent核验，CLI渲染读取固定素材', '音乐为程序化合成', '角色建模、骨骼绑定、动作生成、物理仿真和视频生成模型另需制作或接入；Three.js 可播放本片已准备的模型与动作'],
   };
 }
 const writeJson = (path: string, value: unknown): void => writeFileSync(path, JSON.stringify(value, null, 2) + '\n');

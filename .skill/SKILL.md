@@ -23,7 +23,7 @@ node .skill/scripts/video.mjs <slug> capabilities --schema
 | 导演计划、运镜、状态编排与动态预演 | [direction](references/direction.md) |
 | 全画幅、主体尺度、文字安全区、审片和本地交付 | [layout-and-quality](references/layout-and-quality.md) |
 | minimal/kinetic、字体/色彩、包装、IP与片尾 | [style-and-identity](references/style-and-identity.md) |
-| 同步绘制、精确几何、形变、粒子、材料及三维验证 | [drawing](references/drawing.md) |
+| 同步绘制、精确几何、形变、粒子、材料及Three.js预渲染 | [drawing](references/drawing.md) |
 | TTS分镜、中文语义事件、字幕边界和完整读时 | [captions](references/captions.md) |
 | 问答、工作区、入库/目录/媒体、Production、声音、编码、发布、Linux | [workflow](references/workflow.md) |
 | 已明确授权的通用修改/项目学习、测试、隔离与seal | [maintenance](references/maintenance.md) |

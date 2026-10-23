@@ -82,5 +82,6 @@ try {
   else if (mode === '--docs') process.stdout.write(JSON.stringify((await import('./docs-check.mjs')).checkDocs()) + '\n');
   else if (mode === '--standalone') process.exitCode = checkStandalone();
   else if (mode === '--native') await (await import('./native-check.mjs')).checkNative();
-  else throw new Error('USAGE: check.mjs --docs | --engine | --standalone | --native');
+  else if (mode === '--three') await (await import('./three-native-check.mjs')).checkThreeNative();
+  else throw new Error('USAGE: check.mjs --docs | --engine | --standalone | --native | --three');
 } catch (error) { process.stderr.write(String(error.stack ?? error) + '\n'); process.exitCode = 1; }

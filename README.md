@@ -1,6 +1,6 @@
 # js-build-motion
 
-独立视频工作区：minimal/kinetic固定个人识别，Skia Canvas绘制，支持字幕/IP/片尾、生成视频层、素材导入/ZIP/目录、视频选段/原声、配音/混音/对齐、Production与审片交付。角色与授权见[AGENTS](AGENTS.md)，制作入口见[SKILL](.skill/SKILL.md)。现有影片保留固定运行时；PDF/Office仅入库核身份，内容解析已移除。
+独立视频工作区：minimal/kinetic固定个人识别，Skia Canvas合成与Three.js三维预渲染，支持字幕/IP/片尾、生成视频层、素材导入/ZIP/目录、视频选段/原声、配音/混音/对齐、Production与审片交付。角色与授权见[AGENTS](AGENTS.md)，制作入口见[SKILL](.skill/SKILL.md)。现有影片保留固定运行时；PDF/Office仅入库核身份，内容解析已移除。
 
 ## 安装与运行
 
@@ -36,6 +36,25 @@ Edge需Python/edge-tts≥7.3.1；豆包明确启用--tts-provider doubao，需we
 .skill为核心，assets为授权IP/独立封面，projects为本片输入/代码/证据/成片，当前编码看run.json；.research/out为检查临时区，.pi为本机记录。新片复制七篇guide和固定运行时。按[维护](.skill/references/maintenance.md)备份→检查→seal，常规备份保留两份；--standalone验证空生成区/移根/初始化，检查模式分开运行。
 
 共享见[REVIEW](REVIEW.md)，启用git config core.hooksPath .githooks；共享前node .githooks/check-publish.mjs --worktree，提交后--history HEAD。项目/依赖副本/备份/敏感配置保持本地。
+
+## Three.js、空间与 Git
+
+Three.js 由 `package.json` 与锁文件固定为 0.186.1，包文件合计 20,443,256 B（约 20.4 MB，文件系统实际占用另计）。新片复制完整固定运行时，每片增加一份依赖；核心备份也包含依赖。浏览器复用本机 Chrome，单独安装的浏览器容量按宿主实测。
+
+| 内容 | 管理方式 |
+|---|---|
+| 场景渲染器、风格规范、依赖版本与完整性摘要 | 随 Git 管理，克隆后用 `npm ci` 恢复依赖 |
+| `node_modules`、浏览器、缓存与 `.skill-backups` | 本机文件；浏览器独立安装，Git 忽略本机依赖和备份 |
+| 单片 GLB／纹理、候选参考图、PNG 序列与视频 | 放 `projects/<slug>/assets`／`out`，按现有规则留本地 |
+| 用户明确要求共享的跨片个人 IP | 按 `assets/personal-ip/README.md` 收录；大二进制先确定容量、变更频率与共享方式，再决定 Git LFS 或外部资产存储 |
+
+当前共享检查限制单文件 5 MiB，允许的资产格式包括 PNG/WebP/JPEG 与文本说明；GLB 等模型二进制需要先补充对应的共享规则。现有个人 IP 图片可按原规则管理，三维模型先保存在本片。Git LFS 的启用和存储费用按明确的共享任务处理。
+
+PNG 序列按帧数乘实测平均帧大小预算，压缩视频按码率乘时长预算；1080p RGBA 的原始像素 5 秒／30 fps 约 1.24 GB，PNG 压缩量由画面决定。三维效果图、细节说明、模型与动作分别入库：说明可用 Markdown，定稿图按需要保存 PNG/WebP，GLB 包含几何、材质及可选骨骼／动作。各项按实际文件测量容量，Git 记录版本与授权来源。
+
+制作命令与场景接口见[Three.js 预渲染](.skill/references/drawing.md#三维渲染与空间镜头)，风格见[Three.js 与个人风格](.skill/references/style-and-identity.md#threejs-与个人风格)。图形能力提供几何、灯光、相机和已有模型播放；完整角色资产与表演仍需准备和验收。
+
+安装或升级浏览器后运行 `node .skill/scripts/check.mjs --three`，在独立测试项目中验证真实出帧、GLB／纹理、品牌色、透明底、移根与编码；测试需要宿主允许启动 Chrome。本机浏览器与 GPU 身份记录在回执中，跨宿主字节一致性按实测说明。
 
 ## 字体与原生依赖恢复
 
@@ -97,7 +116,7 @@ Tak（[@cherry_mx_reds](https://x.com/cherry_mx_reds)）的Art History Speedrun�
 
 - Adobe 教程团队：[Tracking Shots](https://www.adobe.com/creativecloud/video/production/cinematography/camera-shots-and-angles/tracking-shot.html)。
 - Apple Motion 文档：[相机行为](https://support.apple.com/guide/motion/add-camera-behaviors-motn17c69ccb/mac)、[相机控制](https://support.apple.com/guide/motion/camera-controls-motn17c68cdf/mac)。
-- three.js与文档：[相机](https://threejs.org/manual/pages/cameras.html)、[实用技巧](https://threejs.org/manual/pages/tips.html)。
+- three.js（MIT）与文档：[安装与版本管理](https://threejs.org/manual/pages/installation.html)、[色彩管理](https://threejs.org/manual/pages/color-management.html)、[WebGLRenderer](https://threejs.org/docs/pages/WebGLRenderer.html)、[相机](https://threejs.org/manual/pages/cameras.html)、[实用技巧](https://threejs.org/manual/pages/tips.html)。浏览器执行参考 [Chrome Headless](https://developer.chrome.com/docs/automation-and-testing/headless)与 [Chromium 的 macOS 临时目录实现](https://chromium.googlesource.com/chromium/src/+/HEAD/base/files/file_util_apple.mm)。
 - YouTube 帮助文档：[观众留存分析](https://support.google.com/youtube/answer/9314415?hl=en)。
 - W3C WAI：[文字对比](https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html)、[闪烁阈值](https://www.w3.org/WAI/WCAG22/Understanding/three-flashes-or-below-threshold.html)。
 - Christian Swinehart / samizdatco 与 skia-canvas：[skia-canvas](https://github.com/samizdatco/skia-canvas)、[官方安装文档](https://skia-canvas.org/getting-started)。

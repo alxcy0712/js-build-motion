@@ -47,14 +47,14 @@ export async function checkNative() {
   try {
     await check('唯一核心源码与独立生产依赖', () => {
       const require = createRequire(join(engine, 'package.json'));
-      assert.deepEqual(original.dependencies, ['agent-base@7.1.4', 'ajv@8.20.0', 'debug@4.4.3', 'detect-libc@2.1.2', 'fast-deep-equal@3.1.3', 'fast-uri@3.1.8', 'follow-redirects@1.16.0', 'https-proxy-agent@7.0.6', 'json-schema-traverse@1.0.0', 'ms@2.1.3', 'parenthesis@3.1.8', 'pend@1.2.0', 'require-from-string@2.0.2', 'skia-canvas@3.0.8', 'string-split-by@1.0.0', 'yauzl@3.4.0']);
+      assert.deepEqual(original.dependencies, ['agent-base@7.1.4', 'ajv@8.20.0', 'debug@4.4.3', 'detect-libc@2.1.2', 'fast-deep-equal@3.1.3', 'fast-uri@3.1.8', 'follow-redirects@1.16.0', 'https-proxy-agent@7.0.6', 'json-schema-traverse@1.0.0', 'ms@2.1.3', 'parenthesis@3.1.8', 'pend@1.2.0', 'require-from-string@2.0.2', 'skia-canvas@3.0.8', 'string-split-by@1.0.0', 'three@0.186.1', 'yauzl@3.4.0']);
       assert.ok(original.dependencies.includes('yauzl@3.4.0'));
       assert.ok(original.dependencies.includes('pend@1.2.0'));
       for (const dependency of original.dependencies) {
         const name = dependency.slice(0, dependency.lastIndexOf('@'));
         assert.ok(require.resolve(name).startsWith(join(engine, 'node_modules') + '/'));
       }
-      assert.ok(original.files.filter(file => file.path.startsWith('src/')).every(file => file.path.endsWith('.ts') || file.path.endsWith('/README.md')));
+      assert.ok(original.files.filter(file => file.path.startsWith('src/')).every(file => file.path.endsWith('.ts') || file.path.endsWith('/README.md') || /^src\/three\/[a-z-]+\.mjs$/.test(file.path)));
       assert.equal(existsSync(join(skill, 'assets/components/easing.js')), false);
     });
     await check('根入口创建不同题材的两个独立项目与组件依赖', () => {
@@ -107,7 +107,8 @@ export async function checkNative() {
       assert.equal(capabilities.contract, 'DirectorPlan@0.1');
       assert.ok(capabilities.tools.find(tool => tool.id === 'skia-canvas'));
       assert.equal(capabilities.tools.find(tool => tool.id === 'imagegen')?.execution, 'agent');
-      assert.equal(capabilities.tools.find(tool => tool.id === 'threejs')?.status, 'candidate');
+      assert.equal(capabilities.tools.find(tool => tool.id === 'threejs')?.status, 'adopted');
+      assert.match(capabilities.three.entry, /src\/three\/render\.mjs/);
       execNode(a, "require('node:fs').writeFileSync('src/allowed.txt','ok')");
       execNode(a, "import('./src/components/camera.ts').then(m => { if(typeof m.cameraFor !== 'function' || typeof m.applyCameraPose !== 'function') process.exit(1); })");
       execNode(a, "import('./src/components/spring.ts').then(m => { const keys=[[0,0],[.2,100],[.3,40]], at=m.springTrack(.3,keys); if(Math.abs(m.springTrack(10,keys)-40)>1e-9 || m.springTrack(.3,keys)!==at) process.exit(1); })");

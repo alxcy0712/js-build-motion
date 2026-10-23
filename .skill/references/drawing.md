@@ -76,13 +76,28 @@ QA 自动追踪主管线画布。自建离屏画布初始化调用 `trackLayout(
 
 ## 三维渲染与空间镜头
 
-当前共享运行时使用Canvas 2D。需要三维几何、环绕、空间推拉、爆炸分层或透视遮挡时，评估capabilities中登记的三维候选工具并验证本片路径；普通二维图形按已有绘制路径实现。
+Three.js 通过本片 `exec` 入口把三维场景预渲染为 PNG 帧序列，再接入 Canvas 2D 合成、字幕、声音与编码。运行时固定 Three.js 版本；本机 Chrome 提供 WebGL 2，首次使用及浏览器升级后先验证出帧。三维风格沿用[个人风格](style-and-identity.md#threejs-与个人风格)。其他渲染路径按 capabilities 的工具状态与本片证据核验。
 
-先核验本轮浏览器/WebGL、依赖和导帧能力，将本片场景代码与所需依赖副本放src/，模型与纹理放assets/。先做小场景，验证加载、固定时间渲染和导出帧。验证成功后通过本片exec脚本预渲染到assets/内的帧序列或视频，再交给已有合成与编码流程；依赖与输出继续遵守[项目边界](workflow.md)。素材预渲染与同步drawScene分别处理，三维渲染与现有画面合成各指定相机控制位置。
+新片内复制示例后独立设计场景（将 `<slug>` 替换为本片名）：
 
-空间观感使用透视投影，需要保持尺寸关系的视图采用正交投影。固定尺寸、像素比、随机种子、相机与材质，按frameIndex/fps求值后执行实际渲染；导帧紧接渲染，核对绘制缓冲区清除、捕获时序、空白帧、颜色、透明边缘与尺寸。
+```bash
+node .skill/scripts/video.mjs <slug> exec node -e "require('node:fs').copyFileSync('.engine/src/three/example.mjs','src/three-scene.mjs')"
+node .skill/scripts/video.mjs <slug> exec node .engine/src/three/render.mjs --scene src/three-scene.mjs --out assets/three/shot-01 --width 960 --height 540 --fps 30 --frames 150 --seed 1
+```
 
-记录实际版本、项目脚本、输入哈希、帧序列与编码结果，再声明本片实际采用的工具。共享能力表继续表示核心的集成状态，本片证据表示已验证的使用路径；跨GPU/宿主的逐字节重现按实测范围陈述。运镜设计与短样片验收见[电影化运镜](direction.md)。
+macOS 默认读取已安装的 Google Chrome，可用 `--browser /absolute/path/to/chrome` 或 `JBM_CHROME_PATH` 显式选择。Linux 同样显式指定本机浏览器并验证宿主权限。Chrome 使用本片 `out/.tmp` 内的临时独立配置，完成或失败后清理；依赖安装与浏览器安装分别管理。宿主须允许启动浏览器与本地回环服务，执行继续遵守本片沙箱。
+
+macOS 固定影片入口已有 `sandbox-exec` 进程隔离；Chrome 子进程继承该边界，并以 `--no-sandbox` 兼容系统的沙箱嵌套限制。该分支只在 macOS、本片 `.engine` 和固定入口的运行时标识同时成立时启用；回执标记 `browser.isolation: project-sandbox-exec`。直接核心调用与 Linux 路径采用 Chrome 自身沙箱。测试同时核对项目外写入和受保护源码读取被拒绝，制作继续使用本片统一入口。
+
+场景入口为浏览器原生 `.mjs`／`.js`，导出 `async createScene({ THREE, scene, camera, renderer, material, flatMaterial, lights, theme, width, height, fps, frames, seed, assetUrl })`，返回 `{ update({ frameIndex, time, fps, frames, seed }), dispose? }`。初始化可异步加载本片模型和纹理，`update` 同步按绝对时间 `frameIndex/fps` 求值；固定随机种子，所有随时间变化的状态在每帧重新赋值。导出前自动检查第 0 帧→末帧→第 0 帧的 PNG 哈希，累计位移等依赖调用顺序的画法会报 `THREE_SEEK_MISMATCH`。
+
+`theme` 来自本片品牌快照，字体提前加载；`material('accent')` 提供主题色哑光材质，`flatMaterial({map})` 提供保留原色的信息平面。图片纹理须标记 `texture.colorSpace = THREE.SRGBColorSpace`，法线与粗糙度等数据纹理沿用其数据色彩空间。默认输出 sRGB、像素比 1、NoToneMapping；几何光照产生的明暗仍按最终编码验收。精确品牌色、原件截图与标识用信息平面呈现。
+
+本片代码可导入固定运行时的 `three` 与 `three/addons/`。例如用 `GLTFLoader` 加载 `await loader.loadAsync(assetUrl('assets/models/character.glb'))`；模型、贴图和需要的解码器全部保存于本片，先用自包含、未压缩 GLB 验证。已有动作可按绝对时间设置 `AnimationMixer.setTime(time)`；角色建模、骨骼绑定与动作创作由对应素材准备步骤提供。渲染页只向本地服务读取资源，远程模型、字体和纹理先入库再使用。
+
+输出目录须为新的 `assets/three/<名称>`，包含 `frame-000000.png` 起的帧序列与成功后的 `receipt.json`；`--alpha` 输出透明背景。失败目录保存 `failed.json`，新修订使用新目录。回执记录主题与品牌快照哈希、Three.js／浏览器版本、实际读取文件及输出帧哈希、GPU 与乱序求帧结果。Chrome 可执行文件哈希仅标识该程序文件；跨浏览器版本、GPU 和宿主的逐字节重现按实测范围陈述。
+
+全画幅不透明片段可在本片 `exec` 下用 FFmpeg 编为静音 H.264 MP4，再走既有入库、视频准备和 AssetPort；透明序列可在 `prepareDrawing` 中预加载，`drawScene` 同步按对应帧索引合成，记录序列与回执身份。长镜头先核算帧序列容量及预加载内存；5 秒／30 fps 为 150 帧，PNG 总量按代表帧实测平均大小估算。三维相机和最终合成相机分别指定控制对象，字幕保持屏幕坐标。核对空白帧、尺寸、透明边缘、色彩与全片连续播放；运镜设计与短样片验收见[电影化运镜](direction.md)。
 
 已知主体按[参考与精确几何](drawing.md)先完成静态对照、技术关系和多尺寸验证。形变与手绘效果按[动效设计](drawing.md)准备轮廓对应、接力对象和中间态；contour 与 visual-check 为按需复制的组件。
 

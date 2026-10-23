@@ -23,6 +23,7 @@
 | 素材选用与消费 | project/asset-plan.ts、ports/assets.ts、application/asset-plan.ts、adapters/asset-port.ts、asset-usage.ts |
 | Production权威/授权/状态/时间线 | project/production.ts、production-policy.ts、production-view.ts、production-timeline.ts、application/production.ts |
 | 绘制/转场/主题/IP | pipeline/spec-renderer.ts、theme-transitions.ts、themes/transition-ids.ts、themes/、drawing/ |
+| Three.js预渲染/主题舞台 | three/render.mjs、browser.mjs、stage.mjs；three/example.mjs为本片可复制示例 |
 | 生成片段抠像/变速/合成 | footage/ |
 | 字幕/字体/安全区 | captions/、themes/shared.ts、themes/fonts.ts |
 | 声音/编码 | audio/、ffmpeg/ |
@@ -58,6 +59,7 @@ docs检查源文件链接/锚点，并按guide-files的实际七篇清单投影�
 | 改动链 | 必需回归 |
 |---|---|
 | 默认绘制/主题/字幕/转场 | 固定spec/seed/字体/音源与参数，编码后逐帧/PCM比较；中文、IP、片尾、运动极值和连续窗口 |
+| Three.js预渲染 | `check.mjs --three`：本机浏览器、主题/字体、sRGB像素、透明底、GLB与纹理、乱序求帧、项目沙箱、移根、失败回执及五秒编码/完整解码；浏览器独立安装，升级后重验 |
 | OCR | 固定语言/物理闭包/动态别名，白底1:1 PPM、TSV重放、UTF-8词定位；历史政策、双语/空图、坏输入/配额/恢复 |
 | ASR/音频/对齐 | 完整容器、原率PCM及唯一canonical重放；0.5检查/0.2对齐的启闭ASR、历史继承、截断成功反例、外部引用、协调哈希篡改、取消/配额/移根/恢复 |
 | 视频与素材消费 | 原结构/帧/PTS/有理范围、RGBA/proxy/原声重放、固定FFmpeg工具身份；成功receipt准入与三中断落点；已知像素/声音oracle的start/import/catalog/prepareDrawing/render/disclosure/artifact链 |
