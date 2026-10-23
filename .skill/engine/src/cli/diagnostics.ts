@@ -2,6 +2,8 @@ import { prepareQualityDrawing } from './layout.ts';
 import { inspectLayout, type LayoutIssue } from '../layout/check.ts';
 import { frame as layoutFrame } from '../layout/tools.ts';
 import { reviewStillness } from '../qa/motion.ts';
+import { MotionInspection } from '../qa/inspection.ts';
+import { getTheme } from '../themes/registry.ts';
 import { spawn } from 'node:child_process';
 import { existsSync, mkdirSync, writeFileSync } from 'node:fs';
 import { join, relative } from 'node:path';
@@ -76,6 +78,7 @@ export async function cmdDiagnose(argv: string[]): Promise<number> {
   const prepared = await prepareQualityDrawing(project, spec!);
   const renderer = createSpecRenderer({ spec: spec!, width: video!.width, height: video!.height, drawScene: prepared.drawScene, captionCues: prepared.captionCues, measuredNarration: prepared.measuredNarration ?? measuredNarration, captions: run.facts.captions.insideFrame, trackText: true, trackLayout: true });
   const layoutIssues: LayoutIssue[] = [], layoutLimits = new Set<string>();
+  const inspection = new MotionInspection(fps, getTheme(spec!.style.theme), video!.height);
   const layoutPendingFrames: number[] = [];
   const textIssues: { frame: number; time: number; draws: TextDraw[] }[] = [];
   let previous: Buffer | undefined, textDrawCount = 0;
@@ -86,6 +89,7 @@ export async function cmdDiagnose(argv: string[]): Promise<number> {
       previous = Buffer.from(data);
       renderer.renderFrame(makeFrameContext({ frameIndex: frame, totalFrames: total, fps, width: video!.width, height: video!.height, seed: spec!.video.seed }));
       const layout = inspectLayout(renderer.layoutTrace()!, { frame, fps, width: video!.width, height: video!.height, safe: layoutFrame(video!.width, video!.height).safe, plan: spec!.layout });
+      inspection.observe(renderer.layoutTrace()!, frame);
       if (layout.status === 'pending') layoutPendingFrames.push(frame);
       layoutIssues.push(...layout.issues); layout.limitations.forEach(l => layoutLimits.add(l));
       const draws = renderer.textBounds();
@@ -95,6 +99,7 @@ export async function cmdDiagnose(argv: string[]): Promise<number> {
     });
     await prepared.verify();
   } finally { renderer.dispose(); prepared.close(); }
+  layoutIssues.push(...inspection.finish());
   const summary = summarizeFramePairs(pairs, fps, thresholds);
   const candidates = [...summary.jumps.flatMap(p => [p.from - 1, p.from, p.to, p.to + 1]), ...textIssues.flatMap(p => [p.frame - 1, p.frame, p.frame + 1]), ...layoutIssues.map(i => i.frame)];
   const selected = [...new Set([first, Math.floor((first + last) / 2), last, ...candidates.filter(f => f >= first && f <= last)])].slice(0, 24).sort((a, b) => a - b);
@@ -120,7 +125,7 @@ export async function cmdDiagnose(argv: string[]): Promise<number> {
   writeFileSync(join(outDir, 'frame-strip.png'), strip.toBufferSync('png'));
   writeFileSync(join(outDir, 'motion-heatmap.png'), heatmap.toBufferSync('png'));
   const layoutOk = !layoutIssues.some(i => i.severity === 'error');
-  const report = { ok: layoutOk, layout: { ok: layoutOk, status: !layoutOk ? 'error' : layoutPendingFrames.length ? 'pending' : 'pass', pendingFrames: layoutPendingFrames, issues: layoutIssues, limitations: [...layoutLimits] }, stillness: reviewStillness(summary.holds.map(h => ({ start: h.start, end: h.end })), spec!.layout?.holds ?? (purpose === 'hold' || purpose === 'reading' ? [{start: from, end: to, purpose, reason: 'diagnose purpose'}] : [])), scope: 'review-candidates', artifact: identity.artifact, purpose,
+  const report = { ok: layoutOk, layout: { ok: layoutOk, status: !layoutOk ? 'error' : layoutPendingFrames.length || layoutIssues.some(i => i.severity === 'review' || i.severity === 'coverage') ? 'pending' : 'pass', pendingFrames: layoutPendingFrames, issues: layoutIssues, limitations: [...layoutLimits] }, stillness: reviewStillness(summary.holds.map(h => ({ start: h.start, end: h.end })), spec!.layout?.holds ?? (purpose === 'hold' || purpose === 'reading' ? [{start: from, end: to, purpose, reason: 'diagnose purpose'}] : [])), scope: 'review-candidates', artifact: identity.artifact, purpose,
     window: { requestedFrom: from, requestedTo: to, firstFrame: first, lastFrame: last, firstTime: first / fps, lastTime: last / fps, fps, sampledFrames: count, width, height, sourceWidth: video!.width, sourceHeight: video!.height },
     thresholds, summary, pairs, text: { scope: 'source-glyph-bounds', frames: count, drawCount: textDrawCount, issues: textIssues,
       captionsInsideFrame: run.facts.captions.insideFrame, timing: { scope: 'current-spec-cache', path: timingHash ? relative(project.dir, timingPath) : null, sha256: timingHash, measured: Boolean(measuredNarration) },

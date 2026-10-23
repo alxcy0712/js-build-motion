@@ -24,6 +24,7 @@ import { CAPTION_LAYOUT_DEFAULTS, type CaptionLayoutSettings, type CaptionMode, 
 import { SeededRandom } from '../animation/random.ts';
 import { mix, type PaletteColors } from '../drawing/styles/palette.ts';
 import { activeCueAt, activeWordIndexAt, type CaptionCue } from './track.ts';
+import { frame as layoutFrame } from '../layout/tools.ts';
 
 // ---------------------------------------------------------------- 安全区
 
@@ -200,6 +201,27 @@ export function wrapTokens(
   return lines;
 }
 
+/** Keep existing valid breaks; repair only breaks inside a segmented word. */
+export function wrapCaptionText(text: string, maxWidth: number, measure: (s: string) => number): string[] {
+  const original = wrapTokens(tokenizeForWrap(text), maxWidth, measure);
+  if (original.length < 2) return original;
+  const words = [...new Intl.Segmenter('zh-CN', { granularity: 'word' }).segment(text)];
+  let cursor = 0;
+  const splitsWord = original.slice(0, -1).some(line => {
+    const start = text.indexOf(line, cursor); cursor = start + line.length;
+    return words.some(word => word.isWordLike && word.index < cursor && word.index + word.segment.length > cursor);
+  });
+  if (!splitsWord) return original;
+  const tokens: string[] = [];
+  for (const word of words) {
+    // Keep closing punctuation with its preceding word; opening punctuation with the next.
+    if (NO_LINE_START.has(word.segment) && tokens.length) tokens[tokens.length - 1] += word.segment;
+    else if (tokens.length && NO_LINE_END.has(tokens.at(-1)!)) tokens[tokens.length - 1] += word.segment;
+    else tokens.push(word.segment);
+  }
+  return wrapTokens(tokens, maxWidth, measure);
+}
+
 /** 避头尾修正：把行首的禁则标点提到上一行行尾，把行尾的左括号推到下一行行首 */
 function applyKinjsaku(lines: string[]): void {
   // 用 charAt 而不是 [0]：noUncheckedIndexedAccess 下字符串下标会得到 string|undefined，
@@ -314,7 +336,6 @@ function computeLayout(
 ): CaptionLayout {
   const weight = o.weight ?? 700;
   const maxLines = o.maxLines ?? 4;
-  const tokens = tokenizeForWrap(text);
 
   let best: CaptionLayout | null = null;
 
@@ -322,7 +343,7 @@ function computeLayout(
     const lineHeight = Math.round(size * 1.45);
     ctx.font = `${weight} ${size}px "${o.fontFamily}"`;
     const measure = (s: string): number => ctx.measureText(s).width;
-    const lines = wrapTokens(tokens, o.maxWidth, measure);
+    const lines = wrapCaptionText(text, o.maxWidth, measure);
     const textWidth = lines.reduce((m, l) => Math.max(m, measure(l)), 0);
     const textHeight = lines.length * lineHeight;
 
@@ -366,15 +387,16 @@ export interface DrawCaptionsOptions {
 }
 
 /** 同一几何用于字幕绘制与尺寸验收，h 为含内边距的外框总高。 */
-export function captionGeometry(o: Pick<DrawCaptionsOptions, 'ctx' | 'width' | 'height' | 'layout' | 'fontFamily'> & { style?: CaptionStyle }, cue: CaptionCue) {
+export function captionGeometry(o: Pick<DrawCaptionsOptions, 'ctx' | 'width' | 'height' | 'layout' | 'fontFamily'> & { style?: CaptionStyle; seed?: number }, cue: CaptionCue) {
   const ctx = o.ctx;
   ctx.save();
   ctx.textBaseline = 'alphabetic';
+  ctx.textAlign = 'left';
   const safe = safeAreaFor(o.width, o.height, o.layout);
 
   const baseFontSize = Math.round(Math.min(o.width, o.height) * (o.layout?.fontScale ?? CAPTION_LAYOUT_DEFAULTS.fontScale));
-  const contentWidth = safe.w - Math.round(baseFontSize * 0.7) * 2;
-  const layout = layoutCaption(ctx, cue.text, {
+  let contentWidth = safe.w - Math.round(baseFontSize * 0.7) * 2;
+  const primary = () => layoutCaption(ctx, cue.text, {
     maxWidth: contentWidth,
     maxHeight: safe.h * 0.42,
     fontFamily: o.fontFamily,
@@ -382,12 +404,13 @@ export function captionGeometry(o: Pick<DrawCaptionsOptions, 'ctx' | 'width' | '
     minFontSize: Math.round(baseFontSize * 0.55),
     maxLines: cue.translation ? 4 : 2,
   });
+  let layout = primary();
 
   // 双语字幕的第二行：字号小一号、颜色略淡，与主行共用同一块底板与时间轴。
   // 主行已经占满 42% 安全区时，这里会自动把可用高度压到剩下的部分。
-  const gap = Math.round(layout.fontSize * 0.34);
+  let gap = Math.round(layout.fontSize * 0.34);
   const secondarySize = Math.round(baseFontSize * (o.layout?.translationScale ?? CAPTION_LAYOUT_DEFAULTS.translationScale));
-  const secondaryLayout = cue.translation
+  const secondary = () => cue.translation
     ? layoutCaption(ctx, cue.translation, {
       maxWidth: contentWidth,
       maxHeight: Math.max(secondarySize, safe.h - layout.textHeight - gap),
@@ -397,6 +420,46 @@ export function captionGeometry(o: Pick<DrawCaptionsOptions, 'ctx' | 'width' | '
       maxLines: 2,
     })
     : null;
+  let secondaryLayout = secondary();
+
+  // Measure the actual per-glyph drawing, including handwritten rotation. Keep the
+  // legacy centered geometry whenever its ink fits; only overflowing cues move/reflow.
+  const horizontal = layoutFrame(o.width, o.height).safe;
+  const ink = () => {
+    let left = Infinity, right = -Infinity, cursor = 0;
+    ctx.font = `700 ${layout.fontSize}px "${o.fontFamily}"`;
+    for (const line of layout.lines) {
+      let x = -ctx.measureText(line).width / 2, charIndex = cue.text.indexOf(line, cursor);
+      cursor = charIndex + line.length;
+      for (const ch of line) {
+        const m = ctx.measureText(ch), advance = m.width;
+        const jitter = new SeededRandom(((o.seed ?? 1) ^ (cue.index * 7919) ^ (charIndex * 131)) >>> 0);
+        jitter.range(-1.6, 1.6);
+        const rot = o.style === 'handwritten' ? jitter.range(-0.022, 0.022) : 0;
+        for (const gx of [-m.actualBoundingBoxLeft, m.actualBoundingBoxRight]) for (const gy of [-m.actualBoundingBoxAscent, m.actualBoundingBoxDescent]) {
+          const px = x + advance / 2 + (gx - advance / 2) * Math.cos(rot) - gy * Math.sin(rot);
+          left = Math.min(left, px); right = Math.max(right, px);
+        }
+        x += advance; charIndex += ch.length;
+      }
+    }
+    if (secondaryLayout) {
+      ctx.font = `600 ${secondaryLayout.fontSize}px "${o.fontFamily}"`;
+      for (const line of secondaryLayout.lines) {
+        const m = ctx.measureText(line);
+        left = Math.min(left, -m.width / 2 - m.actualBoundingBoxLeft);
+        right = Math.max(right, -m.width / 2 + m.actualBoundingBoxRight);
+      }
+    }
+    return { left: Number.isFinite(left) ? left : 0, right: Number.isFinite(right) ? right : 0 };
+  };
+  let extents = ink();
+  while (extents.right - extents.left > horizontal.width + 1e-6) {
+    contentWidth -= Math.max(1, extents.right - extents.left - horizontal.width);
+    if (contentWidth < 1) throw Error('CAPTION_SAFE_WIDTH: glyphs cannot fit the horizontal safe area');
+    layout = primary(); gap = Math.round(layout.fontSize * 0.34); secondaryLayout = secondary(); extents = ink();
+  }
+  const centerX = Math.max(horizontal.x - extents.left, Math.min(o.width / 2, horizontal.x + horizontal.width - extents.right));
 
   const padX = Math.round(layout.fontSize * 0.7);
   const padY = Math.round(layout.fontSize * 0.5);
@@ -407,7 +470,7 @@ export function captionGeometry(o: Pick<DrawCaptionsOptions, 'ctx' | 'width' | '
   const widestLine = Math.max(layout.textWidth, secondaryLayout?.textWidth ?? 0);
   const plateW = Math.min(safe.w, widestLine + padX * 2);
   const plateH = layout.textHeight + padY * 2 + (secondaryLayout ? gap + secondaryLayout.textHeight : 0);
-  const plateX = o.width / 2 - plateW / 2;
+  const plateX = centerX - plateW / 2;
   const outerPad = o.style === 'handwritten' ? 2 : 0;
   const outerH = plateH + outerPad * 2;
   const outerY = o.layout?.bottomInset === undefined
@@ -430,7 +493,7 @@ export function captionGeometry(o: Pick<DrawCaptionsOptions, 'ctx' | 'width' | '
   const textHeight = plateH - padY * 2;
   const baselineOffset = textHeight / 2 - (inkTop + inkBottom) / 2;
   ctx.restore();
-  return { layout, secondaryLayout, gap, padY, plateW, plateH, plateX, plateY, outerY, outerH, baselineOffset };
+  return { layout, secondaryLayout, gap, padY, plateW, plateH, plateX, plateY, outerY, outerH, baselineOffset, centerX };
 }
 
 /** 把当前字幕画进帧；默认外框中轴线在 77.5% 屏高，实际字形在框内上下居中。 */
@@ -438,10 +501,11 @@ export function drawCaptions(o: DrawCaptionsOptions): void {
   const cue = activeCueAt(o.cues, o.time);
   if (!cue) return;
   const ctx = o.ctx;
-  const { layout, secondaryLayout, gap, padY, plateW, plateH, plateX, plateY, baselineOffset } = captionGeometry(o, cue);
+  const { layout, secondaryLayout, gap, padY, plateW, plateH, plateX, plateY, baselineOffset, centerX } = captionGeometry(o, cue);
 
   ctx.save();
   ctx.textBaseline = 'alphabetic';
+  ctx.textAlign = 'left';
 
   // ---- 底板 ----
   if (o.style === 'boxed' || o.style === 'handwritten') {
@@ -484,7 +548,7 @@ export function drawCaptions(o: DrawCaptionsOptions): void {
     cursor = charIndexAll + line.length;
     ctx.font = `700 ${layout.fontSize}px "${o.fontFamily}"`;
     const lineWidth = ctx.measureText(line).width;
-    let x = o.width / 2 - lineWidth / 2;
+    let x = centerX - lineWidth / 2;
     const baseline = y + baselineOffset;
 
     for (const ch of line) {
@@ -531,7 +595,7 @@ export function drawCaptions(o: DrawCaptionsOptions): void {
       const lineWidth = ctx.measureText(line).width;
       ctx.globalAlpha = 0.86;
       ctx.fillStyle = o.themeColors?.secondary ?? '#d9d4c8';
-      ctx.fillText(line, o.width / 2 - lineWidth / 2, y + baselineOffset + (secondaryLayout.lineHeight - layout.lineHeight) / 2);
+      ctx.fillText(line, centerX - lineWidth / 2, y + baselineOffset + (secondaryLayout.lineHeight - layout.lineHeight) / 2);
       y += secondaryLayout.lineHeight;
     }
     ctx.globalAlpha = 1;

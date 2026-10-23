@@ -37,7 +37,8 @@ export function validateStructuredReview(value: unknown, context: DeliveryContex
   for (const check of review.checks) {
     if (!text(check.reason)) throw Error('DELIVERY_REVIEW_REASON_REQUIRED: ' + check.checkId);
     if (check.verdict === 'not_applicable') {
-      if (context.subject.audio.master !== null || !['audibility', 'sync'].includes(check.checkId)) throw Error('DELIVERY_REVIEW_NOT_APPLICABLE_INVALID: ' + check.checkId);
+      const hasAudio = context.subject.postprocess?.hasAudio ?? context.subject.audio.master !== null;
+      if (hasAudio || !['audibility', 'sync'].includes(check.checkId)) throw Error('DELIVERY_REVIEW_NOT_APPLICABLE_INVALID: ' + check.checkId);
       continue;
     }
     if (check.verdict !== 'pass') continue;

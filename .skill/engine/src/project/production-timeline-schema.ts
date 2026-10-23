@@ -2,6 +2,8 @@ import { Ajv } from 'ajv';
 import { COMPOSITION_SCHEMA, type Composition } from '../spec/motion.ts';
 import { CAMERAS, CAMERA_MOVES, TRANSITIONS } from '../spec/types.ts';
 import { collectSchemaErrors } from '../utils/json-schema.ts';
+import { CAPTION_LAYOUT_SCHEMA } from '../spec/schema.ts';
+import type { CaptionLayoutSettings } from '../spec/types.ts';
 
 const id = { type: 'string', pattern: '^[A-Za-z][A-Za-z0-9_-]{0,127}$' } as const;
 const integer = { type: 'integer', minimum: 0, maximum: Number.MAX_SAFE_INTEGER } as const;
@@ -35,15 +37,19 @@ const readingGroup = object({ groupId: id, eventIds: { ...array(id), minItems: 1
 const caption = object({ lineId: id, startFrame: integer, endFrame: positive });
 
 /** Integer frames and 48 kHz samples are authority; all intervals are half open. */
-export const PRODUCTION_TIMELINE_SCHEMA = object({ version: { const: '0.1' }, sourceHash: hash, durationFrames: positive,
+const timelineBase = object({ version: { const: '0.1' }, sourceHash: hash, durationFrames: positive,
   shots: { ...array(shot), minItems: 1 }, clips: array(clip), takes: array(take), placements: array(placement),
   events: array(event), readingGroups: array(readingGroup), captionCues: array(caption) });
+export const PRODUCTION_TIMELINE_SCHEMA = { ...timelineBase, properties: { ...timelineBase.properties,
+  captions: { type: 'object', additionalProperties: false, properties: CAPTION_LAYOUT_SCHEMA },
+} } as const;
 type Data<S> = S extends { const: infer C } ? C : S extends { enum: readonly (infer E)[] } ? E :
   S extends { anyOf: readonly (infer V)[] } ? Data<V> : S extends { type: 'null' } ? null :
   S extends { type: 'object', properties: infer P } ? { [K in keyof P]: Data<P[K]> } :
   S extends { type: 'array', items: infer I } ? Data<I>[] : S extends { type: 'string' } ? string :
   S extends { type: 'integer' | 'number' } ? number : S extends { type: 'boolean' } ? boolean : unknown;
-export type ProductionTimeline = Omit<Data<typeof PRODUCTION_TIMELINE_SCHEMA>, 'shots' | 'events'> & {
+export type ProductionTimeline = Omit<Data<typeof timelineBase>, 'shots' | 'events'> & {
+  captions?: CaptionLayoutSettings;
   shots: (Omit<Data<typeof shot>, 'composition'> & { composition: Composition })[];
   events: (Data<typeof eventBase> & { animation?: 'schedule' | 'emphasis' })[];
 };

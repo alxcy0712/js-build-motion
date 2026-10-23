@@ -116,10 +116,12 @@ test('diagnose binds continuous encoded frames, labels evidence, honors hold pur
       assert.equal(result.status, expected, result.stderr + result.stdout); return result.stdout;
     };
     run(['render', fixture.dir, '--no-audio', '--no-captions', '--width', '160', '--height', '90', '--preset', 'ultrafast', '--json']);
-    const result = JSON.parse(run(['diagnose', fixture.dir, '--from', '0.25', '--to', '1.25', '--width', '80', '--purpose', 'hold']));
+    const result = JSON.parse(run(['diagnose', fixture.dir, '--from', '0.25', '--to', '1.25', '--width', '80', '--purpose', 'hold'], 1));
     assert.equal(result.window.firstFrame, 6); assert.equal(result.window.lastFrame, 29); assert.equal(result.summary.pairCount, 23);
     const out = join(fixture.dir, result.outDir), reportPath = join(out, 'report.json'), saved = readFileSync(reportPath);
     const report = JSON.parse(saved.toString());
+    assert.equal(report.ok, false);
+    assert.ok(report.layout.issues.some(issue => issue.code === 'TEXT_SAFE_AREA' && issue.severity === 'error'));
     assert.equal(report.purpose, 'hold'); assert.ok(report.summary.staticRatio > 0.5);
     assert.equal(report.text.scope, 'source-glyph-bounds'); assert.equal(report.text.issues.length, 24);
     const strip = await loadImage(join(out, 'frame-strip.png')), heat = await loadImage(join(out, 'motion-heatmap.png'));

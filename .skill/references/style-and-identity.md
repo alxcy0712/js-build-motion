@@ -207,7 +207,11 @@ start 要求显式传入 `--theme`；缺失时报 `THEME_REQUIRED`，在创建�
 
 ### 实现与记录
 
-本片按上述规格在 `src/` 中实现片尾卡，或复用已确认的本片实现；字体、颜色和动效参数从固定主题读取。采用记录写入 `evidence/events.md` 的“个人包装选用”表，注明名称行写法、是否显示账号署名、收尾方式和口播实测时间；`brief.acceptance` 写入片尾卡与口播同步的验收目标。
+确认采用后优先调用 `drawing/scenes/end-card.ts` 的 `drawEndCard`（可复制 `end-card` 组件）。传入本片头像绘制回调、固定主题、整段字幕最小外框上沿、实测词表与已选名称行写法；`spokenWordStart` 支持跨词项锚定。helper 反推名称／标语进入时点，按真实字形安排间距，停留期间保持位置固定，并登记审片追踪。头像、颜色、字体与固定口播沿用上述规格。已有确认版式可继续使用，配合 `withLayout` 分别登记 avatar/name/slogan 的 `endCard` 元数据：wordStart、holdStart、holdEnd 使用全片秒数；名称在词起点达到完整可读透明度，标语至少达到 80%。实际最迟可见帧取 ceil(wordStart × fps)。
+
+自绘文字弹入调用 `motion/text.ts` 的 `textPop` 或 `drawTextEntrance(kind: 'pop')`，参数来自主题 `textReveal.positionSpring`，minimal 零过冲、kinetic ≤4%；逐行揭示调用 `lineReveal` 或 `drawTextEntrance(kind: 'line')`，默认 easeOutCubic、每行 0.4 秒、错开 0.16 秒，可按内容覆盖时长与错开。`drawTextEntrance` 保留回调的字体／颜色，并自动登记实际进入区间。已有自绘曲线用 `withLayout` 的 `textMotion` 登记起止与缓动，再由逐帧实测验收。通用道具缓动及现有主题参数保持各自用途。
+
+采用记录写入 `evidence/events.md` 的“个人包装选用”表，注明名称行写法、是否显示账号署名、收尾方式和口播实测时间；`brief.acceptance` 写入片尾卡与口播同步的验收目标。
 
 ## 每片选用与版本记录
 

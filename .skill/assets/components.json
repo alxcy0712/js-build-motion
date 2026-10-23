@@ -67,5 +67,13 @@
     "dependencies": [
       "camera"
     ]
+  },
+  "text-entrance": {
+    "source": "src/motion/text.ts",
+    "dependencies": ["easing", "layout-trace"]
+  },
+  "end-card": {
+    "source": "src/drawing/scenes/end-card.ts",
+    "dependencies": ["text-entrance", "layout-trace", "layout"]
   }
 }

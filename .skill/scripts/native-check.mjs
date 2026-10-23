@@ -62,11 +62,11 @@ export async function checkNative() {
         const idea = i ? '制作角色节奏短片' : '  制作太阳能原理讲解。\n保留 `literal`、$(literal) 与原始换行。\n';
         const ideaFile = join(scratch, 'original-prompt.txt');
         if (!i) writeFileSync(ideaFile, idea);
-        const result = JSON.parse(control(['start', '--theme', 'minimal', slug, ...(i ? ['--idea', idea] : ['--idea-file', ideaFile]), '--components', i ? 'particle-assembly' : 'camera,spring,random,contour,visual-check,image-fit,particle-assembly,text-bounds,layout,layout-trace,motion-tokens,camera-path']));
+        const result = JSON.parse(control(['start', '--theme', 'minimal', slug, ...(i ? ['--idea', idea] : ['--idea-file', ideaFile]), '--components', i ? 'particle-assembly' : 'camera,spring,random,contour,visual-check,image-fit,particle-assembly,text-bounds,layout,layout-trace,motion-tokens,camera-path,end-card']));
         assert.equal(result.project, [a, b][i]);
         assert.equal(result.status, 'needs-intake');
         assert.equal(result.packageId, original.packageId);
-        assert.deepEqual(result.components, i ? ['easing', 'particle-assembly', 'random'] : ['camera', 'camera-path', 'contour', 'easing', 'image-fit', 'layout', 'layout-trace', 'motion-tokens', 'particle-assembly', 'random', 'spring', 'text-bounds', 'visual-check']);
+        assert.deepEqual(result.components, i ? ['easing', 'particle-assembly', 'random'] : ['camera', 'camera-path', 'contour', 'easing', 'end-card', 'image-fit', 'layout', 'layout-trace', 'motion-tokens', 'particle-assembly', 'random', 'spring', 'text-bounds', 'text-entrance', 'visual-check']);
         const history = readFileSync(join(result.project, 'prompt-history.jsonl'), 'utf8').trim().split('\n').map(line => JSON.parse(line));
         assert.equal(history[0].kind, 'prompt');
         assert.equal(history[0].text, idea);
@@ -119,6 +119,7 @@ export async function checkNative() {
     });
     await check('复制的布局和动作组件接入固定引擎的追踪上下文', () => {
       execNode(a, "Promise.all([import('./.engine/node_modules/skia-canvas/lib/index.js'),import('./.engine/src/layout/trace.ts'),import('./src/components/layout-trace.ts'),import('./src/components/layout.ts'),import('./src/components/motion-tokens.ts'),import('./src/components/camera-path.ts')]).then(([{Canvas},engine,component,layout,motion,camera])=>{const ctx=new Canvas(100,100).getContext('2d'),trace=engine.trackLayout(ctx);trace.reset(0);component.withLayout(ctx,{id:'copied',role:'shape'},()=>ctx.fillRect(1,2,3,4));if(trace.draws[0].id!=='copied'||layout.frame(100,100).center.x!==50||motion.stagger(2)!==.16||typeof camera.evaluateCameraPath!=='function')process.exit(1);})");
+      execNode(a, "Promise.all([import('./.engine/node_modules/skia-canvas/lib/index.js'),import('./.engine/src/layout/trace.ts'),import('./.engine/src/themes/registry.ts'),import('./src/components/text-entrance.ts'),import('./src/components/end-card.ts')]).then(([{Canvas},engine,themes,text,card])=>{const ctx=new Canvas(1080,1920).getContext('2d'),trace=engine.trackLayout(ctx);trace.reset(.2);text.drawTextEntrance(ctx,themes.getTheme('kinetic'),.2,{id:'copied-title',kind:'line',enterAt:0,x:200,y:400},()=>ctx.fillText('Test',0,0));if(trace.draws[0].id!=='copied-title'||trace.declarations[0].textMotion.easing!=='outCubic'||text.lineReveal(.2).opacity!==.875||typeof card.drawEndCard!=='function')process.exit(1);})");
     });
     await check('系统沙箱内追加问答与修改，保留原始 prompt 与另一影片记录', () => {
       const originalHistory = readFileSync(join(a, 'prompt-history.jsonl'), 'utf8');

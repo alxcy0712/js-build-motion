@@ -2,7 +2,7 @@ import { slotSuggestions, motionLint } from '../qa/motion.ts';
 import type { ResolvedVideoSpec } from '../spec/types.ts';
 import { IMPLEMENTED_ENVIRONMENTS } from '../drawing/scenes/registry.ts';
 import { graphicIssues } from '../spec/graphic.ts';
-import { buildCaptionTrack, captionUnitLimit, type MeasuredNarration, type CaptionCue } from '../captions/track.ts';
+import { buildCaptionTrack, captionUnitLimit, isShortCaptionGap, type MeasuredNarration, type CaptionCue } from '../captions/track.ts';
 import { captionUnits } from '../captions/segment.ts';
 import { narrationTimingIssues } from '../audio/verify.ts';
 export interface QualityIssue { code: string; path: string; severity: 'error' | 'warning'; message: string }
@@ -76,6 +76,11 @@ export function inspectQuality(spec: ResolvedVideoSpec, options: { measuredNarra
     estimatedCues:cues.filter(c=>c.timingSource==='estimated').length,
   } : null;
   const alignmentReported = new Set<number>();
+  cues.forEach((cue, index) => {
+    const next = cues[index + 1];
+    if (next && isShortCaptionGap(cue.end, next.start)) add('CAPTION_SHORT_GAP', `captions[${cue.index}]`, 'error',
+      `${cue.end.toFixed(3)}–${next.start.toFixed(3)}s: ${(next.start - cue.end).toFixed(3)}s caption gap below 0.25s`);
+  });
   for (const cue of cues) {
     const path = `captions[${cue.index}]`;
     if (captionUnits(cue.text) > captionUnitLimit(spec)) add(cue.translation ? 'CAPTION_TRANSLATION_REVIEW' : 'LONG_CAPTION_REVIEW',path,'warning',

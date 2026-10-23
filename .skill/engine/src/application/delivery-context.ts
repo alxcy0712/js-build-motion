@@ -10,6 +10,7 @@ import { readAssetFile, prepareAssetPlan } from './asset-plan.ts';
 import { assertProductionCurrent, PRODUCTION_PROJECTION_PATH } from './production-compilation.ts';
 import { validateDelivery, type DeliveryContext, type DeliveryFile, type DeliverySubject, type DeliveryRequest, DELIVERY_SCHEMAS } from '../project/delivery.ts';
 import { productionHash, validateProduction } from '../project/production.ts';
+import { readPostprocess, POSTPROCESS_FILE } from '../project/postprocess.ts';
 
 const jsonLimit = 8 * 1024 * 1024;
 const decode = (data: Buffer) => JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(data));
@@ -148,10 +149,33 @@ export async function readDeliveryContext(projectDir: string): Promise<DeliveryC
     if (!sources.some(item => item.sourceId === sourceId)) { sources.push({ sourceId, file: raw.identity, roles: ['font'], catalog: null }); catalogRights.push({ sourceId, rights: null }); }
   }
   const projection = await readAssetFile(projectDir, PRODUCTION_PROJECTION_PATH, jsonLimit);
-  const subject = validateDelivery<DeliverySubject>('subject', { artifact,
+  const post = readPostprocess(project, run);
+  let deliveredArtifact = artifact, postprocess: DeliverySubject['postprocess'];
+  let durationFrames = run.facts.video.frames, fps = run.facts.video.fps;
+  if (post) {
+    const final = await readAssetFile(projectDir, post.final.path, Number.MAX_SAFE_INTEGER, undefined, { retain: false });
+    const record = await readAssetFile(projectDir, POSTPROCESS_FILE, jsonLimit);
+    if (final.sha256 !== post.final.sha256 || !isDeepStrictEqual(decode(record.data), post)) throw Error('DELIVERY_POSTPROCESS_CHANGED');
+    if (!post.media.video?.frameCount || !Number.isInteger(post.media.video.frameCount)) throw Error('DELIVERY_POSTPROCESS_FRAMES_REQUIRED');
+    durationFrames = post.media.video.frameCount; fps = post.media.video.fps;
+    deliveredArtifact = { ...artifact, ...final.identity, artifactId: post.recordId };
+    postprocess = { record: record.identity, recordId: post.recordId, render: artifact, hasAudio: post.media.audio !== null };
+    for (const asset of post.assets) {
+      const raw = await readAssetFile(projectDir, asset.path, Number.MAX_SAFE_INTEGER, undefined, { retain: false });
+      if (raw.sha256 !== asset.sha256) throw Error('DELIVERY_POSTPROCESS_ASSET_CHANGED');
+      const existing = sources.find(s => isDeepStrictEqual(s.file, raw.identity));
+      if (existing) { if (!existing.roles.includes('postprocess-source')) existing.roles.push('postprocess-source'); }
+      else {
+        const sourceId = 'postprocess:' + asset.path;
+        sources.push({ sourceId, file: raw.identity, roles: ['postprocess-source'], catalog: null });
+        catalogRights.push({ sourceId, rights: null });
+      }
+    }
+  }
+  const subject = validateDelivery<DeliverySubject>('subject', { artifact: deliveredArtifact,
     production: { revision: production.current.state.revision, bundle: production.current.state.bundle, projection: projection.identity },
     renderEvidence: render.identity, audio: { master, sources: audioSources }, sources,
-    durationFrames: run.facts.video.frames, fps: run.facts.video.fps });
+    durationFrames, fps, ...(postprocess ? { postprocess } : {}) });
   const consumptionLimitations = [...new Set(['Dynamic IO outside AssetPort and final pixel visibility are unobserved.', ...(run.facts.assets.usage?.unknownRemainder ?? [])])];
   return { subject, bundle, catalogRights, consumptionCoverage: 'partial', consumptionLimitations };
 }

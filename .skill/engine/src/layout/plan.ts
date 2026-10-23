@@ -9,6 +9,9 @@ export interface LayoutElement {
   interval?: Interval; boundary?: 'canvas' | 'safe' | 'parent' | Rect; slot?: string;
   overlay?: { intent: 'emphasis' | 'annotation' | 'transition'; target: string; region: Rect; interval: Interval };
   reading?: boolean;
+  /** Absolute output seconds; geometry is measured from actual drawing. */
+  textMotion?: Interval & { easing?: string };
+  endCard?: { part: 'avatar' | 'name' | 'slogan'; wordStart?: number; holdStart: number; holdEnd: number };
 }
 export type ProtectedKind = 'caption' | 'face' | 'cursor' | 'target' | 'reading';
 export interface Protection {
@@ -34,6 +37,9 @@ export const LAYOUT_ELEMENT_SCHEMA = object({
   id: text, role: { enum: ['text','shape','caption','source','media','decoration','background'] }, parent: text,
   required: { type: 'boolean' }, space, scene: text, interval, slot: text, reading: { type: 'boolean' },
   boundary: { anyOf: [{ enum: ['canvas','safe','parent'] }, rect] },
+  textMotion: object({ ...interval.properties, easing: text }, ['start','end']),
+  endCard: object({ part: { enum: ['avatar','name','slogan'] }, wordStart: { type: 'number', minimum: 0 },
+    holdStart: { type: 'number', minimum: 0 }, holdEnd: { type: 'number', exclusiveMinimum: 0 } }, ['part','holdStart','holdEnd']),
   overlay: object({ intent: { enum: ['emphasis','annotation','transition'] }, target: text, region: rect, interval }, ['intent','target','region','interval']),
 }, ['id','role']);
 export const LAYOUT_PLAN_SCHEMA = object({
@@ -53,7 +59,10 @@ const validatePlan = ajv.compile(LAYOUT_PLAN_SCHEMA), validateElement = ajv.comp
 export function elementIssues(value: unknown): string[] {
   if (!validateElement(value)) return (validateElement.errors ?? []).map(e => `${e.instancePath} ${e.message}`);
   const e = value as LayoutElement;
-  return [e.interval, e.overlay?.interval].filter(i => i && i.end <= i.start).map(() => 'interval.end must exceed start');
+  const issues = [e.interval, e.overlay?.interval, e.textMotion].filter(i => i && i.end <= i.start).map(() => 'interval.end must exceed start');
+  if (e.endCard && e.endCard.holdEnd <= e.endCard.holdStart) issues.push('endCard.holdEnd must exceed holdStart');
+  if (e.endCard && e.endCard.part !== 'avatar' && e.endCard.wordStart === undefined) issues.push('endCard text requires wordStart');
+  return issues;
 }
 export function layoutPlanIssues(value: unknown, scenes?: readonly { id: string; start: number; end: number }[]): string[] {
   if (!validatePlan(value)) return (validatePlan.errors ?? []).map(e => `${e.instancePath} ${e.message}`);

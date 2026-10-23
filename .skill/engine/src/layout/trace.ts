@@ -16,6 +16,7 @@ export interface TraceDraw extends LayoutElement {
 interface TraceState { time: number; scene?: string; phase?: string; plan: LayoutPlan; element?: LayoutElement; skip: boolean }
 export interface LayoutTrace {
   draws: TraceDraw[]; limitations: Set<string>; state: TraceState;
+  declarations: LayoutElement[];
   reset(time: number, plan?: LayoutPlan): void;
   protect(region: Protection, mapping?: Matrix): void;
 }
@@ -39,6 +40,7 @@ export function withLayout<T>(ctx: CanvasRenderingContext2D, element: LayoutElem
   const e=typeof element==='string'?trace.state.plan.elements?.find(e=>e.id===element):element;
   if (!e) throw Error(`LAYOUT_ELEMENT_UNKNOWN: ${element}`);
   const issues=elementIssues(e); if (issues.length) throw Error(`LAYOUT_DECLARATION: ${issues.join('; ')}`);
+  trace.declarations.push({ ...e, scene: e.scene ?? trace.state.scene });
   const old=trace.state.element;trace.state.element=e;
   try { return draw(); } finally { trace.state.element=old; }
 }
@@ -50,11 +52,11 @@ export function layoutScope<T>(ctx: CanvasRenderingContext2D, state: Partial<Tra
 export function trackLayout(ctx: CanvasRenderingContext2D): LayoutTrace {
   const existing=surfaces.get(ctx.canvas);if(existing)return existing;
   let clip=rectPath({x:0,y:0,width:ctx.canvas.width,height:ctx.canvas.height}), stack:Path2D[]=[], path=new Path2D(), pathMatrix:Matrix=IDENTITY, mixed=false;
-  const trace:LayoutTrace={draws:[],limitations:new Set(),protect(r,mapping){
+  const trace:LayoutTrace={draws:[],declarations:[],limitations:new Set(),protect(r,mapping){
     if(r.scene!==this.state.scene||!activeAt(r.interval,this.state.time))return;
     if(r.space==='source'&&!mapping)throw Error('PROTECTION_SOURCE_MAPPING_REQUIRED');
     addProtected(r,mapping??(r.space==='world'?matrixOf(ctx):IDENTITY),clip);
-  },state:{time:0,plan:{},skip:false},reset(time,plan={}){this.draws.length=0;this.limitations.clear();this.state={time,plan,skip:false};clip=rectPath({x:0,y:0,width:ctx.canvas.width,height:ctx.canvas.height});stack=[];path=new Path2D();mixed=false;}};
+  },state:{time:0,plan:{},skip:false},reset(time,plan={}){this.draws.length=0;this.declarations=[];this.limitations.clear();this.state={time,plan,skip:false};clip=rectPath({x:0,y:0,width:ctx.canvas.width,height:ctx.canvas.height});stack=[];path=new Path2D();mixed=false;}};
   surfaces.set(ctx.canvas,trace);
   const wrap=(method:string, after:(args:any[])=>void) => { const original=(ctx as any)[method].bind(ctx); (ctx as any)[method]=(...args:any[])=>{const result=original(...args);after(args);return result;}; };
   wrap('reset',()=>{clip=rectPath({x:0,y:0,width:ctx.canvas.width,height:ctx.canvas.height});stack=[];path=new Path2D();mixed=false;trace.draws.length=0;});
@@ -127,6 +129,7 @@ export function trackLayout(ctx: CanvasRenderingContext2D): LayoutTrace {
     const crop=rectPath({x:sx,y:sy,width:sw,height:sh}),destination=rectPath({x:dx,y:dy,width:dw,height:dh}).transform([...matrixOf(ctx)]),target=destination.intersect(clip);
     const source=surfaces.get(image);
     if(source){
+      trace.declarations.push(...source.declarations);
       if(ctx.filter!=='none'||hasShadow(ctx)||ctx.globalCompositeOperation!=='source-over')trace.limitations.add('filtered, shadowed or composited offscreen surface requires pixel review');
       for(const limit of source.limitations)trace.limitations.add(limit);
       for(const d of [...source.draws]){

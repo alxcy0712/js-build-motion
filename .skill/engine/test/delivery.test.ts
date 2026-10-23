@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { randomUUID } from 'node:crypto';
-import { appendFileSync, existsSync, lstatSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
+import { appendFileSync, cpSync, existsSync, lstatSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
+import { spawnSync } from 'node:child_process';
 import { join, resolve } from 'node:path';
 import { test } from 'node:test';
 import { deliverProject, verifyDelivery, type DeliveryHookState } from '../src/application/delivery.ts';
@@ -8,7 +9,7 @@ import { readDeliveryContext } from '../src/application/delivery-context.ts';
 import { initializeProduction, applyProduction, readProduction } from '../src/application/production.ts';
 import { compileProduction, assertProductionCurrent, productionMediaPaths } from '../src/application/production-compilation.ts';
 import { beginRenderAttempt, commitRenderAttempt } from '../src/project/attempt.ts';
-import { deliveryApprovalHash, REVIEW_CHECK_IDS, type DeliveryCredits, type DeliveryFile, type DeliveryManifest, type DeliveryRequest, type StructuredReview } from '../src/project/delivery.ts';
+import { deliveryApprovalHash, validateDelivery, REVIEW_CHECK_IDS, type DeliveryCredits, type DeliveryFile, type DeliveryManifest, type DeliveryRequest, type StructuredReview } from '../src/project/delivery.ts';
 import { productionHash, type ProductionDecision } from '../src/project/production.ts';
 import { loadProject } from '../src/project/manifest.ts';
 import { timelineSourceHash } from '../src/project/production-timeline.ts';
@@ -18,12 +19,13 @@ import { validateSpec } from '../src/spec/validate.ts';
 import { PROJECT_ROOT } from '../src/utils/env.ts';
 import { sha256File } from '../src/utils/hash.ts';
 import { fixturePrompt, productionInitFixture, productionBundleFixture, productionProposalFixture } from './fixtures/production.ts';
+import { registerPostprocess, type PostprocessRequest } from '../src/project/postprocess.ts';
 
 const currentPath = (dir: string) => join(dir, 'out/deliveries/current.json');
 const json = (path: string, value: unknown) => writeFileSync(path, JSON.stringify(value, null, 2) + '\n');
 const identity = (dir: string, path: string): DeliveryFile => ({ path, bytes: lstatSync(join(dir, path)).size, sha256: sha256File(join(dir, path)) });
 
-async function fixture(approvalTasks: ('final' | 'delivery')[] = []) {
+async function fixture(approvalTasks: ('final' | 'delivery')[] = [], realMedia = false) {
   const out = resolve(PROJECT_ROOT, '.research/out'); mkdirSync(out, { recursive: true });
   const root = mkdtempSync(join(out, 'delivery-')), dir = initProject({ slug: 'fictional-delivery', projectsRoot: join(root, 'projects') }).dir;
   try {
@@ -41,27 +43,43 @@ async function fixture(approvalTasks: ('final' | 'delivery')[] = []) {
       clips: [], takes: [], placements: [], readingGroups: [], captionCues: [],
       events: b.shots!.items.map((s, i) => ({ eventId: s.events[0]!.eventId, shotId: s.shotId, prepareFrame: i * 450,
         visibleFrame: i * 450 + 3, peakFrame: i * 450 + 6, completeFrame: i * 450 + 9, readingEndFrame: (i + 1) * 450 - 1, anchor: null })) };
+    const ffmpeg = (args: string[]) => {
+      const r = spawnSync('ffmpeg', ['-v', 'error', '-y', ...args], { cwd: dir, encoding: 'utf8' });
+      assert.equal(r.status, 0, r.stderr);
+    };
+    if (realMedia) {
+      mkdirSync(join(dir, 'assets/derived'), { recursive: true });
+      ffmpeg(['-f', 'lavfi', '-i', 'sine=frequency=440:sample_rate=48000:duration=30', 'assets/derived/signal.wav']);
+      b.timeline.takes.push({ takeId: 'music', kind: 'bgm', lineId: null, file: identity(dir, 'assets/derived/signal.wav'), sampleRate: 48000,
+        durationSamples: 1440000, words: [], beats: [] });
+      b.timeline.placements.push({ placementId: 'music-placement', takeId: 'music', startSample: 0, inSample: 0, outSample: 1440000, gain: 1, mute: false });
+    }
     await applyProduction(dir, productionProposalFixture(planned.state.revision, planned.bundle, { effective: null, script: null, shots: null, timeline: b.timeline }));
     assert.equal((await compileProduction(dir, 'final')).ok, true);
     const project = loadProject(dir), spec = validateSpec(JSON.parse(readFileSync(project.specPath, 'utf8'))).spec!;
     const compiled = await assertProductionCurrent(dir, spec, 'final'), attempt = beginRenderAttempt(project, { mediaPaths: await productionMediaPaths(dir, compiled.current) });
     // Transaction fixtures bind synthetic byte identities; native and production checks use actual encoded media.
     const output = join(attempt.workDir, 'final.mp4'); writeFileSync(output, 'encoded-A');
+    if (realMedia) ffmpeg(['-f', 'lavfi', '-i', 'color=c=black:s=1280x720:r=30:d=30', '-i', 'assets/derived/signal.wav', '-c:v', 'libx264', '-preset', 'ultrafast', '-c:a', 'aac', '-ar', '48000', output]);
+    const masterPath = join(attempt.workDir, 'audio/master.wav');
+    if (realMedia) { mkdirSync(join(attempt.workDir, 'audio')); cpSync(join(dir, 'assets/derived/signal.wav'), masterPath); }
     writeFileSync(join(attempt.workDir, project.slug + '.srt'), '1\n00:00:00,000 --> 00:00:01,000\nFixture\n');
     json(join(attempt.workDir, 'production-render.json'), { version: '0.1', kind: 'production-render-evidence', projection: compiled.projection,
       clips: compiled.compiled.clips, audioPlacements: compiled.compiled.audioPlacements, events: compiled.compiled.events,
-      captionCues: compiled.compiled.captionCues, durationSamples: compiled.compiled.durationSamples, masterSha256: null, sources: [],
+      captionCues: compiled.compiled.captionCues, durationSamples: compiled.compiled.durationSamples, masterSha256: realMedia ? sha256File(masterPath) : null,
+      sources: realMedia ? [{ ...identity(dir, 'assets/derived/signal.wav'), role: 'bgm-source' }] : [],
       observed: { encodedFrames: 900, voicePresence: [] } });
     const facts = { ...buildFacts({ video: { width: 1280, height: 720, fps: 30, duration: 30, frames: 900, seed: spec.video.seed },
       rendererKind: 'skia', rendererPackage: 'skia-canvas', rendererVersion: null,
-      encoder: { video: 'h264', pixelFormat: 'yuv420p', audio: null, crf: null, preset: null }, ffmpeg: { version: null, command: 'ffmpeg' },
+      encoder: { video: 'h264', pixelFormat: 'yuv420p', audio: realMedia ? 'aac' : null, crf: null, preset: null }, ffmpeg: { version: null, command: 'ffmpeg' },
       providers: { tts: '(none)', bgm: '(none)', sfx: '(none)' }, captions: { insideFrame: false, cues: 0, wordLevel: false },
       runtime: { packageId: 'a'.repeat(64), platform: process.platform, arch: process.arch } }),
       fonts: [{ family: 'Fictional', path: 'assets/fonts/fictional.ttf', sha256: sha256File(join(dir, '.engine/assets/fonts/fictional.ttf')), registered: true }] };
     const log = { ...buildRunLog({ project: project.slug, specPath: project.specPath, specSha256: sha256File(attempt.snapshotProject.specPath),
       briefPath: project.briefPath, briefSha256: project.briefPath ? sha256File(attempt.snapshotProject.briefPath!) : null, facts,
       measured: buildMeasured({ renderMs: 1, msPerFrame: 1, encodeTailMs: 0, audioMixMs: null, outputBytes: lstatSync(output).size,
-        outputSha256: sha256File(output), outputPath: repoRelative(join(attempt.outputDir, 'final.mp4')) }) }),
+        outputSha256: sha256File(output), outputPath: repoRelative(join(attempt.outputDir, 'final.mp4')),
+        audioArtifacts: realMedia ? [{ role: 'master', path: repoRelative(join(attempt.outputDir, 'audio/master.wav')), sha256: sha256File(masterPath) }] : [] }) }),
       execution: { attemptId: attempt.attemptId, inputSnapshotSha256: attempt.inputSnapshotSha256, coverage: 'partial' as const } };
     commitRenderAttempt(attempt, log, { technicalOk: true });
     const context = await readDeliveryContext(dir);
@@ -75,8 +93,10 @@ async function fixture(approvalTasks: ('final' | 'delivery')[] = []) {
         { modality: 'rights', method: 'document-read', startFrame: 0, endFrame: 900, tool: 'fixture', evidence: [evidence] }],
       references: [{ title: 'Fictional fixture reference', url: null, file: evidence, startSeconds: 0, endSeconds: 1,
         method: 'normal-speed-playback', evidence: [evidence], mechanisms: ['synthetic reference'], appliedShots: [b.shots!.items[0]!.shotId] }],
-      checks: REVIEW_CHECK_IDS.map(checkId => ({ checkId, verdict: ['audibility', 'sync'].includes(checkId) ? 'not_applicable' : 'pass',
+      checks: REVIEW_CHECK_IDS.map(checkId => ({ checkId, verdict: !realMedia && ['audibility', 'sync'].includes(checkId) ? 'not_applicable' : 'pass',
         reason: 'Identity-only silent transaction fixture.', evidence: [evidence] })) };
+    if (realMedia) review.observations.push({ modality: 'audiovisual', method: 'normal-speed-playback', startFrame: 0, endFrame: 900, tool: 'synthetic-fixture', evidence: [evidence] },
+      { modality: 'audio', method: 'actual-listening', startFrame: 0, endFrame: 900, tool: 'synthetic-fixture', evidence: [evidence] });
     const credits: DeliveryCredits = { version: '0.1', kind: 'delivery-credits', creditsId: 'credits-fixture', subject: context.subject, scope: 'local-delivery',
       sources: context.subject.sources.map(source => ({ sourceId: source.sourceId, file: source.file, status: 'documented', thirdPartyRightsStatus: 'documented',
         allowedUses: ['local-delivery'], restrictions: [], restrictionAssessment: 'Synthetic regression license.', requiredAttribution: 'Fictional font — fixture license', evidence: [evidence] })),
@@ -94,7 +114,7 @@ async function fixture(approvalTasks: ('final' | 'delivery')[] = []) {
       return { decisionId: `${kind}-${target}`, kind, actor: 'user', sourcePrompt: { entry: history.length, sha256: productionHash(entry) }, rawText: entry.text,
         scope: { action: 'approve', target, assetIds: [], provider: null, maxCost: 0 }, subjectHash: deliveryApprovalHash(request, target), supersedes };
     };
-    return { root, dir, request, review, credits, context, update, decision, cleanup() { rmSync(root, { recursive: true, force: true }); } };
+    return { root, dir, request, review, credits, context, update, decision, ffmpeg, cleanup() { rmSync(root, { recursive: true, force: true }); } };
   } catch (error) { rmSync(root, { recursive: true, force: true }); throw error; }
 }
 
@@ -109,6 +129,38 @@ test('local delivery binds current authority, review, rights and independently c
     for (const file of manifest.files) { assert.equal(sha256File(join(f.dir, file.path)), file.sha256); assert.equal(lstatSync(join(f.dir, file.path)).nlink, 1); }
     const receipt = JSON.parse(readFileSync(join(f.dir, result.receipt.path), 'utf8'));
     assert.deepEqual(receipt.request, f.request); assert.equal(receipt.status, 'succeeded');
+  } finally { f.cleanup(); }
+});
+
+test('verified loudnorm output is the review/credits/delivery subject and primary file; raw render remains traceable', async () => {
+  const f = await fixture([], true);
+  try {
+    const original = structuredClone(f.context.subject.artifact), run = readFileSync(join(f.dir, 'run.json'));
+    f.ffmpeg(['-i', original.path, '-c:v', 'copy', '-af', 'loudnorm=I=-16:TP=-2.3:LRA=11', '-ar', '48000', '-c:a', 'aac', 'out/publish.mp4']);
+    const final = identity(f.dir, 'out/publish.mp4');
+    const request: PostprocessRequest = { version: '0.1', assets: [], tools: { allowed: ['ffmpeg'] },
+      steps: [{ id: 'normalize', description: 'Synthetic loudness regression', tools: ['ffmpeg'], inputs: [{ path: original.path, sha256: original.sha256 }], output: { path: final.path, sha256: final.sha256 } }],
+      final: { path: final.path, sha256: final.sha256 }, captions: { insideFrame: false, cues: 0, wordLevel: false } };
+    json(join(f.dir, 'evidence/postprocess-request.json'), request);
+    const record = registerPostprocess(loadProject(f.dir), 'evidence/postprocess-request.json');
+    const context = await readDeliveryContext(f.dir);
+    assert.equal(context.subject.artifact.sha256, final.sha256); assert.equal(context.subject.artifact.path, final.path);
+    assert.deepEqual(context.subject.postprocess!.render, original); assert.equal(context.subject.postprocess!.recordId, record.recordId);
+    assert.equal(context.subject.postprocess!.hasAudio, true); assert.equal(context.subject.durationFrames, 900);
+    assert.doesNotThrow(() => validateDelivery('subject', { ...context.subject, fps: 30000 / 1001 }));
+    assert.deepEqual(readFileSync(join(f.dir, 'run.json')), run);
+    await assert.rejects(deliverProject(f.dir, f.request), /SUBJECT_STALE/);
+    f.request.subject = context.subject; f.review.subject = context.subject; f.credits.subject = context.subject; f.update();
+    const delivered = await deliverProject(f.dir, f.request);
+    assert.equal(sha256File(join(f.dir, delivered.path, 'artifact.mp4')), final.sha256);
+    assert.equal(sha256File(join(f.dir, delivered.path, 'render-original.mp4')), original.sha256);
+    assert.ok(existsSync(join(f.dir, delivered.path, 'postprocess.json'))); assert.ok(existsSync(join(f.dir, delivered.path, 'render-captions.srt')));
+    assert.equal((await verifyDelivery(f.dir)).ok, true);
+    for (const path of ['out/publish.mp4', 'evidence/postprocess.json']) {
+      const file = join(f.dir, path), before = readFileSync(file); writeFileSync(file, Buffer.concat([before, Buffer.from('tampered')]));
+      await assert.rejects(readDeliveryContext(f.dir), /POSTPROCESS_|JSON/);
+      await assert.rejects(verifyDelivery(f.dir), /POSTPROCESS_|JSON/); writeFileSync(file, before);
+    }
   } finally { f.cleanup(); }
 });
 

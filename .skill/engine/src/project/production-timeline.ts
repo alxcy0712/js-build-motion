@@ -1,6 +1,6 @@
 import { productionHash, validateProductionRelations, type ProductionBundle } from './production.ts';
 import { validateProductionTimeline, type ProductionTimeline } from './production-timeline-schema.ts';
-import { buildCaptionTrack, type CaptionCue, type MeasuredNarration } from '../captions/track.ts';
+import { buildCaptionTrack, holdShortCaptionGaps, type CaptionCue, type MeasuredNarration } from '../captions/track.ts';
 import { validateSpec } from '../spec/validate.ts';
 import { SPEC_DEFAULTS, type ResolvedVideoSpec } from '../spec/types.ts';
 import type { GraphicKeyframe } from '../spec/graphic.ts';
@@ -197,13 +197,13 @@ export function compileProductionTimeline(bundle: ProductionBundle, profile: 'ro
         composition: shot.composition })),
       audio: { narration, bgm: { preset: 'quiet_piano', key: 'C', bpm: timeline.shots[0]!.composition.bpm,
         volume: hasBgm ? 1 : 0, fadeIn: 0, fadeOut: 0, duckUnderNarration: voices.length > 0 }, sfx: [], loudness: -14 },
-      captions: { enabled: voices.length > 0 || timeline.captionCues.length > 0, style: 'boxed', mode: 'sentence' } });
+      captions: { enabled: voices.length > 0 || timeline.captionCues.length > 0, style: 'boxed', mode: 'sentence', ...timeline.captions } });
     if (!projection.spec || projection.issues.length || projection.schemaErrors.length) add('SPEC_PROJECTION_INVALID', 'spec', JSON.stringify({ issues: projection.issues, schemaErrors: projection.schemaErrors }));
     else spec = projection.spec;
   } catch (error) { add('SPEC_PROJECTION_INVALID', 'spec', (error as Error).message); }
   if (spec) {
     const explicitLines = new Set(timeline.captionCues.map(cue => cue.lineId));
-    const cues = buildCaptionTrack(spec, { measured: result.narrationTimings }).filter(cue => !explicitLines.has(voices[cue.narrationIndex!]?.lineId ?? ''));
+    const cues = buildCaptionTrack(spec, { measured: result.narrationTimings, holdShortGaps: false }).filter(cue => !explicitLines.has(voices[cue.narrationIndex!]?.lineId ?? ''));
     for (const cue of cues) {
       const voice = voices[cue.narrationIndex!]!;
       const startSample = Math.round(cue.start * 48000), endSample = Math.round(cue.end * 48000);
@@ -223,6 +223,8 @@ export function compileProductionTimeline(bundle: ProductionBundle, profile: 'ro
       cue.index = index;
       if (cue.endSample > (result.captionCues[index + 1]?.startSample ?? result.durationSamples)) add('CAPTION_OVERLAP', `captions[${index}]`, 'Caption cues must retain their complete duration without overlap.');
     });
+    result.captionCues = holdShortCaptionGaps(result.captionCues).map(cue => ({ ...cue,
+      endSample: Math.round(cue.end * 48000), endFrame: Math.ceil(Math.round(cue.end * 48000) / samplesPerFrame) }));
   }
   if (!conflicts.some(conflict => conflict.severity === 'hard')) result.spec = spec;
   return finish();

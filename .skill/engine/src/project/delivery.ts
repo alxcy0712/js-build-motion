@@ -15,13 +15,16 @@ const choices = <T extends string>(...values: T[]) => ({ enum: values }) as cons
 export const DELIVERY_FILE_SCHEMA = obj({ path, bytes: integer, sha256: hash });
 const file = DELIVERY_FILE_SCHEMA;
 const source = obj({ sourceId: str, file, roles: { ...arr(str), minItems: 1 }, catalog: nullable(file) });
-const subject = obj({
-  artifact: obj({ path, sha256: hash, bytes: positive, runId: str, artifactId: nullable(str), runtimeId: hash,
-    runSha256: hash, attemptId: str, inputSnapshotSha256: hash }),
+const artifact = obj({ path, sha256: hash, bytes: positive, runId: str, artifactId: nullable(str), runtimeId: hash,
+  runSha256: hash, attemptId: str, inputSnapshotSha256: hash });
+const subjectBase = obj({
+  artifact,
   production: obj({ revision: positive, bundle: file, projection: file }),
   renderEvidence: file, audio: obj({ master: nullable(file), sources: arr(obj({ file, role: str })) }),
-  sources: arr(source), durationFrames: positive, fps: { enum: [12, 15, 24, 25, 30, 60] },
+  sources: arr(source), durationFrames: positive, fps: { type: 'number', exclusiveMinimum: 0 },
 });
+const postprocess = obj({ record: file, recordId: hash, render: artifact, hasAudio: { type: 'boolean' } });
+const subject = { ...subjectBase, properties: { ...subjectBase.properties, postprocess } };
 export const REVIEW_CHECK_IDS = ['technical', 'narrative', 'camera', 'rhythm', 'captions', 'audibility', 'sync', 'quality', 'rights'] as const;
 const evidence = { ...arr(file), minItems: 1 };
 const observation = obj({ modality: choices('video', 'audio', 'audiovisual', 'technical', 'rights'),
@@ -49,11 +52,11 @@ type Data<S> = S extends { const: infer C } ? C : S extends { enum: readonly (in
   S extends { type: 'object', properties: infer P } ? { [K in keyof P]: Data<P[K]> } :
   S extends { type: 'array', items: infer I } ? Data<I>[] : S extends { type: 'string' } ? string :
   S extends { type: 'integer' | 'number' } ? number : unknown;
-export type DeliverySubject = Data<typeof subject>;
-export type StructuredReview = Data<typeof review>;
-export type DeliveryCredits = Data<typeof credits>;
-export type DeliveryRequest = Data<typeof request>;
-export type DeliveryManifest = Data<typeof manifest>;
+export type DeliverySubject = Data<typeof subjectBase> & { postprocess?: Omit<Data<typeof postprocess>, 'hasAudio'> & { hasAudio: boolean } };
+export type StructuredReview = Omit<Data<typeof review>, 'subject'> & { subject: DeliverySubject };
+export type DeliveryCredits = Omit<Data<typeof credits>, 'subject'> & { subject: DeliverySubject };
+export type DeliveryRequest = Omit<Data<typeof request>, 'subject'> & { subject: DeliverySubject };
+export type DeliveryManifest = Omit<Data<typeof manifest>, 'subject'> & { subject: DeliverySubject };
 export type DeliveryFile = Data<typeof file>;
 /** Approval records stay outside the reviewed production bundle and their own subject hash. */
 export function deliveryApprovalHash(request: DeliveryRequest, target: 'final' | 'delivery'): string {

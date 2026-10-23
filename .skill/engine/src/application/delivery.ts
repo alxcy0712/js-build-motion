@@ -93,6 +93,10 @@ async function copyPlan(dir: string, request: DeliveryRequest, review: Structure
     entries.push({ source, name });
   };
   add({ path: s.artifact.path, bytes: s.artifact.bytes, sha256: s.artifact.sha256 }, 'artifact.mp4');
+  if (s.postprocess) {
+    const { path, bytes, sha256 } = s.postprocess.render;
+    add({ path, bytes, sha256 }, 'render-original.mp4'); add(s.postprocess.record, 'postprocess.json');
+  }
   add(request.review, 'review.json'); add(request.credits, 'credits.json');
   add(s.production.bundle, 'bundle.json'); add(s.production.projection, 'projection.json'); add(s.renderEvidence, 'render-evidence.json');
   if (s.audio.master) add(s.audio.master, 'master.wav');
@@ -103,8 +107,8 @@ async function copyPlan(dir: string, request: DeliveryRequest, review: Structure
   if (snapshot.sha256 !== s.artifact.inputSnapshotSha256) throw Error('DELIVERY_SNAPSHOT_CHANGED');
   add(snapshot, 'input-snapshot.json');
   for (const extension of ['srt', 'vtt']) {
-    const file = await optionalIdentity(files, `${dirname(s.artifact.path)}/${basename(dir)}.${extension}`);
-    if (file) add(file, `captions.${extension}`);
+    const file = await optionalIdentity(files, `${dirname(s.postprocess?.render.path ?? s.artifact.path)}/${basename(dir)}.${extension}`);
+    if (file) add(file, `${s.postprocess ? 'render-captions' : 'captions'}.${extension}`);
   }
   for (const [index, source] of evidenceFiles(review, credits).entries()) add(source, `evidence/${index}-${basename(source.path)}`);
   distinct(entries.map(e => e.source));

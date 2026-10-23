@@ -73,7 +73,7 @@ const USAGE = `js-build-motion —— 模型无关的程序化视频引擎
     --schema request|map|limits|receipt|publication 输出视频准备契约
   audio <slug>                   先制作配音与混音，检查逐句时长和信号完整性
   audio lock <slug>              制作并保存可复用的定稿声音包
-  qa <slug>                     结构质量与导演计划新鲜度检查
+  qa <slug>                     结构、导演计划新鲜度与逐帧布局/文字动效检查
   qa <slug> --layout [--plan evidence/layout.json] [--all-frames] 实际源帧布局、保护区及候选建议
   qa <slug> --cuts evidence/cuts.json  词内剪点与帧/样本建议（保持原时间线）
   diagnose <slug> --from 0 --to 2 连续编码帧、运动热图与源文字边界复核线索

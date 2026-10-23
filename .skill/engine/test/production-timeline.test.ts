@@ -246,3 +246,19 @@ test('soft estimated anchors remain visible conflicts while hard duration remain
   bundle.requirements.requested.hardTargets.durationSeconds = 7;
   assert.ok(codes(bundle).includes('HARD_DURATION_CONFLICT'));
 });
+
+test('Production layout overrides project and authored cues hold at 1–7 frames with coherent sample/frame ends', () => {
+  for (const gap of [1, 3, 7, 8, 15, 30]) {
+    const bundle = fixture(30), timeline = bundle.timeline!;
+    timeline.captions = { maxWidth: .6, fontScale: .04, translationScale: .7, bottomInset: .2 };
+    timeline.takes = []; timeline.placements = []; timeline.events[0]!.anchor = null;
+    timeline.captionCues = [{ lineId: 'line-open', startFrame: 0, endFrame: 30 }, { lineId: 'line-open', startFrame: 30 + gap, endFrame: 90 }];
+    const before = productionHash(bundle), result = compileProductionTimeline(bundle, 'final');
+    assert.ok(result.spec, JSON.stringify(result.conflicts));
+    for (const [key, value] of Object.entries(timeline.captions)) assert.equal(result.spec.captions[key], value);
+    const cue = result.captionCues[0]!;
+    assert.equal(cue.endFrame, gap < 8 ? 30 + gap : 30);
+    assert.equal(cue.endSample, cue.endFrame * 1600); assert.equal(cue.end, cue.endSample / 48000);
+    assert.equal(result.captionCues[1]!.startFrame, 30 + gap); assert.equal(productionHash(bundle), before);
+  }
+});

@@ -1,6 +1,7 @@
 import { Path2D } from 'skia-canvas';
 import { activeAt, type LayoutPlan, type Rect } from './plan.ts';
 import { rectPath, pathBounds, type LayoutTrace, type TraceDraw } from './trace.ts';
+import { VERTICAL_SHORT_LAYOUT } from '../themes/shared.ts';
 export interface LayoutIssue {
   code: string; severity: 'error' | 'review' | 'coverage'; frame: number; time: number;
   elements: string[]; text: string[]; spaces: string[]; bounds: Rect[]; area: number; ratio: number;
@@ -40,6 +41,21 @@ export function inspectLayout(trace: Pick<LayoutTrace,'draws'|'limitations'>, op
     if(d.interval&&!activeAt(d.interval,time))add('LAYOUT_INTERVAL_MISMATCH','review',[d],'draw is visible outside its declared half-open interval');
     if(d.protection?.status==='unverified')add('PROTECTION_UNVERIFIED','coverage',[d],d.protection.source);
     if(hidden(d))continue;
+    if(text(d)&&d.role!=='decoration'&&d.role!=='background') {
+      const limit=d.role==='caption'?{...canvas,x:safe.x,width:safe.width}:safe;
+      if(d.visible.width>0&&(d.bounds.x<limit.x-1e-6||d.bounds.y<limit.y-1e-6||d.bounds.x+d.bounds.width>limit.x+limit.width+1e-6||d.bounds.y+d.bounds.height>limit.y+limit.height+1e-6))add('TEXT_SAFE_AREA',d.confidence==='exact'?'error':'review',[d],
+        'visible text ink crosses the platform safe area; captions share its horizontal margins',d.original.difference(rectPath(limit)));
+    }
+    if(height>width&&!text(d)&&d.role!=='caption'&&d.role!=='background'&&d.role!=='decoration') {
+      const buttons=rectPath({x:safe.x+safe.width,y:safe.y,width:width-safe.x-safe.width,height:height-safe.y});
+      const overlap=d.geometry.intersect(buttons);
+      if(area(overlap)>.5) {
+        if(d.required)add('BUTTON_ZONE_INTRUSION',d.confidence==='exact'?'error':'review',[d],
+          'required graphic enters the reserved right-side button column, including visible entry frames',overlap);
+        else if(d.id.includes(':auto-'))add('BUTTON_ZONE_SEMANTICS_REQUIRED','coverage',[d],
+          'declare whether this button-column graphic is required content or decoration',overlap);
+      }
+    }
     let boundary=typeof d.boundary==='object'?d.boundary:d.boundary==='safe'||(!d.boundary&&d.required&&text(d)&&d.role!=='caption')?safe:canvas;
     if(d.boundary==='parent'){
       const parent=all.find(p=>p.id===d.parent&&p.scene===d.scene&&!text(p));
@@ -86,6 +102,11 @@ export function inspectLayout(trace: Pick<LayoutTrace,'draws'|'limitations'>, op
   for(const group of captions.values()){
     const box=group.map(d=>d.visible).reduce((a,b)=>({x:Math.min(a.x,b.x),y:Math.min(a.y,b.y),width:Math.max(a.x+a.width,b.x+b.width)-Math.min(a.x,b.x),height:Math.max(a.y+a.height,b.y+b.height)-Math.min(a.y,b.y)}));
     const reserve=rectPath({x:box.x-8,y:box.y-8,width:box.width+16,height:box.height+16});
+    for(const d of visible.filter(d=>d.endCard)) {
+      const gap=box.y-d.bounds.y-d.bounds.height,minimum=VERTICAL_SHORT_LAYOUT.bigTextSubtitleGap*height/1920;
+      if(gap<minimum-1e-6)add('ENDCARD_CAPTION_GAP',d.confidence==='exact'?'error':'review',[d,group[0]!],
+        `end card to caption gap ${gap.toFixed(2)}px is below ${minimum.toFixed(2)}px`);
+    }
     for(const d of visible){if(d.role==='caption'||d.role==='background'||d.role==='decoration'||d.role==='media'||d.protection)continue;
       if(!text(d)&&!d.required)continue;const p=d.geometry.intersect(reserve);if(area(p)>.5)add('CAPTION_OCCLUSION',d.confidence==='exact'?'error':'review',[d,group[0]!],'content enters the caption plate and 8 output-pixel reservation',p);}
   }

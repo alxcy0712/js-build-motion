@@ -2,10 +2,10 @@ import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { parseArgs, isDeepStrictEqual } from 'node:util';
 import { initProject, type InitOptions, type InitResult } from '../project/scaffold.ts';
-import { loadProjectDrawing } from '../project/drawing.ts';
 import { loadProject, resolveInsideProject, type ProjectHandle } from '../project/manifest.ts';
 import { compileDirector, DIRECTOR_SCHEMA } from '../project/director.ts';
 import { inspectQuality } from '../project/quality.ts';
+import { cmdLayoutQA } from './layout.ts';
 import { loadSpecFile, validateSpec } from '../spec/validate.ts';
 import { IMPLEMENTED_ENVIRONMENTS } from '../drawing/scenes/registry.ts';
 import { BACKDROPS, MOTIFS } from '../spec/motion.ts';
@@ -112,22 +112,23 @@ export async function cmdQuality(target: string): Promise<number> {
   if (isProduction) {
     const { compiled, projection } = await assertProductionCurrent(project.dir, outcome.spec);
     const report = inspectQuality(outcome.spec, { measuredNarration: compiled.narrationTimings, captionCues: compiled.captionCues, customDrawing: true });
-    process.stdout.write(JSON.stringify({ ...report, projection, timelineConflicts: compiled.conflicts, visualReview: 'pending: inspect and listen to the full film' }, null, 2) + '\n');
-    return report.ok ? 0 : 1;
+    const layoutCode = report.ok ? await cmdLayoutQA([target, '--layout'], true) : 1;
+    process.stdout.write(JSON.stringify({ ...report, ok: report.ok && layoutCode === 0, layoutReport: join(project.manifest.outDir, 'layout-qa/report.json'), projection, timelineConflicts: compiled.conflicts, visualReview: 'pending: inspect and listen to the full film' }, null, 2) + '\n');
+    return report.ok && layoutCode === 0 ? 0 : 1;
   }
-  const drawing = await loadProjectDrawing(project);
   const measuredNarration = readNarrationTimings([
     resolveInsideProject(project.dir, join(project.manifest.outDir, 'audio/narration-timing.json'), 'audio timing'),
     resolveInsideProject(project.dir, join(project.manifest.outDir, 'audio-preflight/narration-timing.json'), 'audio timing'),
   ], outcome.spec);
-  const report = inspectQuality(outcome.spec, { measuredNarration, customDrawing: Boolean(drawing) });
+  const report = inspectQuality(outcome.spec, { measuredNarration, customDrawing: Boolean(project.manifest.drawing) });
   const planIssues: string[] = [];
   if (project.manifest.director) {
     const expected = compileDirector(JSON.parse(readFileSync(resolveInsideProject(project.dir, project.manifest.director, 'director'), 'utf8'))).spec;
     if (!isDeepStrictEqual(expected, outcome.spec)) planIssues.push('DIRECTOR_STALE: director.json 已变化，请重新 direct compile');
   }
-  const ok = report.ok && outcome.issues.length === 0 && planIssues.length === 0;
-  process.stdout.write(JSON.stringify({ ...report, ok, specIssues: outcome.issues, planIssues, visualReview: 'pending: 请检查分镜、转场及完整视频，结构检查不评判审美' }, null, 2) + '\n');
+  const ready = report.ok && outcome.issues.length === 0 && planIssues.length === 0;
+  const ok = ready && await cmdLayoutQA([target, '--layout'], true) === 0;
+  process.stdout.write(JSON.stringify({ ...report, ok, layoutReport: join(project.manifest.outDir, 'layout-qa/report.json'), specIssues: outcome.issues, planIssues, visualReview: 'pending: 请检查分镜、转场及完整视频，结构检查不评判审美' }, null, 2) + '\n');
   return ok ? 0 : 1;
 }
 

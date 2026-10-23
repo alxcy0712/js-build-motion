@@ -1,5 +1,5 @@
 {
-  "packageId": "56aeaddaa4260fc905d36ad6041b0d1e5f81fa0c3f77ec01cbdf617e8e83f9c2",
+  "packageId": "e1a3fd11c28a63300138d3b1ff96e25663ab98db13801c6b7256c10e5d1d3258",
   "version": "0.2",
   "engineVersion": "0.1.0",
   "platform": "darwin",
@@ -31,7 +31,7 @@
     },
     {
       "path": "assets/components.json",
-      "sha256": "4afed37b09f7ffbc2d01fa3ead6c8810c4125d8c467995ccd08aa50fea444310"
+      "sha256": "766f2c37eb9b82bb364d3f9312516ae7a364685a2327333bad1d9a8b4c2a008d"
     },
     {
       "path": "assets/project/AGENTS.md",
@@ -67,7 +67,7 @@
     },
     {
       "path": "references/captions.md",
-      "sha256": "1efde82470af8a06b510c862cdee795824d77cc02e63f1207a36870a0b09e44d"
+      "sha256": "44acd14093658efbddc58a6b56a1fae4fe83f1d9947a1f704a33c9aae61558fd"
     },
     {
       "path": "references/direction.md",
@@ -79,7 +79,7 @@
     },
     {
       "path": "references/layout-and-quality.md",
-      "sha256": "0d01625d4d71e8b45ae4e1f2279d7b78d6454b1466d721f52fae917c72a5c2d3"
+      "sha256": "7f790e8c15d613916f4e55a3034a2f02425fb610a484633edb34735a72077518"
     },
     {
       "path": "references/maintenance.md",
@@ -87,11 +87,11 @@
     },
     {
       "path": "references/motion.md",
-      "sha256": "2b9d70a93b3631e123db8ace12e83387776b98c689e8c3371385fe466b20e1bd"
+      "sha256": "39a9a023d250060bf7b672a8055230a2c444d07608891d4b952373bdcff61dec"
     },
     {
       "path": "references/style-and-identity.md",
-      "sha256": "f8945e8481902cfc33cc27c352aba166671c3e9397746cc1c5f7822642832196"
+      "sha256": "d1c486dc6399e2c67a0d875a171a7a2baee093878907a19ed4a66898e0e9f2ed"
     },
     {
       "path": "references/workflow.md",
@@ -139,7 +139,7 @@
     },
     {
       "path": "scripts/native-check.mjs",
-      "sha256": "f1c8435e0c51d9c8e6ed5003be48a78eb9c424c350fffe0c3f21499a2910c5ec"
+      "sha256": "3ec36b4a6c911a134da37a9b301b055f2d23afd8ff5d69753f7f897a64924334"
     },
     {
       "path": "scripts/native-runner.mjs",
@@ -7985,11 +7985,11 @@
     },
     {
       "path": "src/application/delivery-context.ts",
-      "sha256": "6e8338b950e6a20e553b8ed913d85fcb2be81aab35e4efb98f779a78529d9774"
+      "sha256": "604b0d76eb1900b5227ee857a78bc277a448655588738a0059a05b9f1d0841d8"
     },
     {
       "path": "src/application/delivery.ts",
-      "sha256": "63e23e560e701ad6822615ab704abeac90b5aada2ea285b2232ff5c17e01a621"
+      "sha256": "ef96c9ad9df529343993263328941e16c12cc1b72ded187494d704050b082707"
     },
     {
       "path": "src/application/import.ts",
@@ -8081,7 +8081,7 @@
     },
     {
       "path": "src/captions/render.ts",
-      "sha256": "99e1b79260bc8e455afa5aea1c95bf058b042f0c20d7111097e7dd9423e6887e"
+      "sha256": "9ea202801ab00503570529e654f2513b46d2918289e6b8802c3d60689d617048"
     },
     {
       "path": "src/captions/segment.ts",
@@ -8089,7 +8089,7 @@
     },
     {
       "path": "src/captions/track.ts",
-      "sha256": "95a012c91d738256add3d4087b4caa62d455f9e81652649c22152fc4992765bf"
+      "sha256": "6a2c6f5b784315f5d460323d3ca802f978f6d55f69f72e72935550f538514694"
     },
     {
       "path": "src/cli/delivery.ts",
@@ -8097,11 +8097,11 @@
     },
     {
       "path": "src/cli/diagnostics.ts",
-      "sha256": "88550433c6922b41166b8ce30a2c0cc8aca082bb34b6f296483c94a2c7ee439b"
+      "sha256": "e24fa8e91a5a1013403b1bac69645578b90b4302bd08ef1bf0d391ba30ef858c"
     },
     {
       "path": "src/cli/director.ts",
-      "sha256": "36f9f40d83bb0940efdf25677eb3a907020f616f0585c9d9aade3d237acb7d6b"
+      "sha256": "288e4f759a02733bf1a6751f1cb98c7a712bdc108325b7c4dfa69ec9207964a8"
     },
     {
       "path": "src/cli/environment.ts",
@@ -8109,11 +8109,11 @@
     },
     {
       "path": "src/cli/index.ts",
-      "sha256": "babfc5f0c5893f8812bd7121d7aaad8951b67f75d2e0f6659f90389106151c72"
+      "sha256": "33d5884da83016c5b775a3c28565c72f43b847256cf48cb42888ab31e4ebe339"
     },
     {
       "path": "src/cli/layout.ts",
-      "sha256": "74f74ace49f0a885058eba85e2880c6b6b696b7944dcc531018538496008d0ae"
+      "sha256": "8f313e49217f39ed6a18953408f4f1ff34395a8e302adacd100e90c3baa35c73"
     },
     {
       "path": "src/cli/media.ts",
@@ -8168,6 +8168,10 @@
       "sha256": "773e790ead246ea720b82526a95bbf284e30563ad8a6ab1e2766ffb32fd92c95"
     },
     {
+      "path": "src/drawing/scenes/end-card.ts",
+      "sha256": "e4d9bd78d5043e5b5fe1ab4831391bdb90dc5a1ef43713c640f9701a8a421557"
+    },
+    {
       "path": "src/drawing/scenes/graphics.ts",
       "sha256": "22a006e37c757678b6591d31ea3779f10d7358c9b9b274655d6343dbdcb4804b"
     },
@@ -8217,11 +8221,11 @@
     },
     {
       "path": "src/layout/check.ts",
-      "sha256": "4d0bda8340cce1cc0a639447b6d4b5b450554c51308155ecbb4646c976b00591"
+      "sha256": "d2f1a78028a545828df00f5feec099b8c61a5888c2de6d0ddf442c01b2167a36"
     },
     {
       "path": "src/layout/plan.ts",
-      "sha256": "cf92d657edd6f01c51648a0ffdac2a9ce7e5a97fe5e589894ac86a4e1ff50859"
+      "sha256": "491da28f48bef4e4dc1c336030079440b46ee80f2266fb6b741b604288edcdbd"
     },
     {
       "path": "src/layout/sampling.ts",
@@ -8233,7 +8237,7 @@
     },
     {
       "path": "src/layout/trace.ts",
-      "sha256": "a8fb1a2c4e5a1b9df21f64bcc2d6f8eb6c7dc063f7f26e96b33cb2602428837f"
+      "sha256": "3bf091657d1414c224662bc88c8bc824c49f7702529e3ca915e2e40c96208289"
     },
     {
       "path": "src/motion/camera-path.ts",
@@ -8246,6 +8250,10 @@
     {
       "path": "src/motion/shot-timing.ts",
       "sha256": "2b401315b02a1dde5bf23c9e9737fb9643d0aaf88d74dbfb816fc7549a00cd57"
+    },
+    {
+      "path": "src/motion/text.ts",
+      "sha256": "e8bae8f327d33020ea43b1595ad68ad045894e1f17374259b054978f3a6ca453"
     },
     {
       "path": "src/motion/tokens.ts",
@@ -8317,7 +8325,7 @@
     },
     {
       "path": "src/project/delivery.ts",
-      "sha256": "1883148a9eb4683fbe049b5ec2009e10975356fd9ce18adab1751e6bb7340f49"
+      "sha256": "50a4b19c26f091340980003a224b2625d68bbef0316db007b5e434141e419389"
     },
     {
       "path": "src/project/director.ts",
@@ -8361,11 +8369,11 @@
     },
     {
       "path": "src/project/production-timeline-schema.ts",
-      "sha256": "9192a7742dd56e058b004597c7c66df78db8df832801185b76c369df14d6a19f"
+      "sha256": "943a6608bb2aeed95468b1b70b0fcd4e9f0659b61bd7589fc9cae1ebddac5946"
     },
     {
       "path": "src/project/production-timeline.ts",
-      "sha256": "0a557c95aedd3d4470565c60fcb4bb8b8f8b6e2f4152c9efeb6151d4582f4069"
+      "sha256": "4a0efbb7094377b9f20ff604ab9a016f2178de57cc2bee00eac2c231933c3e74"
     },
     {
       "path": "src/project/production-view.ts",
@@ -8381,11 +8389,11 @@
     },
     {
       "path": "src/project/quality.ts",
-      "sha256": "b61769134a893b7f01b4ed2a38db414e233bef6adc98bf51a5033095b0fbffe2"
+      "sha256": "f30c9626d4102cc798bb4f774588a171438d00ec9953225975d8aeecaf4fcc3a"
     },
     {
       "path": "src/project/review-validation.ts",
-      "sha256": "7c7beeffdb12b94ed69f4ed8a098364db04b09c06ddd07f68bc931dd6032774d"
+      "sha256": "4240c395eb2ae74b6e1f1ef4ea0a269005ffee258bb0cfdf3753d7bcae14ed60"
     },
     {
       "path": "src/project/run-log.ts",
@@ -8422,6 +8430,10 @@
     {
       "path": "src/qa/dead-frames.ts",
       "sha256": "fbc8eceaede4328498917c4d70dff681ce564ce7aaaf25f3f8c0f1682ab46aa0"
+    },
+    {
+      "path": "src/qa/inspection.ts",
+      "sha256": "593d1f71500e80b2c8c09c34f5d66ebab932be12a0cb37075b821a260c9b9c62"
     },
     {
       "path": "src/qa/motion.ts",
@@ -8666,6 +8678,10 @@
       "sha256": "83539310f1897bc75a2815861c427ce1003f5dbd5d9ff3ea48fda1e8c8982b6d"
     },
     {
+      "path": "caption-compatibility.test.ts",
+      "sha256": "29f09106db6d732ddb7a698c7eb6f1a20a4ae39ad9480cf668db31dcda4c6370"
+    },
+    {
       "path": "caption-feedback.test.ts",
       "sha256": "515e346ab9757b7229e35509ff8031c66f857a7408e334db20cd01540b7cee50"
     },
@@ -8707,7 +8723,7 @@
     },
     {
       "path": "delivery.test.ts",
-      "sha256": "2fb65522dfe1c09e8179c42a6640bec264f62391760d1008646105cf30cdfc4f"
+      "sha256": "3f7d5e725ff74aa5f611c938efcab9b064a134e683bc495595ac18ebadbb87a7"
     },
     {
       "path": "determinism.test.ts",
@@ -8738,6 +8754,10 @@
       "sha256": "01873aa633116118b92125aed22e152899ffcf3dc4808cd4c6c0b3da6993d8ba"
     },
     {
+      "path": "fixtures/caption-compatibility.json",
+      "sha256": "9cb9776b71862394456e92223b027f3e8e68f0ca5db4dbf0ec92dabc75a35e30"
+    },
+    {
       "path": "fixtures/ffmpeg.ts",
       "sha256": "41732d440b6164d57f51a5812c91ec1eff5b007c47956bbeca225066553eb389"
     },
@@ -8766,6 +8786,10 @@
       "sha256": "ec641eafb444d82826c50bd7e06c214a8dae6c00161f14352a6536d89333fa0c"
     },
     {
+      "path": "fixtures/render-caption-compatibility.ts",
+      "sha256": "e8e007aa8145eac1399561b86051fb5af34d19e84c68c1c178c964fccff0de1f"
+    },
+    {
       "path": "fixtures/render-frame.ts",
       "sha256": "8a5841c61f454de090f53f4fc1ab8a8671feb59b9a6aedb8b522d522a88c99f7"
     },
@@ -8779,7 +8803,7 @@
     },
     {
       "path": "frame-diagnostics.test.ts",
-      "sha256": "060ef235f7d8bec4ad8e1a9e2adc43ba6888b8f0b3106f76e1be82aa9e2bc085"
+      "sha256": "3eaf34f02267b601c7745972fa44d5cc1b856b53f48b999afb35ca0e7e500c25"
     },
     {
       "path": "generated-footage.test.ts",
@@ -8883,7 +8907,7 @@
     },
     {
       "path": "production-timeline.test.ts",
-      "sha256": "d56dffdcd2178d717e4b660e98acd93c43a2551af539ae4854842c2b1a187115"
+      "sha256": "058abf0c11edbd5e4f35c3f796b4e43f8c8a3b09bdd2e9e80bea8371fbad184a"
     },
     {
       "path": "production-view.test.ts",
@@ -8912,6 +8936,10 @@
     {
       "path": "quality.test.ts",
       "sha256": "0165c8fa5426fb267c7da2c52556c12bc7ad460c9d762fdd83c87966e7a12faa"
+    },
+    {
+      "path": "review-preflight.test.ts",
+      "sha256": "78adb0df73ef4d4428e5eaf28c7bb61d83556c420e68d22a68fc5a626ab5ca49"
     },
     {
       "path": "review-validation.test.ts",

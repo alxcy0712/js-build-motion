@@ -93,6 +93,22 @@ export interface BuildCaptionTrackOptions {
   readonly measured?: ReadonlyMap<number, MeasuredNarration>;
   /** 字幕在视频结束前需要留出的最短时间，避免最后一条被截断 */
   readonly videoDuration?: number;
+  /** Production combines authored and generated cues before applying the same hold. */
+  readonly holdShortGaps?: boolean;
+}
+
+/** Strictly shorter than 250ms: at 30fps, 1–7 empty frames hold; 8+ stay pauses. */
+export const CAPTION_GAP_HOLD_SECONDS = 0.25;
+export function isShortCaptionGap(end: number, nextStart: number): boolean {
+  const gap = nextStart - end;
+  return gap > 1e-9 && gap < CAPTION_GAP_HOLD_SECONDS - 1e-9;
+}
+/** Only display ends change. Text, starts and measured word objects remain intact. */
+export function holdShortCaptionGaps<T extends CaptionCue>(cues: readonly T[]): T[] {
+  return cues.map((cue, index) => {
+    const next = cues[index + 1];
+    return next && isShortCaptionGap(cue.end, next.start) ? { ...cue, end: next.start } : cue;
+  });
 }
 
 export function captionUnitLimit(spec: ResolvedVideoSpec): number {
@@ -143,8 +159,9 @@ export function buildCaptionTrack(
 
   cues.sort((a, b) => a.start - b.start);
   // 排序后重编号，保证 index 与显示顺序一致
-  return cues.map((c, i) => ({ ...c, index: i, end:Math.min(c.end,cues[i+1]?.start ?? duration) }))
+  const ordered = cues.map((c, i) => ({ ...c, index: i, end:Math.min(c.end,cues[i+1]?.start ?? duration) }))
     .filter(c=>c.end>c.start).map((c,i)=>({...c,index:i}));
+  return options.holdShortGaps === false ? ordered : holdShortCaptionGaps(ordered);
 }
 
 function clipWords(
