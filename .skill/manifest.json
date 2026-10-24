@@ -1,5 +1,5 @@
 {
-  "packageId": "e1a3fd11c28a63300138d3b1ff96e25663ab98db13801c6b7256c10e5d1d3258",
+  "packageId": "dfe5f5fcf3f74331d6e061cf7b6d67cc45383d8570e390032140a0536a308d62",
   "version": "0.2",
   "engineVersion": "0.1.0",
   "platform": "darwin",
@@ -71,7 +71,7 @@
     },
     {
       "path": "references/direction.md",
-      "sha256": "a893d5cb1f55f6760bfc4d365555c6de3c3e0f8722f2031ae946f4416100dabc"
+      "sha256": "80b0368d0f50eb19bd39f20d25cde044c6bdc10ef48a438829bde107edd3317e"
     },
     {
       "path": "references/drawing.md",
@@ -95,7 +95,7 @@
     },
     {
       "path": "references/workflow.md",
-      "sha256": "4bb3041c0414cb2c9f05993a0dc88bcdc654c3b10261502060287e156afce5ce"
+      "sha256": "edb1ead250ebe99838be7ef17c5d186adc2ac7fc80a2fdc76fb29286a63f07f3"
     },
     {
       "path": "scripts/alignment-native-check.mjs",
@@ -7848,6 +7848,10 @@
       "sha256": "cf051219fad0d7ea74aa86a238c91af31871951839e3934d2d302095f5a71241"
     },
     {
+      "path": "scripts/compose-music.ts",
+      "sha256": "4f63cedbfa587c00f3e2dbb42670808853c3ea7bf324a77df7f2be8a448cf700"
+    },
+    {
       "path": "scripts/dead-frame-qa.ts",
       "sha256": "580121a77b1d439d130d83e5a8498063859831cfe6d73a5c789f710deb8502d2"
     },
@@ -8028,6 +8032,14 @@
       "sha256": "9af46bff5feb4abb2063827b76476b54c30e5c3cce63b9fb360de477c5808c35"
     },
     {
+      "path": "src/audio/bgm/sampled-score.ts",
+      "sha256": "e8ba261c19ba1744ee4331b1c5b1f846dd3fc17e3872559f874ebef2fa9c8af5"
+    },
+    {
+      "path": "src/audio/bgm/score.ts",
+      "sha256": "a4742ac3d0086067b7714de210259af9132e51083dfb81a8a3fdd612cb421f94"
+    },
+    {
       "path": "src/audio/build.ts",
       "sha256": "2e691d6a3a0b522bb33f97c7514b4b6d1c25d92ff403d2686ce7398fda4bfddf"
     },
@@ -8101,7 +8113,7 @@
     },
     {
       "path": "src/cli/director.ts",
-      "sha256": "288e4f759a02733bf1a6751f1cb98c7a712bdc108325b7c4dfa69ec9207964a8"
+      "sha256": "d0017068fb82417fb36f608fd36d44056b61fffd096b4f165afbbc10cbb0db02"
     },
     {
       "path": "src/cli/environment.ts",
@@ -8852,6 +8864,14 @@
     {
       "path": "motion-footage.test.ts",
       "sha256": "20567f957a57d04b825c9a70735608f09cdbfc59d1118814fb2908c6891407b0"
+    },
+    {
+      "path": "music-samples.test.ts",
+      "sha256": "b9cd1171b4bd1749aff7ad2f09d4eff444314ff5c3cac136d6151aa875785067"
+    },
+    {
+      "path": "music-score.test.ts",
+      "sha256": "1c13c19023bbf1561588dee68fb3ad0d9303e4a22fa25eda3a0fee0751ca5c93"
     },
     {
       "path": "native-runner.test.ts",

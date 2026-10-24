@@ -36,6 +36,8 @@ Production 项目直接采用 `shots.items`（purpose、visualIntent、nextRelat
 
 先测真实配音的逐句与关键词时间，再定动作、镜长和阅读停留；音乐主导段按实测拍点或程序音乐的节拍原点排程。事件表使用同一绝对时间轴。每个重点事件的承诺与实际结果按[成片质量](layout-and-quality.md)复核。
 
+配乐按[随片作曲](workflow.md#随片作曲)默认采用真实乐器采样，每片根据题材与情绪弧线重新编曲、选择配器，设计动机、和声、律动与留白；音乐的进入、变化和收束对应叙事事件，逐段写入实际乐谱与声音时间线。
+
 ## 运行时字段
 
 通过 capabilities --schema 查询 DirectorPlan@0.1 字段与枚举。idea 保留原文，purpose 写叙事作用，visualIntent 写具体可见变化。事件表承载导演设计；复杂轨迹由本片 src/ 实现。相机指定一处控制：使用本片相机时将该镜头的管线 cameraMove 设为 static，并省略该镜的 cameraPath。

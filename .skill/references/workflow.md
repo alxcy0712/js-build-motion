@@ -242,6 +242,28 @@ audio生成narration-timing，逐句检查起止、完整性、空档/尾留；�
 
 `audio lock`保存assets/derived/audio/<hash>/audio-lock.json，固定master/分轨/句尾/词时与原来源。file模式适用一条预制旁白，完整解码获样本/时长，词时未知；多句采用逐句真实TTS。视觉改片用`render --audio-lock <相对路径>`复用同PCM master及字幕时序，AAC每次编码。旁白、音色、速率、起点、片长、混音或源字节变化需重锁；译文/样式/画面可沿用。
 
+### 随片作曲
+
+音乐由模型依据每条视频的题材、叙事节奏与情绪变化重新作曲、编曲和选择配器，程序按本片乐谱演奏。采样库可复用，旋律、和声、律动与乐器组合逐片设计。先在本片 `evidence/music-direction.json` 记录题材、观众应感到什么、音乐与旁白的关系，以及各叙事转折的绝对时点；为每段写出配器、旋律动机、和声走向、律动、密度、强弱和留白。将情绪落实为可听事件，例如犹豫处中断动机、发现后改变音区与和声、结论处完成乐句。速度、调性、节拍与音色分别按内容选择，主题的视觉预设与音乐风格各自设计。
+
+正式配乐默认采用逐片乐谱配合真实乐器采样。钢琴、木管、弦乐与打击乐等原声配器使用已核来源的实录音源，以自然乐器音色为默认听感；电子音色或已授权成曲按本片明确的风格与用曲选择使用。已有六个 BGM preset 适用于工程占位和明确选定的简单铺底。逐片乐谱保存为 `src/music-score.json`，将选定音源与 bank.json 放入本片 `assets/instruments/` 后运行：
+
+```bash
+node .skill/scripts/video.mjs <slug> exec node .engine/scripts/compose-music.ts --schema
+node .skill/scripts/video.mjs <slug> exec node .engine/scripts/compose-music.ts --sample-schema
+node .skill/scripts/video.mjs <slug> exec node .engine/scripts/compose-music.ts src/music-score.json assets/generated/music.wav --samples assets/instruments/bank.json
+```
+
+`MusicScore@1` 必含 `version: "1"`、`durationSeconds`、`seed`、`voices` 和 `notes`。voice 以自定 id 命名，含 `instrument`、`gain`、`pan`，可调 `attack`、`release`；instrument 为 piano/electric_piano/mallet/bell/pluck/reed/strings/pad/bass/kick/snare/hat/noise。note 含唯一 `id`、`voice`、`start`、`duration`、MIDI `pitch` 与 `velocity`；时点为绝对秒，duration 包含起音和尾音，允许分数音高、自由拍、变速与显式停顿。模型把音乐意图编写成这些实际音符，结构和旋律由本片决定。
+
+采样 bank 必含 `version: "1"`、`name`、`source`、`license` 与 `samples`；每项 sample 含 `instrument`、相对 bank 目录的 WAV/FLAC `file`、原件 `sha256`、录制时 MIDI `pitch` 与力度 `velocity`，可用 `offsetSeconds` 去掉录音前空白。先选最接近的力度层，再选邻近录制琴键，变调范围限3半音。采样按原件立体声、自然衰减、谱上力度与收音时点播放，采用 FFmpeg 带限重采样；当前支持单次录音播放，长持续音需准备足够长的原件。采样模式独立使用录音，音源缺失或哈希失配直接报错。确认真实乐器音色时沿用同一份乐谱做试听对比，登记用户反馈。
+
+公开采样来源集中根 README；选用原件、许可、版本和哈希归本片。核心提供播放器，具体音源随片准备。省略 `--samples` 的 CLI 或 `src/audio/bgm/score.ts` 的 `renderMusicScore` 使用内置加法合成近似，适用于作曲草稿和明确的电子风格；`brightness` 仅在该合成模式生效。
+
+输出为48kHz立体声PCM WAV及同名 `.wav.json`，记录乐谱与音频哈希、演奏方式、所用音源及 bank 哈希、实际样本、配器和每0.25秒的能量包络。普通 Director 用已有 `buildAudio({bgm:{provider:'file',assetResolver:()=>音乐路径}})` 采用并锁声音；Production 按已测 take/placement 采用。登记音乐来源、时长及 authored 拍点，继续走完整解码和现有混音检查。
+
+先用代表段检查音乐身份：配器、律动、旋律句法和段落曲线应能对应本片内容；与近期作品接近时，按叙事理由重写其中的关键维度。已有音乐方向可直接落实，重要选择沿用创作问答与授权规则。波形用于看瞬态、停顿和强弱，频谱用于看音区、谐波与噪声，指标支持技术诊断；听感与题材适配通过实际试听或用户反馈记录，回执默认保持 `subjectiveListening: pending`。验收关注本片情绪是否成立、转折是否可听、音乐能否独立辨认，以及旁白是否清楚。
+
 ## 编码、后处理与身份
 
 常用顺序：direct compile → brief validate → qa/project audit → audio/audio lock → storyboard --per-shot/frame --at → render → artifact --out evidence/artifact.json → disclosure。字幕排程与读时按[captions](captions.md)，SRT/VTT/画面共用时间线。

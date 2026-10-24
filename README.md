@@ -122,6 +122,8 @@ Tak（[@cherry_mx_reds](https://x.com/cherry_mx_reds)）的Art History Speedrun�
 - Christian Swinehart / samizdatco 与 skia-canvas：[skia-canvas](https://github.com/samizdatco/skia-canvas)、[官方安装文档](https://skia-canvas.org/getting-started)。
 - Evgeny Poberezkin 与 Ajv：[Ajv](https://github.com/ajv-validator/ajv)。
 - Node.js 与 FFmpeg：[Node.js](https://nodejs.org/)、[FFmpeg](https://ffmpeg.org/)。
+- Gonzalo、Roberto 与 FreePats：[Upright Piano KW](https://freepats.zenvoid.org/Piano/acoustic-grand-piano.html#UprightKW)，2022-02-21版真实钢琴录音，按 [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/) 发布。用于原声采样演奏；所用音源及原件许可按影片保存。
+- Sam Gossner、Simon Dalzell、Elan Hickler / Soundemote 与 Versilian Studios：[VSCO 2 Community Edition](https://github.com/sgossner/VSCO-2-CE)、[VCSL](https://github.com/sgossner/VCSL)，CC0真实乐器采样；用于弦乐、木管、竖琴、马林巴和打击乐演奏，具体原件、修订与许可按影片保存。
 - rany2 与 edge-tts：[edge-tts](https://github.com/rany2/edge-tts)、[7.3.0](https://github.com/rany2/edge-tts/releases/tag/7.3.0)、[7.3.1](https://github.com/rany2/edge-tts/releases/tag/7.3.1)。
 - 火山引擎豆包语音文档：[公版音色列表](https://docs.volcengine.com/docs/DoubaoVoice/Tonelist-1?lang=zh)、[双向WS](https://docs.volcengine.com/docs/DoubaoVoice/WebSocketBidirectionalStreaming-V3?lang=zh)、[单向HTTP](https://docs.volcengine.com/docs/DoubaoVoice/unidirectional-streaming-text-to-speech-http?lang=zh)。
 - websockets：[websockets](https://websockets.readthedocs.io/)。
